@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@mipmap/ic_launcher"
-        android:tint="@color/colorAccent"
         android:id="@+id/imageView" />
 
     <TextView
