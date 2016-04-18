@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerActions.open;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -21,6 +22,7 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -36,24 +38,40 @@ public class OverviewActivityTest {
         assertNotNull(main.getActivity());
     }
 
+    /**
+     * Navigation drawer tests are flaky because of animation.
+     */
     @Test
     public void testNavigateToOverview() {
         openDrawerMenu();
-        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-            .perform(navigateTo(R.id.nav_overview));
+        onView(withId(R.id.nav_view))
+                .check(matches(isDisplayed()))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)))
+                .perform(navigateTo(R.id.nav_overview))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)));
+        assertNoUnverifiedIntents();
         onView(withId(R.id.overview_content)).check(matches(isDisplayed()));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
-        assertNoUnverifiedIntents();
     }
 
+    /**
+     * Navigation drawer tests are flaky because of animation.
+     */
     @Test
     public void testNavigateToIngredients() {
         openDrawerMenu();
-        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
-                .perform(navigateTo(R.id.nav_ingredients));
+        onView(withId(R.id.nav_view))
+                .check(matches(isDisplayed()))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)))
+                .perform(navigateTo(R.id.nav_ingredients))
+                .check(matches(menuItemIsChecked(R.id.nav_ingredients)));
         onView(withId(R.id.ingredient_content)).check(matches(isDisplayed()));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)));
+        pressBack();
+        openDrawerMenu();
+        onView(withId(R.id.nav_view))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)));
     }
 
     private void openDrawerMenu() {
