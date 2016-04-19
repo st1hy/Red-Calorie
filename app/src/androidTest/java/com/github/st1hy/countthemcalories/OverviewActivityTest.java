@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories;
 
 import android.content.ComponentName;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
@@ -79,6 +80,13 @@ public class OverviewActivityTest {
                 .perform(open()).check(matches(isOpen()));
     }
 
+    @Test
+    public void testCanAddNewMeal() {
+        onView(withId(R.id.overview_fab)).check(matches(isDisplayed()))
+                .perform(ViewActions.click());
+        intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
+        onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
+    }
 
     @Test
     public void testDisplayTotalCalories() {

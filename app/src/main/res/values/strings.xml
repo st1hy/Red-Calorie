@@ -10,5 +10,6 @@
     <string name="nav_ingredients">Ingredients</string>
 
     <string name="overview_toolbar_title">@string/app_name</string>
-    <string name="add_ingredient_title">Add ingredient</string>
+    <string name="ingredients_title">Ingredients</string>
+    <string name="add_meal_title">Add new meal</string>
 </resources>

@@ -21,7 +21,13 @@
         </activity>
         <activity
             android:name=".IngredientsActivity"
-            android:label="@string/overview_toolbar_title"
+            android:label="@string/ingredients_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".OverviewActivity"
+            />
+        <activity
+            android:name=".AddMealActivity"
+            android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".OverviewActivity"
             />
