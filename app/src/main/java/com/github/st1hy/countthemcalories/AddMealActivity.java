@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 
 import com.github.st1hy.countthemcalories.inject.component.AddMealActivityComponent;
 import com.github.st1hy.countthemcalories.inject.component.DaggerAddMealActivityComponent;
@@ -15,6 +16,8 @@ public class AddMealActivity extends BaseActivity {
 
     @Inject
     Toolbar toolbar;
+    @Inject
+    Button saveButton;
 
     private AddMealActivityComponent component;
 

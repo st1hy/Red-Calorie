@@ -14,6 +14,8 @@ import com.github.st1hy.countthemcalories.OverviewActivity;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
+import javax.inject.Named;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import dagger.Module;
@@ -58,13 +60,8 @@ public class OverviewActivityModule {
 
     @PerActivity
     @Provides
-    public FloatingActionButton provideFab() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity.startActivity(new Intent(activity, AddMealActivity.class));
-            }
-        });
+    public FloatingActionButton provideFab(@Named("start_add_meal_action") View.OnClickListener action) {
+        fab.setOnClickListener(action);
         return fab;
     }
 
@@ -80,5 +77,22 @@ public class OverviewActivityModule {
     public ActionBarDrawerToggle provideDrawerToggle() {
         return new ActionBarDrawerToggle(activity, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    }
+
+    @Provides
+    @Named("start_add_meal_action")
+    public View.OnClickListener provideStartAddMealActivityAction(@Named("add_meal_intent") final Intent intent) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.startActivity(intent);
+            }
+        };
+    }
+
+    @Provides
+    @Named("add_meal_intent")
+    public Intent provideAddMealIntent() {
+        return new Intent(activity, AddMealActivity.class);
     }
 }

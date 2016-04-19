@@ -12,8 +12,10 @@ import dagger.Component;
 @PerActivity
 @Component(modules = AddMealActivityModule.class, dependencies = ApplicationComponent.class)
 public interface AddMealActivityComponent {
+    @PerActivity
     Activity getActivity();
 
+    @PerActivity
     Toolbar getToolbar();
 
     void inject(AddMealActivity activity);

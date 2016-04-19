@@ -12,4 +12,5 @@
     <string name="overview_toolbar_title">@string/app_name</string>
     <string name="ingredients_title">Ingredients</string>
     <string name="add_meal_title">Add new meal</string>
+    <string name="add_meal_save_button">Save</string>
 </resources>

@@ -14,8 +14,10 @@ import dagger.Component;
 @Component(modules = ApplicationModule.class)
 public interface ApplicationComponent {
 
+    @Singleton
     Context getContext();
 
+    @Singleton
     Application getApplication();
 
     void inject(CaloriesCounterApplication application);
