@@ -79,4 +79,9 @@ public class OverviewActivityTest {
                 .perform(open()).check(matches(isOpen()));
     }
 
+
+    @Test
+    public void testDisplayTotalCalories() {
+//        onView(withId(R.id.overview_toolbar)).inRoot(with)
+    }
 }
