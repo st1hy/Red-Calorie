@@ -1,10 +1,9 @@
-package com.github.st1hy.countthemcalories.inject.component;
+package com.github.st1hy.countthemcalories.application.inject;
 
 import android.app.Application;
 import android.content.Context;
 
-import com.github.st1hy.countthemcalories.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.inject.module.ApplicationModule;
+import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 
 import javax.inject.Singleton;
 

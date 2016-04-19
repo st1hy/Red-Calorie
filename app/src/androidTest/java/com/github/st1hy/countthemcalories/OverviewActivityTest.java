@@ -6,6 +6,10 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;

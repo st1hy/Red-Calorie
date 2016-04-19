@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject;
+package com.github.st1hy.countthemcalories.core.inject;
 
 import javax.inject.Scope;
 

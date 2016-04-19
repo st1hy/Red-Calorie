@@ -8,9 +8,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".CaloriesCounterApplication">
+        android:name=".application.CaloriesCounterApplication">
         <activity
-            android:name=".OverviewActivity"
+            android:name=".activities.overview.view.OverviewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -20,16 +20,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IngredientsActivity"
+            android:name=".activities.ingredients.view.IngredientsActivity"
             android:label="@string/ingredients_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".OverviewActivity"
+            android:parentActivityName=".activities.overview.view.OverviewActivity"
             />
         <activity
-            android:name=".AddMealActivity"
+            android:name=".activities.addmeal.view.AddMealActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".OverviewActivity"
+            android:parentActivityName=".activities.overview.view.OverviewActivity"
             />
     </application>
 

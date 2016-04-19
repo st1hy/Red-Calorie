@@ -1,13 +1,13 @@
-package com.github.st1hy.countthemcalories;
+package com.github.st1hy.countthemcalories.application;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.inject.component.ApplicationComponent;
-import com.github.st1hy.countthemcalories.inject.component.DaggerApplicationComponent;
-import com.github.st1hy.countthemcalories.inject.module.ApplicationModule;
+import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
+import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
+import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
 
-import timber.log.*;
+import timber.log.Timber;
 
 public class CaloriesCounterApplication extends Application {
     private ApplicationComponent component;
@@ -15,7 +15,7 @@ public class CaloriesCounterApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG)
+        if (com.github.st1hy.countthemcalories.BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
 
         component = DaggerApplicationComponent.builder()
