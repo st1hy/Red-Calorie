@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
@@ -15,7 +16,7 @@ import dagger.Provides;
 public class AddMealActivityModule {
     private final AddMealActivity activity;
 
-    public AddMealActivityModule(AddMealActivity activity) {
+    public AddMealActivityModule(@NonNull AddMealActivity activity) {
         this.activity = activity;
     }
 

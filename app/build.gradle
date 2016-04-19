@@ -84,5 +84,6 @@ dependencies {
     testCompile "org.robolectric:robolectric:$robolectricVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "junit:junit:$jUnitVersion"
+    testCompile "org.hamcrest:hamcrest-junit:2.0.0.0"
     testApt "com.google.dagger:dagger-compiler:$daggerVersion"
 }
