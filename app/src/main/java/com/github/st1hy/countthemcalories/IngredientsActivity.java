@@ -43,7 +43,9 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
         getComponent().inject(this);
+        setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override

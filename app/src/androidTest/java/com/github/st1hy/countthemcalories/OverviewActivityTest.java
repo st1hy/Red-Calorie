@@ -24,7 +24,8 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -36,7 +37,7 @@ public class OverviewActivityTest {
 
     @Test
     public void testActivityStart() {
-        assertNotNull(main.getActivity());
+        assertThat(main.getActivity(), notNullValue());
     }
 
     /**
@@ -86,6 +87,8 @@ public class OverviewActivityTest {
                 .perform(ViewActions.click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
+        pressBack();
+        onView(withId(R.id.overview_toolbar)).check(matches(isDisplayed()));
     }
 
     @Test

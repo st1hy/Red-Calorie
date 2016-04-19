@@ -39,7 +39,6 @@ public class IngredientsActivityModule {
     @PerActivity
     @Provides
     public NavigationView provideNavigationView() {
-        navigationView.setNavigationItemSelectedListener(activity);
         return navigationView;
     }
 
@@ -52,7 +51,6 @@ public class IngredientsActivityModule {
     @PerActivity
     @Provides
     public Toolbar provideToolbar() {
-        activity.setSupportActionBar(toolbar);
         return toolbar;
     }
 
