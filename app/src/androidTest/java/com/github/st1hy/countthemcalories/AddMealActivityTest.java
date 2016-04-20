@@ -3,12 +3,16 @@ package com.github.st1hy.countthemcalories;
 import android.content.ComponentName;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -24,10 +28,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 @RunWith(AndroidJUnit4.class)
+@LargeTest
 public class AddMealActivityTest {
 
-    @Rule
+    private final ApplicationComponentRule componentRule = new ApplicationComponentRule();
     public final IntentsTestRule<AddMealActivity> main = new IntentsTestRule<>(AddMealActivity.class);
+
+    @Rule
+    public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
+
 
     @Test
     public void testDisplaysTitle() {

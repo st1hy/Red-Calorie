@@ -5,8 +5,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-
-import javax.inject.Singleton;
+import com.github.st1hy.countthemcalories.application.vmpolicy.DaggerPolicyComponent;
+import com.github.st1hy.countthemcalories.application.vmpolicy.PolicyComponent;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,10 +25,13 @@ public class ApplicationModule {
     }
 
     @Provides
-    @Singleton
     public Application provideApplication() {
         return application;
     }
 
+    @Provides
+    public PolicyComponent providePolicyComponent() {
+        return DaggerPolicyComponent.create();
+    }
 
 }

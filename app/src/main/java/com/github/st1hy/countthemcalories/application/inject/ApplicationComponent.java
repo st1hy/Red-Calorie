@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.application.vmpolicy.PolicyComponent;
 
 import javax.inject.Singleton;
 
@@ -18,6 +19,9 @@ public interface ApplicationComponent {
 
     @Singleton
     Application getApplication();
+
+    @Singleton
+    PolicyComponent getPolicyComponent();
 
     void inject(CaloriesCounterApplication application);
 
