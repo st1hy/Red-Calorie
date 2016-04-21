@@ -38,6 +38,7 @@
                     android:layout_gravity="end"
                     android:text="@string/add_meal_save_button"
                     android:textAllCaps="true"
+                    android:textColor="@color/colorBackground"
                     style="@style/Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
             </FrameLayout>
         </android.support.v7.widget.Toolbar>

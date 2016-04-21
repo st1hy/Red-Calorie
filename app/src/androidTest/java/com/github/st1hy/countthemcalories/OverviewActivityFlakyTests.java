@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActiv
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.rules.RetryRule;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -34,6 +35,7 @@ import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuI
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
+@Ignore
 public class OverviewActivityFlakyTests {
 
 

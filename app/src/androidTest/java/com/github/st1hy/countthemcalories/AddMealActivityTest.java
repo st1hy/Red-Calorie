@@ -51,8 +51,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.array;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -107,12 +106,12 @@ public class AddMealActivityTest {
                                         )
                                 ),
                                 hasEntry(Intent.EXTRA_INITIAL_INTENTS,
-                                        is(array(
+                                        hasItemInArray(
                                                 allOf(
                                                         hasAction(Intent.ACTION_PICK),
                                                         hasType("image/*")
                                                 )
-                                        ))
+                                        )
                                 )
                         )
                 )

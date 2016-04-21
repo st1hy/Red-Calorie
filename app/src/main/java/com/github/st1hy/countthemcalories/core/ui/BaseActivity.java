@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected final ApplicationComponent getAppComponent() {

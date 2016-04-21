@@ -9,7 +9,6 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
-import com.squareup.picasso.Picasso;
 
 import timber.log.Timber;
 
@@ -36,9 +35,8 @@ public class CaloriesCounterApplication extends Application {
                     .penaltyLog()
                     .build());
         }
-        Picasso.setSingletonInstance(new Picasso.Builder(getApplicationContext()).build());
-
     }
+
 
     @NonNull
     public ApplicationComponent getComponent() {
