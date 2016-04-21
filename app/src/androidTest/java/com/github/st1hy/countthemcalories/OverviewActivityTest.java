@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class OverviewActivityTest {
-    private final ApplicationComponentRule componentRule = new ApplicationComponentRule();
+    private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<OverviewActivity> main = new IntentsTestRule<>(OverviewActivity.class);
 
     @Rule

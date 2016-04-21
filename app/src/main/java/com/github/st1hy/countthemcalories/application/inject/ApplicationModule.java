@@ -5,8 +5,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.application.vmpolicy.DaggerPolicyComponent;
-import com.github.st1hy.countthemcalories.application.vmpolicy.PolicyComponent;
+import com.squareup.picasso.Picasso;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,8 +31,9 @@ public class ApplicationModule {
     }
 
     @Provides
-    public PolicyComponent providePolicyComponent() {
-        return DaggerPolicyComponent.create();
+    @Singleton
+    public Picasso providePicasso() {
+        return Picasso.with(application.getApplicationContext());
     }
 
 }

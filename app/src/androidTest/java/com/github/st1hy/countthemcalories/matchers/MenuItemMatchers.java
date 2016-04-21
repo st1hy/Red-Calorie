@@ -14,6 +14,7 @@ import org.hamcrest.Matcher;
 import java.util.Iterator;
 
 import static com.github.st1hy.countthemcalories.matchers.IterableMatchers.atLeastOne;
+import static com.github.st1hy.countthemcalories.matchers.Matchers.resIdToString;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertNotNull;
 
@@ -89,20 +90,9 @@ public class MenuItemMatchers {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText(String.format("have menu id: %s", resIdToString(menuItemId)));
+                description.appendText(String.format("have menu id: %s", resIdToString(viewResources, menuItemId)));
             }
         };
-    }
-
-    private static String resIdToString(int id) {
-        if (viewResources != null) {
-            try {
-                return viewResources.getResourceName(id);
-            } catch (Resources.NotFoundException e) {
-                //OK, going back to the integer
-            }
-        }
-        return Integer.toString(id);
     }
 
     private static class IterableMenu implements Iterable<MenuItem> {

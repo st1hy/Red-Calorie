@@ -37,7 +37,7 @@ import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuI
 public class OverviewActivityFlakyTests {
 
 
-    private final ApplicationComponentRule componentRule = new ApplicationComponentRule();
+    private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     //Minimizes chances that test failed due to flakiness.
     private final RetryRule retry = new RetryRule(1);
 
