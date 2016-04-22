@@ -9,17 +9,14 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public final class Utils {
-
-    private Utils() {
-        throw new UnsupportedOperationException();
-    }
+public enum Utils {
+    ;
 
     public static boolean hasLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean hasMarshmellow() {
+    public static boolean hasMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 

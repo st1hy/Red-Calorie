@@ -24,7 +24,7 @@ public class PermissionsHelper {
     @NonNull
     public Observable<Permission> checkPermissionAndAskIfNecessary(@NonNull String permission,
             @Nullable RequestRationale requestRationale) {
-        if (Utils.hasMarshmellow()) {
+        if (Utils.hasMarshmallow()) {
             return checkPermissionAndAskIfNecessaryApi23(permission, requestRationale);
         } else {
             return Observable.just(Permission.GRANTED);
