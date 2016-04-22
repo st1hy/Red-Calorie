@@ -19,6 +19,10 @@ public final class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public static boolean hasMarshmellow() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    }
+
 
     /**
      * @return drawable or null if drawable could not be found

@@ -29,10 +29,11 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.BuildConfig;
 import timber.log.Timber;
 
 public class AddMealActivity extends BaseActivity implements AddMealView {
@@ -132,19 +133,20 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("Received intent %s", data);
-        switch (requestCode) {
-            case REQUEST_PICK_IMAGE:
-                presenter.onImageReceived(data.getData());
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
+        if (requestCode == REQUEST_PICK_IMAGE || requestCode == REQUEST_CAMERA) {
+            if (resultCode == RESULT_OK) {
+                Uri imageUri = data.getData();
+                if (imageUri != null)
+                    presenter.onImageReceived(imageUri);
+                else if (BuildConfig.DEBUG)
+                    Timber.w("Received image but intent doesn't have image uri!");
+            }
+        } else super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void setImageToView(@NonNull Uri uri) {
-        Subscription subscription = picassoLoaderCallback.intoObservable()
+        Subscription subscription = intoPicassoObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotifyPresenterAboutLoadingResult(presenter));
         subscriptions.add(subscription);
@@ -167,7 +169,7 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         return picassoLoaderCallback.intoObservable();
     }
 
-    private static class NotifyPresenterAboutLoadingResult implements Action1<RxPicassoCallback.PicassoLoadingEvent> {
+    private static class NotifyPresenterAboutLoadingResult extends Subscriber<RxPicassoCallback.PicassoLoadingEvent> {
         private final AddMealPresenter presenter;
 
         public NotifyPresenterAboutLoadingResult(@NonNull AddMealPresenter presenter) {
@@ -175,7 +177,18 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         }
 
         @Override
-        public void call(RxPicassoCallback.PicassoLoadingEvent event) {
+        public void onCompleted() {
+            unsubscribe();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (BuildConfig.DEBUG) Timber.e(e, "Picasso encountered an error during loading image!");
+            unsubscribe();
+        }
+
+        @Override
+        public void onNext(RxPicassoCallback.PicassoLoadingEvent event) {
             switch (event) {
                 case SUCCESS:
                     presenter.onImageLoadingSuccess();

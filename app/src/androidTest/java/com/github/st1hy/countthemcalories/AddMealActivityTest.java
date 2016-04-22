@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -64,8 +65,6 @@ public class AddMealActivityTest {
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
 
-
-
     @Before
     public void stubAllExternalIntents() {
         // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
@@ -92,31 +91,32 @@ public class AddMealActivityTest {
                 .check(matches(withText("My meal")));
     }
 
+    private final Matcher<Intent> galleryIntentMatcher = allOf(
+            hasAction(Intent.ACTION_CHOOSER),
+            hasExtras(
+                    allOf(
+                            hasEntry(Intent.EXTRA_INTENT,
+                                    allOf(
+                                            hasAction(Intent.ACTION_GET_CONTENT),
+                                            hasType("image/*")
+                                    )
+                            ),
+                            hasEntry(Intent.EXTRA_INITIAL_INTENTS,
+                                    hasItemInArray(
+                                            allOf(
+                                                    hasAction(Intent.ACTION_PICK),
+                                                    hasType("image/*")
+                                            )
+                                    )
+                            )
+                    )
+            )
+    );
+
     @Test
     public void testSelectImageFromGallery() {
         @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
-        Matcher<Intent> intentMatcher = allOf(
-                hasAction(Intent.ACTION_CHOOSER),
-                hasExtras(
-                        allOf(
-                                hasEntry(Intent.EXTRA_INTENT,
-                                        allOf(
-                                                hasAction(Intent.ACTION_GET_CONTENT),
-                                                hasType("image/*")
-                                        )
-                                ),
-                                hasEntry(Intent.EXTRA_INITIAL_INTENTS,
-                                        hasItemInArray(
-                                                allOf(
-                                                        hasAction(Intent.ACTION_PICK),
-                                                        hasType("image/*")
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-        intending(intentMatcher).respondWith(new ActivityResult(AddMealActivity.REQUEST_PICK_IMAGE, new Func0<Intent>() {
+        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
             @Override
             public Intent call() {
                 Intent intent = new Intent();
@@ -135,11 +135,62 @@ public class AddMealActivityTest {
         onView(withText(R.string.add_meal_image_select_from_gallery))
                 .check(matches(isDisplayed()))
                 .perform(click());
-        intended(intentMatcher);
+        intended(galleryIntentMatcher);
         onView(withId(R.id.add_meal_image))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
         rxPicassoIdlingResource.unregister();
+    }
+
+    @Test
+    public void testSelectImageFromGalleryUserCanceled() {
+        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(R.string.add_meal_image_select_from_gallery))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        intended(galleryIntentMatcher);
+        //If doesn't crash is good
+    }
+
+    @Test
+    public void testSelectImageFromCamera() {
+        @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
+        final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
+            @Override
+            public Intent call() {
+                Intent intent = new Intent();
+                intent.setData(resourceToUri(getContext(), testDrawableId));
+                return intent;
+            }
+        }.call()));
+        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet(
+                main.getActivity().intoPicassoObservable());
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(R.string.add_meal_image_select_from_camera))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        intended(cameraIntentMatcher);
+        onView(withId(R.id.add_meal_image))
+                .check(matches(isDisplayed()))
+                .check(matches(withDrawable(any(BitmapDrawable.class))));
+        rxPicassoIdlingResource.unregister();
+    }
+
+    @Test
+    public void testSelectImageFromCameraUserCanceled() {
+        final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(R.string.add_meal_image_select_from_camera))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        intended(cameraIntentMatcher);
+        //If doesn't crash is good
     }
 
     private static Uri resourceToUri (Context context, @IdRes int resID) {

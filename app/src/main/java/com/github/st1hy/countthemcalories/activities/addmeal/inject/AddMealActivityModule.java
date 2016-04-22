@@ -32,7 +32,8 @@ public class AddMealActivityModule {
         return activity;
     }
 
-    @Provides @PerActivity
+    @Provides
+    @PerActivity
     public AddMealPresenter providePresenter(AddMealPresenterImp presenter) {
         return presenter;
     }
