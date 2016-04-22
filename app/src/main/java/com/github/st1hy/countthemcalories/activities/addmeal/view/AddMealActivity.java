@@ -52,9 +52,9 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
     @Bind(R.id.add_meal_image)
     ImageView mealImage;
 
-    private AddMealActivityComponent component;
-    private final RxPicassoCallback picassoLoaderCallback = new RxPicassoCallback();
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
+    AddMealActivityComponent component;
+    final RxPicassoCallback picassoLoaderCallback = new RxPicassoCallback();
+    final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @NonNull
     protected AddMealActivityComponent getComponent() {

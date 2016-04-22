@@ -37,7 +37,7 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     @Bind(R.id.nav_view)
     NavigationView navigationView;
 
-    private IngredientsActivityComponent component;
+    IngredientsActivityComponent component;
 
     @NonNull
     protected IngredientsActivityComponent getComponent() {
