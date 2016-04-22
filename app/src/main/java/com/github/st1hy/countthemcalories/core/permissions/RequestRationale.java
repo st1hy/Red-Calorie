@@ -10,7 +10,4 @@ public interface RequestRationale {
      */
     Observable<UserResponseForRationale> showRationale();
 
-    enum UserResponseForRationale {
-        CONTINUE_WITH_REQUEST, ABORT_REQUEST;
-    }
 }

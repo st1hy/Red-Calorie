@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.Utils;
-import com.github.st1hy.countthemcalories.core.permissions.RequestRationale.UserResponseForRationale;
 
 import java.util.Locale;
 

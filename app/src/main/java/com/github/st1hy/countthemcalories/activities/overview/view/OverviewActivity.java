@@ -44,8 +44,8 @@ public class OverviewActivity extends BaseActivity implements NavigationView.OnN
     @Bind(R.id.nav_view)
     NavigationView navigationView;
 
-    private ActionBarDrawerToggle drawerToggle;
-    private OverviewActivityComponent component;
+    ActionBarDrawerToggle drawerToggle;
+    OverviewActivityComponent component;
 
 
     @NonNull

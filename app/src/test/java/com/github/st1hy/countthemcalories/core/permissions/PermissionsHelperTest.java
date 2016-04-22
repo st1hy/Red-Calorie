@@ -25,8 +25,8 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
-import static com.github.st1hy.countthemcalories.core.permissions.RequestRationale.UserResponseForRationale.ABORT_REQUEST;
-import static com.github.st1hy.countthemcalories.core.permissions.RequestRationale.UserResponseForRationale.CONTINUE_WITH_REQUEST;
+import static com.github.st1hy.countthemcalories.core.permissions.UserResponseForRationale.ABORT_REQUEST;
+import static com.github.st1hy.countthemcalories.core.permissions.UserResponseForRationale.CONTINUE_WITH_REQUEST;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -174,6 +174,7 @@ public class PermissionsHelperTest {
         permissionsHelper.checkPermissionAndAskIfNecessary(testPermission, requestRationale)
                 .observeOn(Schedulers.immediate())
                 .subscribe(new SimpleObserver<Permission>() {
+                    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof IllegalArgumentException) {
@@ -213,6 +214,7 @@ public class PermissionsHelperTest {
             @Override
             public void onCompleted() {
                 unsubscribe();
+                assertThat(output, hasSize(1));
             }
 
             @Override
@@ -225,7 +227,6 @@ public class PermissionsHelperTest {
             public void onNext(Permission permission) {
                 if (expected != ANY_PERMISSION) assertEquals(expected, permission);
                 output.add(permission);
-                assertThat(output, hasSize(1));
             }
         };
     }

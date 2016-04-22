@@ -32,6 +32,14 @@ public class OverviewActivityRoboTest {
     @Test
     public void canRunActivity() {
         assertThat(activity, notNullValue());
+        assertThat(activity.drawer, notNullValue());
+        assertThat(activity.fab, notNullValue());
+        assertThat(activity.navigationView, notNullValue());
+        assertThat(activity.presenter, notNullValue());
+        assertThat(activity.toolbar, notNullValue());
+        assertThat(activity.getComponent(), notNullValue());
+        assertThat(activity.component, notNullValue());
+        assertThat(activity.drawerToggle, notNullValue());
     }
 
     @Test
