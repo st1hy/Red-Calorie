@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,6 +30,12 @@ public class AddMealActivityModule {
     @Provides
     @PerActivity
     public AddMealView provideView() {
+        return activity;
+    }
+
+    @Provides
+    @PerActivity
+    public PermissionSubject providePermissionSubject() {
         return activity;
     }
 

@@ -3,6 +3,10 @@ package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
+import com.github.st1hy.countthemcalories.core.permissions.Permission;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,24 +14,32 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import rx.Observable;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RxMockitoJUnitRunner.class)
 public class AddMealPresenterTest {
 
     @Mock
     private AddMealView view;
+    @Mock
+    private PermissionsHelper permissionsHelper;
     private AddMealPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new AddMealPresenterImp(view);
+        presenter = new AddMealPresenterImp(view, permissionsHelper);
+        when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
+                .thenReturn(Observable.just(Permission.GRANTED));
     }
 
     @Test
@@ -48,9 +60,10 @@ public class AddMealPresenterTest {
 
         presenter.onImageClicked();
 
+        verify(permissionsHelper, times(1)).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(view, times(1)).showSelectImageInputDialog();
         verify(view, times(1)).openCameraAndGetPicture();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, permissionsHelper);
     }
 
     @Test
@@ -65,9 +78,10 @@ public class AddMealPresenterTest {
 
         presenter.onImageClicked();
 
+        verify(permissionsHelper, times(1)).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(view, times(1)).showSelectImageInputDialog();
         verify(view, times(1)).pickImageFromGallery();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, permissionsHelper);
     }
 
     @Test

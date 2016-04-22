@@ -201,4 +201,21 @@ public class AddMealActivityTest {
                 .build();
     }
 
+// UiAutomator require minSdk 18 tools:overrideLibrary="android.support.test.uiautomator.v18" is ignored and other solution would mess up with flavors and are ugly
+// for now, enable permission in pre-test script:
+// adb shell pm grant com.github.st1hy.countthemcalories android.permission.READ_EXTERNAL_STORAGE
+//
+//    private static void allowPermissionsIfNeeded() {
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            UiDevice device = UiDevice.getInstance(getInstrumentation());
+//            UiObject allowPermissions = device.findObject(new UiSelector().text("Allow"));
+//            if (allowPermissions.exists()) {
+//                try {
+//                    allowPermissions.click();
+//                } catch (UiObjectNotFoundException e) {
+//                    Timber.e(e, "There is no permissions dialog to interact with ");
+//                }
+//            }
+//        }
+//    }
 }

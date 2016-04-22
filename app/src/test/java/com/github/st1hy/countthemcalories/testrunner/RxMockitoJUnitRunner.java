@@ -13,6 +13,7 @@ public class RxMockitoJUnitRunner extends MockitoJUnitRunner {
 
     public RxMockitoJUnitRunner(Class<?> klass) throws InvocationTargetException {
         super(klass);
+        RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
             @Override
             public Scheduler getMainThreadScheduler() {
