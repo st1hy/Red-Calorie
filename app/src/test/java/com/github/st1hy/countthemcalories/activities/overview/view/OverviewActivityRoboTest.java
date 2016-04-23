@@ -1,6 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.overview.view;
 
 import android.content.Intent;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -10,13 +12,19 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.fakes.RoboMenu;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -56,4 +64,27 @@ public class OverviewActivityRoboTest {
         assertThat(resultIntent, equalTo(new Intent(activity, AddMealActivity.class)));
     }
 
+    @Test
+    public void testBackPressed() throws Exception {
+        activity.onBackPressed();
+        assertTrue(shadowOf(activity).isFinishing());
+    }
+
+    @Test
+    public void testBackClosesDrawer() throws Exception {
+        DrawerLayout drawerLayoutMock = Mockito.mock(DrawerLayout.class);
+        when(drawerLayoutMock.isDrawerOpen(GravityCompat.START)).thenReturn(true);
+        activity.drawer = drawerLayoutMock;
+        activity.onBackPressed();
+        verify(drawerLayoutMock).closeDrawer(GravityCompat.START);
+        assertFalse(shadowOf(activity).isFinishing());
+    }
+
+    @Test
+    public void testMenuItems() throws Exception {
+        shadowOf(activity).onCreateOptionsMenu(new RoboMenu());
+        assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
+        assertFalse(shadowOf(activity).clickMenuItem(-1));
+
+    }
 }

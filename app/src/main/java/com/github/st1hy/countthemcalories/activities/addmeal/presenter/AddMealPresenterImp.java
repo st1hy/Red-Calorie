@@ -18,7 +18,8 @@ public class AddMealPresenterImp implements AddMealPresenter {
     private final PermissionsHelper permissionsHelper;
 
     @Inject
-    public AddMealPresenterImp(@NonNull AddMealView view, @NonNull PermissionsHelper permissionsHelper) {
+    public AddMealPresenterImp(@NonNull AddMealView view,
+                               @NonNull PermissionsHelper permissionsHelper) {
         this.view = view;
         this.permissionsHelper = permissionsHelper;
     }

@@ -43,7 +43,7 @@ dependencies {
     final daggerVersion = '2.2'
     final rxJavaVersion = '1.1.0'
     final timberVersion = '4.1.2'
-    final butterknifeVersion = '8.0.0-SNAPSHOT'
+    final butterknifeVersion = '7.0.1'
 
     final jUnitVersion = '4.12'
     final robolectricVersion = '3.0'
@@ -66,7 +66,7 @@ dependencies {
     compile "com.google.dagger:dagger:$daggerVersion"
     apt "com.google.dagger:dagger-compiler:$daggerVersion"
     compile "com.jakewharton:butterknife:$butterknifeVersion"
-    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+//    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
@@ -90,4 +90,6 @@ dependencies {
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.hamcrest:hamcrest-junit:$hamcrestVersion"
     testApt "com.google.dagger:dagger-compiler:$daggerVersion"
+    testCompile "com.android.support:support-annotations:$supportLibraryVersion"
+    testCompile "com.android.support.test.espresso:espresso-intents:$espressoVersion"
 }

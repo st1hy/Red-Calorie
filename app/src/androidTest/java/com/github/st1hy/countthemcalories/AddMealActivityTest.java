@@ -156,7 +156,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testSelectImageFromCamera() {
-        @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
+        @DrawableRes final int testDrawableId = android.R.drawable.ic_input_add;
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
             @Override
@@ -193,7 +193,7 @@ public class AddMealActivityTest {
         //If doesn't crash is good
     }
 
-    private static Uri resourceToUri (Context context, @IdRes int resID) {
+    private static Uri resourceToUri (Context context, @DrawableRes int resID) {
         return new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 .authority(context.getPackageName())

@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoCallback;
+import com.github.st1hy.countthemcalories.core.rx.SimpleObserver;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.squareup.picasso.Picasso;
 
@@ -29,7 +30,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -169,22 +169,11 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         return picassoLoaderCallback.intoObservable();
     }
 
-    private static class NotifyPresenterAboutLoadingResult extends Subscriber<RxPicassoCallback.PicassoLoadingEvent> {
+    private static class NotifyPresenterAboutLoadingResult extends SimpleObserver<RxPicassoCallback.PicassoLoadingEvent> {
         private final AddMealPresenter presenter;
 
         public NotifyPresenterAboutLoadingResult(@NonNull AddMealPresenter presenter) {
             this.presenter = presenter;
-        }
-
-        @Override
-        public void onCompleted() {
-            unsubscribe();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (BuildConfig.DEBUG) Timber.e(e, "Picasso encountered an error during loading image!");
-            unsubscribe();
         }
 
         @Override
