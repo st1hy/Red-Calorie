@@ -1,0 +1,12 @@
+apply plugin: 'application'
+apply plugin: "idea"
+
+mainClassName = "com.github.st1hy.database.DatabaseGenerator"
+
+dependencies {
+    final greenDaoVersion = rootProject.ext.greenDaoVersion
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "de.greenrobot:greendao-generator:$greenDaoVersion"
+}
