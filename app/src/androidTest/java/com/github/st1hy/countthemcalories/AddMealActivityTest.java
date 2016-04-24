@@ -218,4 +218,10 @@ public class AddMealActivityTest {
 //            }
 //        }
 //    }
+
+    @Test
+    public void testShowsIngredients() throws Exception {
+//        onView(withText(R.string.add_meal_ingredients_title)).check(matches(isDisplayed()));
+
+    }
 }

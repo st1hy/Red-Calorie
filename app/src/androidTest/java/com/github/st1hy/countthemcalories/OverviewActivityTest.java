@@ -17,6 +17,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -48,6 +49,7 @@ public class OverviewActivityTest {
                 .perform(ViewActions.click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
+        closeSoftKeyboard();
         pressBack();
         onView(withId(R.id.overview_toolbar)).check(matches(isDisplayed()));
     }

@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 import android.Manifest;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
@@ -16,12 +17,15 @@ import rx.functions.Action1;
 public class AddMealPresenterImp implements AddMealPresenter {
     private final AddMealView view;
     private final PermissionsHelper permissionsHelper;
+    private final IngredientListPresenter ingredientListPresenter;
 
     @Inject
     public AddMealPresenterImp(@NonNull AddMealView view,
-                               @NonNull PermissionsHelper permissionsHelper) {
+                               @NonNull PermissionsHelper permissionsHelper,
+                               @NonNull IngredientListPresenter ingredientListPresenter) {
         this.view = view;
         this.permissionsHelper = permissionsHelper;
+        this.ingredientListPresenter = ingredientListPresenter;
     }
 
     @Override
@@ -68,6 +72,12 @@ public class AddMealPresenterImp implements AddMealPresenter {
     @Override
     public void onImageLoadingFailed() {
 
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.Adapter getIngredientListAdapter() {
+        return ingredientListPresenter;
     }
 
 }

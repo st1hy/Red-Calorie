@@ -62,7 +62,7 @@ public class OverviewActivity extends BaseActivity implements NavigationView.OnN
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_overview);
+        setContentView(R.layout.overview_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
         navigationView.setNavigationItemSelectedListener(this);

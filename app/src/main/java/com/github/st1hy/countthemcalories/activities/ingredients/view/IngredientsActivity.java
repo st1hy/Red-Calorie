@@ -53,7 +53,7 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ingredients);
+        setContentView(R.layout.ingredients_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
         setSupportActionBar(toolbar);

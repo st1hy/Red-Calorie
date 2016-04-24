@@ -12,34 +12,63 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_add_meal"
+    tools:showIn="@layout/add_meal_activity"
     tools:context=".activities.addmeal.view.AddMealActivity">
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center">
-        <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_vertical_margin"
-            app:cardElevation="4dp"
-            app:cardUseCompatPadding="true"
-            app:cardMaxElevation="8dp">
-            <ImageButton
-                android:id="@+id/add_meal_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:scaleType="centerInside"
-                android:background="@color/colorBackground"
-                android:contentDescription="@string/add_meal_photo_description"
-                android:src="@drawable/ic_add_a_photo_24px"/>
-        </android.support.v7.widget.CardView>
+        <FrameLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true"
+                app:cardMaxElevation="8dp">
+                <ImageButton
+                    android:id="@+id/add_meal_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerInside"
+                    android:background="@color/colorBackground"
+                    android:contentDescription="@string/add_meal_photo_description"
+                    android:src="@drawable/ic_add_a_photo_24px"/>
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
         <EditText
             android:id="@+id/add_meal_name"
             android:layout_weight="1"
-            android:hint="@string/add_meal_name_hint">
+            android:hint="@string/add_meal_name_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <requestFocus/>
         </EditText>
     </TableRow>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/add_meal_ingredients_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/add_meal_ingredient_item">
+    </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/add_meal_empty_ingredients"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:text="@string/add_meal_no_ingredients_yet"
+            android:minHeight="?listPreferredItemHeight"
+            android:gravity="center"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="?android:textColorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/add_meal_button_add_ingredient"
+            android:text="@string/add_meal_button_add_ingredient"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </TableLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="add_meal_calories_count">
+        <item quantity="other">%d cal</item>
+    </plurals>
+</resources>

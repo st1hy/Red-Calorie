@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +54,14 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
     Button saveButton;
     @Bind(R.id.add_meal_image)
     ImageView mealImage;
+    @Bind(R.id.add_meal_ingredients_list)
+    RecyclerView ingredientList;
+    @Bind(R.id.add_meal_empty_ingredients)
+    View emptyIngredients;
+    @Bind(R.id.add_meal_button_add_ingredient)
+    Button addIngredientButton;
+    @Bind(R.id.add_meal_fab_add_ingredient)
+    FloatingActionButton addIngredientFab;
 
     AddMealActivityComponent component;
     final RxPicassoCallback picassoLoaderCallback = new RxPicassoCallback();
@@ -70,7 +81,7 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_meal);
+        setContentView(R.layout.add_meal_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
         setSupportActionBar(toolbar);
@@ -88,6 +99,8 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
                 presenter.onImageClicked();
             }
         });
+        ingredientList.setAdapter(presenter.getIngredientListAdapter());
+        ingredientList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     @Override

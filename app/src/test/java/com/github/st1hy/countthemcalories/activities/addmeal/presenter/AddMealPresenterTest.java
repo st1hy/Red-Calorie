@@ -33,11 +33,13 @@ public class AddMealPresenterTest {
     private AddMealView view;
     @Mock
     private PermissionsHelper permissionsHelper;
+    @Mock
+    private IngredientListPresenter ingredientListPresenter;
     private AddMealPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new AddMealPresenterImp(view, permissionsHelper);
+        presenter = new AddMealPresenterImp(view, permissionsHelper, ingredientListPresenter);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
     }
