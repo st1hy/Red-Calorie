@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.application;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -9,10 +8,11 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
+import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
 
 import timber.log.Timber;
 
-public class CaloriesCounterApplication extends Application {
+public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;
 
     @Override

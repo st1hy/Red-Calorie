@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="unit_kcal_at_100g">
+        <item quantity="other">%d kcal / 100 g</item>
+    </plurals>
+    <plurals name="unit_kj_at_100g">
+        <item quantity="other">%d kJ / 100 g</item>
+    </plurals>
+    <plurals name="unit_kcal_at_100ml">
+        <item quantity="other">%d kcal / 100 ml</item>
+    </plurals>
+    <plurals name="unit_kj_at_100ml">
+        <item quantity="other">%d kJ / 100 ml</item>
+    </plurals>
+    <plurals name="unit_kcal_at_1g">
+        <item quantity="other">%d kcal / g</item>
+    </plurals>
+    <plurals name="unit_kj_at_1g">
+        <item quantity="other">%d kJ / g</item>
+    </plurals>
+    <plurals name="unit_kcal_at_1ml">
+        <item quantity="other">%d kcal / ml</item>
+    </plurals>
+    <plurals name="unit_kj_at_1ml">
+        <item quantity="other">%d kJ / ml</item>
+    </plurals>
+    <plurals name="unit_gram">
+        <item quantity="other">%d g</item>
+    </plurals>
+    <plurals name="unit_milliliter">
+        <item quantity="other">%d ml</item>
+    </plurals>
+</resources>

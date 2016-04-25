@@ -46,7 +46,7 @@ dependencies {
     final butterknifeVersion = '7.0.1'
 
     final jUnitVersion = rootProject.ext.jUnitVersion
-    final robolectricVersion = '3.0'
+    final robolectricVersion = rootProject.ext.robolectricVersion
     final supportTestRunnerVersion = '0.5'
     final mockitoVersion = '1.10.19'
     final espressoVersion = '2.2.2'
