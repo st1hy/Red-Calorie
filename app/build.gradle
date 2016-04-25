@@ -48,7 +48,7 @@ dependencies {
     final jUnitVersion = rootProject.ext.jUnitVersion
     final robolectricVersion = rootProject.ext.robolectricVersion
     final supportTestRunnerVersion = '0.5'
-    final mockitoVersion = '1.10.19'
+    final mockitoVersion = rootProject.ext.mockitoVersion
     final espressoVersion = '2.2.2'
     final hamcrestVersion = '2.0.0.0'
     final picassoVersion = '2.5.2'
