@@ -10,7 +10,7 @@ public class EnergyDensityUtils {
     public static final BigDecimal KJ_AT_G_IN_KJ_AT_G = BigDecimal.ONE;
     public static final BigDecimal KJ_AT_G_IN_KJ_AT_100_G = BigDecimal.valueOf(1, 2);
 
-    public static EnergyDensityUnit[] getUnits(@NonNull AmountUnitType unitType) {
+    public static Enum<? extends EnergyDensityUnit>[] getUnits(@NonNull AmountUnitType unitType) {
         switch (unitType) {
             case VOLUME:
                 return VolumetricEnergyDensityUnit.values();
