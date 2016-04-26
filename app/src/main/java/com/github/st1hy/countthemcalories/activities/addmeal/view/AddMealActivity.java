@@ -22,6 +22,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActiv
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoCallback;
 import com.github.st1hy.countthemcalories.core.rx.SimpleObserver;
@@ -42,6 +43,8 @@ import timber.log.Timber;
 public class AddMealActivity extends BaseActivity implements AddMealView {
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;
+    public static final int REQUEST_PICK_INGREDIENT = 0x3903;
+    public static final String EXTRA_INGREDIENT_TYPE_ID = "extra ingredient type id";
 
     @Inject
     AddMealPresenter presenter;
@@ -101,6 +104,14 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         });
         ingredientList.setAdapter(presenter.getIngredientListAdapter());
         ingredientList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        final View.OnClickListener onAddIngredientClicked = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onAddNewIngredientClicked();
+            }
+        };
+        addIngredientFab.setOnClickListener(onAddIngredientClicked);
+        addIngredientButton.setOnClickListener(onAddIngredientClicked);
     }
 
     @Override
@@ -154,6 +165,11 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
                 else if (BuildConfig.DEBUG)
                     Timber.w("Received image but intent doesn't have image uri!");
             }
+        } else if (requestCode == REQUEST_PICK_INGREDIENT) {
+            if (resultCode == RESULT_OK) {
+                int intExtra = data.getIntExtra(EXTRA_INGREDIENT_TYPE_ID, -1);
+                presenter.onIngredientReceived(intExtra);
+            }
         } else super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -168,6 +184,13 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
                 .centerCrop()
                 .fit()
                 .into(mealImage, picassoLoaderCallback);
+    }
+
+    @Override
+    public void openAddIngredient() {
+        Intent intent = new Intent(this, IngredientsActivity.class);
+        intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
+        startActivityForResult(intent, REQUEST_PICK_INGREDIENT);
     }
 
     @Override

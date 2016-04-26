@@ -19,4 +19,8 @@ public interface AddMealPresenter {
 
     @NonNull
     RecyclerView.Adapter getIngredientListAdapter();
+
+    void onAddNewIngredientClicked();
+
+    void onIngredientReceived(int ingredientTypeId);
 }

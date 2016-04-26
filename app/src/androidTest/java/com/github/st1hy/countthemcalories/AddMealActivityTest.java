@@ -16,6 +16,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.idling.RxPicassoIdlingResource;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
@@ -222,6 +223,26 @@ public class AddMealActivityTest {
     @Test
     public void testShowsIngredients() throws Exception {
 //        onView(withText(R.string.add_meal_ingredients_title)).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void testAddIngredientFab() throws Exception {
+        onView(withId(R.id.add_meal_fab_add_ingredient)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
+                hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
+        onView(withId(R.id.ingredients_toolbar)).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void testAddIngredientButton() throws Exception {
+        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
+                hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
+        onView(withId(R.id.ingredients_toolbar)).check(matches(isDisplayed()));
 
     }
 }

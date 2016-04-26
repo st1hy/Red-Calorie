@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 
 public class IngredientsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
         IngredientsView {
+    public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
 
     @Inject
     IngredientsPresenter presenter;

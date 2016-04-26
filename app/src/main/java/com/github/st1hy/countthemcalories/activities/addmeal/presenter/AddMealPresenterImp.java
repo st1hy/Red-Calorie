@@ -80,4 +80,14 @@ public class AddMealPresenterImp implements AddMealPresenter {
         return ingredientListPresenter;
     }
 
+    @Override
+    public void onAddNewIngredientClicked() {
+        view.openAddIngredient();
+    }
+
+    @Override
+    public void onIngredientReceived(int ingredientTypeId) {
+        //TODO
+    }
+
 }

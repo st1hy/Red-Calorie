@@ -15,4 +15,6 @@ public interface AddMealView extends BaseView {
     void pickImageFromGallery();
 
     void setImageToView(@NonNull Uri uri);
+
+    void openAddIngredient();
 }
