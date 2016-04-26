@@ -12,7 +12,7 @@
     <string name="overview_toolbar_title">@string/app_name</string>
     <string name="ingredients_title">Ingredients</string>
     <string name="add_meal_title">Add new meal</string>
-    <string name="add_meal_save_button">Save</string>
+    <string name="add_meal_save_action">Save</string>
     <string name="add_meal_name_hint">Name</string>
     <string name="add_meal_photo_description">Photography of a meal</string>
     <string name="add_meal_image_select_from_gallery">Select picture from gallery</string>
@@ -25,4 +25,7 @@
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_sort_title">Sort ingredients</string>
+    <string name="add_ingredient_title">Add Ingredient</string>
+    <string name="add_ingredient__name_hint">Name</string>
+    <string name="add_ingredient_save_action">Save</string>
 </resources>

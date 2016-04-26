@@ -92,4 +92,12 @@ public class IngredientsPresenterImpTest {
 
         assertFalse(isHandled);
     }
+
+    @Test
+    public void testOpenNewIngredients() throws Exception {
+        presenter.onAddNewIngredientClicked();
+
+        verify(view, only()).openNewIngredientScreen();
+
+    }
 }

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
+package com.github.st1hy.countthemcalories.activities.withpicture;
 
 import com.github.st1hy.countthemcalories.R;
 

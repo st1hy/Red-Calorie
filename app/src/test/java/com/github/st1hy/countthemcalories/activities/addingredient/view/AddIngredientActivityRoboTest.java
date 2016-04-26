@@ -1,11 +1,11 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.view;
+package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.content.Intent;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,14 +26,15 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class AddMealActivityRoboTest {
-    private AddMealActivity activity;
-    private AddMealPresenterImp presenterMock;
+public class AddIngredientActivityRoboTest {
+
+    private AddIngredientActivity activity;
+    private AddIngredientPresenterImp presenterMock;
 
     @Before
     public void setup() {
-        activity = Robolectric.setupActivity(AddMealActivity.class);
-        presenterMock = Mockito.mock(AddMealPresenterImp.class);
+        activity = Robolectric.setupActivity(AddIngredientActivity.class);
+        presenterMock = Mockito.mock(AddIngredientPresenterImp.class);
         activity.presenter = presenterMock;
     }
 
@@ -58,16 +59,15 @@ public class AddMealActivityRoboTest {
 
     @Test
     public void testImageButton() throws Exception {
-        activity.mealImage.performClick();
+        activity.ingredientImage.performClick();
 
         verify(presenterMock, only()).onImageClicked();
     }
 
     @Test
-    public void testOpenOverviewActivity() throws Exception {
-        activity.openOverviewActivity();
+    public void testOpenIngredientsActivity() throws Exception {
+        activity.openIngredientsScreen();
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, OverviewActivity.class)));
+        assertThat(resultIntent, equalTo(new Intent(activity, IngredientsActivity.class)));
     }
-
 }

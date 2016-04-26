@@ -47,4 +47,9 @@ public class IngredientsPresenterImp implements IngredientsPresenter {
         }
         return false;
     }
+
+    @Override
+    public void onAddNewIngredientClicked() {
+        view.openNewIngredientScreen();
+    }
 }

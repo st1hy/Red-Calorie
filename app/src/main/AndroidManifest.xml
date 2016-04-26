@@ -33,6 +33,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activities.overview.view.OverviewActivity"
             />
+        <activity
+            android:name=".activities.addingredient.view.AddIngredientActivity"
+            android:label="@string/add_ingredient_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.ingredients.view.IngredientsActivity"
+            />
     </application>
 
 </manifest>

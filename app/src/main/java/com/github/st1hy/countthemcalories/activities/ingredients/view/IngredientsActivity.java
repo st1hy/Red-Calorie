@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
@@ -39,6 +42,8 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     DrawerLayout drawer;
     @Bind(R.id.nav_view)
     NavigationView navigationView;
+    @Bind(R.id.ingredients_fab)
+    FloatingActionButton fab;
 
     SearchView searchView;
 
@@ -64,6 +69,12 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         navigationView.setNavigationItemSelectedListener(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onAddNewIngredientClicked();
+            }
+        });
     }
 
     @Override
@@ -115,6 +126,12 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     public void openOverviewScreen() {
         Intent intent = new Intent(this, OverviewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    @Override
+    public void openNewIngredientScreen() {
+        Intent intent = new Intent(this, AddIngredientActivity.class);
         startActivity(intent);
     }
 

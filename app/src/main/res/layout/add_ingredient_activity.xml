@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.overview.view.OverviewActivity">
+    tools:context=".activities.addingredient.view.AddIngredientActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
@@ -14,23 +14,13 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/ingredients_toolbar"
+            android:id="@+id/add_ingredient_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:title="@string/overview_toolbar_title"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/ingredients_content"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/ingredients_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/colorBackground"
-        android:src="@drawable/ic_add_48px_no_padding" />
+    <include layout="@layout/add_ingredient_content"/>
 
 </android.support.design.widget.CoordinatorLayout>

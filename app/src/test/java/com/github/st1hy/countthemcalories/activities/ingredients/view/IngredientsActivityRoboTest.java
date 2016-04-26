@@ -1,11 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.view;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 
 import org.junit.Before;
@@ -16,6 +18,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -69,5 +72,14 @@ public class IngredientsActivityRoboTest {
         activity.onBackPressed();
         verify(drawerLayoutMock).closeDrawer(GravityCompat.START);
         assertFalse(shadowOf(activity).isFinishing());
+    }
+
+    @Test
+    public void testAddIngredient() throws Exception {
+        activity.fab.performClick();
+
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
+
     }
 }

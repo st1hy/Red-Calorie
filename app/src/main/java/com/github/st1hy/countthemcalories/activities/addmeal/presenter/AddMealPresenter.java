@@ -5,16 +5,9 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-public interface AddMealPresenter {
-    void onImageClicked();
+import com.github.st1hy.countthemcalories.activities.withpicture.WithPicturePresenter;
 
-    void onSelectedImageSource(@NonNull ImageSource imageSource);
-
-    void onImageReceived(@NonNull Uri data);
-
-    void onImageLoadingSuccess();
-
-    void onImageLoadingFailed();
+public interface AddMealPresenter extends WithPicturePresenter {
 
     @NonNull
     RecyclerView.Adapter getIngredientListAdapter();

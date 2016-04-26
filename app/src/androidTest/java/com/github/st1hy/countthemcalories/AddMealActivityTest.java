@@ -39,11 +39,8 @@ import static android.support.test.espresso.action.ViewActions.typeTextIntoFocus
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.BundleMatchers.hasEntry;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtras;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
@@ -53,7 +50,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -92,27 +88,7 @@ public class AddMealActivityTest {
                 .check(matches(withText("My meal")));
     }
 
-    private final Matcher<Intent> galleryIntentMatcher = allOf(
-            hasAction(Intent.ACTION_CHOOSER),
-            hasExtras(
-                    allOf(
-                            hasEntry(Intent.EXTRA_INTENT,
-                                    allOf(
-                                            hasAction(Intent.ACTION_GET_CONTENT),
-                                            hasType("image/*")
-                                    )
-                            ),
-                            hasEntry(Intent.EXTRA_INITIAL_INTENTS,
-                                    hasItemInArray(
-                                            allOf(
-                                                    hasAction(Intent.ACTION_PICK),
-                                                    hasType("image/*")
-                                            )
-                                    )
-                            )
-                    )
-            )
-    );
+    private final Matcher<Intent> galleryIntentMatcher = hasAction(Intent.ACTION_CHOOSER);
 
     @Test
     public void testSelectImageFromGallery() {

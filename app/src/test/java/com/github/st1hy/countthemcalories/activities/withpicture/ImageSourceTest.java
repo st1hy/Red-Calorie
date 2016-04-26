@@ -1,17 +1,16 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
+package com.github.st1hy.countthemcalories.activities.withpicture;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource.CAMERA;
-import static com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource.GALLERY;
-import static com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource.fromItemPos;
+import static com.github.st1hy.countthemcalories.activities.withpicture.ImageSource.CAMERA;
+import static com.github.st1hy.countthemcalories.activities.withpicture.ImageSource.GALLERY;
+import static com.github.st1hy.countthemcalories.activities.withpicture.ImageSource.fromItemPos;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class ImageSourceTest {
-
 
     @Test
     public void testFromItemPos() {

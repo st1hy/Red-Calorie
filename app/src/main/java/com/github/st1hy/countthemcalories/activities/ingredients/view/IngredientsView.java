@@ -5,4 +5,6 @@ import com.github.st1hy.countthemcalories.core.ui.view.DrawerView;
 public interface IngredientsView extends DrawerView {
 
     void openOverviewScreen();
+
+    void openNewIngredientScreen();
 }
