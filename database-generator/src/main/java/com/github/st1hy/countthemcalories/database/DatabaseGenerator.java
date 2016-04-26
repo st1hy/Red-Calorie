@@ -19,13 +19,13 @@ public class DatabaseGenerator {
     private static final String bigDecimalConverterClassName = "com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter";
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1001, "com.github.st1hy.countthemcalories.database");
+        Schema schema = new Schema(1002, "com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
 
         Entity ingredientTemplate = schema.addEntity("IngredientTemplate");
         ingredientTemplate.setTableName("INGREDIENTS_TEMPLATE");
-        ingredientTemplate.addIdProperty().index().unique().autoincrement().getProperty();
+        ingredientTemplate.addIdProperty().index().unique().autoincrement();
         ingredientTemplate.addStringProperty("name").index().notNull();
         ingredientTemplate.addStringProperty("imageUri").customType(uriClassName, uriConverterClassName);
         ingredientTemplate.addLongProperty("creationDate")
@@ -36,7 +36,7 @@ public class DatabaseGenerator {
 
         Entity ingredientComponent = schema.addEntity("Ingredient");
         ingredientComponent.setTableName("INGREDIENTS");
-        ingredientComponent.addIdProperty().index().unique().autoincrement().getProperty();
+        ingredientComponent.addIdProperty().index().unique().autoincrement();
         ingredientComponent.addStringProperty("amount")
                 .customType(bigDecimalClassName, bigDecimalConverterClassName).notNull();
         Property isInMealId = ingredientComponent.addLongProperty("partOfMealId").getProperty();
@@ -52,9 +52,24 @@ public class DatabaseGenerator {
 
         Entity day = schema.addEntity("Day");
         day.setTableName("DAYS");
-        day.addIdProperty().index().unique().autoincrement().getProperty();
+        day.addIdProperty().index().unique().autoincrement();
         day.addLongProperty("date").customType(jodaTimeClassName, jodaTimeConverterClassName)
                 .unique().index().notNull();
+
+        //Tag, for adding categories to ingredients
+        Entity tag = schema.addEntity("Tag");
+        tag.setTableName("TAGS");
+        tag.addIdProperty().index().unique().autoincrement();
+        tag.addStringProperty("name").unique().notNull().index();
+
+        //Join table for storing many to many relation between tag and ingredient types
+        Entity jointIngredientTypeTag = schema.addEntity("JointIngredientTag");
+        jointIngredientTypeTag.setTableName("INGREDIENT_TAG_JOINTS");
+        jointIngredientTypeTag.addIdProperty().unique().autoincrement().index();
+        Property tagIdFromJoint = jointIngredientTypeTag.addLongProperty("tagId")
+                .notNull().index().getProperty();
+        Property ingredientTypeIdFromJoint = jointIngredientTypeTag.addLongProperty("ingredientTypeId")
+                .notNull().index().getProperty();
 
         //what was eaten this day
         day.addToMany(meal, consumptionDayId, "eatenMeals");
@@ -69,7 +84,14 @@ public class DatabaseGenerator {
         //What ingredients contain this type
         ingredientTemplate.addToMany(ingredientComponent, ingredientTypeId, "childIngredients");
 
-        //what ingredient types is this meal composed of
+        //What tags does ingredient type has
+        ingredientTemplate.addToMany(jointIngredientTypeTag, tagIdFromJoint, "tags");
+        //What ingredient types are related to this tag
+        tag.addToMany(jointIngredientTypeTag, ingredientTypeIdFromJoint, "ingredientTypes");
+        //What tag is pointed by this joint ingredient-tag
+        jointIngredientTypeTag.addToOne(tag, tagIdFromJoint, "tag");
+        //What ingredient type is pointed by this joint ingredient-tag
+        jointIngredientTypeTag.addToOne(ingredientTemplate, ingredientTypeIdFromJoint, "ingredientType");
 
 //        ContentProvider ingredientsContentProvider = ingredientTemplate.addContentProvider();
 //        ingredientsContentProvider.setBasePath("ingredients");

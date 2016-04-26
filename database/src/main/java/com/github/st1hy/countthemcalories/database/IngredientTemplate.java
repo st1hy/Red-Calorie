@@ -29,6 +29,7 @@ public class IngredientTemplate {
     private transient IngredientTemplateDao myDao;
 
     private List<Ingredient> childIngredients;
+    private List<JointIngredientTag> tags;
 
     public IngredientTemplate() {
     }
@@ -115,6 +116,28 @@ public class IngredientTemplate {
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetChildIngredients() {
         childIngredients = null;
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<JointIngredientTag> getTags() {
+        if (tags == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            JointIngredientTagDao targetDao = daoSession.getJointIngredientTagDao();
+            List<JointIngredientTag> tagsNew = targetDao._queryIngredientTemplate_Tags(id);
+            synchronized (this) {
+                if(tags == null) {
+                    tags = tagsNew;
+                }
+            }
+        }
+        return tags;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetTags() {
+        tags = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
