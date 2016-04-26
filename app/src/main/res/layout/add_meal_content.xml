@@ -24,8 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardElevation="4dp"
-                app:cardUseCompatPadding="true"
-                app:cardMaxElevation="8dp">
+                app:cardUseCompatPadding="true">
                 <ImageButton
                     android:id="@+id/add_meal_image"
                     android:layout_width="80dp"
@@ -49,7 +48,8 @@
         android:id="@+id/add_meal_ingredients_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/add_meal_ingredient_item">
+        tools:listitem="@layout/add_meal_ingredient_item"
+        >
     </android.support.v7.widget.RecyclerView>
     <LinearLayout
         android:id="@+id/add_meal_empty_ingredients"

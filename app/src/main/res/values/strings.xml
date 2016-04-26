@@ -22,4 +22,5 @@
     <string name="add_meal_total_calories">Total calories:</string>
     <string name="add_meal_button_add_ingredient">Add ingredient</string>
     <string name="add_meal_no_ingredients_yet">No ingredients yet</string>
+    <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
 </resources>

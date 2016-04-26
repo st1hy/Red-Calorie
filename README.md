@@ -1,3 +1,4 @@
+![Count Them Calories logo](web_ctc_logo.png)
 # Count-Them-Calories
 Android app for keeping your calories in check.
 
