@@ -2,9 +2,11 @@ package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 
 import android.Manifest;
 import android.net.Uri;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -28,7 +30,6 @@ public class AddMealPresenterImp implements AddMealPresenter {
         this.ingredientListPresenter = ingredientListPresenter;
     }
 
-    @Override
     public void onSaveButtonClicked() {
         view.openOverviewActivity();
     }
@@ -66,7 +67,6 @@ public class AddMealPresenterImp implements AddMealPresenter {
 
     @Override
     public void onImageLoadingSuccess() {
-
     }
 
     @Override
@@ -88,6 +88,15 @@ public class AddMealPresenterImp implements AddMealPresenter {
     @Override
     public void onIngredientReceived(int ingredientTypeId) {
         //TODO
+    }
+
+    @Override
+    public boolean onClickedOnAction(@IdRes int menuActionId) {
+        if (menuActionId == R.id.action_save) {
+            onSaveButtonClicked();
+            return true;
+        }
+        return false;
     }
 
 }

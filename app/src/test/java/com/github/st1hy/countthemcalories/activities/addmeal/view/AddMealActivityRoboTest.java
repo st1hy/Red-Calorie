@@ -5,7 +5,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.ImageSource;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.squareup.picasso.Callback;
@@ -24,6 +25,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.fakes.RoboMenu;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDialog;
 
@@ -51,14 +54,14 @@ import static org.robolectric.Shadows.shadowOf;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class AddMealActivityRoboTest {
     private AddMealActivity activity;
-    private AddMealPresenter presenterMock;
+    private AddMealPresenterImp presenterMock;
     private Picasso mockedPicasso;
     private RequestCreator mockedRequestCreator;
 
     @Before
     public void setup() {
         activity = Robolectric.setupActivity(AddMealActivity.class);
-        presenterMock = Mockito.mock(AddMealPresenter.class);
+        presenterMock = Mockito.mock(AddMealPresenterImp.class);
         activity.presenter = presenterMock;
 
         mockedPicasso = Mockito.mock(Picasso.class);
@@ -84,9 +87,11 @@ public class AddMealActivityRoboTest {
 
     @Test
     public void testSaveButtonAction() throws Exception {
-        activity.saveButton.performClick();
+        ShadowActivity shadowActivity = shadowOf(activity);
+        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.clickMenuItem(R.id.action_save);
 
-        verify(presenterMock, only()).onSaveButtonClicked();
+        verify(presenterMock, only()).onClickedOnAction(R.id.action_save);
     }
 
     @Test

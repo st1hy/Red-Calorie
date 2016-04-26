@@ -12,6 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -53,8 +55,6 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
 
     @Bind(R.id.add_meal_toolbar)
     Toolbar toolbar;
-    @Bind(R.id.add_meal_save_button)
-    Button saveButton;
     @Bind(R.id.add_meal_image)
     ImageView mealImage;
     @Bind(R.id.add_meal_ingredients_list)
@@ -90,12 +90,6 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSaveButtonClicked();
-            }
-        });
         mealImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +106,17 @@ public class AddMealActivity extends BaseActivity implements AddMealView {
         };
         addIngredientFab.setOnClickListener(onAddIngredientClicked);
         addIngredientButton.setOnClickListener(onAddIngredientClicked);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_meal_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return presenter.onClickedOnAction(item.getItemId()) || super.onOptionsItemSelected(item);
     }
 
     @Override

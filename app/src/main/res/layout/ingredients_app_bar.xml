@@ -19,20 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:title="@string/overview_toolbar_title"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <SearchView
-                    android:id="@+id/ingredients_search_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center">
-
-                </SearchView>
-            </FrameLayout>
-        </android.support.v7.widget.Toolbar>
-
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/ingredients_content"/>

@@ -23,4 +23,6 @@
     <string name="add_meal_button_add_ingredient">Add ingredient</string>
     <string name="add_meal_no_ingredients_yet">No ingredients yet</string>
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
+    <string name="ingredients_search_title">Search ingredients</string>
+    <string name="ingredients_sort_title">Sort ingredients</string>
 </resources>

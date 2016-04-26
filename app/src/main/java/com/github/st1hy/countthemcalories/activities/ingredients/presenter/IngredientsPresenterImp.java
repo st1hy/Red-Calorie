@@ -42,6 +42,9 @@ public class IngredientsPresenterImp implements IngredientsPresenter {
 
     @Override
     public boolean onClickedOnAction(@IdRes int actionItemId) {
+        if (actionItemId == R.id.action_sorting) {
+            return true;
+        }
         return false;
     }
 }

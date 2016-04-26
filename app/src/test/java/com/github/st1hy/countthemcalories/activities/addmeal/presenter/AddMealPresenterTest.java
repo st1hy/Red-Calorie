@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 
 import android.net.Uri;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -46,7 +47,7 @@ public class AddMealPresenterTest {
 
     @Test
     public void testSave() {
-        presenter.onSaveButtonClicked();
+        presenter.onClickedOnAction(R.id.action_save);
         verify(view, only()).openOverviewActivity();
     }
 

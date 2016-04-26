@@ -19,29 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:title="@string/overview_toolbar_title"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/action_bar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="false"
-                    android:text="@string/add_meal_title"
-                    android:layout_gravity="start|center_vertical"
-                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>
-                <Button
-                    android:id="@+id/add_meal_save_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:text="@string/add_meal_save_button"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorBackground"
-                    style="@style/Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
-            </FrameLayout>
-        </android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/add_meal_content"/>

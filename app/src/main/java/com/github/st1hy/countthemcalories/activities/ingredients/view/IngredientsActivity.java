@@ -8,7 +8,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
@@ -38,6 +40,8 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     @Bind(R.id.nav_view)
     NavigationView navigationView;
 
+    SearchView searchView;
+
     IngredientsActivityComponent component;
 
     @NonNull
@@ -60,6 +64,19 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.ingredient_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (SearchView) item.getActionView();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return presenter.onClickedOnAction(item.getItemId()) || super.onOptionsItemSelected(item);
     }
 
     @Override

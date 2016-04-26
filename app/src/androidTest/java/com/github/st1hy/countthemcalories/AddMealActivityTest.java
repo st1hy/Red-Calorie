@@ -81,7 +81,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testCanSaveResult() {
-        onView(withId(R.id.add_meal_save_button)).perform(click());
+        onView(withId(R.id.action_save)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), OverviewActivity.class)));
     }
 
