@@ -72,6 +72,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         getComponent().inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mealImage.setOnClickListener(new View.OnClickListener() {
             @Override

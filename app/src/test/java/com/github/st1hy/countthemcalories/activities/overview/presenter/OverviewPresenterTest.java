@@ -68,4 +68,15 @@ public class OverviewPresenterTest {
         verify(view).openIngredientsScreen();
     }
 
+    @Test
+    public void canOpenSettings() {
+        presenter.onNavigationItemSelected(R.id.nav_settings);
+        verify(view).openSettingsScreen();
+    }
+
+    @Test
+    public void testClickedOnSettings() throws Exception {
+        presenter.onClickedOnAction(R.id.action_settings);
+        verify(view, only()).openSettingsScreen();
+    }
 }

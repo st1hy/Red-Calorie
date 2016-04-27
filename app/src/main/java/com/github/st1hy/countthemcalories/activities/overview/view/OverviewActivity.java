@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.DaggerOverv
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
 
@@ -142,5 +143,10 @@ public class OverviewActivity extends BaseActivity implements NavigationView.OnN
     @Override
     public void openAddMealScreen() {
         startActivity(new Intent(this, AddMealActivity.class));
+    }
+
+    @Override
+    public void openSettingsScreen() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 }

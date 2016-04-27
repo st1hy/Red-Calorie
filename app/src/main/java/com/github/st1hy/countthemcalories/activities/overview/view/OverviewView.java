@@ -7,4 +7,6 @@ public interface OverviewView extends DrawerView {
     void openIngredientsScreen();
 
     void openAddMealScreen();
+
+    void openSettingsScreen();
 }

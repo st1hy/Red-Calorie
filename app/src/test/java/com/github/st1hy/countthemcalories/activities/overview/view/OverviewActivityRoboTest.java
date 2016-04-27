@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -85,6 +86,21 @@ public class OverviewActivityRoboTest {
         shadowOf(activity).onCreateOptionsMenu(new RoboMenu());
         assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
         assertFalse(shadowOf(activity).clickMenuItem(-1));
+    }
+
+    @Test
+    public void testOpenSettings() throws Exception {
+        shadowOf(activity).onCreateOptionsMenu(new RoboMenu());
+        assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, equalTo(new Intent(activity, SettingsActivity.class)));
+    }
+
+    @Test
+    public void testOpenSettingsWithMenu() throws Exception {
+        activity.navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, equalTo(new Intent(activity, SettingsActivity.class)));
 
     }
 }

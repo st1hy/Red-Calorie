@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +58,12 @@ public class IngredientsActivityRoboTest {
         assertThat(resultIntent, equalTo(new Intent(activity, OverviewActivity.class)));
     }
 
+    @Test
+    public void canNavigateToSettingsUsingMenu() throws InterruptedException {
+        activity.navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, equalTo(new Intent(activity, SettingsActivity.class)));
+    }
 
     @Test
     public void testBackPressed() throws Exception {
@@ -80,6 +87,5 @@ public class IngredientsActivityRoboTest {
 
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
-
     }
 }

@@ -67,6 +67,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         getComponent().inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         ingredientImage.setOnClickListener(new View.OnClickListener() {
             @Override

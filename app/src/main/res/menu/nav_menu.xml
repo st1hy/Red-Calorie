@@ -10,6 +10,10 @@
             android:id="@+id/nav_ingredients"
             android:icon="@drawable/ic_group_work_48px"
             android:title="@string/nav_ingredients" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_48px"
+            android:title="@string/nav_ingredients" />
     </group>
 
 </menu>

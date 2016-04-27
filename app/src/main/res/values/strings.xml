@@ -33,4 +33,5 @@
     <string name="add_ingredient_add_category">Add category</string>
     <string name="add_ingredient_energy_density_example">250</string>
     <string name="add_ingredient_energy_density_name">Calories in fixed amount of product</string>
+    <string name="settings_title">Settings</string>
 </resources>

@@ -32,6 +32,8 @@ public class OverviewPresenterImp implements OverviewPresenter {
     public void onNavigationItemSelected(@IdRes int menuId) {
         if (menuId == R.id.nav_ingredients) {
             view.openIngredientsScreen();
+        } else if (menuId == R.id.nav_settings) {
+            view.openSettingsScreen();
         }
         view.setMenuItemSelection(menuId, SELECTED);
         view.closeDrawer();
@@ -45,7 +47,7 @@ public class OverviewPresenterImp implements OverviewPresenter {
     @Override
     public boolean onClickedOnAction(@IdRes int actionItemId) {
         if (actionItemId == R.id.action_settings) {
-            //TODO add settings
+            view.openSettingsScreen();
             return true;
         }
         return false;

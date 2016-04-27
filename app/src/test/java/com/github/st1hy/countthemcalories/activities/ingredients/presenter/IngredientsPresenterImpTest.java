@@ -98,6 +98,17 @@ public class IngredientsPresenterImpTest {
         presenter.onAddNewIngredientClicked();
 
         verify(view, only()).openNewIngredientScreen();
+    }
+
+    @Test
+    public void testOpenSettingsUsingMenu() throws Exception {
+        @IdRes final int menuItem = R.id.nav_settings;
+        presenter.onNavigationItemSelected(menuItem);
+
+        verify(view, times(1)).openSettingsScreen();
+        verify(view).setMenuItemSelection(menuItem, Selection.SELECTED);
+        verify(view).closeDrawer();
+        verifyNoMoreInteractions(view);
 
     }
 }

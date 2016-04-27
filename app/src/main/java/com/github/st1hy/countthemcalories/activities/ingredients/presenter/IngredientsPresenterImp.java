@@ -35,6 +35,8 @@ public class IngredientsPresenterImp implements IngredientsPresenter {
     public void onNavigationItemSelected(@IdRes int itemId) {
         if (itemId == R.id.nav_overview) {
             view.openOverviewScreen();
+        } else if (itemId == R.id.nav_settings) {
+            view.openSettingsScreen();
         }
         view.setMenuItemSelection(itemId, SELECTED);
         view.closeDrawer();

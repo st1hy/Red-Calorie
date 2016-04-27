@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
 
@@ -68,6 +69,12 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
         getComponent().inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +140,11 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     public void openNewIngredientScreen() {
         Intent intent = new Intent(this, AddIngredientActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void openSettingsScreen() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override

@@ -25,19 +25,21 @@
             android:name=".activities.ingredients.view.IngredientsActivity"
             android:label="@string/ingredients_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.overview.view.OverviewActivity"
             />
         <activity
             android:name=".activities.addmeal.view.AddMealActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.overview.view.OverviewActivity"
             />
         <activity
             android:name=".activities.addingredient.view.AddIngredientActivity"
             android:label="@string/add_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.ingredients.view.IngredientsActivity"
+            />
+        <activity
+            android:name=".activities.settings.view.SettingsActivity"
+            android:label="@string/settings_title"
+            android:theme="@style/AppTheme.NoActionBar"
             />
     </application>
 
