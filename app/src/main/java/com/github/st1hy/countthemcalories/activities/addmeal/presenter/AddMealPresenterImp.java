@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.withpicture.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 
 import javax.inject.Inject;

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.withpicture.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 
 import javax.inject.Inject;
@@ -26,6 +26,11 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             onSaveActionClicked();
         }
         return false;
+    }
+
+    @Override
+    public void onSelectUnitClicked() {
+        view.showAvailableUnitsDialog();
     }
 
     public void onSaveActionClicked() {

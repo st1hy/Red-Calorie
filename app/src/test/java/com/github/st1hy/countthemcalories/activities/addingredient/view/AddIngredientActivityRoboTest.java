@@ -13,9 +13,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.fakes.RoboMenu;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowDialog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -46,6 +48,11 @@ public class AddIngredientActivityRoboTest {
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.getComponent(), notNullValue());
         assertThat(activity.component, notNullValue());
+        assertThat(activity.energyDensityValue, notNullValue());
+        assertThat(activity.ingredientImage, notNullValue());
+        assertThat(activity.name, notNullValue());
+        assertThat(activity.tagsRecycler, notNullValue());
+        assertThat(activity.selectUnit, notNullValue());
     }
 
     @Test
@@ -69,5 +76,13 @@ public class AddIngredientActivityRoboTest {
         activity.openIngredientsScreen();
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, equalTo(new Intent(activity, IngredientsActivity.class)));
+    }
+
+    @Test
+    public void testSelectUnit() throws Exception {
+        activity.selectUnit.performClick();
+
+        ShadowDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestDialog();
+        assertThat(shadowDialog, notNullValue());
     }
 }

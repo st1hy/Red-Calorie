@@ -42,4 +42,10 @@ public class AddIngredientPresenterImpTest {
         verify(view, only()).openIngredientsScreen();
     }
 
+
+    @Test
+    public void testSelectUnit() throws Exception {
+        presenter.onSelectUnitClicked();
+        verify(view, only()).showAvailableUnitsDialog();
+    }
 }

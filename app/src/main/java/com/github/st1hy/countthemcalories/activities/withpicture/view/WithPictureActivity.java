@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.withpicture;
+package com.github.st1hy.countthemcalories.activities.withpicture.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.withpicture.presenter.ImageSource;
+import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoCallback;
 import com.github.st1hy.countthemcalories.core.rx.SimpleObserver;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;

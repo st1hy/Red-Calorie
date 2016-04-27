@@ -69,6 +69,7 @@ dependencies {
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 //    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
+    compile 'org.lucasr.twowayview:twowayview:0.1.4'
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"

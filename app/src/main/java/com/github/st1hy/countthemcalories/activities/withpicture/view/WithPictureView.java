@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.withpicture;
+package com.github.st1hy.countthemcalories.activities.withpicture.view;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;

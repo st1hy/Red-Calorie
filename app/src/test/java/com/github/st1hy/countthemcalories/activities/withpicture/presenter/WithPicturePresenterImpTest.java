@@ -1,7 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.withpicture;
+package com.github.st1hy.countthemcalories.activities.withpicture.presenter;
 
 import android.net.Uri;
 
+import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;

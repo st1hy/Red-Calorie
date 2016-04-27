@@ -26,6 +26,11 @@
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_sort_title">Sort ingredients</string>
     <string name="add_ingredient_title">Add Ingredient</string>
-    <string name="add_ingredient__name_hint">Name</string>
+    <string name="add_ingredient_name_hint">Name</string>
     <string name="add_ingredient_save_action">Save</string>
+    <string name="add_ingredient_remove_category">Remove category</string>
+    <string name="add_ingredient_categories_name">Categories</string>
+    <string name="add_ingredient_add_category">Add category</string>
+    <string name="add_ingredient_energy_density_example">250</string>
+    <string name="add_ingredient_energy_density_name">Calories in fixed amount of product</string>
 </resources>
