@@ -13,10 +13,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class SettingsModule {
+public class SettingsActivityModule {
     private final SettingsActivity activity;
 
-    public SettingsModule(@NonNull SettingsActivity activity) {
+    public SettingsActivityModule(@NonNull SettingsActivity activity) {
         this.activity = activity;
     }
 
@@ -37,4 +37,6 @@ public class SettingsModule {
     public SettingsPresenter providePresenter(SettingsPresenterImp presenter) {
         return presenter;
     }
+
+
 }

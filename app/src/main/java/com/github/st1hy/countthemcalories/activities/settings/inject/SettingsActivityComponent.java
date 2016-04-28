@@ -8,8 +8,8 @@ import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import dagger.Component;
 
 @PerActivity
-@Component(modules = SettingsModule.class, dependencies = ApplicationComponent.class)
-public interface SettingsComponent {
+@Component(modules = SettingsActivityModule.class, dependencies = ApplicationComponent.class)
+public interface SettingsActivityComponent {
 
     void inject(SettingsActivity activity);
 

@@ -1,16 +1,20 @@
 package com.github.st1hy.countthemcalories.activities.settings.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSettingsComponent;
-import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsComponent;
-import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsModule;
+import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSettingsActivityComponent;
+import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
+import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import javax.inject.Inject;
 
@@ -18,20 +22,28 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class SettingsActivity extends BaseActivity implements SettingsView {
-    SettingsComponent component;
+    SettingsActivityComponent component;
 
     @Inject
     SettingsPresenter presenter;
 
     @Bind(R.id.settings_toolbar)
     Toolbar toolbar;
+    @Bind(R.id.settings_energy_density_liquid)
+    View liquidUnitView;
+    @Bind(R.id.settings_drinks_unit)
+    TextView liquidUnitText;
+    @Bind(R.id.settings_energy_density_solid)
+    View solidUnitView;
+    @Bind(R.id.settings_meals_unit)
+    TextView solidUnitText;
 
     @NonNull
-    protected SettingsComponent getComponent() {
+    protected SettingsActivityComponent getComponent() {
         if (component == null) {
-            component = DaggerSettingsComponent.builder()
+            component = DaggerSettingsActivityComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .settingsModule(new SettingsModule(this))
+                    .settingsActivityModule(new SettingsActivityModule(this))
                     .build();
         }
         return component;
@@ -51,6 +63,53 @@ public class SettingsActivity extends BaseActivity implements SettingsView {
                 onBackPressed();
             }
         });
+
+        liquidUnitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onLiquidUnitSettingsClicked();
+            }
+        });
+        solidUnitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onSolidUnitSettingsClicked();
+            }
+        });
+        presenter.showCurrentUnits();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
+    }
+
+    @Override
+    public void showUnitSettingsDialog(@NonNull final AmountUnitType type, @NonNull String[] values) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.settings_select_unit_dialog_title)
+                .setItems(values, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.onSelectedUnitType(type, which);
+                    }
+                }).show();
+    }
+
+    @Override
+    public void setLiquidUnit(String unitName) {
+        liquidUnitText.setText(unitName);
+    }
+
+    @Override
+    public void setSolidUnit(String unitName) {
+        solidUnitText.setText(unitName);
+    }
 }

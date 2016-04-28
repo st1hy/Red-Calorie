@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.github.st1hy.countthemcalories.database.unit.AmountUnitType.MASS;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
@@ -16,6 +18,8 @@ import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergy
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KJ_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KJ_AT_G;
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(JUnit4.class)
 public class GravimetricEnergyDensityUnitTest {
@@ -48,5 +52,29 @@ public class GravimetricEnergyDensityUnitTest {
     public void testConversion() throws Exception {
         BigDecimal value = KCAL_AT_100G.convertValue(BigDecimal.valueOf(300, 0), KJ_AT_G);
         Assert.assertEquals("12.552", value.toPlainString());
+    }
+
+    @Test
+    public void testIdUnique() throws Exception {
+        GravimetricEnergyDensityUnit[] values = GravimetricEnergyDensityUnit.values();
+        Set<Integer> ids = new HashSet<>(values.length);
+        for (GravimetricEnergyDensityUnit unit : values) {
+            ids.add(unit.getId());
+        }
+        assertThat(ids.size(), equalTo(values.length));
+    }
+
+
+    @Test
+    public void testMatchingUnitsWithIds() {
+        for (GravimetricEnergyDensityUnit type: GravimetricEnergyDensityUnit.values()) {
+            int id = type.getId();
+            assertThat(type, equalTo(GravimetricEnergyDensityUnit.fromId(id)));
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromIdFailsOnWrongId() throws Exception {
+        GravimetricEnergyDensityUnit.fromId(-1);
     }
 }

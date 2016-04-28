@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.github.st1hy.countthemcalories.database.unit.AmountUnitType.VOLUME;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_100ML;
@@ -15,6 +17,8 @@ import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyD
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_ML;
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(JUnit4.class)
 public class VolumetricEnergyDensityUnitTest {
@@ -39,5 +43,28 @@ public class VolumetricEnergyDensityUnitTest {
     public void testConversion() throws Exception {
         BigDecimal value = KCAL_AT_100ML.convertValue(BigDecimal.valueOf(300, 0), KJ_AT_ML);
         Assert.assertEquals("12.552", value.toPlainString());
+    }
+
+    @Test
+    public void testIdUnique() throws Exception {
+        VolumetricEnergyDensityUnit[] values = VolumetricEnergyDensityUnit.values();
+        Set<Integer> ids = new HashSet<>(values.length);
+        for (VolumetricEnergyDensityUnit unit : values) {
+            ids.add(unit.getId());
+        }
+        assertThat(ids.size(), equalTo(values.length));
+    }
+
+    @Test
+    public void testMatchingUnitsWithIds() {
+        for (VolumetricEnergyDensityUnit type: VolumetricEnergyDensityUnit.values()) {
+            int id = type.getId();
+            assertThat(type, equalTo(VolumetricEnergyDensityUnit.fromId(id)));
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFromIdFailsOnWrongId() throws Exception {
+        VolumetricEnergyDensityUnit.fromId(-1);
     }
 }

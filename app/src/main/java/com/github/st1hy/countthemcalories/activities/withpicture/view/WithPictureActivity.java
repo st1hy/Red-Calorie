@@ -1,11 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.withpicture.view;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;

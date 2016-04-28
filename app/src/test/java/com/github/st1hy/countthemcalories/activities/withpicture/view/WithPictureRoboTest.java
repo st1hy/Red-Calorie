@@ -17,7 +17,6 @@ import com.squareup.picasso.RequestCreator;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -105,14 +104,11 @@ public class WithPictureRoboTest {
         assertThat(shadowDialog, notNullValue());
     }
 
-    @Ignore("robolectric does not see it as alert dialog, clicking on text fails to inflate layout")
     @Test
     public void testClickingOnDialogItem() throws Exception {
         activity.showSelectImageInputDialog();
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         shadowAlertDialog.clickOnItem(0);
-//        ShadowDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestDialog();
-//        shadowDialog.clickOnText(R.string.add_meal_image_select_from_gallery);
         verify(presenterMock, only()).onSelectedImageSource(ImageSource.GALLERY);
     }
 
@@ -214,10 +210,8 @@ public class WithPictureRoboTest {
 
     @Test
     public void testDestroy() throws Exception {
-        //TODO Move to WithPicture tests
         activity.onDestroy();
 
         verify(mockedPicasso).cancelRequest(mockedImageView);
     }
-
 }
