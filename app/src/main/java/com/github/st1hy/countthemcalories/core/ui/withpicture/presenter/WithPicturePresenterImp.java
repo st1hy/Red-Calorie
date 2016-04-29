@@ -11,9 +11,11 @@ import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureM
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureView;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.github.st1hy.countthemcalories.core.ui.withpicture.model.ImageSource.intoImageSource;
 
@@ -21,6 +23,7 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
     protected final PermissionsHelper permissionsHelper;
     protected final WithPictureView view;
     protected final WithPictureModel model;
+    protected final CompositeSubscription subscriptions = new CompositeSubscription();
 
     public WithPicturePresenterImp(@NonNull WithPictureView view,
                                    @NonNull PermissionsHelper permissionsHelper,
@@ -43,6 +46,10 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
                         onSelectedImageSource(imageSource);
                     }
                 });
+    }
+
+    public void onStop() {
+        subscriptions.clear();
     }
 
     @NonNull
@@ -71,15 +78,10 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
 
     @Override
     public void onImageReceived(@NonNull final Uri uri) {
-        view.setImageToView(uri);
+        Subscription subscription = view.showImage(uri)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+        subscriptions.add(subscription);
     }
 
-    @Override
-    public void onImageLoadingSuccess() {
-    }
-
-    @Override
-    public void onImageLoadingFailed() {
-
-    }
 }

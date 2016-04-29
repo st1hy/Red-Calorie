@@ -8,26 +8,42 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
+import rx.Subscriber;
+import rx.android.MainThreadSubscription;
 
 public class RxAlertDialog implements DialogInterface.OnClickListener {
     private AlertDialog dialog;
-    private final Subject<Integer, Integer> subjectClick = PublishSubject.<Integer>create().toSerialized();
+    private DialogInterface.OnClickListener delegate;
 
     private RxAlertDialog() {
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        subjectClick.onNext(which);
+        if (delegate != null) delegate.onClick(dialog, which);
     }
 
     @NonNull
     public Observable<Integer> observeItemClick() {
-        return subjectClick.asObservable();
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(final Subscriber<? super Integer> subscriber) {
+                delegate = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!subscriber.isUnsubscribed())
+                            subscriber.onNext(which);
+                    }
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        delegate = null;
+                    }
+                });
+            }
+        });
     }
-
 
     @NonNull
     public AlertDialog getDialog() {

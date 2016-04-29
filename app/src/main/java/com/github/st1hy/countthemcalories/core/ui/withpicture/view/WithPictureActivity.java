@@ -7,16 +7,14 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.rx.RxPicassoCallback;
-import com.github.st1hy.countthemcalories.core.rx.SimpleObserver;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
@@ -24,14 +22,12 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;
 
-    protected final RxPicassoCallback picassoLoaderCallback = new RxPicassoCallback();
-    protected final CompositeSubscription subscriptions = new CompositeSubscription();
+    @Inject
+    WithPicturePresenter presenter;
+    @Inject
+    Picasso picasso;
 
     protected abstract ImageView getImageView();
-
-    protected abstract Picasso getPicasso();
-
-    protected abstract WithPicturePresenter getPresenter();
 
     @Override
     public void openCameraAndGetPicture() {
@@ -61,56 +57,26 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
             if (resultCode == RESULT_OK) {
                 Uri imageUri = data.getData();
                 if (imageUri != null)
-                    getPresenter().onImageReceived(imageUri);
+                    presenter.onImageReceived(imageUri);
                 else if (BuildConfig.DEBUG)
                     Timber.w("Received image but intent doesn't have image uri!");
             }
         } else super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     @Override
-    public void setImageToView(@NonNull Uri uri) {
-        Subscription subscription = intoPicassoObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NotifyPresenterAboutLoadingResult(getPresenter()));
-        subscriptions.add(subscription);
-        picassoLoaderCallback.onStarted();
-        getPicasso().load(uri)
-                .centerCrop()
-                .fit()
-                .into(getImageView(), picassoLoaderCallback);
+    public Observable<RxPicasso.PicassoEvent> showImage(@NonNull Uri uri) {
+        return RxPicasso.Builder.with(picasso, uri)
+                        .centerCrop()
+                        .fit()
+                        .into(getImageView())
+                        .asObservable();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        getPicasso().cancelRequest(getImageView());
-        subscriptions.unsubscribe();
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
     }
 
-    @NonNull
-    public Observable<RxPicassoCallback.PicassoLoadingEvent> intoPicassoObservable() {
-        return picassoLoaderCallback.intoObservable();
-    }
-
-    private static class NotifyPresenterAboutLoadingResult extends SimpleObserver<RxPicassoCallback.PicassoLoadingEvent> {
-        private final WithPicturePresenter presenter;
-
-        public NotifyPresenterAboutLoadingResult(@NonNull WithPicturePresenter presenter) {
-            this.presenter = presenter;
-        }
-
-        @Override
-        public void onNext(RxPicassoCallback.PicassoLoadingEvent event) {
-            switch (event) {
-                case SUCCESS:
-                    presenter.onImageLoadingSuccess();
-                    break;
-                case ERROR:
-                    presenter.onImageLoadingFailed();
-                    break;
-            }
-        }
-    }
 }

@@ -19,10 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -34,8 +32,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
 
     @Inject
     AddIngredientPresenter presenter;
-    @Inject
-    Picasso picasso;
 
     @Bind(R.id.add_ingredient_toolbar)
     Toolbar toolbar;
@@ -135,15 +131,5 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     protected ImageView getImageView() {
         return ingredientImage;
-    }
-
-    @Override
-    protected Picasso getPicasso() {
-        return picasso;
-    }
-
-    @Override
-    protected WithPicturePresenter getPresenter() {
-        return presenter;
     }
 }

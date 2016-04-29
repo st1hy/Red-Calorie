@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -68,11 +68,11 @@ public class WithPictureRoboTest {
     public void setup() {
         WithPictureActivityTest activity = Robolectric.setupActivity(WithPictureActivityTest.class);
         presenterMock = Mockito.mock(AddMealPresenterImp.class);
-        activity.presenterMock = presenterMock;
+        activity.presenter = presenterMock;
         mockedImageView = Mockito.mock(ImageView.class);
         activity.mockedImageView = mockedImageView;
         mockedPicasso = Mockito.mock(Picasso.class);
-        activity.mockedPicasso = mockedPicasso;
+        activity.picasso = mockedPicasso;
         this.activity = activity;
 
         mockedRequestCreator = Mockito.mock(RequestCreator.class);
@@ -82,23 +82,11 @@ public class WithPictureRoboTest {
     }
 
     private static class WithPictureActivityTest extends WithPictureActivity {
-        WithPicturePresenter presenterMock;
-        Picasso mockedPicasso;
         ImageView mockedImageView;
 
         @Override
         protected ImageView getImageView() {
             return mockedImageView;
-        }
-
-        @Override
-        protected Picasso getPicasso() {
-            return mockedPicasso;
-        }
-
-        @Override
-        protected WithPicturePresenter getPresenter() {
-            return presenterMock;
         }
     }
 
@@ -182,9 +170,17 @@ public class WithPictureRoboTest {
                 return null;
             }
         }).when(mockedRequestCreator).into(eq(mockedImageView), any(Callback.class));
-        activity.setImageToView(mockedUri);
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
+        activity.showImage(mockedUri)
+                .subscribe(new Action1<RxPicasso.PicassoEvent>() {
+                               @Override
+                               public void call(RxPicasso.PicassoEvent event) {
+                                   isCalled.set(true);
+                                   assertThat(RxPicasso.PicassoEvent.SUCCESS , equalTo(event));
+                               }
+                           });
+        assertTrue(isCalled.get());
         verify(mockedPicasso).load(mockedUri);
-        verify(presenterMock).onImageLoadingSuccess();
     }
 
     @Test
@@ -198,27 +194,23 @@ public class WithPictureRoboTest {
                 return null;
             }
         }).when(mockedRequestCreator).into(eq(mockedImageView), any(Callback.class));
-        activity.setImageToView(mockedUri);
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
+        activity.showImage(mockedUri)
+                .subscribe(new Action1<RxPicasso.PicassoEvent>() {
+                    @Override
+                    public void call(RxPicasso.PicassoEvent event) {
+                        isCalled.set(true);
+                        assertThat(RxPicasso.PicassoEvent.ERROR , equalTo(event));
+                    }
+                });
+        assertTrue(isCalled.get());
         verify(mockedPicasso).load(mockedUri);
-        verify(presenterMock).onImageLoadingFailed();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testSetImagePicassoThrowsException() throws Exception {
-        Uri mockedUri = Mockito.mock(Uri.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                throw new IllegalStateException("Picasso failed");
-            }
-        }).when(mockedRequestCreator).into(eq(mockedImageView), any(Callback.class));
-        activity.setImageToView(mockedUri);
-    }
 
     @Test
-    public void testDestroy() throws Exception {
-        activity.onDestroy();
-
-        verify(mockedPicasso).cancelRequest(mockedImageView);
+    public void tesOnStop() throws Exception {
+        activity.onStop();
+        verify(presenterMock).onStop();
     }
 }

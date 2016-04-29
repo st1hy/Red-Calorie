@@ -18,7 +18,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
-import com.github.st1hy.countthemcalories.idling.RxPicassoIdlingResource;
+import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matcher;
@@ -101,8 +101,7 @@ public class AddMealActivityTest {
                 return intent;
             }
         }.call()));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet(
-                main.getActivity().intoPicassoObservable());
+        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.add_meal_image_select_from_camera))
@@ -143,8 +142,7 @@ public class AddMealActivityTest {
                 return intent;
             }
         }.call()));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet(
-                main.getActivity().intoPicassoObservable());
+        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.add_meal_image_select_from_camera))

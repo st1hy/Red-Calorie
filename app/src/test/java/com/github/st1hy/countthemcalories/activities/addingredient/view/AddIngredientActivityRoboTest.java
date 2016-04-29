@@ -43,7 +43,6 @@ public class AddIngredientActivityRoboTest {
     public void testActivityStart() {
         assertThat(activity, notNullValue());
         assertThat(activity.presenter, notNullValue());
-        assertThat(activity.picasso, notNullValue());
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.getComponent(null), notNullValue());
         assertThat(activity.component, notNullValue());

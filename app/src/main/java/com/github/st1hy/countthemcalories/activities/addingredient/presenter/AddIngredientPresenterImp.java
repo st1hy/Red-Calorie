@@ -16,14 +16,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
     private final AddIngredientModel model;
-
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public AddIngredientPresenterImp(@NonNull AddIngredientView view,
@@ -60,11 +57,6 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                 Timber.d("Name changed: %s", charSequence);
             }
         });
-    }
-
-    @Override
-    public void onStop() {
-        subscriptions.unsubscribe();
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureView;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
@@ -72,8 +73,9 @@ public class WithPicturePresenterImpTest {
     @Test
     public void testDisplayImage() {
         Uri data = Mockito.mock(Uri.class);
-        presenter.onImageReceived(data);
+        when(view.showImage(data)).thenReturn(Observable.just(RxPicasso.PicassoEvent.ERROR));
 
-        verify(view, only()).setImageToView(data);
+        presenter.onImageReceived(data);
+        verify(view, only()).showImage(data);
     }
 }

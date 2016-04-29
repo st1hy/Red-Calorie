@@ -9,7 +9,5 @@ public interface WithPicturePresenter {
 
     void onImageReceived(@NonNull Uri data);
 
-    void onImageLoadingSuccess();
-
-    void onImageLoadingFailed();
+    void onStop();
 }

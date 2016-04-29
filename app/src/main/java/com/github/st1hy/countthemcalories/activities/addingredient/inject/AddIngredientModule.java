@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -54,5 +55,11 @@ public class AddIngredientModule {
     @Nullable
     public Bundle provideSavedStateBundle() {
         return bundle;
+    }
+
+    @Provides
+    @PerActivity
+    public WithPicturePresenter providePicturePresenter(AddIngredientPresenter presenter) {
+        return presenter;
     }
 }

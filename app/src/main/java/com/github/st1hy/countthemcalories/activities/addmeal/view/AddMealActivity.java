@@ -21,7 +21,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -135,15 +134,5 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     protected ImageView getImageView() {
         return mealImage;
-    }
-
-    @Override
-    protected Picasso getPicasso() {
-        return picasso;
-    }
-
-    @Override
-    protected WithPicturePresenter getPresenter() {
-        return presenter;
     }
 }
