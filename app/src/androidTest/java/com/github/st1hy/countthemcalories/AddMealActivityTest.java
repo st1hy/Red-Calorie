@@ -88,7 +88,7 @@ public class AddMealActivityTest {
                 .check(matches(withText("My meal")));
     }
 
-    private final Matcher<Intent> galleryIntentMatcher = hasAction(Intent.ACTION_CHOOSER);
+    static final Matcher<Intent> galleryIntentMatcher = hasAction(Intent.ACTION_CHOOSER);
 
     @Test
     public void testSelectImageFromGallery() {
@@ -170,7 +170,7 @@ public class AddMealActivityTest {
         //If doesn't crash is good
     }
 
-    private static Uri resourceToUri (Context context, @DrawableRes int resID) {
+    static Uri resourceToUri (Context context, @DrawableRes int resID) {
         return new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 .authority(context.getPackageName())

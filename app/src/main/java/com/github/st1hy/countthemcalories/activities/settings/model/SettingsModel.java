@@ -15,7 +15,6 @@ import rx.functions.Action0;
 import rx.subjects.PublishSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
-import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_100ML;
@@ -30,7 +29,6 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
     private final Resources resources;
 
     private final Subject<SettingsChangedEvent, SettingsChangedEvent> subject = new SerializedSubject<>(PublishSubject.<SettingsChangedEvent>create());
-//    private boolean isAttachedToPreferences = false;
     private final Observable<SettingsChangedEvent> observable;
 
     @Inject
@@ -42,20 +40,12 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
 
             @Override
             public void call() {
-                Timber.d("Subscribed: %b", subject.hasObservers());
                 preferences.registerOnSharedPreferenceChangeListener(SettingsModel.this);
-//                if (subject.hasObservers() && !isAttachedToPreferences) {
-//                    isAttachedToPreferences = true;
-//                }
             }
         }).doOnUnsubscribe(new Action0() {
             @Override
             public void call() {
-                Timber.d("Unsubscribed: %b", subject.hasObservers());
                 preferences.unregisterOnSharedPreferenceChangeListener(SettingsModel.this);
-//                if (!subject.hasObservers() && isAttachedToPreferences) {
-//                    isAttachedToPreferences = false;
-//                }
             }
         }).share();
     }

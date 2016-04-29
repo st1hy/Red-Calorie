@@ -1,8 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,8 +21,9 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureActivity;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -49,11 +53,11 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     RecyclerView tagsRecycler;
 
     @NonNull
-    protected AddIngredientComponent getComponent() {
+    protected AddIngredientComponent getComponent(@Nullable Bundle savedInstanceState) {
         if (component == null) {
             component = DaggerAddIngredientComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .addIngredientModule(new AddIngredientModule(this))
+                    .addIngredientModule(new AddIngredientModule(this, savedInstanceState))
                     .build();
         }
         return component;
@@ -64,7 +68,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_ingredient_activity);
         ButterKnife.bind(this);
-        getComponent().inject(this);
+        getComponent(savedInstanceState).inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -86,6 +90,25 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
                 presenter.onSelectUnitClicked();
             }
         });
+        presenter.onNameTextChanges(RxTextView.textChanges(name));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.onSaveState(outState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
     }
 
     @Override
@@ -107,8 +130,20 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    public void showAvailableUnitsDialog() {
-        //TODO
+    public void showAvailableUnitsDialog(String[] units) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.add_ingredient_select_unit_dialog_title)
+                .setItems(units, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.onUnitSelected(which);
+                    }
+                }).show();
+    }
+
+    @Override
+    public void setSelectedUnitName(String unitName) {
+        selectUnit.setText(unitName);
     }
 
     @Override

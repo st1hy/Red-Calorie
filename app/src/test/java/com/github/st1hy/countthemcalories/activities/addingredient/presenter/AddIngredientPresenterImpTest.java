@@ -2,9 +2,11 @@ package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 
 import org.junit.Before;
@@ -17,7 +19,9 @@ import rx.Observable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RxMockitoJUnitRunner.class)
@@ -27,11 +31,13 @@ public class AddIngredientPresenterImpTest {
     private AddIngredientView view;
     @Mock
     private PermissionsHelper permissionsHelper;
+    @Mock
+    private SettingsModel settingsModel;
     private AddIngredientPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new AddIngredientPresenterImp(view, permissionsHelper);
+        presenter = new AddIngredientPresenterImp(view, permissionsHelper, settingsModel);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
     }
@@ -42,10 +48,13 @@ public class AddIngredientPresenterImpTest {
         verify(view, only()).openIngredientsScreen();
     }
 
-
     @Test
     public void testSelectUnit() throws Exception {
         presenter.onSelectUnitClicked();
-        verify(view, only()).showAvailableUnitsDialog();
+        verify(settingsModel).getPreferredGravimetricUnit();
+        verify(settingsModel).getPreferredVolumetricUnit();
+        verify(settingsModel, times(2)).getUnitName(any(EnergyDensityUnit.class));
+        verify(view).showAvailableUnitsDialog(any(String[].class));
+        verifyNoMoreInteractions(view, permissionsHelper, settingsModel);
     }
 }

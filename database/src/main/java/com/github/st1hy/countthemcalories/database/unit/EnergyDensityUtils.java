@@ -20,4 +20,21 @@ public class EnergyDensityUtils {
                 throw new IllegalArgumentException();
         }
     }
+
+    @NonNull
+    public static String getString(@NonNull EnergyDensityUnit unit) {
+        return unit.getAmountUnitType().name() + "@" + unit.name();
+    }
+
+    @NonNull
+    public static EnergyDensityUnit fromString(@NonNull String string) {
+        String[] split = string.split("@");
+        if (split.length != 2) throw new IllegalArgumentException();
+        AmountUnitType unitType = AmountUnitType.valueOf(split[0]);
+        EnergyDensityUnit[] units = (EnergyDensityUnit[]) getUnits(unitType);
+        for (EnergyDensityUnit unit : units) {
+            if (unit.name().equals(split[1])) return unit;
+        }
+        throw new IllegalArgumentException();
+    }
 }

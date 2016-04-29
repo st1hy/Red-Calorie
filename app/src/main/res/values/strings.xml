@@ -31,11 +31,14 @@
     <string name="add_ingredient_remove_category">Remove category</string>
     <string name="add_ingredient_categories_name">Categories</string>
     <string name="add_ingredient_add_category">Add category</string>
-    <string name="add_ingredient_energy_density_example">250</string>
-    <string name="add_ingredient_energy_density_name">Calories in fixed amount of product</string>
+    <string name="add_ingredient_energy_density_name">Amount of calories</string>
     <string name="settings_title">Settings</string>
     <string name="settings_current_unit">Current unit:</string>
     <string name="settings_select_preferred_energy_unit_for_meals">Select preferred energy unit for meals</string>
     <string name="settings_select_unit_dialog_title">Select unit</string>
     <string name="settings_select_preferred_energy_unit_for_drinks">Select preferred energy unit for drinks</string>
+    <string name="add_ingredient_select_unit_dialog_title">Select unit for this ingredient</string>
+    <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
+    <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
+    <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
 </resources>

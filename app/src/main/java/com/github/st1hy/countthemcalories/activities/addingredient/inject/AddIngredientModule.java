@@ -1,7 +1,9 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
@@ -16,9 +18,11 @@ import dagger.Provides;
 @Module
 public class AddIngredientModule {
     private final AddIngredientActivity activity;
+    private final Bundle bundle;
 
-    public AddIngredientModule(@NonNull AddIngredientActivity activity) {
+    public AddIngredientModule(@NonNull AddIngredientActivity activity, @Nullable Bundle savedState) {
         this.activity = activity;
+        this.bundle = savedState;
     }
 
     @Provides
@@ -43,5 +47,12 @@ public class AddIngredientModule {
     @PerActivity
     public PermissionSubject providePermissionSubject() {
         return activity;
+    }
+
+    @Provides
+    @PerActivity
+    @Nullable
+    public Bundle provideSavedStateBundle() {
+        return bundle;
     }
 }

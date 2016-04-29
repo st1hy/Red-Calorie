@@ -5,5 +5,7 @@ import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictur
 public interface AddIngredientView extends WithPictureView {
     void openIngredientsScreen();
 
-    void showAvailableUnitsDialog();
+    void showAvailableUnitsDialog(String[] units);
+
+    void setSelectedUnitName(String unitName);
 }

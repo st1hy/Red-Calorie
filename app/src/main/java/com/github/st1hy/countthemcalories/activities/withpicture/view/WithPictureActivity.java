@@ -23,6 +23,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
+//TODO Convert into reactive pattern; fix title, remove abstract getters
 public abstract class WithPictureActivity extends BaseActivity implements WithPictureView {
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;

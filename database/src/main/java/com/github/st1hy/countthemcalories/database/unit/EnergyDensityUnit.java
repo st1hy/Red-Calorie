@@ -17,4 +17,6 @@ public interface EnergyDensityUnit {
     BigDecimal convertValue(@NonNull BigDecimal value, @NonNull EnergyDensityUnit unit);
 
     int getId();
+
+    String name();
 }
