@@ -1,8 +1,10 @@
 package com.github.st1hy.countthemcalories.core.ui;
 
 import android.annotation.TargetApi;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 
@@ -11,10 +13,12 @@ import com.github.st1hy.countthemcalories.application.inject.ApplicationComponen
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionActor;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
+import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
+import com.github.st1hy.countthemcalories.core.ui.view.DialogView;
 
 import rx.Observable;
 
-public abstract class BaseActivity extends AppCompatActivity implements PermissionSubject {
+public abstract class BaseActivity extends AppCompatActivity implements PermissionSubject, DialogView {
     private final SparseArray<PermissionActor> pendingPermissionRequests = new SparseArray<>(4);
 
     protected final ApplicationComponent getAppComponent() {
@@ -46,5 +50,23 @@ public abstract class BaseActivity extends AppCompatActivity implements Permissi
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    public Observable<Integer> showAlertDialog(@StringRes int titleRes, @ArrayRes int options) {
+        return RxAlertDialog.Builder.with(this)
+                .title(titleRes)
+                .items(options)
+                .show()
+                .observeItemClick();
+    }
+
+    @Override
+    public Observable<Integer> showAlertDialog(@StringRes int titleRes, CharSequence[] options) {
+        return RxAlertDialog.Builder.with(this)
+                .title(titleRes)
+                .items(options)
+                .show()
+                .observeItemClick();
     }
 }

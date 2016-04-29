@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -29,11 +30,12 @@ public class AddMealPresenterTest {
     private PermissionsHelper permissionsHelper;
     @Mock
     private IngredientListPresenter ingredientListPresenter;
+    private AddMealModel model = new AddMealModel();
     private AddMealPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new AddMealPresenterImp(view, permissionsHelper, ingredientListPresenter);
+        presenter = new AddMealPresenterImp(view, permissionsHelper, ingredientListPresenter, model);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
     }

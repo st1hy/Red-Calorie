@@ -5,9 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
 
 import javax.inject.Inject;
 
@@ -18,8 +19,9 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     @Inject
     public AddMealPresenterImp(@NonNull AddMealView view,
                                @NonNull PermissionsHelper permissionsHelper,
-                               @NonNull IngredientListPresenter ingredientListPresenter) {
-        super(view, permissionsHelper);
+                               @NonNull IngredientListPresenter ingredientListPresenter,
+                               @NonNull AddMealModel model) {
+        super(view, permissionsHelper, model);
         this.view = view;
         this.ingredientListPresenter = ingredientListPresenter;
     }

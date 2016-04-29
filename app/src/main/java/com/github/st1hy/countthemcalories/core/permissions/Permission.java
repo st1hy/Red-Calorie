@@ -3,6 +3,8 @@ package com.github.st1hy.countthemcalories.core.permissions;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import rx.functions.Func1;
+
 public enum Permission {
     GRANTED, DENIED, REQUEST_CANCELED;
 
@@ -16,5 +18,15 @@ public enum Permission {
             default:
                 throw new IllegalArgumentException("Unknown package manager response");
         }
+    }
+
+    @NonNull
+    public static Func1<Permission, Boolean> isGranted() {
+        return new Func1<Permission, Boolean>() {
+            @Override
+            public Boolean call(Permission permission) {
+                return permission == Permission.GRANTED;
+            }
+        };
     }
 }

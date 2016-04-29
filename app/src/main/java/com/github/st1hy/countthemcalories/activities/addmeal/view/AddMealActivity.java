@@ -20,8 +20,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMea
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
-import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureActivity;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;

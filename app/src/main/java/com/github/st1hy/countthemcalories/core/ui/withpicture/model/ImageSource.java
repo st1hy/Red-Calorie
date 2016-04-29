@@ -1,6 +1,10 @@
-package com.github.st1hy.countthemcalories.activities.withpicture.presenter;
+package com.github.st1hy.countthemcalories.core.ui.withpicture.model;
+
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
+
+import rx.functions.Func1;
 
 public enum ImageSource {
     GALLERY, CAMERA;
@@ -17,4 +21,15 @@ public enum ImageSource {
             default: throw new IllegalArgumentException("This position doesn't match any ImageSource item!");
         }
     }
+
+    @NonNull
+    public static Func1<Integer, ImageSource> intoImageSource() {
+        return new Func1<Integer, ImageSource>() {
+            @Override
+            public ImageSource call(Integer integer) {
+                return ImageSource.fromItemPos(integer);
+            }
+        };
+    }
+
 }

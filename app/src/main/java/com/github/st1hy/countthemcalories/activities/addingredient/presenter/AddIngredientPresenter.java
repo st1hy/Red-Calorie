@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 
 import rx.Observable;
 
@@ -12,8 +12,6 @@ public interface AddIngredientPresenter extends WithPicturePresenter {
     boolean onClickedOnAction(@IdRes int menuActionId);
 
     void onSelectUnitClicked();
-
-    void onUnitSelected(int which);
 
     void onStart();
 

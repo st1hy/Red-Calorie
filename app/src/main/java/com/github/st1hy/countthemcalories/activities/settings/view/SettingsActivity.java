@@ -1,7 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.settings.view;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +12,6 @@ import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsAct
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import javax.inject.Inject;
 
@@ -89,18 +86,6 @@ public class SettingsActivity extends BaseActivity implements SettingsView {
     protected void onStop() {
         super.onStop();
         presenter.onStop();
-    }
-
-    @Override
-    public void showUnitSettingsDialog(@NonNull final AmountUnitType type, @NonNull String[] values) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.settings_select_unit_dialog_title)
-                .setItems(values, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        presenter.onSelectedUnitType(type, which);
-                    }
-                }).show();
     }
 
     @Override

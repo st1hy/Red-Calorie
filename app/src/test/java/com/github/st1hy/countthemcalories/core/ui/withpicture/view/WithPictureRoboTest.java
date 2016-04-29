@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.withpicture.view;
+package com.github.st1hy.countthemcalories.core.ui.withpicture.view;
 
 
 import android.content.Intent;
@@ -7,10 +7,10 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.ImageSource;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -27,18 +27,23 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
-import org.robolectric.shadows.ShadowDialog;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
 import static android.support.test.espresso.intent.matcher.BundleMatchers.hasEntry;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtras;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasType;
-import static com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureActivity.REQUEST_PICK_IMAGE;
+import static com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity.REQUEST_PICK_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -98,18 +103,20 @@ public class WithPictureRoboTest {
     }
 
     @Test
-    public void testShowSelectImageDialog() throws Exception {
-        activity.showSelectImageInputDialog();
-        ShadowDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestDialog();
-        assertThat(shadowDialog, notNullValue());
-    }
-
-    @Test
     public void testClickingOnDialogItem() throws Exception {
-        activity.showSelectImageInputDialog();
-        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
-        shadowAlertDialog.clickOnItem(0);
-        verify(presenterMock, only()).onSelectedImageSource(ImageSource.GALLERY);
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
+        activity.showAlertDialog(R.string.add_ingredient_image_select_title, R.array.add_ingredient_image_select_options)
+                .subscribe(new Action1<Integer>() {
+                               @Override
+                               public void call(Integer integer) {
+                                   isCalled.set(true);
+                                   assertThat(integer, equalTo(1));
+                               }
+                           });
+                        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
+        assertThat(shadowAlertDialog, notNullValue());
+        shadowAlertDialog.clickOnItem(1);
+        assertTrue(isCalled.get());
     }
 
     @Test

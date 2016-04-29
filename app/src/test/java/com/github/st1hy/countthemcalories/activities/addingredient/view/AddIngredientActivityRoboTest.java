@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -11,20 +12,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.fakes.RoboMenu;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.shadows.ShadowAlertDialog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -49,7 +45,7 @@ public class AddIngredientActivityRoboTest {
         assertThat(activity.presenter, notNullValue());
         assertThat(activity.picasso, notNullValue());
         assertThat(activity.toolbar, notNullValue());
-        assertThat(activity.getComponent(), notNullValue());
+        assertThat(activity.getComponent(null), notNullValue());
         assertThat(activity.component, notNullValue());
         assertThat(activity.energyDensityValue, notNullValue());
         assertThat(activity.ingredientImage, notNullValue());
@@ -75,30 +71,30 @@ public class AddIngredientActivityRoboTest {
     }
 
     @Test
+    public void testSaveInstance() throws Exception {
+        Bundle mock = Mockito.mock(Bundle.class);
+        activity.onSaveInstanceState(mock);
+        verify(presenterMock).onSaveState(mock);
+
+    }
+
+    @Test
     public void testOpenIngredientsActivity() throws Exception {
         activity.openIngredientsScreen();
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, equalTo(new Intent(activity, IngredientsActivity.class)));
     }
 
+    @Test
+    public void testOnStop() throws Exception {
+        activity.onStop();
+        verify(presenterMock).onStop();
+    }
 
     @Test
-    public void testSelectUnit() throws Exception {
-        final String[] options = {"one", "two"};
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                activity.showAvailableUnitsDialog(options);
-                return null;
-            }
-        }).when(presenterMock).onSelectUnitClicked();
-
+    public void testClickSelectUnit() throws Exception {
         activity.selectUnit.performClick();
+        verify(presenterMock).onSelectUnitClicked();
 
-        ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
-        assertThat(shadowDialog, notNullValue());
-        shadowDialog.clickOnItem(0);
-
-        verify(presenterMock).onUnitSelected(0);
     }
 }

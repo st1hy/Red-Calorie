@@ -1,25 +1,28 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
+import android.os.Bundle;
+
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import rx.Observable;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -32,12 +35,12 @@ public class AddIngredientPresenterImpTest {
     @Mock
     private PermissionsHelper permissionsHelper;
     @Mock
-    private SettingsModel settingsModel;
+    private AddIngredientModel model;
     private AddIngredientPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new AddIngredientPresenterImp(view, permissionsHelper, settingsModel);
+        presenter = new AddIngredientPresenterImp(view, permissionsHelper, model);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
     }
@@ -50,11 +53,23 @@ public class AddIngredientPresenterImpTest {
 
     @Test
     public void testSelectUnit() throws Exception {
+        when(view.showAlertDialog(anyInt(), any(String[].class)))
+                .thenReturn(Observable.just(1));
+        when(model.getUnitSelection()).thenReturn(GravimetricEnergyDensityUnit.values());
+
         presenter.onSelectUnitClicked();
-        verify(settingsModel).getPreferredGravimetricUnit();
-        verify(settingsModel).getPreferredVolumetricUnit();
-        verify(settingsModel, times(2)).getUnitName(any(EnergyDensityUnit.class));
-        verify(view).showAvailableUnitsDialog(any(String[].class));
-        verifyNoMoreInteractions(view, permissionsHelper, settingsModel);
+        verify(model).getUnitSelectionOptions();
+        verify(model).getSelectUnitDialogTitle();
+        verify(view).showAlertDialog(anyInt(), any(String[].class));
+        verify(model).getUnitSelection();
+        verify(model).setUnit(GravimetricEnergyDensityUnit.values()[1]);
+        verifyNoMoreInteractions(view, permissionsHelper, model);
+    }
+
+    @Test
+    public void testOnSaveState() throws Exception {
+        Bundle bundle = Mockito.mock(Bundle.class);
+        presenter.onSaveState(bundle);
+        verify(model).onSaveState(bundle);
     }
 }

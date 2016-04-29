@@ -1,7 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,8 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
-import com.github.st1hy.countthemcalories.activities.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 
@@ -127,18 +125,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         Intent intent = new Intent(this, IngredientsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-    }
-
-    @Override
-    public void showAvailableUnitsDialog(String[] units) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.add_ingredient_select_unit_dialog_title)
-                .setItems(units, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        presenter.onUnitSelected(which);
-                    }
-                }).show();
     }
 
     @Override

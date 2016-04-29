@@ -44,12 +44,16 @@ public class SettingsPresenterImp implements SettingsPresenter {
         for (int i = 0; i < units.length; i++) {
             values[i] = model.getUnitPlural(units[i], 1);
         }
-        view.showUnitSettingsDialog(type, values);
+        view.showAlertDialog(model.getPreferredUnitDialogTitle(), values)
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer which) {
+                        onSelectedUnitType(type, which);
+                    }
+                });
     }
 
-
-    @Override
-    public void onSelectedUnitType(@NonNull AmountUnitType type, int which) {
+    void onSelectedUnitType(@NonNull AmountUnitType type, int which) {
         switch (type) {
             case VOLUME: {
                 VolumetricEnergyDensityUnit unit = VolumetricEnergyDensityUnit.values()[which];

@@ -4,4 +4,8 @@
         <item>@string/add_meal_image_select_from_gallery</item>
         <item>@string/add_meal_image_select_from_camera</item>
     </string-array>
+    <string-array name="add_ingredient_image_select_options" >
+        <item>@string/add_ingredient_image_select_from_gallery</item>
+        <item>@string/add_ingredient_image_select_from_camera</item>
+    </string-array>
 </resources>

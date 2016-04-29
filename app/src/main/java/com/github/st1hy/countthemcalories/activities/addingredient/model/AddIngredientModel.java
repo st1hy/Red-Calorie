@@ -3,9 +3,12 @@ package com.github.st1hy.countthemcalories.activities.addingredient.model;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
@@ -14,8 +17,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class AddIngredientModel {
-    private static String STATE_UNIT = "unit";
+public class AddIngredientModel extends WithPictureModel {
+    static String STATE_UNIT = "unit";
 
     private final SettingsModel settingsModel;
 
@@ -28,7 +31,7 @@ public class AddIngredientModel {
     }
 
     @NonNull
-    private EnergyDensityUnit getUnit(@Nullable Bundle savedState) {
+    EnergyDensityUnit getUnit(@Nullable Bundle savedState) {
         EnergyDensityUnit unit = null;
         if (savedState != null) {
             String unitString = savedState.getString(STATE_UNIT);
@@ -49,7 +52,7 @@ public class AddIngredientModel {
     }
 
     @NonNull
-    public Observable<EnergyDensityUnit> getUnitSubject() {
+    public Observable<EnergyDensityUnit> getUnitObservable() {
         return unit.asObservable();
     }
 
@@ -62,7 +65,7 @@ public class AddIngredientModel {
     }
 
     @NonNull
-    public String[] getUnitSelectionString() {
+    public String[] getUnitSelectionOptions() {
         EnergyDensityUnit[] unitSelection = getUnitSelection();
         String[] options = new String[unitSelection.length];
         for (int i = 0; i < unitSelection.length; i++) {
@@ -79,5 +82,20 @@ public class AddIngredientModel {
                 return settingsModel.getUnitName(energyDensityUnit);
             }
         };
+    }
+
+    @Override
+    public int getImageSourceDialogTitleResId() {
+        return R.string.add_ingredient_image_select_title;
+    }
+
+    @Override
+    public int getImageSourceOptionArrayResId() {
+        return R.array.add_meal_image_select_options;
+    }
+
+    @StringRes
+    public int getSelectUnitDialogTitle() {
+        return R.string.add_ingredient_select_unit_dialog_title;
     }
 }

@@ -4,7 +4,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 
 public interface AddMealPresenter extends WithPicturePresenter {
 

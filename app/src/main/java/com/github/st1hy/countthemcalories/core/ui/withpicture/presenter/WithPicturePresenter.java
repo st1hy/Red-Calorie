@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.withpicture.presenter;
+package com.github.st1hy.countthemcalories.core.ui.withpicture.presenter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 public interface WithPicturePresenter {
 
     void onImageClicked();
-
-    void onSelectedImageSource(@NonNull ImageSource imageSource);
 
     void onImageReceived(@NonNull Uri data);
 

@@ -1,7 +1,5 @@
-package com.github.st1hy.countthemcalories.activities.withpicture.view;
+package com.github.st1hy.countthemcalories.core.ui.withpicture.view;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -9,11 +7,10 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.ImageSource;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoCallback;
 import com.github.st1hy.countthemcalories.core.rx.SimpleObserver;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 
 import rx.Observable;
@@ -23,7 +20,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
-//TODO Convert into reactive pattern; fix title, remove abstract getters
 public abstract class WithPictureActivity extends BaseActivity implements WithPictureView {
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;
@@ -36,20 +32,6 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
     protected abstract Picasso getPicasso();
 
     protected abstract WithPicturePresenter getPresenter();
-
-    @Override
-    public void showSelectImageInputDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.add_meal_image_select_title)
-                .setItems(R.array.add_meal_image_select_options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getPresenter().onSelectedImageSource(ImageSource.fromItemPos(which));
-                    }
-                })
-                .show();
-    }
-
 
     @Override
     public void openCameraAndGetPicture() {

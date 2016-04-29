@@ -7,8 +7,8 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 
 import javax.inject.Inject;
@@ -29,14 +29,14 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     public AddIngredientPresenterImp(@NonNull AddIngredientView view,
                                      @NonNull PermissionsHelper permissionsHelper,
                                      @NonNull AddIngredientModel model) {
-        super(view, permissionsHelper);
+        super(view, permissionsHelper, model);
         this.view = view;
         this.model = model;
     }
 
     @Override
     public void onStart() {
-        subscriptions.add(model.getUnitSubject()
+        subscriptions.add(model.getUnitObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(model.unitAsString())
                 .subscribe(new Action1<String>() {
@@ -77,11 +77,16 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     @Override
     public void onSelectUnitClicked() {
-        view.showAvailableUnitsDialog(model.getUnitSelectionString());
+        view.showAlertDialog(model.getSelectUnitDialogTitle(), model.getUnitSelectionOptions())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer which) {
+                        onUnitSelected(which);
+                    }
+                });
     }
 
-    @Override
-    public void onUnitSelected(int which) {
+    private void onUnitSelected(int which) {
         EnergyDensityUnit selectedUnit = model.getUnitSelection()[which];
         model.setUnit(selectedUnit);
     }

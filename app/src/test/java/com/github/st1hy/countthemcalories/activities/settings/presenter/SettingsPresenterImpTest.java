@@ -4,7 +4,6 @@ import com.github.st1hy.countthemcalories.activities.settings.model.EnergyUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
@@ -12,17 +11,15 @@ import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
+import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,20 +45,13 @@ public class SettingsPresenterImpTest {
     public void testLiquidUnitSettingsClicked() throws Exception {
         final int which = 0;
         final VolumetricEnergyDensityUnit expected = VolumetricEnergyDensityUnit.values()[which];
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                AmountUnitType unit = (AmountUnitType) invocation.getArguments()[0];
-                presenter.onSelectedUnitType(unit, which);
-                return null;
-            }
-        }).when(view).showUnitSettingsDialog(any(AmountUnitType.class), any(String[].class));
+        when(view.showAlertDialog(anyInt(), any(String[].class))).thenReturn(Observable.just(which));
 
         presenter.onLiquidUnitSettingsClicked();
 
         verify(preferencesModel, times(VolumetricEnergyDensityUnit.values().length))
                 .getUnitPlural(any(VolumetricEnergyDensityUnit.class), eq(1));
-        verify(view, times(1)).showUnitSettingsDialog(eq(AmountUnitType.VOLUME), Matchers.<String[]>any());
+        verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel).setPreferredVolumetricUnit(expected);
         verifyNoMoreInteractions(view);
     }
@@ -70,18 +60,11 @@ public class SettingsPresenterImpTest {
     public void testSolidUnitSettingsClicked() throws Exception {
         final int which = 0;
         final GravimetricEnergyDensityUnit expected = GravimetricEnergyDensityUnit.values()[which];
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                AmountUnitType unit = (AmountUnitType) invocation.getArguments()[0];
-                presenter.onSelectedUnitType(unit, which);
-                return null;
-            }
-        }).when(view).showUnitSettingsDialog(any(AmountUnitType.class), any(String[].class));
+        when(view.showAlertDialog(anyInt(), any(String[].class))).thenReturn(Observable.just(which));
 
         presenter.onSolidUnitSettingsClicked();
 
-        verify(view).showUnitSettingsDialog(eq(AmountUnitType.MASS), Matchers.<String[]>any());
+        verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel, times(GravimetricEnergyDensityUnit.values().length))
                 .getUnitPlural(any(GravimetricEnergyDensityUnit.class), eq(1));
         verify(preferencesModel).setPreferredGravimetricUnit(expected);
