@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -16,7 +17,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import timber.log.Timber;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
@@ -42,6 +42,10 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                         view.setSelectedUnitName(s);
                     }
                 }));
+        view.setName(model.getName());
+        view.setEnergyDensityValue(model.getEnergyValue());
+        Uri imageUri = model.getImageUri();
+        if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
     }
 
     @Override
@@ -50,11 +54,21 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @Override
-    public void onNameTextChanges(Observable<CharSequence> observable) {
+    public void onNameTextChanges(@NonNull Observable<CharSequence> observable) {
         observable.subscribe(new Action1<CharSequence>() {
             @Override
             public void call(CharSequence charSequence) {
-                Timber.d("Name changed: %s", charSequence);
+                model.setName(charSequence.toString());
+            }
+        });
+    }
+
+    @Override
+    public void onEnergyValueChanges(@NonNull Observable<CharSequence> observable) {
+        observable.subscribe(new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                model.setEnergyValue(charSequence.toString());
             }
         });
     }
@@ -86,5 +100,11 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     public void onSaveActionClicked() {
         view.openIngredientsScreen();
+    }
+
+    @Override
+    public void onImageReceived(@NonNull Uri uri) {
+        super.onImageReceived(uri);
+        model.setImageUri(uri);
     }
 }

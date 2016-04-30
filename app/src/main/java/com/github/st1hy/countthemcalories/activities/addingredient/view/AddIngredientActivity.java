@@ -85,6 +85,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
             }
         });
         presenter.onNameTextChanges(RxTextView.textChanges(name));
+        presenter.onEnergyValueChanges(RxTextView.textChanges(energyDensityValue));
     }
 
     @Override
@@ -124,8 +125,18 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    public void setSelectedUnitName(String unitName) {
+    public void setSelectedUnitName(@NonNull String unitName) {
         selectUnit.setText(unitName);
+    }
+
+    @Override
+    public void setName(@NonNull String name) {
+        this.name.setText(name);
+    }
+
+    @Override
+    public void setEnergyDensityValue(@NonNull String energyValue) {
+        this.energyDensityValue.setText(energyValue);
     }
 
     @Override

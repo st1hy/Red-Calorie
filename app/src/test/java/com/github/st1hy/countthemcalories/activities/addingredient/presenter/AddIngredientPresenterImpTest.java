@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.R;
@@ -8,6 +9,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 
@@ -18,7 +21,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import rx.Observable;
+import rx.functions.Func1;
 
+import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -58,6 +63,7 @@ public class AddIngredientPresenterImpTest {
         when(model.getUnitSelection()).thenReturn(GravimetricEnergyDensityUnit.values());
 
         presenter.onSelectUnitClicked();
+
         verify(model).getUnitSelectionOptions();
         verify(model).getSelectUnitDialogTitle();
         verify(view).showAlertDialog(anyInt(), any(String[].class));
@@ -71,5 +77,43 @@ public class AddIngredientPresenterImpTest {
         Bundle bundle = Mockito.mock(Bundle.class);
         presenter.onSaveState(bundle);
         verify(model).onSaveState(bundle);
+    }
+
+    @Test
+    public void testOnNameChanged() throws Exception {
+        presenter.onNameTextChanges(Observable.<CharSequence>just("test"));
+        verify(model).setName("test");
+    }
+
+    @Test
+    public void testOnStart() throws Exception {
+        final String testUnit = "test unit";
+        final String testName = "test name";
+        final String testEnergy = "test energy";
+        final Uri testUri = Mockito.mock(Uri.class);
+
+        when(model.getUnitObservable()).thenReturn(Observable.<EnergyDensityUnit>just(KCAL_AT_ML));
+        when(model.unitAsString()).thenReturn(new Func1<EnergyDensityUnit, String>() {
+            @Override
+            public String call(EnergyDensityUnit energyDensityUnit) {
+                return testUnit;
+            }
+        });
+        when(model.getName()).thenReturn(testName);
+        when(model.getEnergyValue()).thenReturn(testEnergy);
+        when(model.getImageUri()).thenReturn(testUri);
+        when(view.showImage(any(Uri.class))).thenReturn(Observable.just(RxPicasso.PicassoEvent.SUCCESS));
+
+        presenter.onStart();
+        verify(view).setName(testName);
+        verify(view).setEnergyDensityValue(testEnergy);
+        verify(view).setSelectedUnitName(testUnit);
+        verify(view).showImage(testUri);
+    }
+
+    @Test
+    public void testClickedOnAction() throws Exception {
+        presenter.onClickedOnAction(R.id.action_save);
+        verify(view).openIngredientsScreen();
     }
 }

@@ -15,9 +15,9 @@ public interface AddIngredientPresenter extends WithPicturePresenter {
 
     void onStart();
 
-    void onStop();
-
     void onSaveState(@NonNull Bundle outState);
 
-    void onNameTextChanges(Observable<CharSequence> observable);
+    void onNameTextChanges(@NonNull Observable<CharSequence> observable);
+
+    void onEnergyValueChanges(@NonNull Observable<CharSequence> observable);
 }
