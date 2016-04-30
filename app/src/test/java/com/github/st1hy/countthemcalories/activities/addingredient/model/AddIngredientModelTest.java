@@ -1,10 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
-import android.os.Bundle;
-
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
 
@@ -20,7 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import rx.functions.Action1;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.STATE_UNIT;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,8 +35,6 @@ public class AddIngredientModelTest {
 
     @Mock
     private SettingsModel settingsModel;
-    @Mock
-    private Bundle bundle;
     private AddIngredientModel model;
 
     @Before
@@ -47,19 +42,6 @@ public class AddIngredientModelTest {
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
         model = new AddIngredientModel(settingsModel, null);
-    }
-
-    @Test
-    public void testGetUnit() throws Exception {
-        when(bundle.getString(STATE_UNIT)).thenReturn(EnergyDensityUtils.getString(expectedDefaultLiquid));
-        EnergyDensityUnit unit = model.getUnit(bundle);
-        assertThat(expectedDefaultLiquid, equalTo(unit));
-    }
-
-    @Test
-    public void testOnSaveState() throws Exception {
-        model.onSaveState(bundle);
-        verify(bundle).putInt(STATE_UNIT, expectedDefault.getId());
     }
 
     @Test
@@ -93,6 +75,30 @@ public class AddIngredientModelTest {
         expected.set(expectedValue);
         model.setUnit(expected.get());
         assertEquals(2, callCount.get());
+    }
 
+    @Test
+    public void testUnitAsString() throws Exception {
+        VolumetricEnergyDensityUnit expected = VolumetricEnergyDensityUnit.KJ_AT_100ML;
+        model.unitAsString().call(expected);
+        verify(settingsModel).getUnitName(expected);
+    }
+
+    @Test
+    public void testGetUnitDialogTitle() throws Exception {
+        int title = model.getSelectUnitDialogTitle();
+        assertEquals(R.string.add_ingredient_select_unit_dialog_title, title);
+    }
+
+    @Test
+    public void testGeImageSourceDialogTitle() throws Exception {
+        int title = model.getImageSourceDialogTitleResId();
+        assertEquals(R.string.add_ingredient_image_select_title, title);
+    }
+
+    @Test
+    public void testGeImageSourceOptions() throws Exception {
+        int array = model.getImageSourceOptionArrayResId();
+        assertEquals(R.array.add_ingredient_image_select_options, array);
     }
 }

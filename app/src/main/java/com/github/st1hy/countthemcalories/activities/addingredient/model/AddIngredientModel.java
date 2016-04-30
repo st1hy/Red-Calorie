@@ -1,6 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -18,33 +20,28 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class AddIngredientModel extends WithPictureModel {
-    static String STATE_UNIT = "unit";
+    final SettingsModel settingsModel;
 
-    private final SettingsModel settingsModel;
-
-    private final ObservableValue<EnergyDensityUnit> unit;
+    final ObservableValue<EnergyDensityUnit> unit;
+    ParcelableProxy parcelableProxy;
 
     @Inject
     public AddIngredientModel(@NonNull SettingsModel settingsModel, @Nullable Bundle savedState) {
         this.settingsModel = settingsModel;
-        this.unit = new ObservableValue<>(getUnit(savedState));
-    }
-
-    @NonNull
-    EnergyDensityUnit getUnit(@Nullable Bundle savedState) {
-        EnergyDensityUnit unit = null;
         if (savedState != null) {
-            String unitString = savedState.getString(STATE_UNIT);
-            if (unitString != null)
-                unit = EnergyDensityUtils.fromString(unitString);
+            parcelableProxy = savedState.getParcelable(ParcelableProxy.MODEL_STATE);
         }
-        if (unit == null)
-            unit = settingsModel.getPreferredGravimetricUnit();
-        return unit;
+        if (parcelableProxy != null) {
+            this.unit = new ObservableValue<>(parcelableProxy.unit);
+        } else {
+            EnergyDensityUnit defaultUnit = settingsModel.getPreferredGravimetricUnit();
+            this.unit = new ObservableValue<>(defaultUnit);
+            parcelableProxy = new ParcelableProxy(this);
+        }
     }
 
     public void onSaveState(@NonNull Bundle outState) {
-        outState.putInt(STATE_UNIT, unit.getValue().getId());
+        outState.putParcelable(ParcelableProxy.MODEL_STATE, parcelableProxy.snapshot(this));
     }
 
     public void setUnit(@NonNull EnergyDensityUnit unit) {
@@ -91,11 +88,53 @@ public class AddIngredientModel extends WithPictureModel {
 
     @Override
     public int getImageSourceOptionArrayResId() {
-        return R.array.add_meal_image_select_options;
+        return R.array.add_ingredient_image_select_options;
     }
 
     @StringRes
     public int getSelectUnitDialogTitle() {
         return R.string.add_ingredient_select_unit_dialog_title;
+    }
+
+
+    static class ParcelableProxy implements Parcelable {
+        static String MODEL_STATE = "add ingredient model";
+        EnergyDensityUnit unit;
+
+        ParcelableProxy(@NonNull AddIngredientModel model) {
+            snapshot(model);
+        }
+
+        ParcelableProxy snapshot(@NonNull AddIngredientModel model) {
+            this.unit = model.unit.getValue();
+            return this;
+        }
+
+        ParcelableProxy() {
+        }
+
+        public static final Creator<ParcelableProxy> CREATOR = new Creator<ParcelableProxy>() {
+            @Override
+            public ParcelableProxy createFromParcel(Parcel source) {
+                ParcelableProxy parcelableProxy = new ParcelableProxy();
+                parcelableProxy.unit = EnergyDensityUtils.fromString(source.readString());
+                return parcelableProxy;
+            }
+
+            @Override
+            public ParcelableProxy[] newArray(int size) {
+                return new ParcelableProxy[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(EnergyDensityUtils.getString(unit));
+        }
     }
 }
