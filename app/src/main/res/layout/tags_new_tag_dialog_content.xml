@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EditText
-    android:id="@+id/tags_dialog_name"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:minWidth="150dip"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:hint="@string/tags_new_tag_hint">
-    <requestFocus/>
-</EditText>
+    android:paddingTop="?dialogPreferredPadding"
+    android:paddingLeft="?dialogPreferredPadding"
+    android:paddingRight="?dialogPreferredPadding"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/tags_dialog_name"
+        android:orientation="vertical"
+        android:hint="@string/tags_new_tag_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <requestFocus/>
+    </EditText>
+</FrameLayout>

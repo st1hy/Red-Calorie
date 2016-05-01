@@ -7,6 +7,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.query.QueryBuilder;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
@@ -22,6 +25,7 @@ public class TagsModel {
     final DaoSession session;
     private List<Tag> tags = Collections.emptyList();
     private final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
+    private Query<Tag> allSortedByNameQuery;
 
     @Inject
     public TagsModel(@NonNull DaoSession session) {
@@ -118,15 +122,25 @@ public class TagsModel {
         return new Callable<List<Tag>>() {
             @Override
             public List<Tag> call() throws Exception {
-                List<Tag> tags = session.getTagDao().loadAll();
+                List<Tag> tags = allSortedByName().list();
                 for (Tag tag : tags) {
                     tag.getIngredientTypes();
                 }
                 TagsModel.this.tags = tags;
-                return tags;
+                return TagsModel.this.tags;
             }
         };
     }
+
+    Query<Tag> allSortedByName() {
+        if (allSortedByNameQuery == null) {
+            QueryBuilder<Tag> queryBuilder = session.getTagDao().queryBuilder();
+            queryBuilder.orderAsc(TagDao.Properties.Name);
+            allSortedByNameQuery = queryBuilder.build();
+        }
+        return allSortedByNameQuery;
+    }
+
 
     @NonNull
     private <T> Callable<T> callInTx(@NonNull final Callable<T> task) {

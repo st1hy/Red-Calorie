@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
@@ -27,7 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class TagsActivity extends BaseActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
@@ -78,6 +78,7 @@ public class TagsActivity extends BaseActivity implements TagsView {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         presenter.onRefresh(RxSwipeRefreshLayout.refreshes(swipeRefreshLayout));
+        swipeRefreshLayout.setEnabled(false);
     }
 
     @NonNull
@@ -88,19 +89,26 @@ public class TagsActivity extends BaseActivity implements TagsView {
                 .customView(R.layout.tags_new_tag_dialog_content)
                 .positiveButton(android.R.string.ok)
                 .show();
+        final EditText text = (EditText) assertNotNull(rxAlertDialog.getCustomView())
+                .findViewById(R.id.tags_dialog_name);
         return rxAlertDialog.observePositiveClick()
                 .map(new Func1<Void, String>() {
                     @Override
                     public String call(Void aVoid) {
-                        EditText text = (EditText) rxAlertDialog.getCustomView();
-                        return assertNotNull(text).getText().toString();
+                        return text.getText().toString();
                     }
                 });
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.tags_menu, menu);
+        return true;
+    }
+
+    @Override
     public void setNoTagsButtonVisibility(@NonNull Visibility visibility) {
-        Timber.d("No tags: %s", visibility);
         //noinspection WrongConstant
         notTagsButton.setVisibility(visibility.getVisibility());
     }

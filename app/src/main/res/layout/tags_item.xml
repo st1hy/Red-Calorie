@@ -4,10 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/Base.Widget.AppCompat.Button.Borderless">
+    android:minHeight="?listPreferredItemHeightSmall"
+    style="@style/Base.Widget.AppCompat.Button.Borderless"
+    android:gravity="center|start"
+    >
     <TextView
         android:id="@+id/tags_item_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textIsSelectable="false"
         style="@style/Base.TextAppearance.AppCompat"

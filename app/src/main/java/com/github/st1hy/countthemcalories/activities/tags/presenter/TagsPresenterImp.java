@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.tags.view.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.google.common.base.Strings;
 
 import java.util.List;
 
@@ -44,11 +45,13 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onAddTagClicked(@NonNull Observable<Void> clicks) {
         clicks.flatMap(showNewTagDialog())
+                .map(trim())
+                .filter(notEmpty())
                 .flatMap(addTagRefresh())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Tag>>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -58,7 +61,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
                     @Override
                     public void onNext(List<Tag> tags) {
-
                     }
                 });
     }
@@ -88,6 +90,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, null);
+        view.setLayoutParams(parent.getLayoutParams());
         return new TagViewHolder(view);
     }
 
@@ -116,12 +119,12 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<TagsModel.DbProcessing>() {
             @Override
             public void call(TagsModel.DbProcessing dbProcessing) {
-                Timber.d("Tags database processing %s", dbProcessing);
                 view.setNoTagsButtonVisibility(Visibility.of(
                         dbProcessing == FINISHED && model.getItemCount() == 0
                 ));
                 view.setDataRefreshing(dbProcessing == STARTED);
                 if (dbProcessing == NOT_STARTED)  model.getTags().subscribe();
+                if (dbProcessing == FINISHED) notifyDataSetChanged();
             }
         };
     }
@@ -142,6 +145,26 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
             @Override
             public Observable<List<Tag>> call(Void aVoid) {
                 return model.getTags();
+            }
+        };
+    }
+
+    @NonNull
+    Func1<String, Boolean> notEmpty() {
+        return new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String s) {
+                return !Strings.isNullOrEmpty(s);
+            }
+        };
+    }
+
+    @NonNull
+    Func1<String, String> trim() {
+        return new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                return s.trim();
             }
         };
     }
