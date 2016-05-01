@@ -3,6 +3,8 @@ package com.github.st1hy.countthemcalories.core.ui.view;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
 
+import com.google.common.base.Optional;
+
 import rx.Observable;
 
 public interface DialogView extends BaseView {

@@ -41,6 +41,11 @@
             android:label="@string/settings_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity
+            android:name=".activities.tags.view.TagsActivity"
+            android:label="@string/tags_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

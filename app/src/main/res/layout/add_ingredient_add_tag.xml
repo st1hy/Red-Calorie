@@ -9,8 +9,8 @@
     app:cardUseCompatPadding="true">
     <ImageView
         android:layout_width="?actionBarSize"
-        android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_height="?actionBarSize"
+        android:padding="12dp"
         android:tint="@android:color/darker_gray"
         android:src="@drawable/ic_add_24px"
         android:contentDescription="@string/add_ingredient_add_category" />

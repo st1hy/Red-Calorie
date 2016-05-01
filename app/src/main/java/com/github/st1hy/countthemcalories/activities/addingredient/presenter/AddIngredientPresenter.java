@@ -20,4 +20,5 @@ public interface AddIngredientPresenter extends WithPicturePresenter {
     void onNameTextChanges(@NonNull Observable<CharSequence> observable);
 
     void onEnergyValueChanges(@NonNull Observable<CharSequence> observable);
+
 }

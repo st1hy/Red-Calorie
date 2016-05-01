@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,7 +19,9 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
+import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -26,12 +29,16 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class AddIngredientActivity extends WithPictureActivity implements AddIngredientView {
+    private static final int REQUEST_PICK_TAG = 0x2010;
     AddIngredientComponent component;
 
     @Inject
     AddIngredientPresenter presenter;
+    @Inject
+    IngredientTagsAdapter ingredientTagsAdapter;
 
     @Bind(R.id.add_ingredient_toolbar)
     Toolbar toolbar;
@@ -86,6 +93,9 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         });
         presenter.onNameTextChanges(RxTextView.textChanges(name));
         presenter.onEnergyValueChanges(RxTextView.textChanges(energyDensityValue));
+
+        tagsRecycler.setAdapter(ingredientTagsAdapter);
+        tagsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -137,6 +147,23 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     public void setEnergyDensityValue(@NonNull String energyValue) {
         this.energyDensityValue.setText(energyValue);
+    }
+
+    @Override
+    public void openSelectTagScreen() {
+        Intent intent = new Intent(this, TagsActivity.class);
+        intent.setAction(TagsActivity.ACTION_PICK_TAG);
+        startActivityForResult(intent, REQUEST_PICK_TAG);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_PICK_TAG) {
+            Timber.d("Tag intent returned %s", data);
+            //TODO
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

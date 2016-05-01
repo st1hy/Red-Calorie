@@ -3,24 +3,51 @@ package com.github.st1hy.countthemcalories.core.rx;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
-public class RxAlertDialog implements DialogInterface.OnClickListener {
+public class RxAlertDialog {
     private AlertDialog dialog;
-    private DialogInterface.OnClickListener delegate;
+    private final OnClickListener itemClicked = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (itemClickedDelegate != null) itemClickedDelegate.onClick(dialog, which);
+        }
+    };
+    private OnClickListener itemClickedDelegate;
+    private final OnClickListener positiveClicked = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (positiveClickedDelegate != null) positiveClickedDelegate.onClick(dialog, which);
+        }
+    };
+    private OnClickListener positiveClickedDelegate;
+    private final OnCancelListener onCancel = new OnCancelListener() {
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            if (onCancelDelegate != null) onCancelDelegate.onCancel(dialog);
+        }
+    };
+    private OnCancelListener onCancelDelegate;
+    private View customView;
 
-    private RxAlertDialog() {
+    @Nullable
+    public View getCustomView() {
+        return customView;
     }
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (delegate != null) delegate.onClick(dialog, which);
+    private RxAlertDialog() {
     }
 
     @NonNull
@@ -28,7 +55,7 @@ public class RxAlertDialog implements DialogInterface.OnClickListener {
         return Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {
-                delegate = new DialogInterface.OnClickListener() {
+                itemClickedDelegate = new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (!subscriber.isUnsubscribed())
@@ -38,7 +65,51 @@ public class RxAlertDialog implements DialogInterface.OnClickListener {
                 subscriber.add(new MainThreadSubscription() {
                     @Override
                     protected void onUnsubscribe() {
-                        delegate = null;
+                        itemClickedDelegate = null;
+                    }
+                });
+            }
+        });
+    }
+
+    @NonNull
+    public Observable<Void> observePositiveClick() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                positiveClickedDelegate = new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!subscriber.isUnsubscribed())
+                            subscriber.onNext(null);
+                    }
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        positiveClickedDelegate = null;
+                    }
+                });
+            }
+        });
+    }
+
+    @NonNull
+    public Observable<Void> observeCanceled() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                onCancelDelegate = new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        if (!subscriber.isUnsubscribed())
+                            subscriber.onNext(null);
+                    }
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        onCancelDelegate = null;
                     }
                 });
             }
@@ -51,6 +122,7 @@ public class RxAlertDialog implements DialogInterface.OnClickListener {
     }
 
     public static class Builder {
+        private final Context context;
         private final AlertDialog.Builder builder;
         private final RxAlertDialog rxAlertDialog = new RxAlertDialog();
 
@@ -59,6 +131,7 @@ public class RxAlertDialog implements DialogInterface.OnClickListener {
         }
 
         private Builder(@NonNull Context context) {
+            this.context = context;
             builder = new AlertDialog.Builder(context);
         }
 
@@ -75,18 +148,33 @@ public class RxAlertDialog implements DialogInterface.OnClickListener {
 
         @NonNull
         public RxAlertDialog.Builder items(@ArrayRes int items) {
-            builder.setItems(items, rxAlertDialog);
+            builder.setItems(items, rxAlertDialog.itemClicked);
             return this;
         }
 
         @NonNull
         public RxAlertDialog.Builder items(@NonNull CharSequence[] items) {
-            builder.setItems(items, rxAlertDialog);
+            builder.setItems(items, rxAlertDialog.itemClicked);
+            return this;
+        }
+
+        @NonNull
+        public RxAlertDialog.Builder customView(@LayoutRes int layoutId) {
+            View view = LayoutInflater.from(context).inflate(layoutId, null);
+            rxAlertDialog.customView = view;
+            builder.setView(view);
+            return this;
+        }
+
+        @NonNull
+        public RxAlertDialog.Builder positiveButton(@StringRes int name) {
+            builder.setPositiveButton(name, rxAlertDialog.positiveClicked);
             return this;
         }
 
         @NonNull
         public RxAlertDialog show() {
+            builder.setOnCancelListener(rxAlertDialog.onCancel);
             rxAlertDialog.dialog = builder.show();
             return rxAlertDialog;
         }

@@ -22,6 +22,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
 
@@ -145,6 +146,11 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     @Override
     public void openSettingsScreen() {
         startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    @Override
+    public void openTagsScreen() {
+        startActivity(new Intent(this, TagsActivity.class));
     }
 
     @Override

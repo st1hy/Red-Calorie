@@ -37,6 +37,8 @@ public class IngredientsPresenterImp implements IngredientsPresenter {
             view.openOverviewScreen();
         } else if (itemId == R.id.nav_settings) {
             view.openSettingsScreen();
+        } else if (itemId == R.id.nav_tags) {
+            view.openTagsScreen();
         }
         view.setMenuItemSelection(itemId, SELECTED);
         view.closeDrawer();

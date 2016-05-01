@@ -12,4 +12,6 @@ public interface AddIngredientView extends WithPictureView {
     void setName(@NonNull String name);
 
     void setEnergyDensityValue(@NonNull String energyValue);
+
+    void openSelectTagScreen();
 }

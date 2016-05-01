@@ -22,6 +22,7 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewAct
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
 
@@ -148,5 +149,10 @@ public class OverviewActivity extends BaseActivity implements NavigationView.OnN
     @Override
     public void openSettingsScreen() {
         startActivity(new Intent(this, SettingsActivity.class));
+    }
+
+    @Override
+    public void openTagsScreen() {
+        startActivity(new Intent(this, TagsActivity.class));
     }
 }

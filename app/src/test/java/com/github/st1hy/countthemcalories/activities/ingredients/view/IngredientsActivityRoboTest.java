@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,4 +89,12 @@ public class IngredientsActivityRoboTest {
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
     }
+
+    @Test
+    public void testOpenCategories() throws Exception {
+        activity.navigationView.getMenu().performIdentifierAction(R.id.nav_tags, 0);
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, equalTo(new Intent(activity, TagsActivity.class)));
+    }
+
 }

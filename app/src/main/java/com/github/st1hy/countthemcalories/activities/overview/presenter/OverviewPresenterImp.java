@@ -34,6 +34,8 @@ public class OverviewPresenterImp implements OverviewPresenter {
             view.openIngredientsScreen();
         } else if (menuId == R.id.nav_settings) {
             view.openSettingsScreen();
+        } else if (menuId == R.id.nav_tags) {
+            view.openTagsScreen();
         }
         view.setMenuItemSelection(menuId, SELECTED);
         view.closeDrawer();

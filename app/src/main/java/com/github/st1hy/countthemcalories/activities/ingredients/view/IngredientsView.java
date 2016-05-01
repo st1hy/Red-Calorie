@@ -9,4 +9,6 @@ public interface IngredientsView extends DrawerView {
     void openNewIngredientScreen();
 
     void openSettingsScreen();
+
+    void openTagsScreen();
 }

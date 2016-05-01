@@ -95,13 +95,13 @@ public class WithPictureRoboTest {
         final AtomicBoolean isCalled = new AtomicBoolean(false);
         activity.showAlertDialog(R.string.add_ingredient_image_select_title, R.array.add_ingredient_image_select_options)
                 .subscribe(new Action1<Integer>() {
-                               @Override
-                               public void call(Integer integer) {
-                                   isCalled.set(true);
-                                   assertThat(integer, equalTo(1));
-                               }
-                           });
-                        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
+                    @Override
+                    public void call(Integer integer) {
+                        isCalled.set(true);
+                        assertThat(integer, equalTo(1));
+                    }
+                });
+        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         shadowAlertDialog.clickOnItem(1);
         assertTrue(isCalled.get());
@@ -173,12 +173,12 @@ public class WithPictureRoboTest {
         final AtomicBoolean isCalled = new AtomicBoolean(false);
         activity.showImage(mockedUri)
                 .subscribe(new Action1<RxPicasso.PicassoEvent>() {
-                               @Override
-                               public void call(RxPicasso.PicassoEvent event) {
-                                   isCalled.set(true);
-                                   assertThat(RxPicasso.PicassoEvent.SUCCESS , equalTo(event));
-                               }
-                           });
+                    @Override
+                    public void call(RxPicasso.PicassoEvent event) {
+                        isCalled.set(true);
+                        assertThat(RxPicasso.PicassoEvent.SUCCESS, equalTo(event));
+                    }
+                });
         assertTrue(isCalled.get());
         verify(mockedPicasso).load(mockedUri);
     }
@@ -200,7 +200,7 @@ public class WithPictureRoboTest {
                     @Override
                     public void call(RxPicasso.PicassoEvent event) {
                         isCalled.set(true);
-                        assertThat(RxPicasso.PicassoEvent.ERROR , equalTo(event));
+                        assertThat(RxPicasso.PicassoEvent.ERROR, equalTo(event));
                     }
                 });
         assertTrue(isCalled.get());

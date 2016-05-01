@@ -41,4 +41,12 @@
     <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
     <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
     <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
+    <string name="tags_title">Categories</string>
+    <string name="tags_new_tag_dialog">New tag</string>
+    <string name="tags_new_tag_hint">Tag name</string>
+    <string name="tags_search_title">Search categories</string>
+    <string name="tags_remove_dialog_title">Remove tag</string>
+    <string name="tags_remove_information">Do you really want to remove this tag?</string>
+    <string name="tags_no_tags_yet">No tags to display\nAdd new tag?</string>
+    <string name="nav_categories">Categories</string>
 </resources>

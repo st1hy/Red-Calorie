@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -94,6 +95,13 @@ public class OverviewActivityRoboTest {
         assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, equalTo(new Intent(activity, SettingsActivity.class)));
+    }
+
+    @Test
+    public void testOpenCategories() throws Exception {
+        activity.navigationView.getMenu().performIdentifierAction(R.id.nav_tags, 0);
+        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
+        assertThat(resultIntent, equalTo(new Intent(activity, TagsActivity.class)));
     }
 
     @Test

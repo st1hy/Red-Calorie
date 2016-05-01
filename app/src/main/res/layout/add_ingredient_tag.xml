@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="false"
             tools:text="Name"/>
         <ImageButton
             android:id="@+id/add_ingredient_category_remove"
