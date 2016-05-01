@@ -87,4 +87,10 @@ public class TagsActivityTest {
         activity.onStop();
         verify(presenterMock).onStop();
     }
+
+    @Test
+    public void testLongPressItemToRemove() throws Exception {
+
+
+    }
 }

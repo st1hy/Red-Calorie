@@ -103,13 +103,13 @@ public class TagsPresenterImpTest {
         final String tagName = "Tag name";
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
         List<Tag> tags = Collections.singletonList(new Tag(0L, tagName));
-        when(model.addTagAndGetAll(tagName)).thenReturn(Observable.just(tags));
+        when(model.addTagAndRefresh(tagName)).thenReturn(Observable.just(tags));
 
         presenter.onAddTagClicked(Observable.just(voidCallable().call()));
 
         verify(model).getNewTagDialogTitle();
         verify(view).showEditTextDialog(anyInt());
-        verify(model).addTagAndGetAll(tagName);
+        verify(model).addTagAndRefresh(tagName);
         verify(view).setDataRefreshing(false);
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
         verifyNoMoreInteractions(view, model);
@@ -129,7 +129,7 @@ public class TagsPresenterImpTest {
         testOnStartWithLoadedDataNotEmpty();
         final String tagName = "Tag name";
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
-        when(model.addTagAndGetAll(tagName)).thenThrow(new Error());
+        when(model.addTagAndRefresh(tagName)).thenThrow(new Error());
 
         presenter.onAddTagClicked(Observable.just(voidCallable().call()));
         //Doesn't crash is good
@@ -157,7 +157,6 @@ public class TagsPresenterImpTest {
         assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
     }
 
-
     @Test
     public void testOnBindViewHolder() throws Exception {
         TagViewHolder mockViewHolder = Mockito.mock(TagViewHolder.class);
@@ -167,5 +166,20 @@ public class TagsPresenterImpTest {
 
         verify(model).getItemAt(0);
         verify(mockViewHolder).setName(anyString());
+    }
+
+    @Test
+    public void testLongPressItem() throws Exception {
+        final int deletePosition = 0x34;
+        when(view.showRemoveTagDialog()).thenReturn(Observable.just(voidCallable().call()));
+        Tag tag = Mockito.mock(Tag.class);
+        when(model.getItemAt(deletePosition)).thenReturn(tag);
+
+        presenter.onItemLongPressed(deletePosition);
+
+        verify(view).showRemoveTagDialog();
+        verify(model).getItemAt(deletePosition);
+        verify(model).removeTagAndRefresh(tag);
+        verifyNoMoreInteractions(view, model);
     }
 }

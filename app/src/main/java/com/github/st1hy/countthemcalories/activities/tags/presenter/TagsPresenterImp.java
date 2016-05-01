@@ -30,7 +30,8 @@ import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel
 import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.NOT_STARTED;
 import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.STARTED;
 
-public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter {
+public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
+        OnItemLongPressed {
     private final TagsView view;
     private final TagsModel model;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -91,12 +92,13 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, null);
         view.setLayoutParams(parent.getLayoutParams());
-        return new TagViewHolder(view);
+        return new TagViewHolder(view, this);
     }
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
         holder.setName(model.getItemAt(position).getName());
+        holder.setPosition(position);
     }
 
     @Override
@@ -104,12 +106,18 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return model.getItemCount();
     }
 
+    @Override
+    public void onItemLongPressed(final int position) {
+        final Tag tag = model.getItemAt(position);
+        view.showRemoveTagDialog().subscribe(deleteTag(tag));
+    }
+
     @NonNull
     Func1<String, Observable<List<Tag>>> addTagRefresh() {
         return new Func1<String, Observable<List<Tag>>>() {
             @Override
             public Observable<List<Tag>> call(String tagName) {
-                return model.addTagAndGetAll(tagName);
+                return model.addTagAndRefresh(tagName);
             }
         };
     }
@@ -165,6 +173,16 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
             @Override
             public String call(String s) {
                 return s.trim();
+            }
+        };
+    }
+
+    @NonNull
+    Action1<Void> deleteTag(final Tag tag) {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                model.removeTagAndRefresh(tag).subscribe();
             }
         };
     }

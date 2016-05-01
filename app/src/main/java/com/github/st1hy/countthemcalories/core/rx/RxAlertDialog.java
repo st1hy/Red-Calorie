@@ -19,20 +19,27 @@ import rx.android.MainThreadSubscription;
 
 public class RxAlertDialog {
     private AlertDialog dialog;
-    private final OnClickListener itemClicked = new OnClickListener() {
+    private final OnClickListener clickListener = new OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (itemClickedDelegate != null) itemClickedDelegate.onClick(dialog, which);
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    if (positiveClickedDelegate != null)
+                        positiveClickedDelegate.onClick(dialog, which);
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    if (negativeClickedDelegate != null)
+                        negativeClickedDelegate.onClick(dialog, which);
+                    break;
+                default:
+                    if (itemClickedDelegate != null)
+                        itemClickedDelegate.onClick(dialog, which);
+            }
         }
     };
     private OnClickListener itemClickedDelegate;
-    private final OnClickListener positiveClicked = new OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            if (positiveClickedDelegate != null) positiveClickedDelegate.onClick(dialog, which);
-        }
-    };
     private OnClickListener positiveClickedDelegate;
+    private OnClickListener negativeClickedDelegate;
     private final OnCancelListener onCancel = new OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
@@ -66,6 +73,28 @@ public class RxAlertDialog {
                     @Override
                     protected void onUnsubscribe() {
                         itemClickedDelegate = null;
+                    }
+                });
+            }
+        });
+    }
+
+    @NonNull
+    public Observable<Void> observeNegativeClick() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                negativeClickedDelegate = new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!subscriber.isUnsubscribed())
+                            subscriber.onNext(null);
+                    }
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        negativeClickedDelegate = null;
                     }
                 });
             }
@@ -148,13 +177,13 @@ public class RxAlertDialog {
 
         @NonNull
         public RxAlertDialog.Builder items(@ArrayRes int items) {
-            builder.setItems(items, rxAlertDialog.itemClicked);
+            builder.setItems(items, rxAlertDialog.clickListener);
             return this;
         }
 
         @NonNull
         public RxAlertDialog.Builder items(@NonNull CharSequence[] items) {
-            builder.setItems(items, rxAlertDialog.itemClicked);
+            builder.setItems(items, rxAlertDialog.clickListener);
             return this;
         }
 
@@ -168,9 +197,20 @@ public class RxAlertDialog {
 
         @NonNull
         public RxAlertDialog.Builder positiveButton(@StringRes int name) {
-            builder.setPositiveButton(name, rxAlertDialog.positiveClicked);
+            builder.setPositiveButton(name, rxAlertDialog.clickListener);
             return this;
         }
+
+        public RxAlertDialog.Builder negativeButton(@StringRes int name) {
+            builder.setNegativeButton(name, rxAlertDialog.clickListener);
+            return this;
+        }
+
+        public RxAlertDialog.Builder message(@StringRes int messageId) {
+            builder.setMessage(messageId);
+            return this;
+        }
+
 
         @NonNull
         public RxAlertDialog show() {

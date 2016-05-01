@@ -85,15 +85,32 @@ public class TagsModel {
                 .doOnTerminate(onFinished());
     }
 
-    public Observable<List<Tag>> addTagAndGetAll(@NonNull String tagName) {
-        return Observable.fromCallable(callInTx(addTagAndGetAllCall(tagName)))
+    public Observable<List<Tag>> addTagAndRefresh(@NonNull String tagName) {
+        return Observable.fromCallable(callInTx(addTagAndRefreshCall(tagName)))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(onStarted())
                 .doOnTerminate(onFinished());
     }
 
+    public Observable<List<Tag>> removeTagAndRefresh(@NonNull Tag tag) {
+        return Observable.fromCallable(callInTx(removeTagAndRefreshCall(tag)))
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(onStarted())
+                .doOnTerminate(onFinished());
+    }
+
+    private Callable<List<Tag>> removeTagAndRefreshCall(final Tag tag) {
+        return new Callable<List<Tag>>() {
+            @Override
+            public List<Tag> call() throws Exception {
+                tag.delete();
+                return loadTags().call();
+            }
+        };
+    }
+
     @NonNull
-    private Callable<List<Tag>> addTagAndGetAllCall(@NonNull final String tagName) {
+    private Callable<List<Tag>> addTagAndRefreshCall(@NonNull final String tagName) {
         return new Callable<List<Tag>>() {
             @Override
             public List<Tag> call() throws Exception {
@@ -115,7 +132,6 @@ public class TagsModel {
             }
         };
     }
-
 
     @NonNull
     private Callable<List<Tag>> loadTags() {

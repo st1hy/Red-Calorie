@@ -22,6 +22,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItem;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -47,9 +48,8 @@ public class TagsActivityTest {
         onView(withText(tagName)).check(matches(isDisplayed()));
         onView(withText(android.R.string.ok)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(tagName)).check(matches(isDisplayed()));
         onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()))
-                .perform(actionOnItem(withText(tagName), longClick()));
+                .perform(actionOnItem(withChild(withText(tagName)), longClick()));
         onView(withText(R.string.tags_remove_dialog_title)).check(matches(isDisplayed()));
         onView(withText(R.string.tags_remove_information)).check(matches(isDisplayed()));
         onView(withText(android.R.string.no)).check(matches(isDisplayed()));

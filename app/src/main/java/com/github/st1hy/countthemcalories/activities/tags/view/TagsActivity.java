@@ -119,6 +119,18 @@ public class TagsActivity extends BaseActivity implements TagsView {
     }
 
     @Override
+    @NonNull
+    public Observable<Void> showRemoveTagDialog() {
+        return RxAlertDialog.Builder.with(this)
+                .title(R.string.tags_remove_dialog_title)
+                .message(R.string.tags_remove_information)
+                .positiveButton(android.R.string.yes)
+                .negativeButton(android.R.string.no)
+                .show()
+                .observePositiveClick();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         presenter.onStart();
