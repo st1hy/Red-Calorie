@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 
 import rx.Observable;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -36,7 +38,7 @@ public class WithPicturePresenterImpTest {
     private PermissionsHelper permissionsHelper;
     @Mock
     private WithPictureModel model;
-    private WithPicturePresenter presenter;
+    private WithPicturePresenterImp presenter;
 
 
     @Before
@@ -77,5 +79,13 @@ public class WithPicturePresenterImpTest {
 
         presenter.onImageReceived(data);
         verify(view, only()).showImage(data);
+    }
+
+    @Test
+    public void testOnStop() throws Exception {
+        presenter.onStop();
+
+        assertThat(presenter.subscriptions.isUnsubscribed(), equalTo(false));
+        assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
     }
 }

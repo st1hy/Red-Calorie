@@ -217,7 +217,7 @@ public class TagsModel {
         return filteredSortedByNameQuery;
     }
 
-    public Observable<List<Tag>>  clear() {
+    public Observable<List<Tag>> clear() {
         return Observable.fromCallable(callInTx(removeAll()))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(onStarted())

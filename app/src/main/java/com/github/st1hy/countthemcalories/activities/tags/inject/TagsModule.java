@@ -1,9 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.tags.inject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImp;
@@ -42,12 +44,18 @@ public class TagsModule {
 
     @Provides
     @PerActivity
-    public TagsPresenterImp providePresentedAdapter(TagsView view, TagsModel model) {
-        return new TagsPresenterImp(view, model);
+    public TagsPresenterImp providePresentedAdapter(TagsView view, TagsModel model, TagsActivityModel activityModel) {
+        return new TagsPresenterImp(view, model, activityModel);
     }
     @Provides
     @PerActivity
     public RecyclerView.Adapter provideAdapter(TagsPresenterImp presenter) {
         return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    public Intent provideIntent() {
+        return activity.getIntent();
     }
 }

@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -107,5 +109,13 @@ public class SettingsPresenterImpTest {
         subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KJ_AT_G));
         presenter.onStop();
         verify(view, only()).setSolidUnit(anyString());
+    }
+
+    @Test
+    public void testOnStop() throws Exception {
+        presenter.onStop();
+
+        assertThat(presenter.subscriptions.isUnsubscribed(), equalTo(false));
+        assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
     }
 }

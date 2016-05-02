@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
@@ -35,16 +36,19 @@ import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel
 import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.STARTED;
 
 public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
-        OnItemLongPressed {
+        OnItemInteraction {
     final TagsView view;
     final TagsModel model;
+    final TagsActivityModel activityModel;
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public TagsPresenterImp(@NonNull TagsView view,
-                            @NonNull TagsModel model) {
+                            @NonNull TagsModel model,
+                            @NonNull TagsActivityModel activityModel) {
         this.view = view;
         this.model = model;
+        this.activityModel = activityModel;
     }
 
     @Override
@@ -80,7 +84,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public void onStop() {
-        subscriptions.unsubscribe();
+        subscriptions.clear();
     }
 
     @Override
@@ -133,9 +137,16 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     }
 
     @Override
-    public void onItemLongPressed(final int position) {
+    public void onItemLongClicked(final int position) {
         final Tag tag = model.getItemAt(position);
         view.showRemoveTagDialog().subscribe(deleteTag(tag));
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        if (activityModel.isInSelectMode()) {
+            view.setResultAndReturn(model.getItemAt(position).getId());
+        }
     }
 
     @NonNull

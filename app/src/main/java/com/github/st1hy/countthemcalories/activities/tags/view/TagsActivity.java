@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,8 @@ import rx.functions.Func1;
 
 public class TagsActivity extends BaseActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
+    public static final String EXTRA_TAG_ID = "extra tag id";
+
     TagsComponent component;
 
     @Inject
@@ -137,6 +140,14 @@ public class TagsActivity extends BaseActivity implements TagsView {
     @Override
     public void scrollToPosition(int position) {
         recyclerView.scrollToPosition(position);
+    }
+
+    @Override
+    public void setResultAndReturn(long tagId) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA_TAG_ID, tagId);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     @Override

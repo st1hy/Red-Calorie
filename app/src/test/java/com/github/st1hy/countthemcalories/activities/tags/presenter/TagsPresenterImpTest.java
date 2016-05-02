@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
@@ -21,8 +22,9 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -36,14 +38,15 @@ public class TagsPresenterImpTest {
 
     private TagsView view;
     private TagsModel model;
+    private TagsActivityModel activityModel;
     private TagsPresenterImp presenter;
-
 
     @Before
     public void setup() {
         view = Mockito.mock(TagsView.class);
         model = Mockito.mock(TagsModel.class);
-        presenter = new TagsPresenterImp(view, model);
+        activityModel = Mockito.mock(TagsActivityModel.class);
+        presenter = new TagsPresenterImp(view, model, activityModel);
     }
 
     @Test
@@ -181,7 +184,7 @@ public class TagsPresenterImpTest {
         when(model.getItemAt(deletePosition)).thenReturn(tag);
         when(model.removeTagAndRefresh(any(Tag.class))).thenReturn(Observable.just(Collections.<Tag>emptyList()));
 
-        presenter.onItemLongPressed(deletePosition);
+        presenter.onItemLongClicked(deletePosition);
 
         verify(view).showRemoveTagDialog();
         verify(model).getItemAt(deletePosition);
@@ -197,7 +200,9 @@ public class TagsPresenterImpTest {
 
         presenter.onStart();
         presenter.onStop();
-        assertTrue(presenter.subscriptions.isUnsubscribed());
+
+        assertThat(presenter.subscriptions.isUnsubscribed(), equalTo(false));
+        assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
     }
 
     @Test

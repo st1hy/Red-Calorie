@@ -20,10 +20,10 @@ import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class SettingsPresenterImp implements SettingsPresenter {
-    private final SettingsView view;
-    private final SettingsModel model;
+    final SettingsView view;
+    final SettingsModel model;
 
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
+    final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public SettingsPresenterImp(@NonNull SettingsView view,
@@ -99,6 +99,6 @@ public class SettingsPresenterImp implements SettingsPresenter {
 
     @Override
     public void onStop() {
-        subscriptions.unsubscribe();
+        subscriptions.clear();
     }
 }
