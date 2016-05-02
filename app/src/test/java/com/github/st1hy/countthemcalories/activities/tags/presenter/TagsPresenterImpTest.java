@@ -1,45 +1,48 @@
 package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
 
+import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RxMockitoJUnitRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class TagsPresenterImpTest {
 
-    @Mock
     private TagsView view;
-    @Mock
     private TagsModel model;
     private TagsPresenterImp presenter;
 
 
     @Before
     public void setup() {
+        view = Mockito.mock(TagsView.class);
+        model = Mockito.mock(TagsModel.class);
         presenter = new TagsPresenterImp(view, model);
     }
 
@@ -61,6 +64,7 @@ public class TagsPresenterImpTest {
     public void testOnStartWithLoadedDataEmpty() throws Exception {
         when(model.getDbProcessingObservable()).thenReturn(Observable.just(TagsModel.DbProcessing.FINISHED));
         when(model.getItemCount()).thenReturn(0);
+        when(model.getTags()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
 
         presenter.onStart();
 
@@ -101,9 +105,9 @@ public class TagsPresenterImpTest {
     public void testAddTagClick() throws Exception {
         testOnStartWithLoadedDataNotEmpty();
         final String tagName = "Tag name";
+        final int position = 230;
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
-        List<Tag> tags = Collections.singletonList(new Tag(0L, tagName));
-        when(model.addTagAndRefresh(tagName)).thenReturn(Observable.just(tags));
+        when(model.addTagAndRefresh(tagName)).thenReturn(Observable.just(position));
 
         presenter.onAddTagClicked(Observable.just(voidCallable().call()));
 
@@ -111,6 +115,7 @@ public class TagsPresenterImpTest {
         verify(view).showEditTextDialog(anyInt());
         verify(model).addTagAndRefresh(tagName);
         verify(view).setDataRefreshing(false);
+        verify(view).scrollToPosition(position);
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
         verifyNoMoreInteractions(view, model);
     }
@@ -174,6 +179,7 @@ public class TagsPresenterImpTest {
         when(view.showRemoveTagDialog()).thenReturn(Observable.just(voidCallable().call()));
         Tag tag = Mockito.mock(Tag.class);
         when(model.getItemAt(deletePosition)).thenReturn(tag);
+        when(model.removeTagAndRefresh(any(Tag.class))).thenReturn(Observable.just(Collections.<Tag>emptyList()));
 
         presenter.onItemLongPressed(deletePosition);
 
@@ -182,4 +188,26 @@ public class TagsPresenterImpTest {
         verify(model).removeTagAndRefresh(tag);
         verifyNoMoreInteractions(view, model);
     }
+
+    @Test
+    public void testOnStop() throws Exception {
+        when(model.getDbProcessingObservable()).thenReturn(Observable.just(TagsModel.DbProcessing.FINISHED));
+        when(model.getItemCount()).thenReturn(0);
+        when(model.getTags()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+
+        presenter.onStart();
+        presenter.onStop();
+        assertTrue(presenter.subscriptions.isUnsubscribed());
+    }
+
+    @Test
+    public void testOnSearch() throws Exception {
+        when(model.getTagsFiltered("test")).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+
+        presenter.onSearch(Observable.<CharSequence>just("t","te","tes","test"));
+
+        verify(model).getTagsFiltered("test");
+        verifyNoMoreInteractions(view, model);
+    }
+
 }

@@ -12,4 +12,6 @@ public interface TagsPresenter {
     void onStop();
 
     void onRefresh(@NonNull Observable<Void> refreshes);
+
+    void onSearch(@NonNull Observable<CharSequence> observable);
 }

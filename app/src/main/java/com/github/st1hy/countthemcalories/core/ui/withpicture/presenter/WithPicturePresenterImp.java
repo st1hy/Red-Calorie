@@ -49,7 +49,7 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
     }
 
     public void onStop() {
-        subscriptions.clear();
+        subscriptions.unsubscribe();
     }
 
     @NonNull

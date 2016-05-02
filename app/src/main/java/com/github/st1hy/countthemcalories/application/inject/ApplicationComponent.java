@@ -27,7 +27,7 @@ public interface ApplicationComponent {
 
     SettingsModel getSettingsModel();
 
-    TagsModel provideTagsModel();
+    TagsModel getTagsModel();
 
     void inject(CaloriesCounterApplication application);
 

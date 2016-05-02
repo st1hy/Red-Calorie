@@ -23,4 +23,6 @@ public interface TagsView extends DialogView {
      */
     @NonNull
     Observable<Void> showRemoveTagDialog();
+
+    void scrollToPosition(int position);
 }

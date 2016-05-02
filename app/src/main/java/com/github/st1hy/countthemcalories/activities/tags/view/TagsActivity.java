@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsComponent;
@@ -21,6 +22,7 @@ import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxSearchView;
 
 import javax.inject.Inject;
 
@@ -104,6 +106,8 @@ public class TagsActivity extends BaseActivity implements TagsView {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.tags_menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        presenter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }
 
@@ -128,6 +132,11 @@ public class TagsActivity extends BaseActivity implements TagsView {
                 .negativeButton(android.R.string.no)
                 .show()
                 .observePositiveClick();
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        recyclerView.scrollToPosition(position);
     }
 
     @Override

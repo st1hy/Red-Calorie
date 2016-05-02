@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
@@ -32,7 +33,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class TagsActivityTest {
+public class TagsActivityRoboTest {
 
     private TagsActivity activity;
     private TagsPresenter presenterMock;
@@ -89,8 +90,26 @@ public class TagsActivityTest {
     }
 
     @Test
-    public void testLongPressItemToRemove() throws Exception {
+    public void testShowRemoveDialog() throws Exception {
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
+        activity.showRemoveTagDialog()
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        isCalled.set(true);
+                    }
+                });
+        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
+        assertThat(shadowAlertDialog, notNullValue());
+        ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
+        assertTrue(isCalled.get());
+    }
 
+    @Test
+    public void testScrollToPosition() throws Exception {
+        activity.recyclerView = Mockito.mock(RecyclerView.class);
+        activity.scrollToPosition(5);
+        verify(activity.recyclerView).scrollToPosition(5);
     }
 }
