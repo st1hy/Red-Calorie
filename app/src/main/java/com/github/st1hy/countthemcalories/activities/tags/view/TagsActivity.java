@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,8 +9,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
 
@@ -24,12 +27,14 @@ import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class TagsActivity extends BaseActivity implements TagsView {
@@ -97,6 +102,10 @@ public class TagsActivity extends BaseActivity implements TagsView {
                 .show();
         final EditText text = (EditText) assertNotNull(rxAlertDialog.getCustomView())
                 .findViewById(R.id.tags_dialog_name);
+        text.setOnKeyListener(closeOnEnter(rxAlertDialog));
+        RxTextView.editorActions(text)
+                .filter(imeActionDone())
+                .subscribe(closeDialog(rxAlertDialog));
         return rxAlertDialog.observePositiveClick()
                 .map(new Func1<Void, String>() {
                     @Override
@@ -105,7 +114,6 @@ public class TagsActivity extends BaseActivity implements TagsView {
                     }
                 });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -161,5 +169,38 @@ public class TagsActivity extends BaseActivity implements TagsView {
     protected void onStop() {
         super.onStop();
         presenter.onStop();
+    }
+
+    @NonNull
+    private View.OnKeyListener closeOnEnter(final RxAlertDialog rxAlertDialog) {
+        return new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    closeDialog(rxAlertDialog).call(0);
+                }
+                return false;
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Integer, Boolean> imeActionDone() {
+        return new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer actionId) {
+                return actionId == EditorInfo.IME_ACTION_DONE;
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<Integer> closeDialog(final RxAlertDialog rxAlertDialog) {
+        return new Action1<Integer>() {
+            @Override
+            public void call(Integer actionId) {
+                rxAlertDialog.getDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+            }
+        };
     }
 }

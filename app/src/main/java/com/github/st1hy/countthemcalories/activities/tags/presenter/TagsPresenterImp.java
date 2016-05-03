@@ -94,7 +94,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onSearch(@NonNull Observable<CharSequence> observable) {
         Observable<List<Tag>> listObservable = observable
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .debounce(250, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence text) {

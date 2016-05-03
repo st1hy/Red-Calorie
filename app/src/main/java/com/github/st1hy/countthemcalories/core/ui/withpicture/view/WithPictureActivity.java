@@ -78,24 +78,6 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
     protected void onStop() {
         super.onStop();
         presenter.onStop();
-        Timber.d("On stop!");
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Timber.d("On start!");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Timber.d("On pause!");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Timber.d("On resume!");
-    }
 }

@@ -10,6 +10,9 @@
         android:id="@+id/tags_dialog_name"
         android:orientation="vertical"
         android:hint="@string/tags_new_tag_hint"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:lines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <requestFocus/>
