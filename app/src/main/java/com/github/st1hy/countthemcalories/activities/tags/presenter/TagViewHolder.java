@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.OnItemInteraction;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

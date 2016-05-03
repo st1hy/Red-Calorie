@@ -9,11 +9,11 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.SearchView;
 
+import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
-import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matchers;
@@ -49,7 +49,6 @@ public class TagsActivityTest {
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<TagsActivity> main = new IntentsTestRule<>(TagsActivity.class, false, false);
     private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
-    private TagDao tagDao;
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
@@ -57,7 +56,7 @@ public class TagsActivityTest {
     @Before
     public void setUp() throws Exception {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
-        tagDao = component.getDaoSession().getTagDao();
+        TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
         tagDao.insertInTx(new Tag(null, exampleTags[0]), new Tag(null, exampleTags[1]), new Tag(null, exampleTags[2]));
         assertEquals(3, tagDao.loadAll().size());
@@ -108,17 +107,5 @@ public class TagsActivityTest {
         onView(withText(exampleTags[0])).check(matches(isDisplayed()));
         onView(withText(exampleTags[1])).check(matches(isDisplayed()));
         onView(withText(exampleTags[2])).check(doesNotExist());
-    }
-
-
-    @Test
-    public void testActivityReturnsTagWithIntent() throws Exception {
-        Intent intent = new Intent(getTargetContext(), TagsActivity.class);
-        intent.setAction(TagsActivity.ACTION_PICK_TAG);
-        main.launchActivity(intent);
-
-        onView(withText(exampleTags[2])).check(matches(isDisplayed()))
-                .perform(click());
-        //TODO
     }
 }

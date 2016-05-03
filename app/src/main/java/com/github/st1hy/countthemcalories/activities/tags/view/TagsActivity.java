@@ -36,7 +36,7 @@ public class TagsActivity extends BaseActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
     public static final String EXTRA_TAG_ID = "extra tag id";
 
-    TagsComponent component;
+    protected TagsComponent component;
 
     @Inject
     TagsPresenter presenter;
@@ -53,6 +53,7 @@ public class TagsActivity extends BaseActivity implements TagsView {
     View notTagsButton;
     @Bind(R.id.tags_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
+    SearchView searchView;
 
     @NonNull
     protected TagsComponent getComponent() {
@@ -109,7 +110,7 @@ public class TagsActivity extends BaseActivity implements TagsView {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.tags_menu, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         presenter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }

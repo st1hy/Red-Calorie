@@ -5,7 +5,6 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -213,6 +212,20 @@ public class TagsPresenterImpTest {
 
         verify(model).getTagsFiltered("test");
         verifyNoMoreInteractions(view, model);
+    }
+
+    @Test
+    public void testOnItemClicked() throws Exception {
+        final int position = 0x420;
+        when(activityModel.isInSelectMode()).thenReturn(true);
+        final Tag tag = new Tag(0x231L, "");
+        when(model.getItemAt(position)).thenReturn(tag);
+
+        presenter.onItemClicked(position);
+
+        verify(activityModel).isInSelectMode();
+        verify(model).getItemAt(position);
+        verify(view).setResultAndReturn(tag.getId());
     }
 
 }

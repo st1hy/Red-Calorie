@@ -1,14 +1,14 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
+import android.content.Intent;
 import android.widget.EditText;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,14 +19,10 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import rx.functions.Action1;
-
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -36,13 +32,14 @@ import static org.robolectric.Shadows.shadowOf;
 public class TagsActivityRoboTest {
 
     private TagsActivity activity;
-    private TagsPresenter presenterMock;
 
     @Before
     public void setup() {
-        activity = Robolectric.setupActivity(TagsActivity.class);
-        presenterMock = Mockito.mock(TagsPresenter.class);
-        activity.presenter = presenterMock;
+        Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
+        activity = Robolectric.buildActivity(TagsTestActivity.class)
+                .withIntent(intent)
+                .setup()
+                .get();
     }
 
     @Test
@@ -54,19 +51,11 @@ public class TagsActivityRoboTest {
         assertThat(activity.component, notNullValue());
     }
 
-    @SuppressLint("SetTextI18n")
     @Test
-    public void testShowEditTextDialog() throws Exception {
+    public void testAddNewItem() throws Exception {
+        activity.fab.performClick();
         final String testName = "test name";
-        final AtomicBoolean isCalled = new AtomicBoolean(false);
-        activity.showEditTextDialog(R.string.tags_new_tag_dialog)
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        isCalled.set(true);
-                        assertEquals(testName, s);
-                    }
-                });
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
@@ -74,42 +63,57 @@ public class TagsActivityRoboTest {
         assertThat(activity.getString(R.string.tags_new_tag_dialog), equalTo(shadowAlertDialog.getTitle()));
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
-        assertTrue(isCalled.get());
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
     }
 
     @Test
     public void testStart() throws Exception {
+        TagsPresenter presenterMock = Mockito.mock(TagsPresenter.class);
+        activity.presenter = presenterMock;
         activity.onStart();
         verify(presenterMock).onStart();
     }
 
     @Test
     public void testOnStop() throws Exception {
+        TagsPresenter presenterMock = Mockito.mock(TagsPresenter.class);
+        activity.presenter = presenterMock;
         activity.onStop();
         verify(presenterMock).onStop();
     }
 
     @Test
-    public void testShowRemoveDialog() throws Exception {
-        final AtomicBoolean isCalled = new AtomicBoolean(false);
-        activity.showRemoveTagDialog()
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        isCalled.set(true);
-                    }
-                });
+    public void testRemoveItem() throws Exception {
+        activity.recyclerView.getChildAt(0).performLongClick();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
-        assertTrue(isCalled.get());
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+    }
+
+
+    @Test
+    public void testSearch() throws Exception {
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+
+        activity.searchView.performClick();
+        activity.searchView.setQuery("Tag", true);
+
+        synchronized (this) {
+            wait(600); //Debounce on query
+        }
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
     }
 
     @Test
-    public void testScrollToPosition() throws Exception {
-        activity.recyclerView = Mockito.mock(RecyclerView.class);
-        activity.scrollToPosition(5);
-        verify(activity.recyclerView).scrollToPosition(5);
+    public void testSelectTag() throws Exception {
+        activity.recyclerView.getChildAt(0).performClick();
+        assertTrue(shadowOf(activity).isFinishing());
+        Intent resultIntent = shadowOf(activity).getResultIntent();
+        assertThat(resultIntent, CoreMatchers.notNullValue());
+        assertThat(resultIntent.getLongExtra(TagsActivity.EXTRA_TAG_ID, -1L), not(equalTo(-1L)));
     }
 }
