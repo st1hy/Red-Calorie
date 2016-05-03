@@ -55,7 +55,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="@drawable/settings_separator"/>
+        android:background="@drawable/tags_separator"/>
     <LinearLayout
         android:id="@+id/settings_energy_density_solid"
         android:layout_width="match_parent"
@@ -101,5 +101,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="@drawable/settings_separator"/>
+        android:background="@drawable/tags_separator"/>
 </LinearLayout>

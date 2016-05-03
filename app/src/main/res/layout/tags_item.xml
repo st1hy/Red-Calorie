@@ -5,15 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?listPreferredItemHeightSmall"
-    style="@style/Base.Widget.AppCompat.Button.Borderless"
-    android:gravity="center|start"
     >
-    <TextView
-        android:id="@+id/tags_item_name"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:id="@+id/tag_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textIsSelectable="false"
-        style="@style/Base.TextAppearance.AppCompat"
-        android:textSize="16sp"
-        tools:text="My tag name"/>
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_margin="0dp">
+        <TextView
+            android:id="@+id/tags_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            style="@style/Base.TextAppearance.AppCompat"
+            android:textSize="16sp"
+            android:layout_gravity="center_vertical"
+            tools:text="My tag name"/>
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/tags_separator"/>
 </LinearLayout>

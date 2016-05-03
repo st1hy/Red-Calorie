@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolderSpace;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.BuildConfig;
@@ -36,6 +39,10 @@ import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel
 
 public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
         OnItemInteraction {
+    static final int bottomSpaceItem = 1;
+    static final int item_layout = R.layout.tags_item;
+    static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
+
     final TagsView view;
     final TagsModel model;
     final TagsActivityModel activityModel;
@@ -114,25 +121,36 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.tags_item;
+        if (position < model.getItemCount()) {
+            return item_layout;
+        } else {
+            return item_bottom_space_layout;
+        }
     }
 
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, null);
-        view.setLayoutParams(parent.getLayoutParams());
-        return new TagViewHolder(view, this);
+        if (viewType == item_layout) {
+            view.setLayoutParams(parent.getLayoutParams());
+            return new TagItemViewHolder(view, this);
+        } else {
+            return new EmptySpaceViewHolderSpace(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
-        holder.setName(model.getItemAt(position).getName());
-        holder.setPosition(position);
+        if (holder instanceof TagItemViewHolder) {
+            TagItemViewHolder itemViewHolder = (TagItemViewHolder) holder;
+            itemViewHolder.setName(model.getItemAt(position).getName());
+            itemViewHolder.setPosition(position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return model.getItemCount();
+        return model.getItemCount() + bottomSpaceItem;
     }
 
     @Override

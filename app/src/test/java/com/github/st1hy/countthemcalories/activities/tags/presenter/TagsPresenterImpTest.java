@@ -5,6 +5,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -161,12 +162,14 @@ public class TagsPresenterImpTest {
 
     @Test
     public void testGetItemType() throws Exception {
+        when(model.getItemCount()).thenReturn(1);
         assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
+        assertEquals(R.layout.tags_item_bottom_space, presenter.getItemViewType(1));
     }
 
     @Test
     public void testOnBindViewHolder() throws Exception {
-        TagViewHolder mockViewHolder = Mockito.mock(TagViewHolder.class);
+        TagItemViewHolder mockViewHolder = Mockito.mock(TagItemViewHolder.class);
         when(model.getItemAt(0)).thenReturn(Mockito.mock(Tag.class));
 
         presenter.onBindViewHolder(mockViewHolder, 0);
