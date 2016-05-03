@@ -13,6 +13,8 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.E
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
+import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
+import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.BuildConfig;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -33,9 +35,9 @@ import rx.internal.operators.OnSubscribeRedo;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.FINISHED;
-import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.NOT_STARTED;
-import static com.github.st1hy.countthemcalories.activities.tags.model.TagsModel.DbProcessing.STARTED;
+import static com.github.st1hy.countthemcalories.core.event.DbProcessing.FINISHED;
+import static com.github.st1hy.countthemcalories.core.event.DbProcessing.NOT_STARTED;
+import static com.github.st1hy.countthemcalories.core.event.DbProcessing.STARTED;
 
 public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
         OnItemInteraction {
@@ -162,7 +164,8 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onItemClicked(int position) {
         if (activityModel.isInSelectMode()) {
-            view.setResultAndReturn(model.getItemAt(position).getId());
+            Tag tag = model.getItemAt(position);
+            view.setResultAndReturn(tag.getId(), tag.getName());
         }
     }
 
@@ -171,22 +174,22 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Func1<String, Observable<Integer>>() {
             @Override
             public Observable<Integer> call(String tagName) {
-                return model.addTagAndRefresh(tagName);
+                return model.addNewAndRefresh(new Tag(null, tagName));
             }
         };
     }
 
     @NonNull
-    Action1<TagsModel.DbProcessing> onDbProcessing() {
-        return new Action1<TagsModel.DbProcessing>() {
+    Action1<DbProcessing> onDbProcessing() {
+        return new Action1<DbProcessing>() {
             @Override
-            public void call(TagsModel.DbProcessing dbProcessing) {
+            public void call(DbProcessing dbProcessing) {
                 if (BuildConfig.DEBUG) Timber.v("Db processing %s", dbProcessing);
                 view.setNoTagsButtonVisibility(Visibility.of(
                         dbProcessing == FINISHED && model.getItemCount() == 0
                 ));
                 view.setDataRefreshing(dbProcessing == STARTED);
-                if (dbProcessing == NOT_STARTED) model.getTags().subscribe();
+                if (dbProcessing == NOT_STARTED) model.getAllObservable().subscribe();
                 if (dbProcessing == FINISHED) notifyDataSetChanged();
             }
         };
@@ -207,7 +210,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Func1<Void, Observable<List<Tag>>>() {
             @Override
             public Observable<List<Tag>> call(Void aVoid) {
-                return model.getTags();
+                return model.getAllObservable();
             }
         };
     }
@@ -237,7 +240,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                model.removeTagAndRefresh(tag).subscribe();
+                model.removeAndRefresh(tag).subscribe();
             }
         };
     }
@@ -247,7 +250,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Func1<CharSequence, Observable<List<Tag>>>() {
             @Override
             public Observable<List<Tag>> call(CharSequence text) {
-                return model.getTagsFiltered(text.toString());
+                return model.getAllFiltered(text.toString());
             }
         };
     }

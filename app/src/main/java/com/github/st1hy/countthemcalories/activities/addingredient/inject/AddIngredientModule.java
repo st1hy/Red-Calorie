@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
@@ -61,5 +63,11 @@ public class AddIngredientModule {
     @PerActivity
     public WithPicturePresenter providePicturePresenter(AddIngredientPresenter presenter) {
         return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    public IngredientTagsModel provideIngredientTagModel(TagsModel tagsModel) {
+        return new IngredientTagsModel(tagsModel);
     }
 }

@@ -27,7 +27,6 @@ import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyD
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -52,8 +51,12 @@ public class AddIngredientPresenterImpTest {
 
     @Test
     public void testSave() {
+        when(model.canCreateIngredient()).thenReturn(true);
+        when(model.insertIntoDatabase()).thenReturn(Observable.<Void>just(null));
         presenter.onClickedOnAction(R.id.action_save);
-        verify(view, only()).openIngredientsScreen();
+
+        verify(model).insertIntoDatabase();
+        verify(view).setResultAndFinish();
     }
 
     @Test
@@ -80,12 +83,6 @@ public class AddIngredientPresenterImpTest {
     }
 
     @Test
-    public void testOnNameChanged() throws Exception {
-        presenter.onNameTextChanges(Observable.<CharSequence>just("test"));
-        verify(model).setName("test");
-    }
-
-    @Test
     public void testOnStart() throws Exception {
         final String testUnit = "test unit";
         final String testName = "test name";
@@ -103,17 +100,25 @@ public class AddIngredientPresenterImpTest {
         when(model.getEnergyValue()).thenReturn(testEnergy);
         when(model.getImageUri()).thenReturn(testUri);
         when(view.showImage(any(Uri.class))).thenReturn(Observable.just(RxPicasso.PicassoEvent.SUCCESS));
+        when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name"));
+        when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just("Value"));
 
         presenter.onStart();
+
+        verify(model).getUnitObservable();
+        verify(model).unitAsString();
+        verify(model).getName();
+        verify(model).getEnergyValue();
+        verify(model).getImageUri();
         verify(view).setName(testName);
         verify(view).setEnergyDensityValue(testEnergy);
         verify(view).setSelectedUnitName(testUnit);
         verify(view).showImage(testUri);
-    }
-
-    @Test
-    public void testClickedOnAction() throws Exception {
-        presenter.onClickedOnAction(R.id.action_save);
-        verify(view).openIngredientsScreen();
+        verify(model).setImageUri(testUri);
+        verify(view).getNameObservable();
+        verify(model).setName("Name");
+        verify(view).getValueObservable();
+        verify(model).setEnergyValue("Value");
+        verifyNoMoreInteractions(view, model);
     }
 }

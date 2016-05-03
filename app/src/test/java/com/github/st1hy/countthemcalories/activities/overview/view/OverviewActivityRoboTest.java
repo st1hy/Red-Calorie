@@ -10,15 +10,17 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivit
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.fakes.RoboMenu;
+
+import rx.plugins.TestRxPlugins;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -29,13 +31,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RxRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class OverviewActivityRoboTest {
     private OverviewActivity activity;
 
     @Before
     public void setup() {
+        TestRxPlugins.registerImmediateHook();
         activity = Robolectric.setupActivity(OverviewActivity.class);
     }
 

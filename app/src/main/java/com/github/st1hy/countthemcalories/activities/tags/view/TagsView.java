@@ -26,5 +26,5 @@ public interface TagsView extends DialogView {
 
     void scrollToPosition(int position);
 
-    void setResultAndReturn(long tagId);
+    void setResultAndReturn(long tagId, @NonNull String tagName);
 }

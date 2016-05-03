@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.application.inject;
 import android.app.Application;
 import android.content.Context;
 
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -28,6 +29,8 @@ public interface ApplicationComponent {
     SettingsModel getSettingsModel();
 
     TagsModel getTagsModel();
+
+    IngredientTypesModel getIngredientTypesModel();
 
     void inject(CaloriesCounterApplication application);
 

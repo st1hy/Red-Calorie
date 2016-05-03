@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
+import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -16,10 +17,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
+
+import rx.plugins.TestRxPlugins;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RxRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class TagsActivityRoboTest {
 
@@ -38,6 +40,7 @@ public class TagsActivityRoboTest {
 
     @Before
     public void setup() {
+        TestRxPlugins.registerImmediateHook();
         Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
         activity = Robolectric.buildActivity(TagsTestActivity.class)
                 .withIntent(intent)
@@ -121,19 +124,6 @@ public class TagsActivityRoboTest {
         assertThat(shadowAlertDialog, notNullValue());
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
-    }
-
-    @Test
-    public void testSearch() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-
-        activity.searchView.performClick();
-        activity.searchView.setQuery("Tag", true);
-
-        synchronized (this) {
-            wait(600); //Debounce on query
-        }
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 

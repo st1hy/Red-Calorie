@@ -3,16 +3,17 @@ package com.github.st1hy.countthemcalories.core.ui;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
+import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import rx.functions.Action1;
+import rx.plugins.TestRxPlugins;
 import rx.schedulers.Schedulers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,13 +21,14 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Ignore("request permission is not supported by Robolectric")
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RxRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class BaseActivityRoboTest {
     private BaseActivity activity;
 
     @Before
     public void setup() {
+        TestRxPlugins.registerImmediateHook();
         activity = Robolectric.setupActivity(BaseActivityImp.class);
     }
 

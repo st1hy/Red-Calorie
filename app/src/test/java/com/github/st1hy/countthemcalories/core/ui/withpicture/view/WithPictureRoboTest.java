@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -23,7 +24,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -31,6 +31,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import rx.functions.Action1;
+import rx.plugins.TestRxPlugins;
 
 import static android.app.Activity.RESULT_OK;
 import static android.support.test.espresso.intent.matcher.BundleMatchers.hasEntry;
@@ -53,7 +54,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RxRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class WithPictureRoboTest {
 
@@ -66,6 +67,7 @@ public class WithPictureRoboTest {
 
     @Before
     public void setup() {
+        TestRxPlugins.registerImmediateHook();
         WithPictureActivityTest activity = Robolectric.setupActivity(WithPictureActivityTest.class);
         presenterMock = Mockito.mock(AddMealPresenterImp.class);
         activity.presenter = presenterMock;

@@ -14,21 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
+import com.jakewharton.rxbinding.view.RxMenuItem;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 import timber.log.Timber;
 
 public class AddIngredientActivity extends WithPictureActivity implements AddIngredientView {
@@ -38,7 +40,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Inject
     AddIngredientPresenter presenter;
     @Inject
-    IngredientTagsAdapter ingredientTagsAdapter;
+    IngredientTagsAdapter tagsPresenter;
 
     @Bind(R.id.add_ingredient_toolbar)
     Toolbar toolbar;
@@ -91,10 +93,8 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
                 presenter.onSelectUnitClicked();
             }
         });
-        presenter.onNameTextChanges(RxTextView.textChanges(name));
-        presenter.onEnergyValueChanges(RxTextView.textChanges(energyDensityValue));
 
-        tagsRecycler.setAdapter(ingredientTagsAdapter);
+        tagsRecycler.setAdapter(tagsPresenter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -124,14 +124,13 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onClickedOnAction(item.getItemId()) || super.onOptionsItemSelected(item);
+        return presenter.onClickedOnAction(item.getItemId()) ||  super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void openIngredientsScreen() {
-        Intent intent = new Intent(this, IngredientsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+    public void setResultAndFinish() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override
@@ -157,10 +156,27 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
+    public Observable<CharSequence> getNameObservable() {
+        return RxTextView.textChanges(name);
+    }
+
+    @Override
+    public Observable<CharSequence> getValueObservable() {
+        return RxTextView.textChanges(energyDensityValue);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PICK_TAG) {
-            Timber.d("Tag intent returned %s", data);
-            //TODO
+            if (resultCode == RESULT_OK) {
+                long tagId = data.getLongExtra(TagsActivity.EXTRA_TAG_ID, -1);
+                String tagName = data.getStringExtra(TagsActivity.EXTRA_TAG_NAME);
+                if (tagId != -1 && tagName != null) {
+                    tagsPresenter.onNewTagAdded(tagId, tagName);
+                } else if (BuildConfig.DEBUG)
+                    Timber.d("Tag intent returned but with wrong data; id: %s, name: '%s'",
+                            tagId, tagName);
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

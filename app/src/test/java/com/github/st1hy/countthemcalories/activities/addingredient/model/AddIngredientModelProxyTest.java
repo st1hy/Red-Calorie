@@ -7,16 +7,19 @@ import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.ParcelableProxy;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import rx.plugins.TestRxPlugins;
 
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
@@ -25,7 +28,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RxRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class AddIngredientModelProxyTest {
 
@@ -35,14 +38,19 @@ public class AddIngredientModelProxyTest {
 
     private SettingsModel settingsModel;
     private AddIngredientModel model;
+    private IngredientTagsModel tagsModel;
+    private IngredientTypesModel typesModel;
 
 
     @Before
     public void setUp() throws Exception {
+        TestRxPlugins.registerImmediateHook();
         settingsModel = Mockito.mock(SettingsModel.class);
+        tagsModel = Mockito.mock(IngredientTagsModel.class);
+        typesModel = Mockito.mock(IngredientTypesModel.class);
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
-        model = new AddIngredientModel(settingsModel, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
 
         model.setUnit(KCAL_AT_ML);
         model.setName("testName");
@@ -55,7 +63,7 @@ public class AddIngredientModelProxyTest {
         Bundle bundle = new Bundle();
 
         model.onSaveState(bundle);
-        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, bundle);
+        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel, typesModel, bundle);
 
         assertThat(model.unit.getValue(), equalTo(restoredModel.unit.getValue()));
         assertThat(model.getName(), equalTo(restoredModel.getName()));

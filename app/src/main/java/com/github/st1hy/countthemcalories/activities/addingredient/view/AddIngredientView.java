@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureView;
 
+import rx.Observable;
+
 public interface AddIngredientView extends WithPictureView {
-    void openIngredientsScreen();
+    void setResultAndFinish();
 
     void setSelectedUnitName(@NonNull String unitName);
 
@@ -14,4 +16,8 @@ public interface AddIngredientView extends WithPictureView {
     void setEnergyDensityValue(@NonNull String energyValue);
 
     void openSelectTagScreen();
+
+    Observable<CharSequence> getNameObservable();
+
+    Observable<CharSequence> getValueObservable();
 }

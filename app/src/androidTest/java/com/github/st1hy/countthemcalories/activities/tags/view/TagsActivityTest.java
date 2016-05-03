@@ -9,11 +9,11 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.SearchView;
 
-import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matchers;
@@ -32,12 +32,9 @@ import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItem;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
@@ -82,8 +79,8 @@ public class TagsActivityTest {
         onView(withText(tagName)).check(matches(isDisplayed()));
         onView(withText(android.R.string.ok)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()))
-                .perform(actionOnItem(withChild(withText(tagName)), longClick()));
+        onView(withText(tagName)).check(matches(isDisplayed()))
+                .perform(longClick());
         onView(withText(R.string.tags_remove_dialog_title)).check(matches(isDisplayed()));
         onView(withText(R.string.tags_remove_information)).check(matches(isDisplayed()));
         onView(withText(android.R.string.no)).check(matches(isDisplayed()));

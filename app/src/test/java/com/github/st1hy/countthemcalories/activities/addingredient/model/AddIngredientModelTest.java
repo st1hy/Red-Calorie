@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
@@ -24,6 +25,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,13 +38,17 @@ public class AddIngredientModelTest {
 
     @Mock
     private SettingsModel settingsModel;
+    @Mock
+    private IngredientTagsModel tagsModel;
+    @Mock
+    private IngredientTypesModel typesModel;
     private AddIngredientModel model;
 
     @Before
     public void setUp() throws Exception {
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
-        model = new AddIngredientModel(settingsModel, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
     }
 
     @Test
@@ -101,4 +108,30 @@ public class AddIngredientModelTest {
         int array = model.getImageSourceOptionArrayResId();
         assertEquals(R.array.add_ingredient_image_select_options, array);
     }
+
+    @Test
+    public void testCanCreateIngredient() throws Exception {
+        model.name = "";
+        model.energyValue = "";
+        assertFalse(model.canCreateIngredient());
+        model.name = "s";
+        model.energyValue = "";
+        assertFalse(model.canCreateIngredient());
+        model.name = "";
+        model.energyValue = "0";
+        assertFalse(model.canCreateIngredient());
+        model.name = "";
+        model.energyValue = "1";
+        assertFalse(model.canCreateIngredient());
+        model.name = "s";
+        model.energyValue = "1s";
+        assertFalse(model.canCreateIngredient());
+        model.name = "s";
+        model.energyValue = "0.0000";
+        assertFalse(model.canCreateIngredient());
+        model.name = "s";
+        model.energyValue = "100";
+        assertTrue(model.canCreateIngredient());
+    }
+
 }

@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
@@ -46,6 +45,18 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         view.setEnergyDensityValue(model.getEnergyValue());
         Uri imageUri = model.getImageUri();
         if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
+
+        final Observable<CharSequence> nameObservable = view.getNameObservable().share();
+        subscriptions.add(nameObservable.subscribe(setNameToModel()));
+        final Observable<CharSequence> valueObservable = view.getValueObservable().share();
+        subscriptions.add(valueObservable.subscribe(setValueToModel()));
+
+//        Observable.combineLatest(nameObservable, valueObservable, new Func2<CharSequence, CharSequence, CharSequence[]>() {
+//            @Override
+//            public CharSequence[] call(CharSequence s, CharSequence s2) {
+//                return new CharSequence[]{s, s2};
+//            }
+//        });
     }
 
     @Override
@@ -54,29 +65,9 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @Override
-    public void onNameTextChanges(@NonNull Observable<CharSequence> observable) {
-        observable.subscribe(new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence charSequence) {
-                model.setName(charSequence.toString());
-            }
-        });
-    }
-
-    @Override
-    public void onEnergyValueChanges(@NonNull Observable<CharSequence> observable) {
-        observable.subscribe(new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence charSequence) {
-                model.setEnergyValue(charSequence.toString());
-            }
-        });
-    }
-
-    @Override
-    public boolean onClickedOnAction(@IdRes int menuActionId) {
-        if (menuActionId == R.id.action_save) {
-            onSaveActionClicked();
+    public boolean onClickedOnAction(int itemId) {
+        if (itemId == R.id.action_save) {
+            onSaveClicked();
         }
         return false;
     }
@@ -97,14 +88,47 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         model.setUnit(selectedUnit);
     }
 
-
-    public void onSaveActionClicked() {
-        view.openIngredientsScreen();
-    }
-
     @Override
     public void onImageReceived(@NonNull Uri uri) {
         super.onImageReceived(uri);
         model.setImageUri(uri);
+    }
+
+    @NonNull
+    private Action1<CharSequence> setValueToModel() {
+        return new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                model.setEnergyValue(charSequence.toString());
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<CharSequence> setNameToModel() {
+        return new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                model.setName(charSequence.toString());
+            }
+        };
+    }
+
+    private void onSaveClicked() {
+        if (model.canCreateIngredient()) {
+            model.insertIntoDatabase()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onAddedIngredientToDatabase());
+        }
+    }
+
+    @NonNull
+    private Action1<Void> onAddedIngredientToDatabase() {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.setResultAndFinish();
+            }
+        };
     }
 }

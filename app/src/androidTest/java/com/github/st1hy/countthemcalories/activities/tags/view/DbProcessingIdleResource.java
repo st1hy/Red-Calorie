@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 
 import rx.Subscriber;
 
-public class DbProcessingIdleResource extends Subscriber<TagsModel.DbProcessing> {
+public class DbProcessingIdleResource extends Subscriber<DbProcessing> {
     private CountingIdlingResource idlingResource = new CountingIdlingResource(DbProcessingIdleResource.class.getSimpleName());
     int count = 0;
 
@@ -23,11 +23,11 @@ public class DbProcessingIdleResource extends Subscriber<TagsModel.DbProcessing>
     }
 
     @Override
-    public void onNext(TagsModel.DbProcessing dbProcessing) {
-        if (dbProcessing == TagsModel.DbProcessing.STARTED && count == 0) {
+    public void onNext(DbProcessing dbProcessing) {
+        if (dbProcessing == DbProcessing.STARTED && count == 0) {
             count++;
             idlingResource.increment();
-        } else if (dbProcessing == TagsModel.DbProcessing.FINISHED && count == 1) {
+        } else if (dbProcessing == DbProcessing.FINISHED && count == 1) {
             count--;
             idlingResource.decrement();
         }

@@ -47,6 +47,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
@@ -87,8 +88,6 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("My meal"))
                 .check(matches(withText("My meal")));
     }
-
-    static final Matcher<Intent> galleryIntentMatcher = hasAction(Intent.ACTION_CHOOSER);
 
     @Test
     public void testSelectImageFromGallery() {
@@ -168,7 +167,7 @@ public class AddMealActivityTest {
         //If doesn't crash is good
     }
 
-    static Uri resourceToUri (Context context, @DrawableRes int resID) {
+    public static Uri resourceToUri (Context context, @DrawableRes int resID) {
         return new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 .authority(context.getPackageName())

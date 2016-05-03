@@ -9,11 +9,19 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureModel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
+
+import org.joda.time.DateTime;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,6 +30,8 @@ import rx.functions.Func1;
 
 public class AddIngredientModel extends WithPictureModel {
     final SettingsModel settingsModel;
+    final IngredientTagsModel tagsModel;
+    final IngredientTypesModel databaseModel;
     ParcelableProxy parcelableProxy;
 
     String name;
@@ -30,8 +40,13 @@ public class AddIngredientModel extends WithPictureModel {
     Uri imageUri;
 
     @Inject
-    public AddIngredientModel(@NonNull SettingsModel settingsModel, @Nullable Bundle savedState) {
+    public AddIngredientModel(@NonNull SettingsModel settingsModel,
+                              @NonNull IngredientTagsModel tagsModel,
+                              @NonNull IngredientTypesModel databaseModel,
+                              @Nullable Bundle savedState) {
         this.settingsModel = settingsModel;
+        this.tagsModel = tagsModel;
+        this.databaseModel = databaseModel;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
         }
@@ -133,6 +148,25 @@ public class AddIngredientModel extends WithPictureModel {
         return imageUri;
     }
 
+    @NonNull
+    public Observable<Void> insertIntoDatabase() {
+        IngredientTemplate template = new IngredientTemplate(null, getName(), getImageUri(),
+                DateTime.now(), getEnergyUnit());
+        return databaseModel.addNewAndRefresh(template, tagsModel.getAll())
+                .map(intoVoidCall());
+    }
+
+    @NonNull
+    public EnergyDensity getEnergyUnit() {
+        return EnergyDensityUtils.getOrZero(unit.getValue(), getEnergyValue());
+    }
+
+    public boolean canCreateIngredient() {
+        return !getName().trim().isEmpty() &&
+                !getEnergyValue().trim().isEmpty() &&
+                getEnergyUnit().getValue().compareTo(BigDecimal.ZERO) > 0;
+    }
+
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";
         EnergyDensityUnit unit;
@@ -180,5 +214,15 @@ public class AddIngredientModel extends WithPictureModel {
             dest.writeString(EnergyDensityUtils.getString(unit));
             dest.writeParcelable(imageUri, flags);
         }
+    }
+
+    @NonNull
+    private Func1<List<IngredientTemplate>, Void> intoVoidCall() {
+        return new Func1<List<IngredientTemplate>, Void>() {
+            @Override
+            public Void call(List<IngredientTemplate> ingredientTemplates) {
+                return null;
+            }
+        };
     }
 }

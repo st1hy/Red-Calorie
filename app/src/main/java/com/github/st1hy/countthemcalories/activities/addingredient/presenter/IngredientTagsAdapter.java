@@ -7,17 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.tag.IngredientTagsModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.TagViewHolder;
+import com.github.st1hy.countthemcalories.core.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.database.Tag;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.plugins.RxJavaPlugins;
 
-public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
+public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked {
     static final int TAG = R.layout.add_ingredient_tag;
     static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     static final int ADD_CATEGORY_FIELDS_SIZE = 1;
@@ -45,7 +49,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         switch (viewType) {
             case TAG:
-                return new ItemTagViewHolder(view);
+                return new ItemTagViewHolder(view, this);
             case ADD_TAG:
                 return new AddNewTagViewHolder(view);
             default:
@@ -70,6 +74,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
 
     void onBindTag(@NonNull ItemTagViewHolder viewHolder, int position) {
         viewHolder.setCategoryName(model.getTagAt(position).getName());
+        viewHolder.setPosition(position);
     }
 
     private void onBindAddTag(@NonNull AddNewTagViewHolder holder) {
@@ -84,5 +89,27 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
     @Override
     public int getItemCount() {
         return model.getSize() + ADD_CATEGORY_FIELDS_SIZE;
+    }
+
+    public void onNewTagAdded(long tagId, String tagName) {
+        model.addTag(tagId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(notifyDataSetChangedAction());
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        model.removeAt(position);
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    private Action1<Tag> notifyDataSetChangedAction() {
+        return new Action1<Tag>() {
+            @Override
+            public void call(Tag tag) {
+                notifyDataSetChanged();
+            }
+        };
     }
 }

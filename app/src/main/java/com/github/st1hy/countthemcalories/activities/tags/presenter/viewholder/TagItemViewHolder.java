@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.OnItemInteraction;
+import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

@@ -40,6 +40,7 @@ import rx.functions.Func1;
 public class TagsActivity extends BaseActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
     public static final String EXTRA_TAG_ID = "extra tag id";
+    public static final String EXTRA_TAG_NAME = "extra tag name";
 
     protected TagsComponent component;
 
@@ -152,9 +153,10 @@ public class TagsActivity extends BaseActivity implements TagsView {
     }
 
     @Override
-    public void setResultAndReturn(long tagId) {
+    public void setResultAndReturn(long tagId, @NonNull String tagName) {
         Intent data = new Intent();
         data.putExtra(EXTRA_TAG_ID, tagId);
+        data.putExtra(EXTRA_TAG_NAME, tagName);
         setResult(RESULT_OK, data);
         finish();
     }

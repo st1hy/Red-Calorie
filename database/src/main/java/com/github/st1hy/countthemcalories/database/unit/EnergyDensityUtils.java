@@ -2,7 +2,11 @@ package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.BuildConfig;
+
 import java.math.BigDecimal;
+
+import timber.log.Timber;
 
 public class EnergyDensityUtils {
     public static final BigDecimal KJ_AT_GRAM_IN_KCAL_AT_GRAM = BigDecimal.valueOf(4184, 3);
@@ -36,5 +40,21 @@ public class EnergyDensityUtils {
             if (unit.name().equals(split[1])) return unit;
         }
         throw new IllegalArgumentException();
+    }
+
+    /**
+     * @return returns Energy density of provided unit and string representation of big decimal value
+     * or 0 if string is not in correct format
+     */
+    @NonNull
+    public static EnergyDensity getOrZero(@NonNull EnergyDensityUnit unit, @NonNull String energyValue) {
+        BigDecimal bigDecimal;
+        try {
+            bigDecimal = new BigDecimal(energyValue);
+        } catch (NumberFormatException e) {
+            if (BuildConfig.DEBUG) Timber.w("Value: '%s' is not valid BigInteger", energyValue);
+            bigDecimal = BigDecimal.ZERO;
+        }
+        return new EnergyDensity(unit, bigDecimal);
     }
 }

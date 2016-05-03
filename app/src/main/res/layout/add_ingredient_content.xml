@@ -79,6 +79,7 @@
         android:id="@+id/add_ingredient_categories_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_behavior="@string/bottom_sheet_behavior"
         tools:listitem="@layout/add_ingredient_tag">
     </android.support.v7.widget.RecyclerView>
 </TableLayout>
