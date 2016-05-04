@@ -6,6 +6,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -14,13 +15,13 @@ public class DbModelsModule {
 
     @Provides
     @Singleton
-    public TagsModel provideTagsModel(DaoSession daoSession) {
+    public TagsModel provideTagsModel(Lazy<DaoSession> daoSession) {
         return new TagsModel(daoSession);
     }
 
     @Provides
     @Singleton
-    public IngredientTypesModel provideIngredientsModel(DaoSession daoSession) {
+    public IngredientTypesModel provideIngredientsModel(Lazy<DaoSession> daoSession) {
         return new IngredientTypesModel(daoSession);
     }
 }

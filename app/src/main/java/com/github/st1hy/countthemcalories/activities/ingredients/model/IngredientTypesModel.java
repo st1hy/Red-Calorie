@@ -15,31 +15,46 @@ import com.github.st1hy.countthemcalories.database.Tag;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Provider;
+
+import dagger.Lazy;
+import dagger.internal.DoubleCheckLazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 
 public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
-    private final IngredientTemplateDao dao;
+    private final Lazy<IngredientTemplateDao> dao;
 
-    public IngredientTypesModel(@NonNull DaoSession session) {
+    public IngredientTypesModel(@NonNull Lazy<DaoSession> session) {
         super(session);
-        this.dao = session.getIngredientTemplateDao();
+        this.dao = DoubleCheckLazy.create(new Provider<IngredientTemplateDao>() {
+
+            @Override
+            public IngredientTemplateDao get() {
+                return session().getIngredientTemplateDao();
+            }
+        });
     }
 
     @NonNull
     @Override
     protected IngredientTemplate performGetById(long id) {
-        IngredientTemplate template = dao.load(id);
+        IngredientTemplate template = dao().load(id);
         template.getTags();
         template.getChildIngredients();
         return template;
     }
 
     @NonNull
+    private IngredientTemplateDao dao() {
+        return dao.get();
+    }
+
+    @NonNull
     @Override
     protected IngredientTemplate performInsert(@NonNull IngredientTemplate data) {
-        dao.insert(data);
+        dao().insert(data);
         data.getChildIngredients();
         data.getTags();
         return data;
@@ -53,13 +68,13 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
 
     @NonNull
     private Callable<Cursor> insertNewRefreshCall(@NonNull final IngredientTemplate data,
-                                                                    @NonNull final List<Tag> all) {
+                                                  @NonNull final List<Tag> all) {
         return new Callable<Cursor>() {
             @Override
             public Cursor call() throws Exception {
                 IngredientTemplate template = performInsert(data);
                 List<JointIngredientTag> ingredientJoins = template.getTags();
-                JointIngredientTagDao jointDao = session.getJointIngredientTagDao();
+                JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
                 for (Tag tag : all) {
                     List<JointIngredientTag> tagJoins = tag.getIngredientTypes();
                     JointIngredientTag join = new JointIngredientTag(null);
@@ -90,13 +105,13 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
 
     @Override
     protected void performRemoveAll() {
-        session.getIngredientTemplateDao().deleteAll();
+        dao().deleteAll();
     }
 
     @NonNull
     @Override
     protected CursorQuery allSortedByName() {
-        return dao.queryBuilder()
+        return dao().queryBuilder()
                 .orderAsc(IngredientTemplateDao.Properties.Name)
                 .buildCursor();
     }
@@ -104,7 +119,7 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        return dao.queryBuilder()
+        return dao().queryBuilder()
                 .where(IngredientTemplateDao.Properties.Name.like(""))
                 .orderAsc(IngredientTemplateDao.Properties.Name)
                 .buildCursor();
@@ -112,7 +127,7 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
 
     @Override
     protected long readKey(@NonNull Cursor cursor, int columnIndex) {
-        return dao.readKey(cursor, columnIndex);
+        return dao().readKey(cursor, columnIndex);
     }
 
     @NonNull

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
@@ -13,21 +14,30 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 
 import java.util.List;
 
+import javax.inject.Provider;
+
+import dagger.Lazy;
+import dagger.internal.DoubleCheckLazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 
 public class TagsModel extends RxDatabaseModel<Tag> {
-    private final TagDao dao;
+    private final Lazy<TagDao> dao;
 
-    public TagsModel(@NonNull DaoSession session) {
-        super(session);
-        this.dao = session.getTagDao();
+    public TagsModel(@NonNull Lazy<DaoSession> lazySession) {
+        super(lazySession);
+        this.dao = DoubleCheckLazy.create(new Provider<TagDao>() {
+            @Override
+            public TagDao get() {
+                return session().getTagDao();
+            }
+        });
     }
 
     @NonNull
     @Override
     protected Tag performGetById(long id) {
-        Tag tag = session.getTagDao().load(id);
+        Tag tag = dao().load(id);
         tag.getIngredientTypes();
         return tag;
     }
@@ -35,7 +45,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
     @NonNull
     @Override
     protected Tag performInsert(@NonNull Tag data) {
-        session.getTagDao().insert(data);
+        dao().insert(data);
         return data;
     }
 
@@ -52,14 +62,14 @@ public class TagsModel extends RxDatabaseModel<Tag> {
 
     @Override
     protected void performRemoveAll() {
-        dao.deleteAll();
+        dao().deleteAll();
     }
 
 
     @NonNull
     @Override
     protected CursorQuery allSortedByName() {
-        return dao.queryBuilder()
+        return dao().queryBuilder()
                 .orderAsc(TagDao.Properties.Name)
                 .buildCursor();
     }
@@ -67,7 +77,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        return dao.queryBuilder()
+        return dao().queryBuilder()
                 .where(TagDao.Properties.Name.like(""))
                 .orderAsc(TagDao.Properties.Name)
                 .buildCursor();
@@ -75,7 +85,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
 
     @Override
     protected long readKey(@NonNull Cursor cursor, int columnIndex) {
-        return dao.readKey(cursor, columnIndex);
+        return dao().readKey(cursor, columnIndex);
     }
 
     @NonNull
@@ -89,8 +99,13 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         return tag.getId();
     }
 
+    @StringRes
     public int getNewTagDialogTitle() {
         return R.string.tags_new_tag_dialog;
+    }
+
+    private TagDao dao() {
+        return dao.get();
     }
 
 }

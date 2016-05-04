@@ -9,6 +9,7 @@ import com.google.common.base.Strings;
 
 import java.util.concurrent.Callable;
 
+import dagger.Lazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
@@ -17,14 +18,13 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public abstract class RxDatabaseModel<T> {
-
-    protected final DaoSession session;
-    protected final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
+    private  final Lazy<DaoSession> session;
+    private final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
     private CursorQuery allSortedByNameQuery;
     private CursorQuery filteredSortedByNameQuery;
     private CursorQuery lastQuery;
 
-    public RxDatabaseModel(@NonNull DaoSession session) {
+    public RxDatabaseModel(@NonNull Lazy<DaoSession> session) {
         this.session = session;
     }
 
@@ -96,6 +96,11 @@ public abstract class RxDatabaseModel<T> {
     protected abstract long getKey(T t);
 
     @NonNull
+    protected DaoSession session() {
+        return session.get();
+    }
+
+    @NonNull
     protected <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
         return Observable.fromCallable(callInTx(task))
                 .subscribeOn(Schedulers.io())
@@ -108,7 +113,7 @@ public abstract class RxDatabaseModel<T> {
         return new Callable<R>() {
             @Override
             public R call() throws Exception {
-                return session.callInTx(task);
+                return session().callInTx(task);
             }
         };
     }
