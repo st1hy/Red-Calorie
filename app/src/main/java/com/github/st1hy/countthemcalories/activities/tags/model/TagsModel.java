@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.model;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
@@ -12,30 +13,22 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.Property;
+import de.greenrobot.dao.query.CursorQuery;
 
 public class TagsModel extends RxDatabaseModel<Tag> {
+    private final TagDao dao;
 
-    @Inject
     public TagsModel(@NonNull DaoSession session) {
         super(session);
+        this.dao = session.getTagDao();
     }
 
     @Override
     protected Tag performGetById(long id) {
-        return session.getTagDao().load(id);
-    }
-
-    @NonNull
-    @Override
-    protected List<Tag> performQuery(@NonNull Query<Tag> query) {
-        List<Tag> list = query.list();
-        for (Tag tag : list) {
-            tag.getIngredientTypes();
-        }
-        return list;
+        Tag tag = session.getTagDao().load(id);
+        tag.getIngredientTypes();
+        return tag;
     }
 
     @NonNull
@@ -58,34 +51,49 @@ public class TagsModel extends RxDatabaseModel<Tag> {
 
     @Override
     protected void performRemoveAll() {
-        session.getTagDao().deleteAll();
+        dao.deleteAll();
     }
+
 
     @NonNull
     @Override
-    protected Query<Tag> allSortedByName() {
-        return session.getTagDao()
-                .queryBuilder()
+    protected CursorQuery allSortedByName() {
+        return dao.queryBuilder()
                 .orderAsc(TagDao.Properties.Name)
-                .build();
+                .buildCursor();
     }
 
     @NonNull
     @Override
-    protected Query<Tag> filteredSortedByNameQuery() {
-        return session.getTagDao()
-                .queryBuilder()
+    protected CursorQuery filteredSortedByNameQuery() {
+        return dao.queryBuilder()
                 .where(TagDao.Properties.Name.like(""))
                 .orderAsc(TagDao.Properties.Name)
-                .build();
+                .buildCursor();
     }
 
     @Override
-    protected boolean equal(@NonNull Tag a, @NonNull Tag b) {
-        return a.getId().equals(b.getId());
+    protected long readKey(@NonNull Cursor cursor, int columnIndex) {
+        return dao.readKey(cursor, columnIndex);
+    }
+
+    @NonNull
+    @Override
+    protected Property getKeyProperty() {
+        return TagDao.Properties.Id;
+    }
+
+    @Override
+    protected long getKey(Tag tag) {
+        return tag.getId();
     }
 
     public int getNewTagDialogTitle() {
         return R.string.tags_new_tag_dialog;
+    }
+
+    @Override
+    protected Tag readEntity(@NonNull Cursor cursor) {
+        return dao.readEntity(cursor, 0);
     }
 }

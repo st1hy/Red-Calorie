@@ -17,9 +17,9 @@ public class ItemTagViewHolder extends TagViewHolder implements View.OnClickList
     @Bind(R.id.add_ingredient_category_remove)
     ImageButton removeTag;
     int position;
-    final OnItemClicked onRemove;
+    final OnItemClicked<Integer> onRemove;
 
-    public ItemTagViewHolder(@NonNull View itemView, @NonNull OnItemClicked onRemove) {
+    public ItemTagViewHolder(@NonNull View itemView, @NonNull OnItemClicked<Integer> onRemove) {
         super(itemView);
         this.onRemove = onRemove;
         removeTag.setOnClickListener(this);

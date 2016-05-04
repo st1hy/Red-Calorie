@@ -19,9 +19,8 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.plugins.RxJavaPlugins;
 
-public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked {
+public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Integer> {
     static final int TAG = R.layout.add_ingredient_tag;
     static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     static final int ADD_CATEGORY_FIELDS_SIZE = 1;
@@ -98,7 +97,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     }
 
     @Override
-    public void onItemClicked(int position) {
+    public void onItemClicked(Integer position) {
         model.removeAt(position);
         notifyDataSetChanged();
     }

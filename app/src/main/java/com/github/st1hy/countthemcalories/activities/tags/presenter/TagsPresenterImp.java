@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,9 @@ import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
-import com.github.st1hy.countthemcalories.database.BuildConfig;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Strings;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -29,18 +28,15 @@ import rx.Notification;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.operators.OnSubscribeRedo;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.core.event.DbProcessing.FINISHED;
-import static com.github.st1hy.countthemcalories.core.event.DbProcessing.NOT_STARTED;
-import static com.github.st1hy.countthemcalories.core.event.DbProcessing.STARTED;
-
 public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
-        OnItemInteraction {
+        OnItemInteraction<Tag> {
     static final int bottomSpaceItem = 1;
     static final int item_layout = R.layout.tags_item;
     static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
@@ -49,6 +45,8 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     final TagsModel model;
     final TagsActivityModel activityModel;
     final CompositeSubscription subscriptions = new CompositeSubscription();
+    final CompositeSubscription viewBindingSubs = new CompositeSubscription();
+    private Cursor cursor;
 
     @Inject
     public TagsPresenterImp(@NonNull TagsView view,
@@ -61,69 +59,65 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public void onAddTagClicked(@NonNull Observable<Void> clicks) {
-        clicks.flatMap(showNewTagDialog())
+        subscribeToCursor(clicks
+                .flatMap(showNewTagDialog())
                 .map(trim())
                 .filter(notEmpty())
                 .flatMap(addTagRefresh())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
+                .doOnNext(new Action1<Cursor>() {
                     @Override
-                    public void onCompleted() {
+                    public void call(Cursor cursor) {
+                        view.scrollToPosition(cursor.getPosition());
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (BuildConfig.DEBUG) Timber.e(e, "Error adding tag");
-                    }
-
-                    @Override
-                    public void onNext(Integer position) {
-                        view.scrollToPosition(position);
-                    }
-                });
+                }));
     }
 
     @Override
     public void onStart() {
         subscriptions.add(model.getDbProcessingObservable()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onDbProcessing()));
+        Timber.v("Starting query for all items");
+        subscribeToCursor(model.getAllObservable());
     }
 
     @Override
     public void onStop() {
+        closeCursor();
+        viewBindingSubs.clear();
         subscriptions.clear();
     }
 
     @Override
     public void onRefresh(@NonNull Observable<Void> refreshes) {
-        refreshes.flatMap(refreshModel()).subscribe();
+        refreshes.subscribe(refreshModel());
     }
 
     @Override
     public void onSearch(@NonNull Observable<CharSequence> observable) {
-        Observable<List<Tag>> listObservable = observable
+        Observable<Cursor> listObservable = observable
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence text) {
-                        if (BuildConfig.DEBUG) Timber.v("Search notification: queryText='%s'", text);
+                        Timber.v("Search notification: queryText='%s'", text);
                     }
                 })
                 .flatMap(queryDatabaseFiltered())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable e) {
-                        if (BuildConfig.DEBUG) Timber.e(e, "Search exploded");
+                        Timber.e(e, "Search exploded");
                     }
                 });
-        OnSubscribeRedo.retry(listObservable, REDO_INFINITE, AndroidSchedulers.mainThread())
-            .subscribe();
+        Observable<Cursor> onSearch = OnSubscribeRedo.retry(listObservable, REDO_INFINITE,
+                AndroidSchedulers.mainThread());
+        subscribeToCursor(onSearch);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < model.getItemCount()) {
+        if (position < getTagCount()) {
             return item_layout;
         } else {
             return item_bottom_space_layout;
@@ -144,36 +138,33 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
         if (holder instanceof TagItemViewHolder) {
-            TagItemViewHolder itemViewHolder = (TagItemViewHolder) holder;
-            itemViewHolder.setName(model.getItemAt(position).getName());
-            itemViewHolder.setPosition(position);
+            final TagItemViewHolder itemViewHolder = (TagItemViewHolder) holder;
+            viewBindingSubs.add(itemViewHolder.bind(getItemAt(position)));
         }
     }
 
     @Override
     public int getItemCount() {
-        return model.getItemCount() + bottomSpaceItem;
+        return getTagCount() + bottomSpaceItem;
     }
 
     @Override
-    public void onItemLongClicked(final int position) {
-        final Tag tag = model.getItemAt(position);
-        view.showRemoveTagDialog().subscribe(deleteTag(tag));
-    }
-
-    @Override
-    public void onItemClicked(int position) {
+    public void onItemClicked(@NonNull Tag tag) {
         if (activityModel.isInSelectMode()) {
-            Tag tag = model.getItemAt(position);
             view.setResultAndReturn(tag.getId(), tag.getName());
         }
     }
 
+    @Override
+    public void onItemLongClicked(@NonNull Tag tag) {
+        view.showRemoveTagDialog().subscribe(deleteTag(tag));
+    }
+
     @NonNull
-    Func1<String, Observable<Integer>> addTagRefresh() {
-        return new Func1<String, Observable<Integer>>() {
+    Func1<String, Observable<Cursor>> addTagRefresh() {
+        return new Func1<String, Observable<Cursor>>() {
             @Override
-            public Observable<Integer> call(String tagName) {
+            public Observable<Cursor> call(String tagName) {
                 return model.addNewAndRefresh(new Tag(null, tagName));
             }
         };
@@ -184,15 +175,41 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<DbProcessing>() {
             @Override
             public void call(DbProcessing dbProcessing) {
-                if (BuildConfig.DEBUG) Timber.v("Db processing %s", dbProcessing);
-                view.setNoTagsButtonVisibility(Visibility.of(
-                        dbProcessing == FINISHED && model.getItemCount() == 0
-                ));
-                view.setDataRefreshing(dbProcessing == STARTED);
-                if (dbProcessing == NOT_STARTED) model.getAllObservable().subscribe();
-                if (dbProcessing == FINISHED) notifyDataSetChanged();
+                Timber.v("Db processing %s", dbProcessing);
             }
         };
+    }
+
+    void subscribeToCursor(@NonNull Observable<Cursor> cursorObservable) {
+        subscriptions.add(cursorObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        view.setDataRefreshing(true);
+                    }
+                })
+                .subscribe(new Subscriber<Cursor>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e, "Error when providing cursor");
+                        view.setDataRefreshing(false);
+                    }
+
+                    @Override
+                    public void onNext(Cursor cursor) {
+                        viewBindingSubs.clear();
+                        closeCursor();
+                        TagsPresenterImp.this.cursor = cursor;
+                        view.setNoTagsButtonVisibility(Visibility.of(cursor.getCount() == 0));
+                        notifyDataSetChanged();
+                        view.setDataRefreshing(false);
+                    }
+                }));
     }
 
     @NonNull
@@ -206,11 +223,11 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     }
 
     @NonNull
-    Func1<Void, Observable<List<Tag>>> refreshModel() {
-        return new Func1<Void, Observable<List<Tag>>>() {
+    Action1<Void> refreshModel() {
+        return new Action1<Void>() {
             @Override
-            public Observable<List<Tag>> call(Void aVoid) {
-                return model.getAllObservable();
+            public void call(Void aVoid) {
+                subscribeToCursor(model.getAllObservable());
             }
         };
     }
@@ -240,16 +257,16 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                model.removeAndRefresh(tag).subscribe();
+                subscribeToCursor(model.removeAndRefresh(tag));
             }
         };
     }
 
     @NonNull
-    Func1<? super CharSequence, ? extends Observable<List<Tag>>> queryDatabaseFiltered() {
-        return new Func1<CharSequence, Observable<List<Tag>>>() {
+    Func1<? super CharSequence, ? extends Observable<Cursor>> queryDatabaseFiltered() {
+        return new Func1<CharSequence, Observable<Cursor>>() {
             @Override
-            public Observable<List<Tag>> call(CharSequence text) {
+            public Observable<Cursor> call(CharSequence text) {
                 return model.getAllFiltered(text.toString());
             }
         };
@@ -266,4 +283,24 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
             });
         }
     };
+
+    private void closeCursor() {
+        Cursor cursor = this.cursor;
+        this.cursor = null;
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    private int getTagCount() {
+        return cursor != null ? cursor.getCount() : 0;
+    }
+
+    private Observable<Tag> getItemAt(int position) {
+        if (cursor != null) {
+            return model.getFromCursor(cursor, position);
+        } else {
+            throw new IllegalStateException("Performing query for cursor that no longer exists");
+        }
+    }
 }

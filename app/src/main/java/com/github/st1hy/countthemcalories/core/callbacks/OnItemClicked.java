@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.core.callbacks;
 
-public interface OnItemClicked {
-    void onItemClicked(int position);
+import android.support.annotation.NonNull;
+
+public interface OnItemClicked<T> {
+    void onItemClicked(@NonNull T data);
 }

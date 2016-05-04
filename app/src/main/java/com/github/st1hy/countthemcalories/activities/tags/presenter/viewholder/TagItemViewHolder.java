@@ -6,9 +6,15 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
+import com.github.st1hy.countthemcalories.database.Tag;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class TagItemViewHolder extends TagViewHolder implements View.OnLongClickListener, View.OnClickListener {
 
@@ -16,10 +22,12 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
     TextView name;
     @Bind(R.id.tag_button)
     View button;
-    int position;
-    final OnItemInteraction listener;
 
-    public TagItemViewHolder(@NonNull View itemView, @NonNull OnItemInteraction listener) {
+    final OnItemInteraction<Tag> listener;
+    private Tag tag;
+    private Subscriber<Tag> subscriber;
+
+    public TagItemViewHolder(@NonNull View itemView, @NonNull OnItemInteraction<Tag> listener) {
         super(itemView);
         this.listener = listener;
         ButterKnife.bind(this, itemView);
@@ -27,22 +35,41 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
         button.setOnClickListener(this);
     }
 
-    public void setName(@NonNull String name) {
-        this.name.setText(name);
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     @Override
     public boolean onLongClick(View v) {
-        listener.onItemLongClicked(position);
-        return true;
+        if (tag != null) {
+            listener.onItemLongClicked(tag);
+            return true;
+        } else return false;
     }
 
     @Override
     public void onClick(View v) {
-        listener.onItemClicked(position);
+        if (tag != null) {
+            listener.onItemClicked(tag);
+        }
+    }
+
+    public Subscription bind(Observable<Tag> observable) {
+        if (subscriber != null) subscriber.unsubscribe();
+        subscriber = new Subscriber<Tag>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e, "Error on binding tag to view");
+            }
+
+            @Override
+            public void onNext(Tag tag) {
+                TagItemViewHolder.this.tag = tag;
+                name.setText(tag.getName());
+            }
+        };
+        return observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 }

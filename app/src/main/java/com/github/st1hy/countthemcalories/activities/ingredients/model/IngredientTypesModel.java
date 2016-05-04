@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.model;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
@@ -8,68 +9,62 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
+import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
-
-import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.Property;
+import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 
 public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
+    private final IngredientTemplateDao dao;
 
-    @Inject
     public IngredientTypesModel(@NonNull DaoSession session) {
         super(session);
+        this.dao = session.getIngredientTemplateDao();
     }
 
     @Override
     protected IngredientTemplate performGetById(long id) {
-        return session.getIngredientTemplateDao().load(id);
-    }
-
-    @NonNull
-    @Override
-    protected List<IngredientTemplate> performQuery(@NonNull Query<IngredientTemplate> query) {
-        List<IngredientTemplate> list = query.list();
-        for (IngredientTemplate item : list) {
-            item.getTags();
-            item.getChildIngredients();
-        }
-        return list;
+        IngredientTemplate template = dao.load(id);
+        template.getTags();
+        template.getChildIngredients();
+        return template;
     }
 
     @NonNull
     @Override
     protected IngredientTemplate performInsert(@NonNull IngredientTemplate data) {
-        session.getIngredientTemplateDao().insert(data);
+        dao.insert(data);
         data.getChildIngredients();
         data.getTags();
         return data;
     }
 
     @NonNull
-    public Observable<List<IngredientTemplate>> addNewAndRefresh(@NonNull final IngredientTemplate data,
-                                                                 @NonNull final List<Tag> all) {
+    public Observable<Cursor> addNewAndRefresh(@NonNull final IngredientTemplate data,
+                                               @NonNull final List<Tag> all) {
         return fromDatabaseTask(insertNewRefreshCall(data, all));
     }
 
     @NonNull
-    private Callable<List<IngredientTemplate>> insertNewRefreshCall(@NonNull final IngredientTemplate data,
+    private Callable<Cursor> insertNewRefreshCall(@NonNull final IngredientTemplate data,
                                                                     @NonNull final List<Tag> all) {
-        return new Callable<List<IngredientTemplate>>() {
+        return new Callable<Cursor>() {
             @Override
-            public List<IngredientTemplate> call() throws Exception {
+            public Cursor call() throws Exception {
                 IngredientTemplate template = performInsert(data);
                 List<JointIngredientTag> ingredientJoins = template.getTags();
+                JointIngredientTagDao jointDao = session.getJointIngredientTagDao();
                 for (Tag tag : all) {
                     List<JointIngredientTag> tagJoins = tag.getIngredientTypes();
                     JointIngredientTag join = new JointIngredientTag(null);
                     join.setTag(tag);
                     join.setIngredientType(template);
-                    session.getJointIngredientTagDao().insert(join);
+                    jointDao.insert(join);
                     tagJoins.add(join);
                     ingredientJoins.add(join);
                 }
@@ -97,28 +92,41 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
         session.getIngredientTemplateDao().deleteAll();
     }
 
-    @Override
-    protected boolean equal(@NonNull IngredientTemplate a, @NonNull IngredientTemplate b) {
-        return a.getId().equals(b.getId());
-    }
-
-
     @NonNull
     @Override
-    protected Query<IngredientTemplate> allSortedByName() {
-        return session.getIngredientTemplateDao()
-                .queryBuilder()
+    protected CursorQuery allSortedByName() {
+        return dao.queryBuilder()
                 .orderAsc(IngredientTemplateDao.Properties.Name)
-                .build();
+                .buildCursor();
     }
 
     @NonNull
     @Override
-    protected Query<IngredientTemplate> filteredSortedByNameQuery() {
-        return session.getIngredientTemplateDao()
-                .queryBuilder()
+    protected CursorQuery filteredSortedByNameQuery() {
+        return dao.queryBuilder()
                 .where(IngredientTemplateDao.Properties.Name.like(""))
                 .orderAsc(IngredientTemplateDao.Properties.Name)
-                .build();
+                .buildCursor();
+    }
+
+    @Override
+    protected long readKey(@NonNull Cursor cursor, int columnIndex) {
+        return dao.readKey(cursor, columnIndex);
+    }
+
+    @NonNull
+    @Override
+    protected Property getKeyProperty() {
+        return IngredientTemplateDao.Properties.Id;
+    }
+
+    @Override
+    protected long getKey(IngredientTemplate ingredientTemplate) {
+        return ingredientTemplate.getId();
+    }
+
+    @Override
+    protected IngredientTemplate readEntity(@NonNull Cursor cursor) {
+        return dao.readEntity(cursor, 0);
     }
 }

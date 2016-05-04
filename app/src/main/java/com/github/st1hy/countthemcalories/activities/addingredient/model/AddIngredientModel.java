@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -21,7 +22,6 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -217,10 +217,10 @@ public class AddIngredientModel extends WithPictureModel {
     }
 
     @NonNull
-    private Func1<List<IngredientTemplate>, Void> intoVoidCall() {
-        return new Func1<List<IngredientTemplate>, Void>() {
+    private Func1<Cursor, Void> intoVoidCall() {
+        return new Func1<Cursor, Void>() {
             @Override
-            public Void call(List<IngredientTemplate> ingredientTemplates) {
+            public Void call(Cursor cursor) {
                 return null;
             }
         };

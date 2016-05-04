@@ -1,29 +1,28 @@
 package com.github.st1hy.countthemcalories.core.rx;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Callable;
 
-import de.greenrobot.dao.query.Query;
+import de.greenrobot.dao.Property;
+import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public abstract class RxDatabaseModel<T> {
 
     protected final DaoSession session;
-    protected List<T> list = Collections.emptyList();
     protected final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
-    private String partOfLastQuery = "";
-    private Query<T> allSortedByNameQuery;
-    private Query<T> filteredSortedByNameQuery;
-    private Query<T> lastQuery;
+    private CursorQuery allSortedByNameQuery;
+    private CursorQuery filteredSortedByNameQuery;
+    private CursorQuery lastQuery;
 
     public RxDatabaseModel(@NonNull DaoSession session) {
         this.session = session;
@@ -35,56 +34,45 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    public T getItemAt(int position) {
-        return list.get(position);
-    }
-
-    public int getItemCount() {
-        return list.size();
-    }
-
-    @NonNull
     public Observable<T> getById(long id) {
         return fromDatabaseTask(fromId(id));
     }
 
     @NonNull
-    public Observable<List<T>> getAllObservable() {
+    public Observable<T> getFromCursor(@NonNull Cursor cursor, int position) {
+        return fromDatabaseTask(fromCursor(cursor, position));
+    }
+
+    @NonNull
+    public Observable<Cursor> getAllObservable() {
         return fromDatabaseTask(loadAll());
     }
 
     @NonNull
-    public Observable<List<T>> getAllFiltered(@NonNull String partOfName) {
-        if (partOfName.equals(partOfLastQuery)) {
-            return Observable.just(list);
-        } else {
-            partOfLastQuery = partOfName;
-            return fromDatabaseTask(filtered(partOfName));
-        }
+    public Observable<Cursor> getAllFiltered(@NonNull String partOfName) {
+        return fromDatabaseTask(filtered(partOfName));
     }
 
     /**
-     * @return observable position of the added tag on the list
+     * @return observable with Cursor at position of the added tag on the list, if its not filtered out
+     * in that case cursor will be moved to first element
      */
     @NonNull
-    public Observable<Integer> addNewAndRefresh(@NonNull T data) {
+    public Observable<Cursor> addNewAndRefresh(@NonNull T data) {
         return fromDatabaseTask(addNewAndRefreshCall(data));
     }
 
     @NonNull
-    public Observable<List<T>> removeAndRefresh(@NonNull T data) {
+    public Observable<Cursor> removeAndRefresh(@NonNull T data) {
         return fromDatabaseTask(removeAndRefreshCall(data));
     }
 
     @NonNull
-    public Observable<List<T>> clear() {
+    public Observable<Cursor> clear() {
         return fromDatabaseTask(removeAllRefresh());
     }
 
     protected abstract T performGetById(long id);
-
-    @NonNull
-    protected abstract List<T> performQuery(@NonNull Query<T> query);
 
     @NonNull
     protected abstract T performInsert(@NonNull T data);
@@ -94,12 +82,19 @@ public abstract class RxDatabaseModel<T> {
     protected abstract void performRemoveAll();
 
     @NonNull
-    protected abstract Query<T> allSortedByName();
+    protected abstract CursorQuery allSortedByName();
 
     @NonNull
-    protected abstract Query<T> filteredSortedByNameQuery();
+    protected abstract CursorQuery filteredSortedByNameQuery();
 
-    protected abstract boolean equal(@NonNull T a, @NonNull T b);
+    protected abstract T readEntity(@NonNull Cursor cursor);
+
+    protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
+
+    @NonNull
+    protected abstract Property getKeyProperty();
+
+    protected abstract long getKey(T t);
 
     @NonNull
     protected <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
@@ -119,6 +114,15 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
+    private Callable<T> fromCursor(@NonNull final Cursor cursor, final int position) {
+        return new Callable<T>() {
+            @Override
+            public T call() throws Exception {
+                cursor.moveToPosition(position);
+                return readEntity(cursor);
+            }
+        };
+    }
 
     private Callable<T> fromId(final long id) {
         return new Callable<T>() {
@@ -130,35 +134,51 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    private Callable<List<T>> loadAll() {
+    private Callable<Cursor> loadAll() {
         return filtered("");
     }
 
     @NonNull
-    private Callable<List<T>> filtered(@NonNull final String partOfName) {
+    private Callable<Cursor> filtered(@NonNull final String partOfName) {
         return query(getQueryOf(partOfName));
     }
 
     @NonNull
-    private Callable<Integer> addNewAndRefreshCall(@NonNull final T data) {
-        return new Callable<Integer>() {
+    private Callable<Cursor> addNewAndRefreshCall(@NonNull final T data) {
+        return new Callable<Cursor>() {
             @Override
-            public Integer call() throws Exception {
+            public Cursor call() throws Exception {
                 T newItem = performInsert(data);
-                refresh().call();
-                for (int i = 0; i < list.size(); i++) {
-                    if (equal(newItem, getItemAt(i))) return i;
-                }
-                throw new IllegalStateException("Could not found newly added tag on the list!");
+                Cursor cursor = refresh().call();
+                Timber.d("Cursor: %s", cursor);
+
+                final long newKey = getKey(newItem);
+                moveCursorToKeyIfAble(cursor, newKey);
+                return cursor;
             }
         };
     }
 
+    private void moveCursorToKeyIfAble(@NonNull Cursor cursor, long key) {
+        if (cursor.moveToFirst()) {
+            int keyColumn = cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
+            boolean isFound = false;
+            do {
+                long readKey = readKey(cursor, keyColumn);
+                if (readKey == key) {
+                    isFound = true;
+                    break;
+                }
+            } while (cursor.moveToNext());
+            if (!isFound) cursor.moveToFirst();
+        }
+    }
+
     @NonNull
-    private Callable<List<T>> removeAndRefreshCall(@NonNull final T data) {
-        return new Callable<List<T>>() {
+    private Callable<Cursor> removeAndRefreshCall(@NonNull final T data) {
+        return new Callable<Cursor>() {
             @Override
-            public List<T> call() throws Exception {
+            public Cursor call() throws Exception {
                 performRemove(data);
                 return refresh().call();
             }
@@ -166,10 +186,10 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    private Callable<List<T>> removeAllRefresh() {
-        return new Callable<List<T>>() {
+    private Callable<Cursor> removeAllRefresh() {
+        return new Callable<Cursor>() {
             @Override
-            public List<T> call() throws Exception {
+            public Cursor call() throws Exception {
                 performRemoveAll();
                 return refresh().call();
             }
@@ -177,55 +197,54 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    protected Callable<List<T>> refresh() {
+    protected Callable<Cursor> refresh() {
         return query(lastQuery());
     }
 
     @NonNull
-    private Callable<Query<T>> lastQuery() {
-        return new Callable<Query<T>>() {
+    private Callable<CursorQuery> lastQuery() {
+        return new Callable<CursorQuery>() {
             @Override
-            public Query<T> call() throws Exception {
+            public CursorQuery call() throws Exception {
                 if (lastQuery == null) {
                     return getQueryOf("").call();
                 } else {
-                    return lastQuery;
+                    return lastQuery.forCurrentThread();
                 }
             }
         };
     }
 
     @NonNull
-    private Callable<Query<T>> getQueryOf(@NonNull final String partOfName) {
-        return new Callable<Query<T>>() {
+    private Callable<CursorQuery> getQueryOf(@NonNull final String partOfName) {
+        return new Callable<CursorQuery>() {
             @Override
-            public Query<T> call() throws Exception {
+            public CursorQuery call() throws Exception {
                 if (Strings.isNullOrEmpty(partOfName)) {
                     return allSortedByNameSingleton().forCurrentThread();
                 } else {
-                    Query<T> query = filteredSortedByNameQuerySingleton().forCurrentThread();
+                    CursorQuery query = filteredSortedByNameQuerySingleton().forCurrentThread();
                     query.setParameter(0, "%" + partOfName + "%");
                     return query;
                 }
             }
         };
     }
+
     @NonNull
-    private Callable<List<T>> query(@NonNull final Callable<Query<T>> queryCall) {
-        return new Callable<List<T>>() {
+    private Callable<Cursor> query(@NonNull final Callable<CursorQuery> queryCall) {
+        return new Callable<Cursor>() {
             @Override
-            public List<T> call() throws Exception {
-                Query<T> query = queryCall.call();
+            public Cursor call() throws Exception {
+                CursorQuery query = queryCall.call();
                 lastQuery = query;
-                List<T> list = performQuery(query);
-                RxDatabaseModel.this.list = list;
-                return list;
+                return query.query();
             }
         };
     }
 
     @NonNull
-    protected Query<T> allSortedByNameSingleton() {
+    protected CursorQuery allSortedByNameSingleton() {
         if (allSortedByNameQuery == null) {
             allSortedByNameQuery = allSortedByName();
         }
@@ -233,7 +252,7 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    protected Query<T> filteredSortedByNameQuerySingleton() {
+    protected CursorQuery filteredSortedByNameQuerySingleton() {
         if (filteredSortedByNameQuery == null) {
             filteredSortedByNameQuery = filteredSortedByNameQuery();
         }

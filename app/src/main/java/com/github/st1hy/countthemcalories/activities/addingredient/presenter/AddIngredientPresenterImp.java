@@ -9,13 +9,16 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.database.BuildConfig;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
@@ -123,10 +126,20 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @NonNull
-    private Action1<Void> onAddedIngredientToDatabase() {
-        return new Action1<Void>() {
+    private Subscriber<Void> onAddedIngredientToDatabase() {
+        return new Subscriber<Void>() {
+
             @Override
-            public void call(Void aVoid) {
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (BuildConfig.DEBUG) Timber.e(e, "Error adding new ingredient type to database");
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
                 view.setResultAndFinish();
             }
         };
