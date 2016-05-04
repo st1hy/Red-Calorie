@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +23,6 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresente
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
-import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -57,8 +55,6 @@ public class TagsActivity extends BaseActivity implements TagsView {
     FloatingActionButton fab;
     @Bind(R.id.tags_no_tags_button)
     View notTagsButton;
-    @Bind(R.id.tags_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
     SearchView searchView;
 
     @NonNull
@@ -86,11 +82,14 @@ public class TagsActivity extends BaseActivity implements TagsView {
                 onBackPressed();
             }
         });
-        presenter.onAddTagClicked(Observable.merge(RxView.clicks(fab), RxView.clicks(notTagsButton)));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        presenter.onRefresh(RxSwipeRefreshLayout.refreshes(swipeRefreshLayout));
-        swipeRefreshLayout.setEnabled(false);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getOnAddTagClickedObservable() {
+        return Observable.merge(RxView.clicks(fab), RxView.clicks(notTagsButton));
     }
 
     @NonNull
@@ -128,11 +127,6 @@ public class TagsActivity extends BaseActivity implements TagsView {
     public void setNoTagsButtonVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
         notTagsButton.setVisibility(visibility.getVisibility());
-    }
-
-    @Override
-    public void setDataRefreshing(boolean isRefreshing) {
-        swipeRefreshLayout.setRefreshing(isRefreshing);
     }
 
     @Override

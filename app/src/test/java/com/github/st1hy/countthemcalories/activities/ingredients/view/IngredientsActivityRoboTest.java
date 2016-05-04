@@ -11,16 +11,14 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
-
-import rx.plugins.TestRxPlugins;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class IngredientsActivityRoboTest {
 
@@ -40,7 +38,6 @@ public class IngredientsActivityRoboTest {
 
     @Before
     public void setup() {
-        TestRxPlugins.registerImmediateHook();
         activity = Robolectric.setupActivity(IngredientsActivity.class);
     }
 

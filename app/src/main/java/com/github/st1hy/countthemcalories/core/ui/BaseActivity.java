@@ -31,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Permissi
         return t;
     }
 
+    @NonNull
     @TargetApi(23)
     @Override
     public Observable<Permission[]> requestPermission(@NonNull String[] permissions) {

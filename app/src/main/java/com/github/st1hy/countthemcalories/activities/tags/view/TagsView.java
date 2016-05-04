@@ -16,8 +16,6 @@ public interface TagsView extends DialogView {
 
     void setNoTagsButtonVisibility(@NonNull  Visibility visibility);
 
-    void setDataRefreshing(boolean isRefreshing);
-
     /**
      * @return observable emitting onNext when user clicks ok to remove
      */
@@ -27,4 +25,7 @@ public interface TagsView extends DialogView {
     void scrollToPosition(int position);
 
     void setResultAndReturn(long tagId, @NonNull String tagName);
+
+    @NonNull
+    Observable<Void> getOnAddTagClickedObservable();
 }

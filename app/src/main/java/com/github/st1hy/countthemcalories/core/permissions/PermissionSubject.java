@@ -56,5 +56,6 @@ public interface PermissionSubject {
      * @return observable permission result.
      * @see Activity#requestPermissions(String[],int)
      */
+    @NonNull
     Observable<Permission[]> requestPermission(@NonNull String[] permissions);
 }

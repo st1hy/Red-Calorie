@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -9,14 +10,15 @@ import android.widget.EditText;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
@@ -32,20 +34,25 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
+@LargeTest
 public class TagsActivityRoboTest {
 
     private TagsActivity activity;
 
     @Before
     public void setup() {
-        TestRxPlugins.registerImmediateHook();
         Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
         activity = Robolectric.buildActivity(TagsTestActivity.class)
                 .withIntent(intent)
                 .setup()
                 .get();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        TestRxPlugins.reset();
     }
 
     @Test
@@ -65,6 +72,7 @@ public class TagsActivityRoboTest {
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
+
     @Test
     public void testAddNewItemFinishWithEnter() throws Exception {
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
@@ -134,5 +142,18 @@ public class TagsActivityRoboTest {
         Intent resultIntent = shadowOf(activity).getResultIntent();
         assertThat(resultIntent, CoreMatchers.notNullValue());
         assertThat(resultIntent.getLongExtra(TagsActivity.EXTRA_TAG_ID, -1L), not(equalTo(-1L)));
+    }
+
+    @Test
+    public void testSearch() throws Exception {
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+
+        activity.searchView.performClick();
+        activity.searchView.setQuery("Tag", true);
+
+        synchronized (this) {
+            wait(500);
+        }
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 }

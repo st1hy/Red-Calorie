@@ -49,9 +49,9 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         Uri imageUri = model.getImageUri();
         if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
 
-        final Observable<CharSequence> nameObservable = view.getNameObservable().share();
+        final Observable<CharSequence> nameObservable = view.getNameObservable();
         subscriptions.add(nameObservable.subscribe(setNameToModel()));
-        final Observable<CharSequence> valueObservable = view.getValueObservable().share();
+        final Observable<CharSequence> valueObservable = view.getValueObservable();
         subscriptions.add(valueObservable.subscribe(setValueToModel()));
 
 //        Observable.combineLatest(nameObservable, valueObservable, new Func2<CharSequence, CharSequence, CharSequence[]>() {

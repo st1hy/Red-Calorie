@@ -9,23 +9,27 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public enum Utils {
-    ;
+import javax.inject.Inject;
 
-    public static boolean hasLollipop() {
+public class Utils {
+
+    @Inject
+    public Utils() {
+    }
+
+    public boolean hasLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean hasMarshmallow() {
+    public boolean hasMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
-
 
     /**
      * @return drawable or null if drawable could not be found
      */
     @Nullable
-    public static Drawable getDrawableSafely(@NonNull Context context, @DrawableRes final int resId) {
+    public Drawable getDrawableSafely(@NonNull Context context, @DrawableRes final int resId) {
         try {
             return getDrawable(context, resId);
         } catch (Resources.NotFoundException e) {
@@ -38,7 +42,7 @@ public enum Utils {
      * @throws Resources.NotFoundException if resource was not found
      */
     @NonNull
-    public static Drawable getDrawable(@NonNull Context context,
+    public Drawable getDrawable(@NonNull Context context,
                                        @DrawableRes int drawableResId) {
         Resources resources = context.getResources();
         int density = resources.getDisplayMetrics().densityDpi;
@@ -50,7 +54,7 @@ public enum Utils {
     }
 
     @TargetApi(21)
-    private static Drawable getDrawableL(@NonNull Resources resources,
+    private Drawable getDrawableL(@NonNull Resources resources,
                                          @NonNull Resources.Theme theme,
                                          @DrawableRes int drawableResId,
                                          int density) {
@@ -58,7 +62,7 @@ public enum Utils {
     }
 
     @SuppressWarnings("deprecation")
-    private static Drawable getDrawableDeprecated(@NonNull Resources resources,
+    private Drawable getDrawableDeprecated(@NonNull Resources resources,
                                                   @DrawableRes int drawableResId,
                                                   int density) {
         return resources.getDrawableForDensity(drawableResId, density);

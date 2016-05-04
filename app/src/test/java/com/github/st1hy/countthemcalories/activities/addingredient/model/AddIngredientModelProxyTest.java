@@ -11,15 +11,13 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.Ingredien
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
-
-import rx.plugins.TestRxPlugins;
 
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
@@ -28,7 +26,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class AddIngredientModelProxyTest {
 
@@ -44,7 +42,6 @@ public class AddIngredientModelProxyTest {
 
     @Before
     public void setUp() throws Exception {
-        TestRxPlugins.registerImmediateHook();
         settingsModel = Mockito.mock(SettingsModel.class);
         tagsModel = Mockito.mock(IngredientTagsModel.class);
         typesModel = Mockito.mock(IngredientTypesModel.class);

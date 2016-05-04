@@ -5,13 +5,12 @@ import android.support.annotation.NonNull;
 import rx.Observable;
 
 public interface TagsPresenter {
-    void onAddTagClicked(@NonNull Observable<Void> clicks);
-
     void onStart();
 
     void onStop();
 
-    void onRefresh(@NonNull Observable<Void> refreshes);
-
+    /**
+     * Cache, its provided by onCreateOptionsMenu
+     */
     void onSearch(@NonNull Observable<CharSequence> observable);
 }

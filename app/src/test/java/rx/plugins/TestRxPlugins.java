@@ -8,13 +8,6 @@ import rx.schedulers.TestImmediateScheduler;
 public class TestRxPlugins {
 
     public static void registerImmediateHook() {
-        RxJavaPlugins.getInstance().reset();
-        RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
-            @Override
-            public Scheduler getIOScheduler() {
-                return TestImmediateScheduler.instance();
-            }
-        });
 
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -28,5 +21,28 @@ public class TestRxPlugins {
     public static void reset() {
         RxJavaPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().reset();
+    }
+
+
+    public static void registerImmediateHook2() {
+        RxJavaPlugins.getInstance().reset();
+        RxJavaPlugins.getInstance().registerSchedulersHook(new RxJavaSchedulersHook() {
+            @Override
+            public Scheduler getIOScheduler() {
+                return TestImmediateScheduler.instance();
+            }
+
+            @Override
+            public Scheduler getComputationScheduler() {
+                return TestImmediateScheduler.instance();
+            }
+        });
+        RxAndroidPlugins.getInstance().reset();
+        RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
+            @Override
+            public Scheduler getMainThreadScheduler() {
+                return TestImmediateScheduler.instance();
+            }
+        });
     }
 }

@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import rx.Observable;
-import rx.plugins.TestRxPlugins;
 import rx.subjects.PublishSubject;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -41,7 +40,6 @@ public class SettingsPresenterImpTest {
 
     @Before
     public void setup() {
-        TestRxPlugins.registerImmediateHook();
         presenter = new SettingsPresenterImp(view, preferencesModel);
     }
 

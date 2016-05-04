@@ -3,25 +3,23 @@ package com.github.st1hy.countthemcalories.activities.settings.view;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowDialog;
-
-import rx.plugins.TestRxPlugins;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class SettingsActivityRoboTest {
 
@@ -34,7 +32,6 @@ public class SettingsActivityRoboTest {
 
     @Test
     public void testSetup() throws Exception {
-        TestRxPlugins.registerImmediateHook();
         assertThat(activity, notNullValue());
         assertThat(activity.presenter, notNullValue());
         assertThat(activity.toolbar, notNullValue());

@@ -4,18 +4,17 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import rx.Subscription;
 import rx.functions.Action1;
-import rx.plugins.TestRxPlugins;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.equalTo;
@@ -23,14 +22,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class SettingsModelTest {
     private SettingsModel model;
 
     @Before
     public void setUp() throws Exception {
-        TestRxPlugins.registerImmediateHook();
         CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
         model = application.getComponent().getSettingsModel();
     }

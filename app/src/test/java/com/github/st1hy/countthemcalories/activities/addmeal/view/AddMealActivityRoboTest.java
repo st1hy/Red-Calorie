@@ -6,18 +6,16 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.fakes.RoboMenu;
 import org.robolectric.shadows.ShadowActivity;
-
-import rx.plugins.TestRxPlugins;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,7 +24,7 @@ import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class AddMealActivityRoboTest {
     private AddMealActivity activity;
@@ -34,7 +32,6 @@ public class AddMealActivityRoboTest {
 
     @Before
     public void setup() {
-        TestRxPlugins.registerImmediateHook();
         activity = Robolectric.setupActivity(AddMealActivity.class);
         presenterMock = Mockito.mock(AddMealPresenterImp.class);
         activity.presenter = presenterMock;

@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.T
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
-import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Strings;
@@ -24,14 +23,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Notification;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.internal.operators.OnSubscribeRedo;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -46,7 +43,8 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     final TagsActivityModel activityModel;
     final CompositeSubscription subscriptions = new CompositeSubscription();
     final CompositeSubscription viewBindingSubs = new CompositeSubscription();
-    private Cursor cursor;
+    Cursor cursor;
+     Observable<CharSequence> onSearchObservable;
 
     @Inject
     public TagsPresenterImp(@NonNull TagsView view,
@@ -58,25 +56,9 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     }
 
     @Override
-    public void onAddTagClicked(@NonNull Observable<Void> clicks) {
-        subscribeToCursor(clicks
-                .flatMap(showNewTagDialog())
-                .map(trim())
-                .filter(notEmpty())
-                .flatMap(addTagRefresh())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<Cursor>() {
-                    @Override
-                    public void call(Cursor cursor) {
-                        view.scrollToPosition(cursor.getPosition());
-                    }
-                }));
-    }
-
-    @Override
     public void onStart() {
-        subscriptions.add(model.getDbProcessingObservable()
-                .subscribe(onDbProcessing()));
+        if (onSearchObservable != null) onSearch(onSearchObservable);
+        onAddTagClicked(view.getOnAddTagClickedObservable());
         Timber.v("Starting query for all items");
         subscribeToCursor(model.getAllObservable());
     }
@@ -89,13 +71,10 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     }
 
     @Override
-    public void onRefresh(@NonNull Observable<Void> refreshes) {
-        refreshes.subscribe(refreshModel());
-    }
-
-    @Override
     public void onSearch(@NonNull Observable<CharSequence> observable) {
-        Observable<Cursor> listObservable = observable
+        onSearchObservable = observable;
+        subscribeToCursor(observable
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<CharSequence>() {
                     @Override
@@ -109,10 +88,27 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                     public void call(Throwable e) {
                         Timber.e(e, "Search exploded");
                     }
-                });
-        Observable<Cursor> onSearch = OnSubscribeRedo.retry(listObservable, REDO_INFINITE,
-                AndroidSchedulers.mainThread());
-        subscribeToCursor(onSearch);
+                })
+                .retry());
+//        Observable<Cursor> onSearch = OnSubscribeRedo.retry(listObservable, REDO_INFINITE,
+//                AndroidSchedulers.mainThread());
+    }
+
+    void onAddTagClicked(@NonNull Observable<Void> clicks) {
+        subscribeToCursor(clicks
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .flatMap(showNewTagDialog())
+                .map(trim())
+                .filter(notEmpty())
+                .flatMap(addTagRefresh())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<Cursor>() {
+                    @Override
+                    public void call(Cursor cursor) {
+                        view.scrollToPosition(cursor.getPosition());
+                    }
+                })
+                .retry());
     }
 
     @Override
@@ -157,7 +153,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public void onItemLongClicked(@NonNull Tag tag) {
-        view.showRemoveTagDialog().subscribe(deleteTag(tag));
+        subscriptions.add(view.showRemoveTagDialog().subscribe(deleteTag(tag)));
     }
 
     @NonNull
@@ -170,16 +166,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         };
     }
 
-    @NonNull
-    Action1<DbProcessing> onDbProcessing() {
-        return new Action1<DbProcessing>() {
-            @Override
-            public void call(DbProcessing dbProcessing) {
-//                Timber.v("Db processing %s", dbProcessing);
-            }
-        };
-    }
-
     void subscribeToCursor(@NonNull Observable<Cursor> cursorObservable) {
         subscriptions.add(cursorObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -187,7 +173,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                     @Override
                     public void call() {
                         Timber.v("Db cursor query started");
-                        view.setDataRefreshing(true);
                     }
                 })
                 .subscribe(new Subscriber<Cursor>() {
@@ -198,7 +183,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                     @Override
                     public void onError(Throwable e) {
                         Timber.e(e, "Error when providing cursor");
-                        view.setDataRefreshing(false);
                     }
 
                     @Override
@@ -209,7 +193,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                         TagsPresenterImp.this.cursor = cursor;
                         view.setNoTagsButtonVisibility(Visibility.of(cursor.getCount() == 0));
                         notifyDataSetChanged();
-                        view.setDataRefreshing(false);
                     }
                 }));
     }
@@ -220,16 +203,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
             @Override
             public Observable<String> call(Void aVoid) {
                 return view.showEditTextDialog(model.getNewTagDialogTitle());
-            }
-        };
-    }
-
-    @NonNull
-    Action1<Void> refreshModel() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                subscribeToCursor(model.getAllObservable());
             }
         };
     }
@@ -274,17 +247,17 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         };
     }
 
-    static final Func1<Observable<? extends Notification<?>>, Observable<?>> REDO_INFINITE = new Func1<Observable<? extends Notification<?>>, Observable<?>>() {
-        @Override
-        public Observable<?> call(Observable<? extends Notification<?>> ts) {
-            return ts.map(new Func1<Notification<?>, Notification<?>>() {
-                @Override
-                public Notification<?> call(Notification<?> terminal) {
-                    return Notification.createOnNext(null);
-                }
-            });
-        }
-    };
+//    static final Func1<Observable<? extends Notification<?>>, Observable<?>> REDO_INFINITE = new Func1<Observable<? extends Notification<?>>, Observable<?>>() {
+//        @Override
+//        public Observable<?> call(Observable<? extends Notification<?>> ts) {
+//            return ts.map(new Func1<Notification<?>, Notification<?>>() {
+//                @Override
+//                public Notification<?> call(Notification<?> terminal) {
+//                    return Notification.createOnNext(null);
+//                }
+//            });
+//        }
+//    };
 
     private void closeCursor() {
         Cursor cursor = this.cursor;

@@ -1,40 +1,38 @@
 package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
 
+import android.database.Cursor;
+
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
-import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.core.ui.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.testrunner.RxRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Collections;
-import java.util.concurrent.Callable;
-
 import rx.Observable;
-import rx.plugins.TestRxPlugins;
+import rx.Subscription;
+import rx.subjects.PublishSubject;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RxRobolectricGradleTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class TagsPresenterImpTest {
 
@@ -42,10 +40,11 @@ public class TagsPresenterImpTest {
     private TagsModel model;
     private TagsActivityModel activityModel;
     private TagsPresenterImp presenter;
+    private Cursor cursor;
 
     @Before
     public void setup() {
-        TestRxPlugins.registerImmediateHook();
+        cursor = Mockito.mock(Cursor.class);
         view = Mockito.mock(TagsView.class);
         model = Mockito.mock(TagsModel.class);
         activityModel = Mockito.mock(TagsActivityModel.class);
@@ -54,118 +53,79 @@ public class TagsPresenterImpTest {
 
     @Test
     public void testOnStart() throws Exception {
-        when(model.getDbProcessingObservable()).thenReturn(Observable.just(DbProcessing.NOT_STARTED));
-        when(model.getAllObservable()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(2);
+        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
-        verify(model).getDbProcessingObservable();
         verify(model).getAllObservable();
+        verify(view).getOnAddTagClickedObservable();
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verify(view).setDataRefreshing(false);
-        verifyNoMoreInteractions(model, view);
+        verify(cursor).getCount();
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
     @Test
     public void testOnStartWithLoadedDataEmpty() throws Exception {
-        when(model.getDbProcessingObservable()).thenReturn(Observable.just(DbProcessing.FINISHED));
-        when(model.getItemCount()).thenReturn(0);
-        when(model.getAllObservable()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(0);
+        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
-        verify(model).getDbProcessingObservable();
-        verify(model).getItemCount();
+        verify(model).getAllObservable();
+        verify(view).getOnAddTagClickedObservable();
+        verify(cursor).getCount();
         verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
-        verify(view).setDataRefreshing(false);
-        verifyNoMoreInteractions(model, view);
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
-    @Test
-    public void testOnStartWithLoadedDataNotEmpty() throws Exception {
-        when(model.getDbProcessingObservable()).thenReturn(Observable.just(DbProcessing.FINISHED));
-        when(model.getItemCount()).thenReturn(10);
-
-        presenter.onStart();
-
-        verify(model).getDbProcessingObservable();
-        verify(model).getItemCount();
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verify(view).setDataRefreshing(false);
-        verifyNoMoreInteractions(model, view);
-    }
-
-    @Test
-    public void testOnStartWithLoadingInProgress() throws Exception {
-        when(model.getDbProcessingObservable()).thenReturn(Observable.just(DbProcessing.STARTED));
-
-        presenter.onStart();
-
-        verify(model).getDbProcessingObservable();
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verify(view).setDataRefreshing(true);
-        verifyNoMoreInteractions(model, view);
-    }
 
     @Test
     public void testAddTagClick() throws Exception {
-        testOnStartWithLoadedDataNotEmpty();
         final String tagName = "Tag name";
         final int position = 230;
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
-        when(model.addNewAndRefresh(any(Tag.class))).thenReturn(Observable.just(position));
+        when(model.addNewAndRefresh(any(Tag.class))).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(500);
+        when(cursor.getPosition()).thenReturn(position);
 
-        presenter.onAddTagClicked(Observable.just(voidCallable().call()));
+        presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(model).getNewTagDialogTitle();
         verify(view).showEditTextDialog(anyInt());
         verify(model).addNewAndRefresh(any(Tag.class));
-        verify(view).setDataRefreshing(false);
+        verify(cursor).getPosition();
         verify(view).scrollToPosition(position);
+        verify(cursor).getCount();
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verifyNoMoreInteractions(view, model);
-    }
-
-    static Callable<Void> voidCallable() {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                return null;
-            }
-        };
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
     @Test
     public void testAddTagError() throws Exception {
-        testOnStartWithLoadedDataNotEmpty();
         final String tagName = "Tag name";
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
         when(model.addNewAndRefresh(new Tag(null, tagName))).thenThrow(new Error());
 
-        presenter.onAddTagClicked(Observable.just(voidCallable().call()));
+        PublishSubject<Void> subject = PublishSubject.create();
+        presenter.onAddTagClicked(subject);
+        subject.onNext(null);
+
         //Doesn't crash is good
-    }
+        verify(model).getNewTagDialogTitle();
+        verify(view).showEditTextDialog(anyInt());
+        verify(model).addNewAndRefresh(any(Tag.class));
 
-
-    @Test
-    public void testRefresh() throws Exception {
-        when(model.getAllObservable()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
-
-        presenter.onRefresh(Observable.just(voidCallable().call()));
-
-        verify(model).getAllObservable();
-    }
-
-    @Test
-    public void testItemCount() throws Exception {
-        presenter.getItemCount();
-
-        verify(model).getItemCount();
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
     @Test
     public void testGetItemType() throws Exception {
-        when(model.getItemCount()).thenReturn(1);
+        presenter.cursor = cursor;
+        when(cursor.getCount()).thenReturn(1);
+
         assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
         assertEquals(R.layout.tags_item_bottom_space, presenter.getItemViewType(1));
     }
@@ -173,35 +133,53 @@ public class TagsPresenterImpTest {
     @Test
     public void testOnBindViewHolder() throws Exception {
         TagItemViewHolder mockViewHolder = Mockito.mock(TagItemViewHolder.class);
-        when(model.getItemAt(0)).thenReturn(Mockito.mock(Tag.class));
+        Tag tag = Mockito.mock(Tag.class);
+        Observable<Tag> tagObservable = Observable.just(tag);
+        presenter.cursor = cursor;
+        when(cursor.getCount()).thenReturn(1);
+        when(model.getFromCursor(cursor, 0)).thenReturn(tagObservable);
+        when(mockViewHolder.bind(tagObservable)).thenReturn(Mockito.mock(Subscription.class));
 
         presenter.onBindViewHolder(mockViewHolder, 0);
 
-        verify(model).getItemAt(0);
-        verify(mockViewHolder).setName(anyString());
+        verify(model).getFromCursor(cursor, 0);
+        verify(mockViewHolder).bind(tagObservable);
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
     @Test
     public void testLongPressItem() throws Exception {
-        final int deletePosition = 0x34;
-        when(view.showRemoveTagDialog()).thenReturn(Observable.just(voidCallable().call()));
-        Tag tag = Mockito.mock(Tag.class);
-        when(model.getItemAt(deletePosition)).thenReturn(tag);
-        when(model.removeAndRefresh(any(Tag.class))).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+        when(view.showRemoveTagDialog()).thenReturn(Observable.<Void>just(null));
+        final Tag tag = Mockito.mock(Tag.class);
+        when(model.removeAndRefresh(any(Tag.class))).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(1);
 
-        presenter.onItemLongClicked(deletePosition);
+        presenter.onItemLongClicked(tag);
 
         verify(view).showRemoveTagDialog();
-        verify(model).getItemAt(deletePosition);
         verify(model).removeAndRefresh(tag);
-        verifyNoMoreInteractions(view, model);
+        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(cursor).getCount();
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
+    }
+    @Test
+    public void testOnItemClicked() throws Exception {
+        when(activityModel.isInSelectMode()).thenReturn(true);
+        final Tag tag = new Tag(0x231L, "Name");
+
+        presenter.onItemClicked(tag);
+
+        verify(activityModel).isInSelectMode();
+        verify(view).setResultAndReturn(tag.getId(), tag.getName());
+        verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
+//
     @Test
     public void testOnStop() throws Exception {
-        when(model.getDbProcessingObservable()).thenReturn(Observable.just(DbProcessing.FINISHED));
-        when(model.getItemCount()).thenReturn(0);
-        when(model.getAllObservable()).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(0);
+        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
         presenter.onStop();
@@ -212,26 +190,14 @@ public class TagsPresenterImpTest {
 
     @Test
     public void testOnSearch() throws Exception {
-        when(model.getAllFiltered("test")).thenReturn(Observable.just(Collections.<Tag>emptyList()));
+        when(model.getAllFiltered("test")).thenReturn(Observable.just(cursor));
 
         presenter.onSearch(Observable.<CharSequence>just("t","te","tes","test"));
 
         verify(model).getAllFiltered("test");
+        verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
+        verify(cursor).getCount();
         verifyNoMoreInteractions(view, model);
-    }
-
-    @Test
-    public void testOnItemClicked() throws Exception {
-        final int position = 0x420;
-        when(activityModel.isInSelectMode()).thenReturn(true);
-        final Tag tag = new Tag(0x231L, "Name");
-        when(model.getItemAt(position)).thenReturn(tag);
-
-        presenter.onItemClicked(position);
-
-        verify(activityModel).isInSelectMode();
-        verify(model).getItemAt(position);
-        verify(view).setResultAndReturn(tag.getId(), tag.getName());
     }
 
 }

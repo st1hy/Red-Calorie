@@ -44,6 +44,8 @@ public class UtilsTest {
     @Mock
     private Resources.Theme mockedTheme;
 
+    private Utils utils = new Utils();
+
     @Before
     public void setup() {
         when(mockedContext.getResources()).thenReturn(mockedResources);
@@ -55,11 +57,11 @@ public class UtilsTest {
     public void testHasLollipop() throws Exception {
         for (int i = 1; i < LOLLIPOP; i++) {
             setBuildVersion(i);
-            assertFalse(Utils.hasLollipop());
+            assertFalse(utils.hasLollipop());
         }
         for (int i = LOLLIPOP; i < 100; i++) {
             setBuildVersion(i);
-            assertTrue(Utils.hasLollipop());
+            assertTrue(utils.hasLollipop());
         }
     }
 
@@ -67,11 +69,11 @@ public class UtilsTest {
     public void testHasMarshmallow() throws Exception {
         for (int i = 1; i < MARSHMALLOW; i++) {
             setBuildVersion(i);
-            assertFalse(Utils.hasMarshmallow());
+            assertFalse(utils.hasMarshmallow());
         }
         for (int i = MARSHMALLOW; i < 100; i++) {
             setBuildVersion(i);
-            assertTrue(Utils.hasMarshmallow());
+            assertTrue(utils.hasMarshmallow());
         }
     }
 
@@ -85,7 +87,7 @@ public class UtilsTest {
         setBuildVersion(LOLLIPOP);
         when(mockedResources.getDrawableForDensity(anyInt(), anyInt(), any(Resources.Theme.class))).thenReturn(drawableMock);
 
-        Drawable drawable = Utils.getDrawable(mockedContext, testResId);
+        Drawable drawable = utils.getDrawable(mockedContext, testResId);
         assertEquals(drawableMock, drawable);
 
         verify(mockedContext).getResources();
@@ -102,7 +104,7 @@ public class UtilsTest {
         setBuildVersion(LOLLIPOP - 1);
         when(mockedResources.getDrawableForDensity(anyInt(), anyInt())).thenReturn(drawableMock);
 
-        Drawable drawable = Utils.getDrawable(mockedContext, testResId);
+        Drawable drawable = utils.getDrawable(mockedContext, testResId);
 
         verify(mockedContext).getResources();
         verify(mockedResources).getDisplayMetrics();
@@ -120,7 +122,7 @@ public class UtilsTest {
         when(mockedResources.getDrawableForDensity(anyInt(), anyInt()))
                 .thenThrow(new Resources.NotFoundException());
 
-        Utils.getDrawable(mockedContext, testResId);
+        utils.getDrawable(mockedContext, testResId);
     }
 
     @SuppressWarnings("deprecation")
@@ -129,7 +131,7 @@ public class UtilsTest {
         setBuildVersion(LOLLIPOP - 1);
         when(mockedResources.getDrawableForDensity(anyInt(), anyInt())).thenReturn(drawableMock);
 
-        Drawable drawable = Utils.getDrawableSafely(mockedContext, testResId);
+        Drawable drawable = utils.getDrawableSafely(mockedContext, testResId);
         assertEquals(drawableMock, drawable);
     }
 
@@ -140,7 +142,7 @@ public class UtilsTest {
         when(mockedResources.getDrawableForDensity(anyInt(), anyInt()))
                 .thenThrow(new Resources.NotFoundException());
 
-        Drawable drawable = Utils.getDrawableSafely(mockedContext, testResId);
+        Drawable drawable = utils.getDrawableSafely(mockedContext, testResId);
         assertNull(drawable);
     }
 }
