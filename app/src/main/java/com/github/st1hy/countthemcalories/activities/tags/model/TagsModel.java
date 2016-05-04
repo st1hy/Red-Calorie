@@ -24,6 +24,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         this.dao = session.getTagDao();
     }
 
+    @NonNull
     @Override
     protected Tag performGetById(long id) {
         Tag tag = session.getTagDao().load(id);
@@ -92,8 +93,4 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         return R.string.tags_new_tag_dialog;
     }
 
-    @Override
-    protected Tag readEntity(@NonNull Cursor cursor) {
-        return dao.readEntity(cursor, 0);
-    }
 }

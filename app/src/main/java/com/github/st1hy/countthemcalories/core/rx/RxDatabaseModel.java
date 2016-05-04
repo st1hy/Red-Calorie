@@ -72,6 +72,7 @@ public abstract class RxDatabaseModel<T> {
         return fromDatabaseTask(removeAllRefresh());
     }
 
+    @NonNull
     protected abstract T performGetById(long id);
 
     @NonNull
@@ -86,8 +87,6 @@ public abstract class RxDatabaseModel<T> {
 
     @NonNull
     protected abstract CursorQuery filteredSortedByNameQuery();
-
-    protected abstract T readEntity(@NonNull Cursor cursor);
 
     protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
 
@@ -119,7 +118,8 @@ public abstract class RxDatabaseModel<T> {
             @Override
             public T call() throws Exception {
                 cursor.moveToPosition(position);
-                return readEntity(cursor);
+                long id = readKey(cursor, getKeyColumn(cursor));
+                return performGetById(id);
             }
         };
     }
@@ -161,7 +161,7 @@ public abstract class RxDatabaseModel<T> {
 
     private void moveCursorToKeyIfAble(@NonNull Cursor cursor, long key) {
         if (cursor.moveToFirst()) {
-            int keyColumn = cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
+            int keyColumn = getKeyColumn(cursor);
             boolean isFound = false;
             do {
                 long readKey = readKey(cursor, keyColumn);
@@ -172,6 +172,10 @@ public abstract class RxDatabaseModel<T> {
             } while (cursor.moveToNext());
             if (!isFound) cursor.moveToFirst();
         }
+    }
+
+    private int getKeyColumn(@NonNull Cursor cursor) {
+        return cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
     }
 
     @NonNull

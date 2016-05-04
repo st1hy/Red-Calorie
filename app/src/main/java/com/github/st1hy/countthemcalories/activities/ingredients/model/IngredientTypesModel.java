@@ -27,6 +27,7 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
         this.dao = session.getIngredientTemplateDao();
     }
 
+    @NonNull
     @Override
     protected IngredientTemplate performGetById(long id) {
         IngredientTemplate template = dao.load(id);
@@ -123,10 +124,5 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
     @Override
     protected long getKey(IngredientTemplate ingredientTemplate) {
         return ingredientTemplate.getId();
-    }
-
-    @Override
-    protected IngredientTemplate readEntity(@NonNull Cursor cursor) {
-        return dao.readEntity(cursor, 0);
     }
 }

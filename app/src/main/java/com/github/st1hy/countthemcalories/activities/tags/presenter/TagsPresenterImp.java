@@ -83,9 +83,9 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public void onStop() {
-        closeCursor();
         viewBindingSubs.clear();
         subscriptions.clear();
+        closeCursor();
     }
 
     @Override
@@ -175,7 +175,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<DbProcessing>() {
             @Override
             public void call(DbProcessing dbProcessing) {
-                Timber.v("Db processing %s", dbProcessing);
+//                Timber.v("Db processing %s", dbProcessing);
             }
         };
     }
@@ -186,6 +186,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
+                        Timber.v("Db cursor query started");
                         view.setDataRefreshing(true);
                     }
                 })
@@ -202,6 +203,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
                     @Override
                     public void onNext(Cursor cursor) {
+                        Timber.v("Db cursor query ended");
                         viewBindingSubs.clear();
                         closeCursor();
                         TagsPresenterImp.this.cursor = cursor;
