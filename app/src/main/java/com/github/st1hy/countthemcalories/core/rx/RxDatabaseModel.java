@@ -18,11 +18,11 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public abstract class RxDatabaseModel<T> {
-    private  final Lazy<DaoSession> session;
+    private final Lazy<DaoSession> session;
     private final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
     private CursorQuery allSortedByNameQuery;
     private CursorQuery filteredSortedByNameQuery;
-    private CursorQuery lastQuery;
+    private String lastFilter = "";
 
     public RxDatabaseModel(@NonNull Lazy<DaoSession> session) {
         this.session = session;
@@ -212,16 +212,7 @@ public abstract class RxDatabaseModel<T> {
 
     @NonNull
     private Callable<CursorQuery> lastQuery() {
-        return new Callable<CursorQuery>() {
-            @Override
-            public CursorQuery call() throws Exception {
-                if (lastQuery == null) {
-                    return getQueryOf("").call();
-                } else {
-                    return lastQuery.forCurrentThread();
-                }
-            }
-        };
+        return getQueryOf(lastFilter);
     }
 
     @NonNull
@@ -229,6 +220,7 @@ public abstract class RxDatabaseModel<T> {
         return new Callable<CursorQuery>() {
             @Override
             public CursorQuery call() throws Exception {
+                lastFilter = partOfName;
                 if (Strings.isNullOrEmpty(partOfName)) {
                     return allSortedByNameSingleton().forCurrentThread();
                 } else {
@@ -246,7 +238,6 @@ public abstract class RxDatabaseModel<T> {
             @Override
             public Cursor call() throws Exception {
                 CursorQuery query = queryCall.call();
-                lastQuery = query;
                 return query.query();
             }
         };
