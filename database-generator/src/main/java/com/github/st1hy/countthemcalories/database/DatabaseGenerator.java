@@ -85,9 +85,9 @@ public class DatabaseGenerator {
         ingredientTemplate.addToMany(ingredientComponent, ingredientTypeId, "childIngredients");
 
         //What tags does ingredient type has
-        ingredientTemplate.addToMany(jointIngredientTypeTag, tagIdFromJoint, "tags");
+        ingredientTemplate.addToMany(jointIngredientTypeTag, ingredientTypeIdFromJoint, "tags");
         //What ingredient types are related to this tag
-        tag.addToMany(jointIngredientTypeTag, ingredientTypeIdFromJoint, "ingredientTypes");
+        tag.addToMany(jointIngredientTypeTag, tagIdFromJoint, "ingredientTypes");
         //What tag is pointed by this joint ingredient-tag
         jointIngredientTypeTag.addToOne(tag, tagIdFromJoint, "tag");
         //What ingredient type is pointed by this joint ingredient-tag

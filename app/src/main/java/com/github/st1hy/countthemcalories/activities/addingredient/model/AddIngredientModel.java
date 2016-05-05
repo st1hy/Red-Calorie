@@ -152,7 +152,7 @@ public class AddIngredientModel extends WithPictureModel {
     public Observable<Void> insertIntoDatabase() {
         IngredientTemplate template = new IngredientTemplate(null, getName(), getImageUri(),
                 DateTime.now(), getEnergyUnit());
-        return databaseModel.addNewAndRefresh(template, tagsModel.getAll())
+        return databaseModel.addNewAndRefresh(template, tagsModel.getTagIds())
                 .map(intoVoidCall());
     }
 

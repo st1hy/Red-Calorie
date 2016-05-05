@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.core.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.core.inject.DaggerApplicationTestComponent;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
+import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
@@ -22,6 +23,7 @@ import com.github.st1hy.countthemcalories.database.application.inject.DatabaseMo
 import static org.junit.Assert.assertEquals;
 
 public class AddIngredientTestActivity extends AddIngredientActivity {
+    public static Tag[] exampleTags = new Tag[] {new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
 
     @NonNull
     @Override
@@ -50,10 +52,13 @@ public class AddIngredientTestActivity extends AddIngredientActivity {
         DaoSession daoSession = component.getDaoSession();
         TagDao tagDao = daoSession.getTagDao();
         tagDao.deleteAll();
-        tagDao.insertInTx(new Tag(null, "Test tag"), new Tag(null, "Tag2"), new Tag(null, "meal"));
+        tagDao.insertOrReplaceInTx(exampleTags);
         assertEquals(3, tagDao.loadAll().size());
         IngredientTemplateDao templateDao = daoSession.getIngredientTemplateDao();
         templateDao.deleteAll();
         assertEquals(0, templateDao.loadAll().size());
+        JointIngredientTagDao jointIngredientTagDao = daoSession.getJointIngredientTagDao();
+        jointIngredientTagDao.deleteAll();
+        assertEquals(0, jointIngredientTagDao.loadAll().size());
     }
 }

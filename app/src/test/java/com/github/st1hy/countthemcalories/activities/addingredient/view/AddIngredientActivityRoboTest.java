@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,10 +14,14 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientTestComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,12 +39,14 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import java.util.List;
 
 import rx.plugins.TestRxPlugins;
+import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,15 +58,23 @@ import static org.robolectric.Shadows.shadowOf;
 public class AddIngredientActivityRoboTest {
 
     private AddIngredientActivity activity;
+    private final Timber.Tree tree = new Timber.Tree() {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            System.out.println(message);
+        }
+    };
 
     @Before
     public void setup() {
+        Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
         activity = Robolectric.setupActivity(AddIngredientTestActivity.class);
     }
 
     @After
     public void tearDown() throws Exception {
+        Timber.uproot(tree);
         TestRxPlugins.reset();
     }
 
@@ -134,26 +149,11 @@ public class AddIngredientActivityRoboTest {
         assertEquals(selectedItem, activity.selectUnit.getText());
     }
 
-
     @Test
     public void testAddRemoveTag() throws Exception {
         assertThat(activity.tagsRecycler.getChildCount(), equalTo(1));
 
-        activity.tagsRecycler.getChildAt(0).findViewById(R.id.add_ingredient_category_add).performClick();
-
-        ShadowActivity shadowActivity = shadowOf(activity);
-        ShadowActivity.IntentForResult activityForResult = shadowActivity.getNextStartedActivityForResult();
-        assertThat(activityForResult.intent, hasAction(TagsActivity.ACTION_PICK_TAG));
-        assertThat(activityForResult.intent, hasComponent(new ComponentName(activity, TagsActivity.class)));
-
-        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
-        DaoSession daoSession = component.getDaoSession();
-        final Tag tag = daoSession.getTagDao().loadAll().get(0);
-
-        Intent result = new Intent();
-        result.putExtra(TagsActivity.EXTRA_TAG_ID, tag.getId());
-        result.putExtra(TagsActivity.EXTRA_TAG_NAME, tag.getName());
-        shadowActivity.receiveResult(activityForResult.intent, Activity.RESULT_OK, result);
+        Tag tag = addTag(0);
 
         assertThat(activity.tagsRecycler.getChildCount(), equalTo(2));
         View tagView = activity.tagsRecycler.getChildAt(0);
@@ -163,4 +163,63 @@ public class AddIngredientActivityRoboTest {
         tagView.findViewById(R.id.add_ingredient_category_remove).performClick();
         assertThat(activity.tagsRecycler.getChildCount(), equalTo(1));
     }
+
+    private Tag addTag(int position) {
+        int addTagPos = activity.tagsRecycler.getChildCount() - 1;
+        activity.tagsRecycler.getChildAt(addTagPos).findViewById(R.id.add_ingredient_category_add).performClick();
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        ShadowActivity.IntentForResult activityForResult = shadowActivity.getNextStartedActivityForResult();
+        assertThat(activityForResult.intent, hasAction(TagsActivity.ACTION_PICK_TAG));
+        assertThat(activityForResult.intent, hasComponent(new ComponentName(activity, TagsActivity.class)));
+
+        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
+        DaoSession daoSession = component.getDaoSession();
+        final Tag tag = daoSession.getTagDao().loadAll().get(position);
+
+        Intent result = new Intent();
+        result.putExtra(TagsActivity.EXTRA_TAG_ID, tag.getId());
+        result.putExtra(TagsActivity.EXTRA_TAG_NAME, tag.getName());
+        shadowActivity.receiveResult(activityForResult.intent, Activity.RESULT_OK, result);
+        return tag;
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    @Test
+    public void testSaveWithTags() throws Exception {
+        final String name = "Name";
+        final String value = "300.6";
+        activity.name.setText(name);
+        activity.energyDensityValue.setText(value);
+        SettingsModel model = new SettingsModel(PreferenceManager.getDefaultSharedPreferences(activity), activity.getResources());
+        GravimetricEnergyDensityUnit preferredUnit = model.getPreferredGravimetricUnit();
+
+        Tag tag = addTag(0);
+        Tag tag1 = addTag(1);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.clickMenuItem(R.id.action_save);
+
+        assertTrue(shadowActivity.isFinishing());
+        assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
+
+        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
+        DaoSession daoSession = component.getDaoSession();
+        List<IngredientTemplate> list = daoSession.getIngredientTemplateDao().loadAll();
+        assertThat(list.size(), equalTo(1));
+        IngredientTemplate template = list.get(0);
+        assertThat(template.getId(), notNullValue());
+        assertThat(template.getName(), equalTo(name));
+        EnergyDensity energyDensity = template.getEnergyDensity().convertTo(preferredUnit);
+        assertThat(energyDensity.getValue().toPlainString(), equalTo(value));
+        List<JointIngredientTag> tags = template.getTags();
+        assertThat(tags, hasSize(2));
+        assertThat(tags.get(0).getTag().getId(), equalTo(tag.getId()));
+        assertThat(tags.get(0).getTag().getName(), equalTo(tag.getName()));
+        assertThat(tags.get(1).getTag().getId(), equalTo(tag1.getId()));
+        assertThat(tags.get(1).getTag().getName(), equalTo(tag1.getName()));
+    }
+
 }

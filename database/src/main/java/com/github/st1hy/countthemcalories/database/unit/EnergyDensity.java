@@ -43,6 +43,11 @@ public class EnergyDensity {
     }
 
     @Override
+    public String toString() {
+        return value.toString() + " " + unit.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

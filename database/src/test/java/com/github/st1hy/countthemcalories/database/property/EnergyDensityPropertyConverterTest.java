@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.database.property;
 
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import static com.github.st1hy.countthemcalories.database.property.EnergyDensityPropertyConverter.getStandardizedUnit;
 import static com.github.st1hy.countthemcalories.database.unit.AmountUnitType.MASS;
 import static com.github.st1hy.countthemcalories.database.unit.AmountUnitType.VOLUME;
+import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KJ_AT_G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_100ML;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_ML;
@@ -46,6 +48,17 @@ public class EnergyDensityPropertyConverterTest {
     public void testNullable() throws Exception {
         assertNull(converter.convertToDatabaseValue(null));
         assertNull(converter.convertToEntityProperty(null));
+    }
 
+    @Test
+    public void testConversionCycle() throws Exception {
+        final String value = "300.6";
+        final EnergyDensityUnit unit = KCAL_AT_100G;
+        EnergyDensity density = EnergyDensityUtils.getOrZero(unit, value);
+        String databaseValue = converter.convertToDatabaseValue(density);
+        EnergyDensity entityProperty = converter.convertToEntityProperty(databaseValue);
+        assert entityProperty != null;
+        EnergyDensity toOriginal = entityProperty.convertTo(unit);
+        assertThat(toOriginal.getValue().toPlainString(), equalTo(value));
     }
 }

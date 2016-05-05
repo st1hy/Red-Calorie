@@ -82,6 +82,7 @@ public class AddIngredientModelProxyTest {
         assertThat(model.getName(), equalTo(fromParcel.name));
         assertThat(model.getEnergyValue(), equalTo(fromParcel.energyValue));
         assertThat(model.getImageUri(), equalTo(fromParcel.imageUri));
+        parcel.recycle();
     }
 
     @Test

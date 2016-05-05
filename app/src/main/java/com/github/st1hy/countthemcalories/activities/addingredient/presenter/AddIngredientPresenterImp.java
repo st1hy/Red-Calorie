@@ -9,7 +9,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
-import com.github.st1hy.countthemcalories.database.BuildConfig;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 
 import javax.inject.Inject;
@@ -71,6 +70,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     public boolean onClickedOnAction(int itemId) {
         if (itemId == R.id.action_save) {
             onSaveClicked();
+            return true;
         }
         return false;
     }
@@ -135,7 +135,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
             @Override
             public void onError(Throwable e) {
-                if (BuildConfig.DEBUG) Timber.e(e, "Error adding new ingredient type to database");
+                Timber.e(e, "Error adding new ingredient type to database");
             }
 
             @Override

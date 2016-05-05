@@ -11,7 +11,9 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -62,28 +64,31 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
 
     @NonNull
     public Observable<Cursor> addNewAndRefresh(@NonNull final IngredientTemplate data,
-                                               @NonNull final List<Tag> all) {
-        return fromDatabaseTask(insertNewRefreshCall(data, all));
+                                               @NonNull final Collection<Long> tagIds) {
+        return fromDatabaseTask(insertNewRefreshCall(data, tagIds));
     }
 
     @NonNull
     private Callable<Cursor> insertNewRefreshCall(@NonNull final IngredientTemplate data,
-                                                  @NonNull final List<Tag> all) {
+                                                  @NonNull final Collection<Long> tagIds) {
         return new Callable<Cursor>() {
             @Override
             public Cursor call() throws Exception {
                 IngredientTemplate template = performInsert(data);
-                List<JointIngredientTag> ingredientJoins = template.getTags();
                 JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
-                for (Tag tag : all) {
-                    List<JointIngredientTag> tagJoins = tag.getIngredientTypes();
+                TagDao tagDao = session().getTagDao();
+                for (Long tagId : tagIds) {
+                    Tag tag = tagDao.load(tagId);
                     JointIngredientTag join = new JointIngredientTag(null);
                     join.setTag(tag);
                     join.setIngredientType(template);
                     jointDao.insert(join);
-                    tagJoins.add(join);
-                    ingredientJoins.add(join);
+                    tag.resetIngredientTypes();
+                    tag.getIngredientTypes();
                 }
+                template.refresh();
+                template.resetTags();
+                template.getTags();
                 return refresh().call();
             }
         };

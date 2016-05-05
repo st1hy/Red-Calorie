@@ -23,7 +23,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.presenter.Add
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
-import com.jakewharton.rxbinding.view.RxMenuItem;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -102,17 +101,20 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         presenter.onSaveState(outState);
+        tagsPresenter.onSaveState(outState);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        tagsPresenter.onStart();
         presenter.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        tagsPresenter.onStop();
         presenter.onStop();
     }
 

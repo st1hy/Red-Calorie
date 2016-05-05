@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +14,12 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.A
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemClicked;
-import com.github.st1hy.countthemcalories.database.Tag;
 
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Integer> {
     static final int TAG = R.layout.add_ingredient_tag;
@@ -27,6 +28,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
 
     final IngredientTagsModel model;
     final AddIngredientView view;
+    final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
     public int getItemViewType(int position) {
@@ -35,6 +37,16 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         } else {
             return ADD_TAG;
         }
+    }
+
+    public void onStart() {
+        subscriptions.add(model.datasetChangedObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(notifyDataSetChangedAction()));
+    }
+
+    public void onStop() {
+        subscriptions.clear();
     }
 
     @Inject
@@ -90,25 +102,27 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         return model.getSize() + ADD_CATEGORY_FIELDS_SIZE;
     }
 
-    public void onNewTagAdded(long tagId, String tagName) {
-        model.addTag(tagId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(notifyDataSetChangedAction());
+    public void onNewTagAdded(long tagId, @NonNull String tagName) {
+        model.addTag(tagId, tagName);
     }
 
     @Override
-    public void onItemClicked(Integer position) {
+    public void onItemClicked(@NonNull Integer position) {
         model.removeAt(position);
         notifyDataSetChanged();
     }
 
     @NonNull
-    private Action1<Tag> notifyDataSetChangedAction() {
-        return new Action1<Tag>() {
+    private Action1<Void> notifyDataSetChangedAction() {
+        return new Action1<Void>() {
             @Override
-            public void call(Tag tag) {
+            public void call(Void aVoid) {
                 notifyDataSetChanged();
             }
         };
+    }
+
+    public void onSaveState(@NonNull Bundle outState) {
+        model.onSaveState(outState);
     }
 }

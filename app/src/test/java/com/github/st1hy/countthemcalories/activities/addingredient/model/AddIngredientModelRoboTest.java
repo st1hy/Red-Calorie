@@ -6,7 +6,6 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Tag;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,18 +45,17 @@ public class AddIngredientModelRoboTest {
     public void testInsertToDatabase() throws Exception {
         model.name = "Test";
         model.energyValue = "100";
-        Tag example = new Tag(null, "Tag");
-        final List<Tag> tags = Collections.singletonList(example);
+        final List<Long> tagIds = Collections.singletonList(33L);
         Cursor cursor = Mockito.mock(Cursor.class);
 
-        when(tagsModel.getAll()).thenReturn(tags);
-        when(typesModel.addNewAndRefresh(any(IngredientTemplate.class), eq(tags)))
+        when(tagsModel.getTagIds()).thenReturn(tagIds);
+        when(typesModel.addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds)))
                 .thenReturn(Observable.just(cursor));
 
         model.insertIntoDatabase();
 
-        verify(tagsModel).getAll();
-        verify(typesModel).addNewAndRefresh(any(IngredientTemplate.class), eq(tags));
+        verify(tagsModel).getTagIds();
+        verify(typesModel).addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds));
     }
 
 }

@@ -42,7 +42,8 @@ public enum GravimetricEnergyDensityUnit implements EnergyDensityUnit {
         if (this == unit) return value;
         GravimetricEnergyDensityUnit target = (GravimetricEnergyDensityUnit) unit;
         BigDecimal multiply = value.multiply(conversionRate);
-        BigDecimal divide = multiply.divide(target.conversionRate, MathContext.DECIMAL32);
+
+        BigDecimal divide = multiply.divide(target.conversionRate, MathContext.DECIMAL64);
         return divide.stripTrailingZeros();
     }
 

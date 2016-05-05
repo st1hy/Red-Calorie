@@ -67,4 +67,5 @@ public class EnergyDensityTest {
     public void testGetPlural() throws Exception {
         assertEquals(KCAL_AT_100G.getPluralResId(), energyDensity.getPluralResId());
     }
+
 }

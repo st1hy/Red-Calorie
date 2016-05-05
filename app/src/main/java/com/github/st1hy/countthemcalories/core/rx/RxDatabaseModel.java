@@ -7,6 +7,8 @@ import com.github.st1hy.countthemcalories.core.event.DbProcessing;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import dagger.Lazy;
@@ -35,6 +37,11 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     public Observable<T> getById(long id) {
         return fromDatabaseTask(fromId(id));
+    }
+
+    @NonNull
+    public Observable<List<T>> getById(long id, long... ids) {
+        return fromDatabaseTask(fromId(id, ids));
     }
 
     @NonNull
@@ -138,6 +145,20 @@ public abstract class RxDatabaseModel<T> {
             @Override
             public T call() throws Exception {
                 return performGetById(id);
+            }
+        };
+    }
+
+    private Callable<List<T>> fromId(final long id, final long... ids) {
+        return new Callable<List<T>>() {
+            @Override
+            public List<T> call() throws Exception {
+                List<T> list = new ArrayList<>(ids.length + 1);
+                list.add(performGetById(id));
+                for (long i : ids) {
+                    list.add(performGetById(i));
+                }
+                return list;
             }
         };
     }

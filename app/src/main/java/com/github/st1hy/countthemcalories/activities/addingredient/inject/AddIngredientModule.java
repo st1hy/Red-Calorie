@@ -67,7 +67,7 @@ public class AddIngredientModule {
 
     @Provides
     @PerActivity
-    public IngredientTagsModel provideIngredientTagModel(TagsModel tagsModel) {
-        return new IngredientTagsModel(tagsModel);
+    public IngredientTagsModel provideIngredientTagModel(TagsModel tagsModel, @Nullable Bundle savedState) {
+        return new IngredientTagsModel(tagsModel, savedState);
     }
 }
