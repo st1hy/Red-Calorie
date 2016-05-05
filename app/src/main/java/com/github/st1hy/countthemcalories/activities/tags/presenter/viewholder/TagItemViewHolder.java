@@ -10,11 +10,6 @@ import com.github.st1hy.countthemcalories.database.Tag;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 public class TagItemViewHolder extends TagViewHolder implements View.OnLongClickListener, View.OnClickListener {
 
@@ -24,8 +19,7 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
     View button;
 
     final OnItemInteraction<Tag> listener;
-    private Tag tag;
-    private Subscriber<Tag> subscriber;
+    private final Tag tag = new Tag();
 
     public TagItemViewHolder(@NonNull View itemView, @NonNull OnItemInteraction<Tag> listener) {
         super(itemView);
@@ -50,26 +44,12 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
         }
     }
 
-    public Subscription bind(Observable<Tag> observable) {
-        if (subscriber != null) subscriber.unsubscribe();
-        subscriber = new Subscriber<Tag>() {
-            @Override
-            public void onCompleted() {
+    @NonNull
+    public Tag getReusableTag() {
+        return tag;
+    }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e(e, "Error on binding tag to view");
-            }
-
-            @Override
-            public void onNext(Tag tag) {
-                TagItemViewHolder.this.tag = tag;
-                name.setText(tag.getName());
-            }
-        };
-        return observable.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+    public void bind(@NonNull Tag tag) {
+        name.setText(tag.getName());
     }
 }

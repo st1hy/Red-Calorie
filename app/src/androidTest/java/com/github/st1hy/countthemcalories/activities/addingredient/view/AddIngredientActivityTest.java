@@ -187,6 +187,7 @@ public class AddIngredientActivityTest {
                 .perform(click());
         onView(withText(R.string.tags_title)).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
+        idlingDbProcess.waitForStart();
         onView(withText(exampleTags[1])).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.add_ingredient_title)).check(matches(isDisplayed()));

@@ -10,6 +10,6 @@ public class RxMockitoJUnitRunner extends MockitoJUnitRunner {
 
     public RxMockitoJUnitRunner(Class<?> klass) throws InvocationTargetException {
         super(klass);
-        TestRxPlugins.registerImmediateHook();
+        TestRxPlugins.registerImmediateMainThreadHook();
     }
 }

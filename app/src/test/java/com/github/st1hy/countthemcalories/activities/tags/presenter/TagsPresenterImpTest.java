@@ -20,7 +20,6 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.PublishSubject;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -28,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -53,34 +53,14 @@ public class TagsPresenterImpTest {
 
     @Test
     public void testOnStart() throws Exception {
-        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(2);
         when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
-        verify(model).getAllObservable();
         verify(view).getOnAddTagClickedObservable();
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verify(cursor).getCount();
         verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
-
-    @Test
-    public void testOnStartWithLoadedDataEmpty() throws Exception {
-        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
-        when(cursor.getCount()).thenReturn(0);
-        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
-
-        presenter.onStart();
-
-        verify(model).getAllObservable();
-        verify(view).getOnAddTagClickedObservable();
-        verify(cursor).getCount();
-        verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
-    }
-
 
     @Test
     public void testAddTagClick() throws Exception {
@@ -134,16 +114,15 @@ public class TagsPresenterImpTest {
     public void testOnBindViewHolder() throws Exception {
         TagItemViewHolder mockViewHolder = Mockito.mock(TagItemViewHolder.class);
         Tag tag = Mockito.mock(Tag.class);
-        Observable<Tag> tagObservable = Observable.just(tag);
         presenter.cursor = cursor;
         when(cursor.getCount()).thenReturn(1);
-        when(model.getFromCursor(cursor, 0)).thenReturn(tagObservable);
-        when(mockViewHolder.bind(tagObservable)).thenReturn(Mockito.mock(Subscription.class));
+        when(mockViewHolder.getReusableTag()).thenReturn(tag);
 
         presenter.onBindViewHolder(mockViewHolder, 0);
 
-        verify(model).getFromCursor(cursor, 0);
-        verify(mockViewHolder).bind(tagObservable);
+        verify(cursor).moveToPosition(0);
+        verify(model).performReadEntity(cursor, tag);
+        verify(mockViewHolder).bind(tag);
         verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
@@ -151,13 +130,13 @@ public class TagsPresenterImpTest {
     public void testLongPressItem() throws Exception {
         when(view.showRemoveTagDialog()).thenReturn(Observable.<Void>just(null));
         final Tag tag = Mockito.mock(Tag.class);
-        when(model.removeAndRefresh(any(Tag.class))).thenReturn(Observable.just(cursor));
+        when(model.removeAndRefresh(anyLong())).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(1);
 
         presenter.onItemLongClicked(tag);
 
         verify(view).showRemoveTagDialog();
-        verify(model).removeAndRefresh(tag);
+        verify(model).removeAndRefresh(tag.getId());
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
         verify(cursor).getCount();
         verifyNoMoreInteractions(model, view, cursor, activityModel);

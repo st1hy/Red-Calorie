@@ -10,6 +10,7 @@ import android.widget.EditText;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImp;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -24,6 +25,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 
 import rx.plugins.TestRxPlugins;
+import timber.log.Timber;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,9 +42,18 @@ import static org.robolectric.Shadows.shadowOf;
 public class TagsActivityRoboTest {
 
     private TagsActivity activity;
+    private Timber.Tree tree = new Timber.Tree() {
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            System.out.println(tag +" " + message);
+        }
+    };
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        Timber.plant(tree);
+        TagsPresenterImp.debounceTime = 0;
+        TestRxPlugins.registerImmediateHookIO();
         Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
         activity = Robolectric.buildActivity(TagsTestActivity.class)
                 .withIntent(intent)
@@ -52,7 +63,9 @@ public class TagsActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
+        Timber.uproot(tree);
         TestRxPlugins.reset();
+        TagsPresenterImp.debounceTime = 250;
     }
 
     @Test
@@ -80,7 +93,6 @@ public class TagsActivityRoboTest {
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
         ediText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
-
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
@@ -92,7 +104,6 @@ public class TagsActivityRoboTest {
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
         ediText.onEditorAction(EditorInfo.IME_ACTION_DONE);
-
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
@@ -131,7 +142,6 @@ public class TagsActivityRoboTest {
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
-
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
@@ -151,9 +161,6 @@ public class TagsActivityRoboTest {
         activity.searchView.performClick();
         activity.searchView.setQuery("Tag", true);
 
-        synchronized (this) {
-            wait(500);
-        }
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 }

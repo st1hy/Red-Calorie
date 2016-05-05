@@ -27,6 +27,7 @@ public class ImageViewMatchers {
     public static Matcher<View> withDrawable(@DrawableRes final int resId) {
         return new BoundedMatcher<View, ImageView>(ImageView.class) {
             private Resources resources;
+            private final Utils utils = new Utils();
 
             @Override
             public boolean matchesSafely(ImageView item) {
@@ -34,7 +35,7 @@ public class ImageViewMatchers {
                     resources = item.getResources();
                     Context context = item.getContext();
                     Bitmap expectedBitmap = toBitmap(item.getDrawable());
-                    Bitmap bitmap = toBitmap(Utils.getDrawableSafely(context, resId));
+                    Bitmap bitmap = toBitmap(utils.getDrawableSafely(context, resId));
                     return isEqual(expectedBitmap, bitmap);
                 } finally {
                     resources = null;

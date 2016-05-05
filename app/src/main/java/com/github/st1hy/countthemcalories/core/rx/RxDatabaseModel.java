@@ -14,7 +14,6 @@ import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public abstract class RxDatabaseModel<T> {
@@ -65,6 +64,11 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     public Observable<Cursor> removeAndRefresh(@NonNull T data) {
         return fromDatabaseTask(removeAndRefreshCall(data));
+    }
+
+    @NonNull
+    public Observable<Cursor> removeAndRefresh(long id) {
+        return fromDatabaseTask(removeAndRefreshCall(id));
     }
 
     @NonNull
@@ -192,6 +196,21 @@ public abstract class RxDatabaseModel<T> {
                 return refresh().call();
             }
         };
+    }
+
+    @NonNull
+    private Callable<Cursor> removeAndRefreshCall(final long id) {
+        return new Callable<Cursor>() {
+            @Override
+            public Cursor call() throws Exception {
+                performRemove(id);
+                return refresh().call();
+            }
+        };
+    }
+
+    private void performRemove(long id) {
+        performRemove(performGetById(id));
     }
 
     @NonNull

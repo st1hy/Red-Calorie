@@ -34,6 +34,13 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         });
     }
 
+    /**
+     * Reads tag entity which is NOT cached or attached to dao into output
+     */
+    public void performReadEntity(@NonNull Cursor cursor, @NonNull Tag output) {
+        dao().readEntity(cursor, output, 0);
+    }
+
     @NonNull
     @Override
     protected Tag performGetById(long id) {
@@ -87,6 +94,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
     protected long readKey(@NonNull Cursor cursor, int columnIndex) {
         return dao().readKey(cursor, columnIndex);
     }
+
 
     @NonNull
     @Override

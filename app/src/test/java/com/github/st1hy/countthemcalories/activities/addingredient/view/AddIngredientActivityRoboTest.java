@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,8 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 
 import java.util.List;
+
+import rx.plugins.TestRxPlugins;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -51,7 +54,13 @@ public class AddIngredientActivityRoboTest {
 
     @Before
     public void setup() {
+        TestRxPlugins.registerImmediateHookIO();
         activity = Robolectric.setupActivity(AddIngredientTestActivity.class);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        TestRxPlugins.reset();
     }
 
     @Test

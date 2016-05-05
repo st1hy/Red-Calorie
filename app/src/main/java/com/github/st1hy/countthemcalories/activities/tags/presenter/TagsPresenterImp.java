@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
@@ -34,6 +33,7 @@ import timber.log.Timber;
 
 public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implements TagsPresenter,
         OnItemInteraction<Tag> {
+    public static int debounceTime = 250;
     static final int bottomSpaceItem = 1;
     static final int item_layout = R.layout.tags_item;
     static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
@@ -42,9 +42,8 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     final TagsModel model;
     final TagsActivityModel activityModel;
     final CompositeSubscription subscriptions = new CompositeSubscription();
-    final CompositeSubscription viewBindingSubs = new CompositeSubscription();
     Cursor cursor;
-     Observable<CharSequence> onSearchObservable;
+    Observable<CharSequence> onSearchObservable;
 
     @Inject
     public TagsPresenterImp(@NonNull TagsView view,
@@ -55,27 +54,28 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         this.activityModel = activityModel;
     }
 
+
     @Override
     public void onStart() {
         if (onSearchObservable != null) onSearch(onSearchObservable);
         onAddTagClicked(view.getOnAddTagClickedObservable());
-        Timber.v("Starting query for all items");
-        subscribeToCursor(model.getAllObservable());
     }
 
     @Override
     public void onStop() {
-        viewBindingSubs.clear();
         subscriptions.clear();
-        closeCursor();
+        closeCursor(true);
     }
 
     @Override
     public void onSearch(@NonNull Observable<CharSequence> observable) {
         onSearchObservable = observable;
-        subscribeToCursor(observable
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .debounce(250, TimeUnit.MILLISECONDS)
+        Observable<CharSequence> sequenceObservable = observable
+                .subscribeOn(AndroidSchedulers.mainThread());
+        if (debounceTime > 0) {
+            sequenceObservable = sequenceObservable.debounce(debounceTime, TimeUnit.MILLISECONDS);
+        }
+        Observable<Cursor> cursorObservable = sequenceObservable
                 .doOnNext(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence text) {
@@ -89,14 +89,19 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                         Timber.e(e, "Search exploded");
                     }
                 })
-                .retry());
-//        Observable<Cursor> onSearch = OnSubscribeRedo.retry(listObservable, REDO_INFINITE,
-//                AndroidSchedulers.mainThread());
+                .retry();
+        subscribeToCursor(cursorObservable);
     }
 
     void onAddTagClicked(@NonNull Observable<Void> clicks) {
         subscribeToCursor(clicks
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        Timber.v("Add tag clicked");
+                    }
+                })
                 .flatMap(showNewTagDialog())
                 .map(trim())
                 .filter(notEmpty())
@@ -124,7 +129,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, null);
         if (viewType == item_layout) {
-            view.setLayoutParams(parent.getLayoutParams());
             return new TagItemViewHolder(view, this);
         } else {
             return new EmptySpaceViewHolderSpace(view);
@@ -134,8 +138,19 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
         if (holder instanceof TagItemViewHolder) {
-            final TagItemViewHolder itemViewHolder = (TagItemViewHolder) holder;
-            viewBindingSubs.add(itemViewHolder.bind(getItemAt(position)));
+            onBindToTagHolder((TagItemViewHolder) holder, position);
+        }
+    }
+
+    private void onBindToTagHolder(@NonNull TagItemViewHolder holder, int position) {
+        Cursor cursor = this.cursor;
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            Tag tag = holder.getReusableTag();
+            model.performReadEntity(cursor, tag);
+            holder.bind(tag);
+        } else {
+            Timber.w("Cursor closed duding binding views.");
         }
     }
 
@@ -169,12 +184,6 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     void subscribeToCursor(@NonNull Observable<Cursor> cursorObservable) {
         subscriptions.add(cursorObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        Timber.v("Db cursor query started");
-                    }
-                })
                 .subscribe(new Subscriber<Cursor>() {
                     @Override
                     public void onCompleted() {
@@ -188,11 +197,11 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
                     @Override
                     public void onNext(Cursor cursor) {
                         Timber.v("Db cursor query ended");
-                        viewBindingSubs.clear();
-                        closeCursor();
+                        closeCursor(false);
                         TagsPresenterImp.this.cursor = cursor;
-                        view.setNoTagsButtonVisibility(Visibility.of(cursor.getCount() == 0));
                         notifyDataSetChanged();
+                        int newSize = cursor.getCount();
+                        view.setNoTagsButtonVisibility(Visibility.of(newSize == 0));
                     }
                 }));
     }
@@ -232,7 +241,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                subscribeToCursor(model.removeAndRefresh(tag));
+                subscribeToCursor(model.removeAndRefresh(tag.getId()));
             }
         };
     }
@@ -247,22 +256,11 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         };
     }
 
-//    static final Func1<Observable<? extends Notification<?>>, Observable<?>> REDO_INFINITE = new Func1<Observable<? extends Notification<?>>, Observable<?>>() {
-//        @Override
-//        public Observable<?> call(Observable<? extends Notification<?>> ts) {
-//            return ts.map(new Func1<Notification<?>, Notification<?>>() {
-//                @Override
-//                public Notification<?> call(Notification<?> terminal) {
-//                    return Notification.createOnNext(null);
-//                }
-//            });
-//        }
-//    };
-
-    private void closeCursor() {
+    private void closeCursor(boolean notify) {
         Cursor cursor = this.cursor;
         this.cursor = null;
         if (cursor != null) {
+            if (notify) notifyDataSetChanged();
             cursor.close();
         }
     }
@@ -271,11 +269,4 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         return cursor != null ? cursor.getCount() : 0;
     }
 
-    private Observable<Tag> getItemAt(int position) {
-        if (cursor != null) {
-            return model.getFromCursor(cursor, position);
-        } else {
-            throw new IllegalStateException("Performing query for cursor that no longer exists");
-        }
-    }
 }
