@@ -107,7 +107,7 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
 
     @NonNull
     public String getUnitPlural(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal decimal) {
-        return resources.getString(unit.getFormatResId(), decimal);
+        return resources.getString(unit.getFormatResId(), decimal.toPlainString());
     }
 
     @NonNull

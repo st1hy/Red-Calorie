@@ -42,6 +42,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     final TagsModel model;
     final TagsActivityModel activityModel;
     final CompositeSubscription subscriptions = new CompositeSubscription();
+
     Cursor cursor;
     Observable<CharSequence> onSearchObservable;
 
@@ -57,6 +58,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
 
     @Override
     public void onStart() {
+        Timber.d("Started");
         if (onSearchObservable != null) onSearch(onSearchObservable);
         onAddTagClicked(view.getOnAddTagClickedObservable());
     }
@@ -70,10 +72,18 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
     @Override
     public void onSearch(@NonNull Observable<CharSequence> observable) {
         onSearchObservable = observable;
+        Timber.d("On search");
         Observable<CharSequence> sequenceObservable = observable
                 .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable.debounce(debounceTime, TimeUnit.MILLISECONDS);
+            sequenceObservable = sequenceObservable.share();
+            sequenceObservable = sequenceObservable
+                    .limit(1)
+                    .concatWith(
+                            sequenceObservable
+                                    .skip(1)
+                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
+                    );
         }
         Observable<Cursor> cursorObservable = sequenceObservable
                 .doOnNext(new Action1<CharSequence>() {

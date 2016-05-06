@@ -100,7 +100,14 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
         Observable<CharSequence> sequenceObservable = observable
                 .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable.debounce(debounceTime, TimeUnit.MILLISECONDS);
+            sequenceObservable = sequenceObservable.share();
+            sequenceObservable = sequenceObservable
+                    .limit(1)
+                    .concatWith(
+                            sequenceObservable
+                                    .skip(1)
+                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
+                    );
         }
         Observable<Cursor> cursorObservable = sequenceObservable
                 .doOnNext(new Action1<CharSequence>() {

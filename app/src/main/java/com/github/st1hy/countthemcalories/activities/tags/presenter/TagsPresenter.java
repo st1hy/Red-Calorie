@@ -10,7 +10,7 @@ public interface TagsPresenter {
     void onStop();
 
     /**
-     * Cache, its provided by onCreateOptionsMenu
+     * Cache, provided by onCreateMenu
      */
     void onSearch(@NonNull Observable<CharSequence> observable);
 }
