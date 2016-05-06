@@ -39,6 +39,13 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
         });
     }
 
+    /**
+     * Reads ingredient entity which is NOT cached or attached to dao into output
+     */
+    public void performReadEntity(@NonNull Cursor cursor, @NonNull IngredientTemplate output) {
+        dao().readEntity(cursor, output, 0);
+    }
+
     @NonNull
     @Override
     protected IngredientTemplate performGetById(long id) {

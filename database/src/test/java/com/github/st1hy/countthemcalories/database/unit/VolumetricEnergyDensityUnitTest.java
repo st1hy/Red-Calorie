@@ -25,10 +25,10 @@ public class VolumetricEnergyDensityUnitTest {
 
     @Test
     public void testPlurals() throws Exception {
-        assertEquals(R.plurals.unit_kcal_at_100ml, KCAL_AT_100ML.getPluralResId());
-        assertEquals(R.plurals.unit_kj_at_100ml, KJ_AT_100ML.getPluralResId());
-        assertEquals(R.plurals.unit_kcal_at_1ml, KCAL_AT_ML.getPluralResId());
-        assertEquals(R.plurals.unit_kj_at_1ml, KJ_AT_ML.getPluralResId());
+        assertEquals(R.string.format_kcal_at_100ml, KCAL_AT_100ML.getFormatResId());
+        assertEquals(R.string.format_kj_at_100ml, KJ_AT_100ML.getFormatResId());
+        assertEquals(R.string.format_kcal_at_1ml, KCAL_AT_ML.getFormatResId());
+        assertEquals(R.string.format_kj_at_1ml, KJ_AT_ML.getFormatResId());
     }
 
     @Test

@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +27,15 @@ import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActiv
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
+import com.github.st1hy.countthemcalories.core.ui.Visibility;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxSearchView;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class IngredientsActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,
         IngredientsView {
@@ -37,6 +43,8 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
 
     @Inject
     IngredientsPresenter presenter;
+    @Inject
+    RecyclerView.Adapter adapter;
 
     @Bind(R.id.ingredients_toolbar)
     Toolbar toolbar;
@@ -46,6 +54,10 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     NavigationView navigationView;
     @Bind(R.id.ingredients_fab)
     FloatingActionButton fab;
+    @Bind(R.id.ingredients_no_ingredients_button)
+    View noIngredientsButton;
+    @Bind(R.id.ingredients_content)
+    RecyclerView recyclerView;
 
     SearchView searchView;
 
@@ -77,12 +89,8 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
             }
         });
         navigationView.setNavigationItemSelectedListener(this);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onAddNewIngredientClicked();
-            }
-        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -90,6 +98,7 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
         getMenuInflater().inflate(R.menu.ingredient_menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
+        presenter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }
 
@@ -102,6 +111,12 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     protected void onStart() {
         super.onStart();
         presenter.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
     }
 
     @Override
@@ -151,6 +166,18 @@ public class IngredientsActivity extends BaseActivity implements NavigationView.
     @Override
     public void openTagsScreen() {
         startActivity(new Intent(this, TagsActivity.class));
+    }
+
+    @Override
+    public void setNoIngredientButtonVisibility(@NonNull Visibility visibility) {
+        //noinspection WrongConstant
+        noIngredientsButton.setVisibility(visibility.getVisibility());
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getOnAddIngredientClickedObservable() {
+        return Observable.merge(RxView.clicks(fab), RxView.clicks(noIngredientsButton));
     }
 
     @Override

@@ -1,33 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="unit_kcal_at_100g">
-        <item quantity="other">%d kcal / 100 g</item>
-    </plurals>
-    <plurals name="unit_kj_at_100g">
-        <item quantity="other">%d kJ / 100 g</item>
-    </plurals>
-    <plurals name="unit_kcal_at_100ml">
-        <item quantity="other">%d kcal / 100 ml</item>
-    </plurals>
-    <plurals name="unit_kj_at_100ml">
-        <item quantity="other">%d kJ / 100 ml</item>
-    </plurals>
-    <plurals name="unit_kcal_at_1g">
-        <item quantity="other">%d kcal / g</item>
-    </plurals>
-    <plurals name="unit_kj_at_1g">
-        <item quantity="other">%d kJ / g</item>
-    </plurals>
-    <plurals name="unit_kcal_at_1ml">
-        <item quantity="other">%d kcal / ml</item>
-    </plurals>
-    <plurals name="unit_kj_at_1ml">
-        <item quantity="other">%d kJ / ml</item>
-    </plurals>
-    <plurals name="unit_gram">
-        <item quantity="other">%d g</item>
-    </plurals>
-    <plurals name="unit_milliliter">
-        <item quantity="other">%d ml</item>
-    </plurals>
+    <string name="format_kcal_at_100g">%s kcal / 100 g</string>
+    <string name="format_kj_at_100g">%s kJ / 100 g</string>
+    <string name="format_kcal_at_1g">%s kcal / g</string>
+    <string name="format_kj_at_1g">%s kJ / g</string>
+
+    <string name="unit_kcal_at_100g">kcal / 100 g</string>
+    <string name="unit_kj_at_100g">kJ / 100 g</string>
+    <string name="unit_kcal_at_1g">kcal / g</string>
+    <string name="unit_kj_at_1g">kJ / g</string>
+
+    <string name="format_kcal_at_100ml">%s kcal / 100 ml</string>
+    <string name="format_kj_at_100ml">%s kJ / 100 ml</string>
+    <string name="format_kcal_at_1ml">%s kcal / ml</string>
+    <string name="format_kj_at_1ml">%s kJ / ml</string>
+
+    <string name="unit_kcal_at_100ml">kcal / 100 ml</string>
+    <string name="unit_kj_at_100ml">kJ / 100 ml</string>
+    <string name="unit_kcal_at_1ml">kcal / ml</string>
+    <string name="unit_kj_at_1ml">kJ / ml</string>
+
+    <string name="format_gram">%s g</string>
+    <string name="format_milliliter">%s ml</string>
 </resources>

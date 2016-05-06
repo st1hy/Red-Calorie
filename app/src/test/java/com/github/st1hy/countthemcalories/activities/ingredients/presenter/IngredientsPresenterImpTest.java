@@ -3,8 +3,12 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 import android.support.annotation.IdRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsActivityModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.ui.Selection;
+import com.squareup.picasso.Picasso;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +31,19 @@ public class IngredientsPresenterImpTest {
 
     @Mock
     private IngredientsView view;
+    @Mock
+    private IngredientsActivityModel activityModel;
+    @Mock
+    private IngredientTypesModel model;
+    @Mock
+    private SettingsModel settingsModel;
+    @Mock
+    private Picasso picasso;
     private IngredientsPresenter presenter;
 
     @Before
     public void setup() {
-        presenter = new IngredientsPresenterImp(view);
+        presenter = new IngredientsPresenterImp(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test

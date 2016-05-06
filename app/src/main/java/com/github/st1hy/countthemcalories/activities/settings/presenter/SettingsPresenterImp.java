@@ -12,6 +12,8 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -42,7 +44,7 @@ public class SettingsPresenterImp implements SettingsPresenter {
         EnergyDensityUnit[] units = (EnergyDensityUnit[]) EnergyDensityUtils.getUnits(type);
         String[] values = new String[units.length];
         for (int i = 0; i < units.length; i++) {
-            values[i] = model.getUnitPlural(units[i], 1);
+            values[i] = model.getUnitPlural(units[i], BigDecimal.ONE);
         }
         view.showAlertDialog(model.getPreferredUnitDialogTitle(), values)
                 .subscribe(new Action1<Integer>() {

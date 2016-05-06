@@ -6,9 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -102,18 +106,22 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
     }
 
     @NonNull
-    public String getUnitPlural(@NonNull EnergyDensityUnit unit, int amount) {
-        return resources.getQuantityString(unit.getPluralResId(), amount, amount);
+    public String getUnitPlural(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal decimal) {
+        return resources.getString(unit.getFormatResId(), decimal);
+    }
+
+    @NonNull
+    public String getUnitPlural(@NonNull EnergyDensity energyDensity) {
+        EnergyDensityUnit unit = energyDensity.getUnit();
+        BigDecimal decimal = energyDensity.getValue()
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros();
+        return getUnitPlural(unit, decimal);
     }
 
     @NonNull
     public String getUnitName(@NonNull EnergyDensityUnit unit) {
-        String unitName = getUnitPlural(unit, 1);
-        if (unitName.startsWith("1")) {
-            int indexOf1 = unitName.indexOf("1");
-            unitName = unitName.substring(indexOf1 + 1, unitName.length()).trim();
-        }
-        return unitName;
+        return resources.getString(unit.getNameResId());
     }
 
 
@@ -132,5 +140,18 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
     @StringRes
     public int getPreferredUnitDialogTitle() {
         return R.string.settings_select_unit_dialog_title;
+    }
+
+
+    @NonNull
+    public EnergyDensityUnit getPreferedFrom(@NonNull AmountUnitType type) {
+        switch (type) {
+            case VOLUME:
+                return getPreferredVolumetricUnit();
+            case MASS:
+                return getPreferredGravimetricUnit();
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 }

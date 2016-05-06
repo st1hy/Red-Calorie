@@ -13,6 +13,8 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.math.BigDecimal;
+
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -80,7 +82,7 @@ public class SettingsModelTest {
 
     @Test
     public void testGeneratingUnitName() throws Exception {
-        String unitName = model.getUnitPlural(GravimetricEnergyDensityUnit.KJ_AT_G, 1);
+        String unitName = model.getUnitPlural(GravimetricEnergyDensityUnit.KJ_AT_G, BigDecimal.ONE);
         assertEquals("1 kJ / g", unitName);
     }
 

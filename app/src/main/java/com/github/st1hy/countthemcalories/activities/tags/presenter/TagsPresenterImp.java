@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolderSpace;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
@@ -131,7 +131,7 @@ public class TagsPresenterImp extends RecyclerView.Adapter<TagViewHolder> implem
         if (viewType == item_layout) {
             return new TagItemViewHolder(view, this);
         } else {
-            return new EmptySpaceViewHolderSpace(view);
+            return new EmptySpaceViewHolder(view);
         }
     }
 

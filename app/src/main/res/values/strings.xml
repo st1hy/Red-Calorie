@@ -52,4 +52,5 @@
     <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
     <string name="add_ingredient_energy_density_name_error_empty">Amount has be specified!</string>
     <string name="add_ingredient_energy_density_name_error_zero">Amount must be greater than zero!</string>
+    <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
 </resources>

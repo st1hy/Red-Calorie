@@ -34,7 +34,7 @@ public class EnergyDensity {
 
     @PluralsRes
     public int getPluralResId() {
-        return unit.getPluralResId();
+        return unit.getFormatResId();
     }
 
     @NonNull

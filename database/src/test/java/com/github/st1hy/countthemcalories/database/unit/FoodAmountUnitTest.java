@@ -13,8 +13,8 @@ public class FoodAmountUnitTest {
 
     @Test
     public void testPlurals() throws Exception {
-        assertEquals(R.plurals.unit_gram, FoodAmountUnit.G.getPluralResId());
-        assertEquals(R.plurals.unit_milliliter, FoodAmountUnit.ML.getPluralResId());
+        assertEquals(R.string.format_gram, FoodAmountUnit.G.getFormatResId());
+        assertEquals(R.string.format_milliliter, FoodAmountUnit.ML.getFormatResId());
     }
 
     @Test

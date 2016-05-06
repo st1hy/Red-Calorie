@@ -13,6 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import java.math.BigDecimal;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -52,7 +54,7 @@ public class SettingsPresenterImpTest {
         presenter.onLiquidUnitSettingsClicked();
 
         verify(preferencesModel, times(VolumetricEnergyDensityUnit.values().length))
-                .getUnitPlural(any(VolumetricEnergyDensityUnit.class), eq(1));
+                .getUnitPlural(any(VolumetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
         verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel).setPreferredVolumetricUnit(expected);
         verifyNoMoreInteractions(view);
@@ -68,7 +70,7 @@ public class SettingsPresenterImpTest {
 
         verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel, times(GravimetricEnergyDensityUnit.values().length))
-                .getUnitPlural(any(GravimetricEnergyDensityUnit.class), eq(1));
+                .getUnitPlural(any(GravimetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
         verify(preferencesModel).setPreferredGravimetricUnit(expected);
         verifyNoMoreInteractions(view);
     }

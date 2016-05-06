@@ -1,14 +1,17 @@
 package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.PluralsRes;
+import android.support.annotation.StringRes;
 
 import java.math.BigDecimal;
 
 public interface EnergyDensityUnit {
 
-    @PluralsRes
-    int getPluralResId();
+    @StringRes
+    int getFormatResId();
+
+    @StringRes
+    int getNameResId();
 
     @NonNull
     AmountUnitType getAmountUnitType();

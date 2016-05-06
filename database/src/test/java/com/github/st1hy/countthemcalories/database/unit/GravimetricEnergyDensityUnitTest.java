@@ -26,10 +26,10 @@ public class GravimetricEnergyDensityUnitTest {
 
     @Test
     public void testPlurals() throws Exception {
-        assertEquals(R.plurals.unit_kcal_at_100g, KCAL_AT_100G.getPluralResId());
-        assertEquals(R.plurals.unit_kj_at_100g, KJ_AT_100G.getPluralResId());
-        assertEquals(R.plurals.unit_kcal_at_1g, KCAL_AT_G.getPluralResId());
-        assertEquals(R.plurals.unit_kj_at_1g, KJ_AT_G.getPluralResId());
+        assertEquals(R.string.format_kcal_at_100g, KCAL_AT_100G.getFormatResId());
+        assertEquals(R.string.format_kj_at_100g, KJ_AT_100G.getFormatResId());
+        assertEquals(R.string.format_kcal_at_1g, KCAL_AT_G.getFormatResId());
+        assertEquals(R.string.format_kj_at_1g, KJ_AT_G.getFormatResId());
     }
 
     @Test
