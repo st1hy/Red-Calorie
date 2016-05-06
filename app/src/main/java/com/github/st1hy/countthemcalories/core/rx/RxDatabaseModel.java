@@ -29,6 +29,12 @@ public abstract class RxDatabaseModel<T> {
         this.session = session;
     }
 
+
+    /**
+     * Reads tag entity which is NOT cached or attached to dao into output
+     */
+    public abstract void performReadEntity(@NonNull Cursor cursor, @NonNull T output);
+
     @NonNull
     public Observable<DbProcessing> getDbProcessingObservable() {
         return dbProcessingValue.asObservable();

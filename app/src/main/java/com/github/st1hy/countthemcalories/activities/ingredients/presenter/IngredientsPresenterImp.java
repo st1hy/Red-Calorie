@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
+import com.github.st1hy.countthemcalories.core.presenter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -27,22 +27,16 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.squareup.picasso.Picasso;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
 
-public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientViewHolder> implements IngredientsPresenter, OnItemInteraction<IngredientTemplate> {
-    public static int debounceTime = 250;
+public class IngredientsPresenterImp extends RxDaoRecyclerAdapter<IngredientViewHolder, IngredientTemplate>
+        implements IngredientsPresenter, OnItemInteraction<IngredientTemplate> {
     static final int bottomSpaceItem = 1;
     @LayoutRes
     static final int item_layout = R.layout.ingredients_item;
@@ -55,16 +49,13 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
     final SettingsModel settingsModel;
     final Picasso picasso;
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
-    Observable<CharSequence> searchObservable;
-    Cursor cursor;
-
     @Inject
     public IngredientsPresenterImp(@NonNull IngredientsView view,
                                    @NonNull IngredientsActivityModel activityModel,
                                    @NonNull IngredientTypesModel model,
                                    @NonNull SettingsModel settingsModel,
                                    @NonNull Picasso picasso) {
+        super(model);
         this.view = view;
         this.activityModel = activityModel;
         this.model = model;
@@ -83,48 +74,14 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
 
     @Override
     public void onStart() {
+        super.onStart();
         view.setMenuItemSelection(R.id.nav_ingredients, SELECTED);
-        if (searchObservable != null) onSearch(searchObservable);
         onAddIngredientClicked(view.getOnAddIngredientClickedObservable());
     }
 
     @Override
     public void onStop() {
-        subscriptions.clear();
-        closeCursor(true);
-    }
-
-    @Override
-    public void onSearch(Observable<CharSequence> observable) {
-        searchObservable = observable;
-        Observable<CharSequence> sequenceObservable = observable
-                .subscribeOn(AndroidSchedulers.mainThread());
-        if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable.share();
-            sequenceObservable = sequenceObservable
-                    .limit(1)
-                    .concatWith(
-                            sequenceObservable
-                                    .skip(1)
-                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
-                    );
-        }
-        Observable<Cursor> cursorObservable = sequenceObservable
-                .doOnNext(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence text) {
-                        Timber.v("Search notification: queryText='%s'", text);
-                    }
-                })
-                .flatMap(queryDatabaseFiltered())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable e) {
-                        Timber.e(e, "Search exploded");
-                    }
-                })
-                .retry();
-        subscribeToCursor(cursorObservable);
+        super.onStop();
     }
 
     @Override
@@ -149,7 +106,7 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
     }
 
     void onAddIngredientClicked(@NonNull Observable<Void> observable) {
-        subscriptions.add(observable.subscribe(new Action1<Void>() {
+        subscribe(observable.subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
                 view.openNewIngredientScreen();
@@ -159,7 +116,7 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
 
     @Override
     public int getItemViewType(int position) {
-        if (position < getIngredientsCount()) {
+        if (position < getDaoItemCount()) {
             return item_layout;
         } else {
             return item_empty_space_layout;
@@ -184,7 +141,7 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
     }
 
     private void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
-        Cursor cursor = this.cursor;
+        Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
             IngredientTemplate ingredient = holder.getReusableIngredient();
@@ -219,8 +176,14 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
     }
 
     @Override
+    protected void onCursorUpdate(@NonNull Cursor cursor) {
+        super.onCursorUpdate(cursor);
+        view.setNoIngredientButtonVisibility(Visibility.of(cursor.getCount() == 0));
+    }
+
+    @Override
     public int getItemCount() {
-        return getIngredientsCount() + bottomSpaceItem;
+        return super.getItemCount() + bottomSpaceItem;
     }
 
     @Override
@@ -233,51 +196,4 @@ public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientView
         Timber.d("Long clicked on ingredient, %s", ingredient.getName());
     }
 
-    void subscribeToCursor(@NonNull Observable<Cursor> cursorObservable) {
-        subscriptions.add(cursorObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Cursor>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e, "Error when providing cursor");
-                    }
-
-                    @Override
-                    public void onNext(Cursor cursor) {
-                        Timber.v("Db cursor query ended");
-                        closeCursor(false);
-                        IngredientsPresenterImp.this.cursor = cursor;
-                        notifyDataSetChanged();
-                        int newSize = cursor.getCount();
-                        view.setNoIngredientButtonVisibility(Visibility.of(newSize == 0));
-                    }
-                }));
-    }
-
-    @NonNull
-    Func1<? super CharSequence, ? extends Observable<Cursor>> queryDatabaseFiltered() {
-        return new Func1<CharSequence, Observable<Cursor>>() {
-            @Override
-            public Observable<Cursor> call(CharSequence text) {
-                return model.getAllFiltered(text.toString());
-            }
-        };
-    }
-
-    private void closeCursor(boolean notify) {
-        Cursor cursor = this.cursor;
-        this.cursor = null;
-        if (cursor != null) {
-            if (notify) notifyDataSetChanged();
-            cursor.close();
-        }
-    }
-
-    private int getIngredientsCount() {
-        return cursor != null ? cursor.getCount() : 0;
-    }
 }

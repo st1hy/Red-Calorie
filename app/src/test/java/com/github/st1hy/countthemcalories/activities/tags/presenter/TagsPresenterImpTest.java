@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.presenter;
 
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -22,9 +23,7 @@ import org.robolectric.annotation.Config;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
@@ -48,7 +47,18 @@ public class TagsPresenterImpTest {
         view = Mockito.mock(TagsView.class);
         model = Mockito.mock(TagsModel.class);
         activityModel = Mockito.mock(TagsActivityModel.class);
-        presenter = new TagsPresenterImp(view, model, activityModel);
+        presenter = new TestTagsPresenter(view, model, activityModel);
+    }
+
+    class TestTagsPresenter extends TagsPresenterImp {
+        public TestTagsPresenter(@NonNull TagsView view, @NonNull TagsModel model, @NonNull TagsActivityModel activityModel) {
+            super(view, model, activityModel);
+        }
+
+        @Override
+        protected Cursor getCursor() {
+            return cursor;
+        }
     }
 
     @Test
@@ -103,7 +113,6 @@ public class TagsPresenterImpTest {
 
     @Test
     public void testGetItemType() throws Exception {
-        presenter.cursor = cursor;
         when(cursor.getCount()).thenReturn(1);
 
         assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
@@ -114,7 +123,6 @@ public class TagsPresenterImpTest {
     public void testOnBindViewHolder() throws Exception {
         TagItemViewHolder mockViewHolder = Mockito.mock(TagItemViewHolder.class);
         Tag tag = Mockito.mock(Tag.class);
-        presenter.cursor = cursor;
         when(cursor.getCount()).thenReturn(1);
         when(mockViewHolder.getReusableTag()).thenReturn(tag);
 
@@ -153,19 +161,6 @@ public class TagsPresenterImpTest {
         verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
-//
-    @Test
-    public void testOnStop() throws Exception {
-        when(model.getAllObservable()).thenReturn(Observable.just(cursor));
-        when(cursor.getCount()).thenReturn(0);
-        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
-
-        presenter.onStart();
-        presenter.onStop();
-
-        assertThat(presenter.subscriptions.isUnsubscribed(), equalTo(false));
-        assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
-    }
 
     @Test
     public void testOnSearch() throws Exception {
@@ -173,6 +168,7 @@ public class TagsPresenterImpTest {
 
         presenter.onSearch(Observable.<CharSequence>just("t","te","tes","test"));
 
+        verify(model).getAllFiltered("t");
         verify(model).getAllFiltered("test");
         verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
         verify(cursor).getCount();

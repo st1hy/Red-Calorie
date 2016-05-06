@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.support.annotation.IdRes;
 
+import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsActivityModel;
@@ -13,36 +14,38 @@ import com.squareup.picasso.Picasso;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
+import rx.Observable;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class IngredientsPresenterImpTest {
 
-    @Mock
     private IngredientsView view;
-    @Mock
     private IngredientsActivityModel activityModel;
-    @Mock
     private IngredientTypesModel model;
-    @Mock
     private SettingsModel settingsModel;
-    @Mock
     private Picasso picasso;
     private IngredientsPresenter presenter;
 
     @Before
     public void setup() {
+        view = Mockito.mock(IngredientsView.class);
+        activityModel= Mockito.mock(IngredientsActivityModel.class);
+        model = Mockito.mock(IngredientTypesModel.class);
+        settingsModel = Mockito.mock(SettingsModel.class);
+        picasso = Mockito.mock(Picasso.class);
         presenter = new IngredientsPresenterImp(view, activityModel, model, settingsModel, picasso);
     }
 
@@ -54,7 +57,7 @@ public class IngredientsPresenterImpTest {
 
         verify(view, times(1)).isDrawerOpen();
         verify(view, times(1)).closeDrawer();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
@@ -65,14 +68,18 @@ public class IngredientsPresenterImpTest {
 
         verify(view, times(1)).isDrawerOpen();
         verify(view, times(1)).invokeActionBack();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
     public void testStart() throws Exception {
+        when(view.getOnAddIngredientClickedObservable()).thenReturn(Observable.<Void>empty());
+
         presenter.onStart();
 
-        verify(view, only()).setMenuItemSelection(anyInt(), any(Selection.class));
+        verify(view).setMenuItemSelection(anyInt(), any(Selection.class));
+        verify(view).getOnAddIngredientClickedObservable();
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
@@ -82,7 +89,7 @@ public class IngredientsPresenterImpTest {
 
         verify(view).setMenuItemSelection(menuItem, Selection.SELECTED);
         verify(view).closeDrawer();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
@@ -93,23 +100,29 @@ public class IngredientsPresenterImpTest {
         verify(view, times(1)).openOverviewScreen();
         verify(view).setMenuItemSelection(menuItem, Selection.SELECTED);
         verify(view).closeDrawer();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
     public void testClickedOnAction() throws Exception {
         @IdRes final int actionId = -1;
         boolean isHandled = presenter.onClickedOnAction(actionId);
-        verifyZeroInteractions(view);
 
         assertFalse(isHandled);
+
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
     public void testOpenNewIngredients() throws Exception {
-        presenter.onAddNewIngredientClicked();
+        when(view.getOnAddIngredientClickedObservable()).thenReturn(Observable.<Void>just(null));
 
-        verify(view, only()).openNewIngredientScreen();
+        presenter.onStart();
+
+        verify(view).openNewIngredientScreen();
+        verify(view).setMenuItemSelection(anyInt(), any(Selection.class));
+        verify(view).getOnAddIngredientClickedObservable();
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
     }
 
     @Test
@@ -120,7 +133,7 @@ public class IngredientsPresenterImpTest {
         verify(view, times(1)).openSettingsScreen();
         verify(view).setMenuItemSelection(menuItem, Selection.SELECTED);
         verify(view).closeDrawer();
-        verifyNoMoreInteractions(view);
+        verifyNoMoreInteractions(view, activityModel, model, settingsModel, picasso);
 
     }
 }

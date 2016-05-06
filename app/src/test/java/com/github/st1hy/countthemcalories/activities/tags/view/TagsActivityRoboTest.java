@@ -41,8 +41,8 @@ import static org.robolectric.Shadows.shadowOf;
 @LargeTest
 public class TagsActivityRoboTest {
 
-    private TagsActivity activity;
-    private Timber.Tree tree = new Timber.Tree() {
+    private  TagsActivity activity;
+    private final Timber.Tree tree = new Timber.Tree() {
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
             System.out.println(tag +" " + message);
