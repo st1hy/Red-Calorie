@@ -20,7 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.ui.Visibility;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -39,7 +39,7 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.core.ui.Selection.SELECTED;
+import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
 
 public class IngredientsPresenterImp extends RecyclerView.Adapter<IngredientViewHolder> implements IngredientsPresenter, OnItemInteraction<IngredientTemplate> {
     public static int debounceTime = 250;

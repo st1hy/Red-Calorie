@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.view;
 
-import com.github.st1hy.countthemcalories.core.ui.view.DrawerView;
+import com.github.st1hy.countthemcalories.core.view.DrawerView;
 
 public interface OverviewView extends DrawerView {
 

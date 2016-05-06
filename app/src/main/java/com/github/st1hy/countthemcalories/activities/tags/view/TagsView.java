@@ -2,8 +2,8 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.core.ui.Visibility;
-import com.github.st1hy.countthemcalories.core.ui.view.DialogView;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.view.DialogView;
 
 import rx.Observable;
 

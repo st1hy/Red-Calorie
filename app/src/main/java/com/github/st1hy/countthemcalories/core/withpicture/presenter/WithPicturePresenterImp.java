@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui.withpicture.presenter;
+package com.github.st1hy.countthemcalories.core.withpicture.presenter;
 
 import android.Manifest;
 import android.net.Uri;
@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.model.ImageSource;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureModel;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureView;
+import com.github.st1hy.countthemcalories.core.withpicture.model.ImageSource;
+import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
+import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
 
 import rx.Observable;
 import rx.Subscription;
@@ -17,7 +17,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.ui.withpicture.model.ImageSource.intoImageSource;
+import static com.github.st1hy.countthemcalories.core.withpicture.model.ImageSource.intoImageSource;
 
 public class WithPicturePresenterImp implements WithPicturePresenter {
     protected final PermissionsHelper permissionsHelper;

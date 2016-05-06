@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui.withpicture.model;
+package com.github.st1hy.countthemcalories.core.withpicture.model;
 
 import android.support.annotation.NonNull;
 

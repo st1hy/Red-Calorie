@@ -22,7 +22,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.Dagger
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.widget.RxTextView;
 

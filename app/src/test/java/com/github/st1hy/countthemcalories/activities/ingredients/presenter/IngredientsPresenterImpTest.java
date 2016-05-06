@@ -7,7 +7,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.Ingredien
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsActivityModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.ui.Selection;
+import com.github.st1hy.countthemcalories.core.state.Selection;
 import com.squareup.picasso.Picasso;
 
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui.withpicture.view;
+package com.github.st1hy.countthemcalories.core.withpicture.view;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,8 +8,8 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;

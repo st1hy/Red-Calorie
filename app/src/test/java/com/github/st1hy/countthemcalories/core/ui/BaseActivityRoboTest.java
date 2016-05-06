@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.core.ui;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
+import com.github.st1hy.countthemcalories.core.view.BaseActivity;
 
 import org.junit.Before;
 import org.junit.Ignore;

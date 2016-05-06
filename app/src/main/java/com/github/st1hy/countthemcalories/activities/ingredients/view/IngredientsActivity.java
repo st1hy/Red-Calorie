@@ -25,9 +25,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Ingre
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
-import com.github.st1hy.countthemcalories.core.ui.Selection;
-import com.github.st1hy.countthemcalories.core.ui.Visibility;
+import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+import com.github.st1hy.countthemcalories.core.state.Selection;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
 

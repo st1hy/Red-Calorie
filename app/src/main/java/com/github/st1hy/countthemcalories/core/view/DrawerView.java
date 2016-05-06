@@ -1,9 +1,9 @@
-package com.github.st1hy.countthemcalories.core.ui.view;
+package com.github.st1hy.countthemcalories.core.view;
 
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.core.ui.Selection;
+import com.github.st1hy.countthemcalories.core.state.Selection;
 
 public interface DrawerView extends BaseView {
 

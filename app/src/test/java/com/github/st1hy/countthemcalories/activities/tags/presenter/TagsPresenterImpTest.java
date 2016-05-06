@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityMode
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
-import com.github.st1hy.countthemcalories.core.ui.Visibility;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import org.junit.Before;

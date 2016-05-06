@@ -1,10 +1,10 @@
-package com.github.st1hy.countthemcalories.core.ui.withpicture.view;
+package com.github.st1hy.countthemcalories.core.withpicture.view;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.ui.view.DialogView;
+import com.github.st1hy.countthemcalories.core.view.DialogView;
 
 import rx.Observable;
 

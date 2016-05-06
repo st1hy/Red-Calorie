@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui.withpicture.view;
+package com.github.st1hy.countthemcalories.core.withpicture.view;
 
 
 import android.content.Intent;
@@ -10,7 +10,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -37,7 +37,7 @@ import static android.support.test.espresso.intent.matcher.BundleMatchers.hasEnt
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtras;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasType;
-import static com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity.REQUEST_PICK_IMAGE;
+import static com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity.REQUEST_PICK_IMAGE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;

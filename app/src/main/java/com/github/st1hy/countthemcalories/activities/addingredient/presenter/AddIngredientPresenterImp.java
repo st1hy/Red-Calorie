@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.google.common.base.Optional;
 

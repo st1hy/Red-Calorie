@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui;
+package com.github.st1hy.countthemcalories.core.state;
 
 public enum Selection {
     SELECTED, UNSELECTED;

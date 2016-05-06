@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.core.ui;
 
+import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+
 import junit.framework.Assert;
 
 import org.junit.Test;

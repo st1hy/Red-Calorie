@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
 
 import javax.inject.Inject;
 
-import static com.github.st1hy.countthemcalories.core.ui.Selection.SELECTED;
+import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
 
 public class OverviewPresenterImp implements OverviewPresenter {
     private final OverviewView view;

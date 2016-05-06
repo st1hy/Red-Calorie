@@ -23,8 +23,8 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewAct
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.ui.BaseActivity;
-import com.github.st1hy.countthemcalories.core.ui.Selection;
+import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+import com.github.st1hy.countthemcalories.core.state.Selection;
 
 import javax.inject.Inject;
 

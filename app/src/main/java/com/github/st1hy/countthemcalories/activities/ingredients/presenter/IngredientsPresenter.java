@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
-import com.github.st1hy.countthemcalories.core.ui.presenter.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.presenter.DrawerPresenter;
 
 import rx.Observable;
 

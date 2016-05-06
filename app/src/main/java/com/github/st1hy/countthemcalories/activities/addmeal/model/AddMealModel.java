@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.model.WithPictureModel;
+import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 
 import javax.inject.Inject;
 

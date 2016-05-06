@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.ui.presenter;
+package com.github.st1hy.countthemcalories.core.presenter;
 
 import android.support.annotation.IdRes;
 

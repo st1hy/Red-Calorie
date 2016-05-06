@@ -8,7 +8,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 
 import javax.inject.Inject;
 
