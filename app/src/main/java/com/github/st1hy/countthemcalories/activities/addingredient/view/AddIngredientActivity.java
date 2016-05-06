@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.presenter.Add
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.view.WithPictureActivity;
+import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -105,6 +106,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Timber.d("Restoring saved state");
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         tagsPresenter.onStart();
@@ -157,14 +164,34 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         startActivityForResult(intent, REQUEST_PICK_TAG);
     }
 
+    @NonNull
     @Override
     public Observable<CharSequence> getNameObservable() {
-        return RxTextView.textChanges(name);
+        return RxTextView.textChanges(name).skip(1);
+    }
+
+    @NonNull
+    @Override
+    public Observable<CharSequence> getValueObservable() {
+        return RxTextView.textChanges(energyDensityValue).skip(1);
     }
 
     @Override
-    public Observable<CharSequence> getValueObservable() {
-        return RxTextView.textChanges(energyDensityValue);
+    public void showNameError(@NonNull Optional<Integer> errorResId) {
+        if (errorResId.isPresent()) {
+            name.setError(getString(errorResId.get()));
+        } else {
+            name.setError(null);
+        }
+    }
+
+    @Override
+    public void showValueError(@NonNull Optional<Integer> errorResId) {
+        if (errorResId.isPresent()) {
+            energyDensityValue.setError(getString(errorResId.get()));
+        } else {
+            energyDensityValue.setError(null);
+        }
     }
 
     @Override

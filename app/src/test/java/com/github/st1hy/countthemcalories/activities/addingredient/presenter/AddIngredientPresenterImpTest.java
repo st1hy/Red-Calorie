@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -13,6 +14,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
+import com.google.common.base.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +22,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+import java.util.List;
+
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -51,8 +58,8 @@ public class AddIngredientPresenterImpTest {
 
     @Test
     public void testSave() {
-        when(model.canCreateIngredient()).thenReturn(true);
-        when(model.insertIntoDatabase()).thenReturn(Observable.<Void>just(null));
+        List<IngredientTypeCreateError> errors = Collections.emptyList();
+        when(model.insertIntoDatabase()).thenReturn(Observable.just(errors));
         presenter.onClickedOnAction(R.id.action_save);
 
         verify(model).insertIntoDatabase();
@@ -101,7 +108,8 @@ public class AddIngredientPresenterImpTest {
         when(model.getImageUri()).thenReturn(testUri);
         when(view.showImage(any(Uri.class))).thenReturn(Observable.just(RxPicasso.PicassoEvent.SUCCESS));
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name"));
-        when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just("Value"));
+        when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just(""));
+        when(model.canCreateIngredient("Name", "")).thenReturn(Collections.singletonList(NO_VALUE));
 
         presenter.onStart();
 
@@ -118,7 +126,10 @@ public class AddIngredientPresenterImpTest {
         verify(view).getNameObservable();
         verify(model).setName("Name");
         verify(view).getValueObservable();
-        verify(model).setEnergyValue("Value");
+        verify(model).setEnergyValue("");
+        verify(model).canCreateIngredient(anyString(), anyString());
+        verify(view).showNameError(Optional.<Integer>absent());
+        verify(view).showValueError(eq(Optional.of(NO_VALUE.getErrorResId())));
         verifyNoMoreInteractions(view, model);
     }
 }

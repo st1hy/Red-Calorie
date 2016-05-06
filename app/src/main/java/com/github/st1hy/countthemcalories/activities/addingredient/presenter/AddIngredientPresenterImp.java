@@ -6,10 +6,14 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.ui.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
+import com.google.common.base.Optional;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,7 +21,12 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func2;
 import timber.log.Timber;
+
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
@@ -43,22 +52,19 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                         view.setSelectedUnitName(s);
                     }
                 }));
-        view.setName(model.getName());
-        view.setEnergyDensityValue(model.getEnergyValue());
         Uri imageUri = model.getImageUri();
         if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
+        view.setName(model.getName());
+        view.setEnergyDensityValue(model.getEnergyValue());
 
         final Observable<CharSequence> nameObservable = view.getNameObservable();
         subscriptions.add(nameObservable.subscribe(setNameToModel()));
         final Observable<CharSequence> valueObservable = view.getValueObservable();
         subscriptions.add(valueObservable.subscribe(setValueToModel()));
 
-//        Observable.combineLatest(nameObservable, valueObservable, new Func2<CharSequence, CharSequence, CharSequence[]>() {
-//            @Override
-//            public CharSequence[] call(CharSequence s, CharSequence s2) {
-//                return new CharSequence[]{s, s2};
-//            }
-//        });
+        subscriptions.add(Observable.combineLatest(nameObservable, valueObservable,
+                combineCheckCanCreateIngredient())
+                .subscribe());
     }
 
     @Override
@@ -76,6 +82,12 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @Override
+    public void onImageReceived(@NonNull Uri uri) {
+        super.onImageReceived(uri);
+        model.setImageUri(uri);
+    }
+
+    @Override
     public void onSelectUnitClicked() {
         view.showAlertDialog(model.getSelectUnitDialogTitle(), model.getUnitSelectionOptions())
                 .subscribe(new Action1<Integer>() {
@@ -89,12 +101,6 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     private void onUnitSelected(int which) {
         EnergyDensityUnit selectedUnit = model.getUnitSelection()[which];
         model.setUnit(selectedUnit);
-    }
-
-    @Override
-    public void onImageReceived(@NonNull Uri uri) {
-        super.onImageReceived(uri);
-        model.setImageUri(uri);
     }
 
     @NonNull
@@ -118,16 +124,15 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     private void onSaveClicked() {
-        if (model.canCreateIngredient()) {
-            model.insertIntoDatabase()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onAddedIngredientToDatabase());
-        }
+        model.insertIntoDatabase()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onAddedIngredientToDatabase());
+
     }
 
     @NonNull
-    private Subscriber<Void> onAddedIngredientToDatabase() {
-        return new Subscriber<Void>() {
+    private Subscriber<List<IngredientTypeCreateError>> onAddedIngredientToDatabase() {
+        return new Subscriber<List<IngredientTypeCreateError>>() {
 
             @Override
             public void onCompleted() {
@@ -139,9 +144,38 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             }
 
             @Override
-            public void onNext(Void aVoid) {
-                view.setResultAndFinish();
+            public void onNext(List<IngredientTypeCreateError> errors) {
+                onCreateIngredientResult(errors);
+                if (errors.isEmpty())
+                    view.setResultAndFinish();
             }
         };
     }
+
+    private void onCreateIngredientResult(@NonNull List<IngredientTypeCreateError> errors) {
+        view.showNameError(searchListFor(errors, NO_NAME));
+        if (errors.contains(NO_VALUE)) {
+            view.showValueError(Optional.of(NO_VALUE.getErrorResId()));
+        } else {
+            view.showValueError(searchListFor(errors, ZERO_VALUE));
+        }
+    }
+
+    @NonNull
+    private Optional<Integer> searchListFor(@NonNull List<IngredientTypeCreateError> errors,
+                                            @NonNull IngredientTypeCreateError error) {
+        return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
+    }
+
+    @NonNull
+    private Func2<CharSequence, CharSequence, Void> combineCheckCanCreateIngredient() {
+        return new Func2<CharSequence, CharSequence, Void>() {
+            @Override
+            public Void call(CharSequence name, CharSequence energyValue) {
+                onCreateIngredientResult(model.canCreateIngredient(name.toString(), energyValue.toString()));
+                return null;
+            }
+        };
+    }
+
 }

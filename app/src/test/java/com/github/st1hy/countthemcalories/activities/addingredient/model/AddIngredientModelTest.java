@@ -19,14 +19,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import rx.functions.Action1;
 
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -113,25 +116,25 @@ public class AddIngredientModelTest {
     public void testCanCreateIngredient() throws Exception {
         model.name = "";
         model.energyValue = "";
-        assertFalse(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasItems(NO_NAME, NO_VALUE));
         model.name = "s";
         model.energyValue = "";
-        assertFalse(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasItems(NO_VALUE));
         model.name = "";
-        model.energyValue = "0";
-        assertFalse(model.canCreateIngredient());
+        model.energyValue = "0";;
+        assertThat(model.canCreateIngredient(), hasItems(NO_NAME, ZERO_VALUE));
         model.name = "";
         model.energyValue = "1";
-        assertFalse(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasItems(NO_NAME));
         model.name = "s";
         model.energyValue = "1s";
-        assertFalse(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasItems(ZERO_VALUE));
         model.name = "s";
         model.energyValue = "0.0000";
-        assertFalse(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasItems(ZERO_VALUE));
         model.name = "s";
         model.energyValue = "100";
-        assertTrue(model.canCreateIngredient());
+        assertThat(model.canCreateIngredient(), hasSize(0));
     }
 
 }

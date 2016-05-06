@@ -49,4 +49,7 @@
     <string name="tags_remove_information">Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
     <string name="nav_categories">@string/tags_title</string>
+    <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
+    <string name="add_ingredient_energy_density_name_error_empty">Amount has be specified!</string>
+    <string name="add_ingredient_energy_density_name_error_zero">Amount must be greater than zero!</string>
 </resources>

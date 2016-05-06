@@ -22,6 +22,9 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -149,22 +152,47 @@ public class AddIngredientModel extends WithPictureModel {
     }
 
     @NonNull
-    public Observable<Void> insertIntoDatabase() {
-        IngredientTemplate template = new IngredientTemplate(null, getName(), getImageUri(),
-                DateTime.now(), getEnergyUnit());
-        return databaseModel.addNewAndRefresh(template, tagsModel.getTagIds())
-                .map(intoVoidCall());
+    public Observable<List<IngredientTypeCreateError>> insertIntoDatabase() {
+        List<IngredientTypeCreateError> errorList = canCreateIngredient();
+        if (errorList.isEmpty()) {
+            IngredientTemplate template = new IngredientTemplate(null, getName(), getImageUri(),
+                    DateTime.now(), getEnergyUnit());
+            return databaseModel.addNewAndRefresh(template, tagsModel.getTagIds())
+                    .map(intoNoError());
+        } else{
+            return Observable.just(errorList);
+        }
     }
 
     @NonNull
-    public EnergyDensity getEnergyUnit() {
-        return EnergyDensityUtils.getOrZero(unit.getValue(), getEnergyValue());
+    EnergyDensity getEnergyUnit() {
+        return getEnergyUnit(getEnergyValue());
     }
 
-    public boolean canCreateIngredient() {
-        return !getName().trim().isEmpty() &&
-                !getEnergyValue().trim().isEmpty() &&
-                getEnergyUnit().getValue().compareTo(BigDecimal.ZERO) > 0;
+    @NonNull
+    EnergyDensity getEnergyUnit(@NonNull String value) {
+        return EnergyDensityUtils.getOrZero(unit.getValue(), value);
+    }
+
+    @NonNull
+    List<IngredientTypeCreateError> canCreateIngredient() {
+        return canCreateIngredient(name, energyValue);
+    }
+
+    public List<IngredientTypeCreateError> canCreateIngredient(@NonNull String name, @NonNull String value) {
+        List<IngredientTypeCreateError> errors = new ArrayList<>(4);
+        if (isEmpty(name)) errors.add(IngredientTypeCreateError.NO_NAME);
+        if (isEmpty(value)) errors.add(IngredientTypeCreateError.NO_VALUE);
+        else if (!isValueGreaterThanZero(value)) errors.add(IngredientTypeCreateError.ZERO_VALUE);
+        return errors;
+    }
+
+    static boolean isEmpty(@NonNull String name) {
+        return name.trim().isEmpty();
+    }
+
+    boolean isValueGreaterThanZero(@NonNull String value) {
+        return getEnergyUnit(value).getValue().compareTo(BigDecimal.ZERO) > 0;
     }
 
     static class ParcelableProxy implements Parcelable {
@@ -217,12 +245,29 @@ public class AddIngredientModel extends WithPictureModel {
     }
 
     @NonNull
-    private Func1<Cursor, Void> intoVoidCall() {
-        return new Func1<Cursor, Void>() {
+    private Func1<Cursor, List<IngredientTypeCreateError>> intoNoError() {
+        return new Func1<Cursor, List<IngredientTypeCreateError>>() {
             @Override
-            public Void call(Cursor cursor) {
-                return null;
+            public List<IngredientTypeCreateError> call(Cursor cursor) {
+                return Collections.emptyList();
             }
         };
+    }
+
+    public enum IngredientTypeCreateError {
+        NO_NAME(R.string.add_ingredient_name_error_empty),
+        NO_VALUE(R.string.add_ingredient_energy_density_name_error_empty),
+        ZERO_VALUE(R.string.add_ingredient_energy_density_name_error_zero);
+
+        private final int errorResId;
+
+        IngredientTypeCreateError(@StringRes int errorResId) {
+            this.errorResId = errorResId;
+        }
+
+        @StringRes
+        public int getErrorResId() {
+            return errorResId;
+        }
     }
 }

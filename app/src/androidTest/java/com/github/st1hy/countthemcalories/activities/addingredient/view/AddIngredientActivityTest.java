@@ -195,11 +195,4 @@ public class AddIngredientActivityTest {
         onView(withText(exampleTags[1])).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void testCanSaveResult() {
-        onView(withId(R.id.action_save)).perform(click());
-        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()));
-        
-    }
-
 }
