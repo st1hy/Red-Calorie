@@ -17,15 +17,11 @@ import java.math.BigDecimal;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action0;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
-import rx.subjects.Subject;
 
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_100ML;
 
-public class SettingsModel implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsModel {
     static final String PREFERRED_VOLUME_ENERGY_UNIT = "setting preferred volumetric energy unit";
     static final String PREFERRED_MASS_ENERGY_UNIT = "setting preferred gravimetric energy unit";
     static final GravimetricEnergyDensityUnit defaultGravimetricEnergyUnit = KCAL_AT_100G;
@@ -34,7 +30,6 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
     private final SharedPreferences preferences;
     private final Resources resources;
 
-    private final Subject<SettingsChangedEvent, SettingsChangedEvent> subject = new SerializedSubject<>(PublishSubject.<SettingsChangedEvent>create());
     private final Observable<SettingsChangedEvent> observable;
 
     @Inject
@@ -42,18 +37,7 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
                          @NonNull Resources resources) {
         this.preferences = preferences;
         this.resources = resources;
-        observable = subject.doOnSubscribe(new Action0() {
-
-            @Override
-            public void call() {
-                preferences.registerOnSharedPreferenceChangeListener(SettingsModel.this);
-            }
-        }).doOnUnsubscribe(new Action0() {
-            @Override
-            public void call() {
-                preferences.unregisterOnSharedPreferenceChangeListener(SettingsModel.this);
-            }
-        }).share();
+        observable = SettingsChangedEvent.create(this);
     }
 
     public void setPreferredVolumetricUnit(@NonNull VolumetricEnergyDensityUnit unit) {
@@ -129,14 +113,6 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
         return observable;
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        SettingsChangedEvent event = SettingsChangedEvent.from(this, key);
-        if (event != null) {
-            subject.onNext(event);
-        }
-    }
-
     @StringRes
     public int getPreferredUnitDialogTitle() {
         return R.string.settings_select_unit_dialog_title;
@@ -144,7 +120,7 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
 
 
     @NonNull
-    public EnergyDensityUnit getPreferedFrom(@NonNull AmountUnitType type) {
+    public EnergyDensityUnit getPreferredFrom(@NonNull AmountUnitType type) {
         switch (type) {
             case VOLUME:
                 return getPreferredVolumetricUnit();
@@ -153,5 +129,10 @@ public class SettingsModel implements SharedPreferences.OnSharedPreferenceChange
             default:
                 throw new UnsupportedOperationException();
         }
+    }
+
+    @NonNull
+    public SharedPreferences getPreferences() {
+        return preferences;
     }
 }

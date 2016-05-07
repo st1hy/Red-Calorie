@@ -20,6 +20,7 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -41,7 +42,7 @@ public class IngredientsActivityRoboTest {
         Timber.plant(tree);
         TagsPresenterImp.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
-        activity = Robolectric.setupActivity(IngredientsActivity.class);
+        activity = Robolectric.setupActivity(IngredientsTestActivity.class);
     }
 
     @After
@@ -65,5 +66,16 @@ public class IngredientsActivityRoboTest {
 
         Intent request = shadowOf(activity).peekNextStartedActivity();
         assertThat(request, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
+    }
+
+
+    @Test
+    public void testSearch() throws Exception {
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+
+        activity.searchView.performClick();
+        activity.searchView.setQuery("Ingredient 2", true);
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
     }
 }

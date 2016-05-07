@@ -19,6 +19,12 @@ import com.github.st1hy.countthemcalories.database.application.inject.DatabaseMo
 import static org.junit.Assert.assertEquals;
 
 public class TagsTestActivity extends TagsActivity {
+    public static final Tag[] exampleTags = new Tag[] {
+            new Tag(1L, "Tag 1"),
+            new Tag(2L, "Tag 2"),
+            new Tag(3L, "Meal")
+    };
+
 
     @NonNull
     @Override
@@ -39,13 +45,17 @@ public class TagsTestActivity extends TagsActivity {
         return component;
     }
 
-
     private void prepareDb() {
         TagsTestComponent component = (TagsTestComponent) this.component;
         DaoSession daoSession = component.getDaoSession();
-        TagDao tagDao = daoSession.getTagDao();
+        addExampleTags(daoSession);
+    }
+
+    public static void addExampleTags(@NonNull DaoSession session) {
+        TagDao tagDao = session.getTagDao();
         tagDao.deleteAll();
-        tagDao.insertInTx(new Tag(null, "Test tag"), new Tag(null, "Tag2"), new Tag(null, "meal"));
+        tagDao.insertInTx(exampleTags);
+        tagDao.loadAll();
         assertEquals(3, tagDao.loadAll().size());
     }
 }

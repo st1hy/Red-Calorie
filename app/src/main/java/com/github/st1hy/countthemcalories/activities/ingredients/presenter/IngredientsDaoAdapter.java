@@ -101,7 +101,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     String getReadableEnergyDensity(@NonNull IngredientTemplate ingredient) {
         EnergyDensity energyDensity = ingredient.getEnergyDensity();
         AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
-        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferedFrom(amountUnitType);
+        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
         EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
         return settingsModel.getUnitPlural(convertedToPreferred);
     }
