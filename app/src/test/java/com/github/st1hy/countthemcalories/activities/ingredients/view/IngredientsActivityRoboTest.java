@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImp;
@@ -108,8 +109,8 @@ public class IngredientsActivityRoboTest {
     public void testAddIngredient() throws Exception {
         activity.fab.performClick();
 
-        Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
+        Intent request = shadowOf(activity).peekNextStartedActivity();
+        assertThat(request, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
     }
 
     @Test
@@ -118,5 +119,14 @@ public class IngredientsActivityRoboTest {
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
         assertThat(resultIntent, equalTo(new Intent(activity, TagsActivity.class)));
     }
+
+    @Test
+    public void testOnStop() throws Exception {
+        IngredientsPresenter presenterMock = Mockito.mock(IngredientsPresenter.class);
+        activity.presenter = presenterMock;
+        activity.onStop();
+        verify(presenterMock).onStop();
+    }
+
 
 }

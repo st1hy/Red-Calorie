@@ -52,7 +52,7 @@
             android:id="@+id/add_ingredient_energy_density"
             android:inputType="numberDecimal"
             android:layout_weight="1"
-            android:hint="@string/add_ingredient_energy_density_name"
+            android:hint="@string/add_ingredient_energy_density_hint"
             android:layout_width="0dp"
             android:layout_height="wrap_content">
         </EditText>

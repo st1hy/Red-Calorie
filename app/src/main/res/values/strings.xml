@@ -31,7 +31,7 @@
     <string name="add_ingredient_remove_category">Remove category</string>
     <string name="add_ingredient_categories_name">@string/tags_title</string>
     <string name="add_ingredient_add_category">Add category</string>
-    <string name="add_ingredient_energy_density_name">Amount of calories</string>
+    <string name="add_ingredient_energy_density_hint">Amount of calories</string>
     <string name="settings_title">Settings</string>
     <string name="settings_current_unit">Current unit:</string>
     <string name="settings_select_preferred_energy_unit_for_meals">Select preferred energy unit for meals</string>
