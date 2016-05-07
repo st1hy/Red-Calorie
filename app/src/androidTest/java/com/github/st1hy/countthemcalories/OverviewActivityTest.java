@@ -63,7 +63,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
         closeSoftKeyboard();
         pressBack();
-        onView(withId(R.id.overview_toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -81,8 +81,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.nav_view))
                 .check(matches(isDisplayed()))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
-                .perform(navigateTo(R.id.nav_overview))
-                .check(matches(menuItemIsChecked(R.id.nav_overview)));
+                .perform(navigateTo(R.id.nav_overview));
         assertNoUnverifiedIntents();
         onView(withId(R.id.overview_content)).check(matches(isDisplayed()));
         synchronized (this) {
@@ -97,8 +96,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.nav_view))
                 .check(matches(isDisplayed()))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
-                .perform(navigateTo(R.id.nav_ingredients))
-                .check(matches(menuItemIsChecked(R.id.nav_ingredients)));
+                .perform(navigateTo(R.id.nav_ingredients));
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)));

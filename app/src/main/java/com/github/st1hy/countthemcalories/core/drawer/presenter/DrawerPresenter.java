@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.presenter;
+package com.github.st1hy.countthemcalories.core.drawer.presenter;
 
 import android.support.annotation.IdRes;
 
@@ -19,4 +19,6 @@ public interface DrawerPresenter {
     boolean onClickedOnAction(@IdRes int actionItemId);
 
     void onStart();
+
+    void onStop();
 }

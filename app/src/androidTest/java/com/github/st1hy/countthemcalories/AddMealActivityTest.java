@@ -205,7 +205,7 @@ public class AddMealActivityTest {
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
 
     }
 
@@ -215,7 +215,7 @@ public class AddMealActivityTest {
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
 
     }
 }

@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSetti
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
-import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 
 import javax.inject.Inject;
 

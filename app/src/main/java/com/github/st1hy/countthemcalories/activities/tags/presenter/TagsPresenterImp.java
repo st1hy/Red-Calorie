@@ -13,8 +13,8 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.E
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
-import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
-import com.github.st1hy.countthemcalories.core.presenter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
+import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Strings;

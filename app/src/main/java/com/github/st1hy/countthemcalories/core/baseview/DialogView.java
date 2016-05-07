@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.view;
+package com.github.st1hy.countthemcalories.core.baseview;
 
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;

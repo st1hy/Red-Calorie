@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.view.BaseActivity;
+import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
 import com.squareup.picasso.Picasso;
 

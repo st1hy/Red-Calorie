@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.TagViewHolder;
-import com.github.st1hy.countthemcalories.core.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 
 import javax.inject.Inject;
 

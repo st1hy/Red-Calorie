@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.presenter;
+package com.github.st1hy.countthemcalories.core.adapter;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;

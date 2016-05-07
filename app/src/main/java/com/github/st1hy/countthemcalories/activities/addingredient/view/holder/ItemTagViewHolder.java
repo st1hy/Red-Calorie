@@ -6,7 +6,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 
 import butterknife.Bind;
 

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.view;
+package com.github.st1hy.countthemcalories.core.baseview;
 
 import android.annotation.TargetApi;
 import android.support.annotation.ArrayRes;
@@ -14,7 +14,6 @@ import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionActor;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.view.DialogView;
 
 import rx.Observable;
 

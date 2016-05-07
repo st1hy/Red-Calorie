@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -17,8 +16,8 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.callbacks.OnItemInteraction;
-import com.github.st1hy.countthemcalories.core.presenter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -29,14 +28,10 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.functions.Action1;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
-
-public class IngredientsPresenterImp extends RxDaoRecyclerAdapter<IngredientViewHolder, IngredientTemplate>
-        implements IngredientsPresenter, OnItemInteraction<IngredientTemplate> {
+public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHolder, IngredientTemplate>
+        implements OnItemInteraction<IngredientTemplate> {
     static final int bottomSpaceItem = 1;
     @LayoutRes
     static final int item_layout = R.layout.ingredients_item;
@@ -50,68 +45,17 @@ public class IngredientsPresenterImp extends RxDaoRecyclerAdapter<IngredientView
     final Picasso picasso;
 
     @Inject
-    public IngredientsPresenterImp(@NonNull IngredientsView view,
-                                   @NonNull IngredientsActivityModel activityModel,
-                                   @NonNull IngredientTypesModel model,
-                                   @NonNull SettingsModel settingsModel,
-                                   @NonNull Picasso picasso) {
+    public IngredientsDaoAdapter(@NonNull IngredientsView view,
+                                 @NonNull IngredientsActivityModel activityModel,
+                                 @NonNull IngredientTypesModel model,
+                                 @NonNull SettingsModel settingsModel,
+                                 @NonNull Picasso picasso) {
         super(model);
         this.view = view;
         this.activityModel = activityModel;
         this.model = model;
         this.settingsModel = settingsModel;
         this.picasso = picasso;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (view.isDrawerOpen()) {
-            view.closeDrawer();
-        } else {
-            view.invokeActionBack();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        view.setMenuItemSelection(R.id.nav_ingredients, SELECTED);
-        onAddIngredientClicked(view.getOnAddIngredientClickedObservable());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onNavigationItemSelected(@IdRes int itemId) {
-        if (itemId == R.id.nav_overview) {
-            view.openOverviewScreen();
-        } else if (itemId == R.id.nav_settings) {
-            view.openSettingsScreen();
-        } else if (itemId == R.id.nav_tags) {
-            view.openTagsScreen();
-        }
-        view.setMenuItemSelection(itemId, SELECTED);
-        view.closeDrawer();
-    }
-
-    @Override
-    public boolean onClickedOnAction(@IdRes int actionItemId) {
-        if (actionItemId == R.id.action_sorting) {
-            return true;
-        }
-        return false;
-    }
-
-    void onAddIngredientClicked(@NonNull Observable<Void> observable) {
-        subscribe(observable.subscribe(new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.openNewIngredientScreen();
-            }
-        }));
     }
 
     @Override

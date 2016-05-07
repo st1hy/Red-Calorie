@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.presenter;
+package com.github.st1hy.countthemcalories.core.adapter;
 
 import android.database.Cursor;
 import android.support.annotation.CallSuper;
@@ -18,7 +18,8 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R> extends RecyclerView.Adapter<T> {
+public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R> extends RecyclerView.Adapter<T>
+        implements DaoRecyclerAdapter {
 
     public static int debounceTime = 250;
     final RxDatabaseModel<R> databaseModel;
@@ -32,17 +33,20 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
         this.databaseModel = databaseModel;
     }
 
+    @Override
     @CallSuper
     public void onStart() {
         if (onSearchObservable != null) onSearch(onSearchObservable);
     }
 
+    @Override
     @CallSuper
     public void onStop() {
         subscriptions.clear();
         closeCursor(true);
     }
 
+    @Override
     @CallSuper
     public void onSearch(@NonNull Observable<CharSequence> observable) {
         onSearchObservable = observable;
