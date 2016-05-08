@@ -4,6 +4,7 @@ import com.github.st1hy.countthemcalories.activities.settings.model.EnergyUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
+import com.github.st1hy.countthemcalories.core.state.Selection;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
@@ -18,13 +19,13 @@ import java.math.BigDecimal;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem.SETTINGS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -32,17 +33,17 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RxMockitoJUnitRunner.class)
-public class SettingsPresenterImpTest {
+public class SettingsPresenterImplTest {
 
     @Mock
     private SettingsView view;
     @Mock
     private SettingsModel preferencesModel;
-    private SettingsPresenterImp presenter;
+    private SettingsPresenterImpl presenter;
 
     @Before
     public void setup() {
-        presenter = new SettingsPresenterImp(view, preferencesModel);
+        presenter = new SettingsPresenterImpl(view, preferencesModel);
     }
 
     @Test
@@ -88,9 +89,11 @@ public class SettingsPresenterImpTest {
         final PublishSubject<SettingsChangedEvent> subject = PublishSubject.create();
         when(preferencesModel.toObservable()).thenReturn(subject);
         presenter.onStart();
+        verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
+        verify(view).showNavigationAsUp();
         presenter.onStop();
         subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KCAL_AT_100G));
-        verifyZeroInteractions(view);
+        verifyNoMoreInteractions(view);
     }
 
     @Test
@@ -98,9 +101,12 @@ public class SettingsPresenterImpTest {
         final PublishSubject<SettingsChangedEvent> subject = PublishSubject.create();
         when(preferencesModel.toObservable()).thenReturn(subject);
         presenter.onStart();
+        verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
+        verify(view).showNavigationAsUp();
         subject.onNext(new EnergyUnit.Volume(VolumetricEnergyDensityUnit.KCAL_AT_100ML));
         presenter.onStop();
-        verify(view, only()).setLiquidUnit(anyString());
+        verify(view).setLiquidUnit(anyString());
+        verifyNoMoreInteractions(view);
     }
 
     @Test
@@ -108,9 +114,12 @@ public class SettingsPresenterImpTest {
         final PublishSubject<SettingsChangedEvent> subject = PublishSubject.create();
         when(preferencesModel.toObservable()).thenReturn(subject);
         presenter.onStart();
+        verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
+        verify(view).showNavigationAsUp();
         subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KJ_AT_G));
         presenter.onStop();
-        verify(view, only()).setSolidUnit(anyString());
+        verify(view).setSolidUnit(anyString());
+        verifyNoMoreInteractions(view);
     }
 
     @Test

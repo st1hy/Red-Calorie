@@ -6,6 +6,8 @@ import com.github.st1hy.countthemcalories.activities.settings.model.EnergyUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
+import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
@@ -21,24 +23,49 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-public class SettingsPresenterImp implements SettingsPresenter {
+public class SettingsPresenterImpl extends AbstractDrawerPresenter implements SettingsPresenter {
     final SettingsView view;
     final SettingsModel model;
 
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public SettingsPresenterImp(@NonNull SettingsView view,
-                                @NonNull SettingsModel model) {
+    public SettingsPresenterImpl(@NonNull SettingsView view,
+                                 @NonNull SettingsModel model) {
+        super(view);
         this.view = view;
         this.model = model;
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Subscription subscription= model.toObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<SettingsChangedEvent>() {
+                    @Override
+                    public void call(SettingsChangedEvent event) {
+                        if (event instanceof EnergyUnit.Mass)
+                            view.setSolidUnit(model.getUnitName(((EnergyUnit.Mass) event).getValue()));
+                        else if (event instanceof EnergyUnit.Volume)
+                            view.setLiquidUnit(model.getUnitName(((EnergyUnit.Volume) event).getValue()));
+
+                    }
+                });
+        subscriptions.add(subscription);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        subscriptions.clear();
+    }
+
+
+    @Override
     public void onLiquidUnitSettingsClicked() {
         onUnitSettingsClicked(AmountUnitType.VOLUME);
     }
-
 
     private void onUnitSettingsClicked(@NonNull final AmountUnitType type) {
         EnergyDensityUnit[] units = (EnergyDensityUnit[]) EnergyDensityUtils.getUnits(type);
@@ -83,24 +110,7 @@ public class SettingsPresenterImp implements SettingsPresenter {
     }
 
     @Override
-    public void onStart() {
-        Subscription subscription= model.toObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<SettingsChangedEvent>() {
-            @Override
-            public void call(SettingsChangedEvent event) {
-                if (event instanceof EnergyUnit.Mass)
-                    view.setSolidUnit(model.getUnitName(((EnergyUnit.Mass) event).getValue()));
-                else if (event instanceof EnergyUnit.Volume)
-                    view.setLiquidUnit(model.getUnitName(((EnergyUnit.Volume) event).getValue()));
-
-            }
-        });
-        subscriptions.add(subscription);
-    }
-
-    @Override
-    public void onStop() {
-        subscriptions.clear();
+    protected DrawerMenuItem currentItem() {
+        return DrawerMenuItem.SETTINGS;
     }
 }

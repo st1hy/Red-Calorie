@@ -2,12 +2,13 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.baseview.DialogView;
 
 import rx.Observable;
 
-public interface TagsView extends DialogView {
+public interface TagsView extends DialogView, DrawerView {
     /**
      * @return observable emitting new tag name to add
      */

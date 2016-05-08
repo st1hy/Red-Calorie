@@ -1,10 +1,11 @@
-package com.github.st1hy.countthemcalories;
+package com.github.st1hy.countthemcalories.activities.settings.view;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
@@ -43,7 +44,7 @@ public class SettingsActivityTest {
     public void testLiquidSettings() throws Exception {
         onView(withText("kcal / 100 ml"))
                 .check(matches(isDisplayed()));
-        onView(withText(R.string.settings_select_preferred_energy_unit_for_drinks))
+        onView(ViewMatchers.withText(R.string.settings_select_preferred_energy_unit_for_drinks))
                 .check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.settings_select_unit_dialog_title))

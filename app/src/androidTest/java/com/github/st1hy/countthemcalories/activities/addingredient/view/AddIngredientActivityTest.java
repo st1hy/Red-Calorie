@@ -185,7 +185,7 @@ public class AddIngredientActivityTest {
     public void testAddTag() throws Exception {
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.tags_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
         onView(withText(exampleTags[1])).check(matches(isDisplayed()))
                 .perform(click());

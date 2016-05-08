@@ -3,10 +3,12 @@ package com.github.st1hy.countthemcalories.activities.settings.inject;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
-import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenterImp;
+import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
@@ -34,7 +36,19 @@ public class SettingsActivityModule {
 
     @Provides
     @PerActivity
-    public SettingsPresenter providePresenter(SettingsPresenterImp presenter) {
+    public SettingsPresenter providePresenter(SettingsPresenterImpl presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    public SettingsPresenterImpl providePresenterImpl(SettingsView view, SettingsModel model) {
+        return new SettingsPresenterImpl(view, model);
+    }
+
+    @Provides
+    @PerActivity
+    public DrawerPresenter provideDrawerPresenter(SettingsPresenterImpl presenter) {
         return presenter;
     }
 

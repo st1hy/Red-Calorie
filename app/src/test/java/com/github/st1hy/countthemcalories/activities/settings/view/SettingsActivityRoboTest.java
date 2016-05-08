@@ -2,12 +2,10 @@ package com.github.st1hy.countthemcalories.activities.settings.view;
 
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -16,7 +14,6 @@ import org.robolectric.shadows.ShadowDialog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -34,7 +31,6 @@ public class SettingsActivityRoboTest {
     public void testSetup() throws Exception {
         assertThat(activity, notNullValue());
         assertThat(activity.presenter, notNullValue());
-        assertThat(activity.toolbar, notNullValue());
         assertThat(activity.getComponent(), notNullValue());
         assertThat(activity.component, notNullValue());
         assertThat(activity.liquidUnitText, notNullValue());
@@ -55,14 +51,5 @@ public class SettingsActivityRoboTest {
         activity.solidUnitView.performClick();
         ShadowDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestDialog();
         assertThat(shadowDialog, notNullValue());
-    }
-
-    @Test
-    public void testOnStop() throws Exception {
-        SettingsPresenter presenterMock = Mockito.mock(SettingsPresenter.class);
-        activity.presenter = presenterMock;
-        activity.onStop();
-        verify(presenterMock).onStop();
-
     }
 }

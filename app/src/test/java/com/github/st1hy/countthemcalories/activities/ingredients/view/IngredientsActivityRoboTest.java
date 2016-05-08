@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImp;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public class IngredientsActivityRoboTest {
     @Before
     public void setup() {
         Timber.plant(tree);
-        TagsPresenterImp.debounceTime = 0;
+        TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         activity = Robolectric.setupActivity(IngredientsTestActivity.class);
     }
@@ -49,7 +49,7 @@ public class IngredientsActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uproot(tree);
         TestRxPlugins.reset();
-        TagsPresenterImp.debounceTime = 250;
+        TagsDaoAdapter.debounceTime = 250;
     }
 
     @Test

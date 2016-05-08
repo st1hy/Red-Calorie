@@ -112,7 +112,7 @@ public class OverviewActivityTest {
                 .check(matches(isDisplayed()))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_settings));
-        onView(withId(R.id.settings_toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.settings_content)).check(matches(isDisplayed()));
         intended(hasComponent(new ComponentName(getTargetContext(), SettingsActivity.class)));
         pressBack();
         onView(withId(R.id.nav_view))
@@ -127,7 +127,7 @@ public class OverviewActivityTest {
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_tags));
         intended(hasComponent(new ComponentName(getTargetContext(), TagsActivity.class)));
-        onView(withId(R.id.tags_toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
         pressBack();
         onView(withId(R.id.nav_view))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)));

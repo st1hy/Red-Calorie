@@ -1,6 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.settings.presenter;
 
-public interface SettingsPresenter {
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
+
+public interface SettingsPresenter extends DrawerPresenter {
 
     void onLiquidUnitSettingsClicked();
 
@@ -8,7 +10,4 @@ public interface SettingsPresenter {
 
     void showCurrentUnits();
 
-    void onStart();
-
-    void onStop();
 }

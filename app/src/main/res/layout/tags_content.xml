@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/ingredients_app_bar">
+    tools:showIn="@layout/tags_app_bar"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/ingredients_content"
+        android:id="@+id/tags_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/ingredients_item"
-        tools:showIn="@layout/ingredients_app_bar"
-        tools:context=".activities.ingredients.view.IngredientsActivity">
+        tools:listitem="@layout/tags_item">
     </android.support.v7.widget.RecyclerView>
-
     <TextView
-        android:id="@+id/ingredients_no_ingredients_button"
+        android:id="@+id/tags_no_tags_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:layout_gravity="center"
         android:padding="24dp"
-        android:text="@string/ingredients_no_ingredients_yet"
+        android:text="@string/tags_no_tags_yet"
         android:visibility="gone"
         />
 </FrameLayout>

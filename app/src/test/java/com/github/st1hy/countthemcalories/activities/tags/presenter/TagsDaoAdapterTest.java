@@ -33,12 +33,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class TagsPresenterImpTest {
+public class TagsDaoAdapterTest {
 
     private TagsView view;
     private TagsModel model;
     private TagsActivityModel activityModel;
-    private TagsPresenterImp presenter;
+    private TagsDaoAdapter presenter;
     private Cursor cursor;
 
     @Before
@@ -50,7 +50,7 @@ public class TagsPresenterImpTest {
         presenter = new TestTagsPresenter(view, model, activityModel);
     }
 
-    class TestTagsPresenter extends TagsPresenterImp {
+    class TestTagsPresenter extends TagsDaoAdapter {
         public TestTagsPresenter(@NonNull TagsView view, @NonNull TagsModel model, @NonNull TagsActivityModel activityModel) {
             super(view, model, activityModel);
         }

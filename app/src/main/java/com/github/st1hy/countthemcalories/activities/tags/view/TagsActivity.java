@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -19,9 +18,10 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsModule;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
@@ -35,7 +35,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class TagsActivity extends BaseActivity implements TagsView {
+public class TagsActivity extends DrawerActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
     public static final String EXTRA_TAG_ID = "extra tag id";
     public static final String EXTRA_TAG_NAME = "extra tag name";
@@ -45,16 +45,15 @@ public class TagsActivity extends BaseActivity implements TagsView {
     @Inject
     TagsPresenter presenter;
     @Inject
-    RecyclerView.Adapter adapter;
+    TagsDaoAdapter adapter;
 
-    @Bind(R.id.tags_toolbar)
-    Toolbar toolbar;
     @Bind(R.id.tags_recycler)
     RecyclerView recyclerView;
     @Bind(R.id.tags_add_new)
     FloatingActionButton fab;
     @Bind(R.id.tags_no_tags_button)
     View notTagsButton;
+
     SearchView searchView;
 
     @NonNull
@@ -70,20 +69,12 @@ public class TagsActivity extends BaseActivity implements TagsView {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.tags_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
-        setSupportActionBar(toolbar);
-        assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        super.onCreate(savedInstanceState);
     }
 
     @NonNull
@@ -119,7 +110,7 @@ public class TagsActivity extends BaseActivity implements TagsView {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.tags_menu, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        presenter.onSearch(RxSearchView.queryTextChanges(searchView));
+        adapter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }
 
@@ -153,18 +144,6 @@ public class TagsActivity extends BaseActivity implements TagsView {
         data.putExtra(EXTRA_TAG_NAME, tagName);
         setResult(RESULT_OK, data);
         finish();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        presenter.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.onStop();
     }
 
     @NonNull

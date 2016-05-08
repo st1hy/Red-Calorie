@@ -27,8 +27,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class TagsPresenterImp extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
-        implements TagsPresenter, OnItemInteraction<Tag> {
+public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
+        implements OnItemInteraction<Tag> {
 
     static final int bottomSpaceItem = 1;
     static final int item_layout = R.layout.tags_item;
@@ -39,9 +39,9 @@ public class TagsPresenterImp extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
     final TagsActivityModel activityModel;
 
     @Inject
-    public TagsPresenterImp(@NonNull TagsView view,
-                            @NonNull TagsModel model,
-                            @NonNull TagsActivityModel activityModel) {
+    public TagsDaoAdapter(@NonNull TagsView view,
+                          @NonNull TagsModel model,
+                          @NonNull TagsActivityModel activityModel) {
         super(model);
         this.view = view;
         this.model = model;

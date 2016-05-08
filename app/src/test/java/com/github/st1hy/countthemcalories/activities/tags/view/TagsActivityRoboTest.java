@@ -9,15 +9,13 @@ import android.widget.EditText;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImp;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -33,7 +31,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -52,7 +49,7 @@ public class TagsActivityRoboTest {
     @Before
     public void setup() throws Exception {
         Timber.plant(tree);
-        TagsPresenterImp.debounceTime = 0;
+        TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
         activity = Robolectric.buildActivity(TagsTestActivity.class)
@@ -65,14 +62,13 @@ public class TagsActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uproot(tree);
         TestRxPlugins.reset();
-        TagsPresenterImp.debounceTime = 250;
+        TagsDaoAdapter.debounceTime = 250;
     }
 
     @Test
     public void testActivityStart() {
         assertThat(activity, notNullValue());
         assertThat(activity.presenter, notNullValue());
-        assertThat(activity.toolbar, notNullValue());
         assertThat(activity.getComponent(), notNullValue());
         assertThat(activity.component, notNullValue());
     }
@@ -116,22 +112,6 @@ public class TagsActivityRoboTest {
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
         ediText.setText(testName);
         assertThat(activity.getString(R.string.tags_new_tag_dialog), equalTo(shadowAlertDialog.getTitle()));
-    }
-
-    @Test
-    public void testStart() throws Exception {
-        TagsPresenter presenterMock = Mockito.mock(TagsPresenter.class);
-        activity.presenter = presenterMock;
-        activity.onStart();
-        verify(presenterMock).onStart();
-    }
-
-    @Test
-    public void testOnStop() throws Exception {
-        TagsPresenter presenterMock = Mockito.mock(TagsPresenter.class);
-        activity.presenter = presenterMock;
-        activity.onStop();
-        verify(presenterMock).onStop();
     }
 
     @Test
