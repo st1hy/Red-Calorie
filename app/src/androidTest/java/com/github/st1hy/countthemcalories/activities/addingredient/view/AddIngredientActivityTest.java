@@ -48,7 +48,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.github.st1hy.countthemcalories.AddMealActivityTest.resourceToUri;
+import static com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivityTest.resourceToUri;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;

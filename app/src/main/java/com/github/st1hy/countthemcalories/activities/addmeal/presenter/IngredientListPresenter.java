@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.IngredientItemViewModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
 
 import javax.inject.Inject;
 
 import dagger.internal.Preconditions;
 
-public class IngredientListPresenter extends RecyclerView.Adapter<IngredientItemViewModel> {
+public class IngredientListPresenter extends RecyclerView.Adapter<IngredientItemViewHolder> {
     private final MealIngredientsListModel model;
 
     @Inject
@@ -23,10 +23,10 @@ public class IngredientListPresenter extends RecyclerView.Adapter<IngredientItem
     }
 
     @Override
-    public IngredientItemViewModel onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
-        return new IngredientItemViewModel(view);
+        return new IngredientItemViewHolder(view);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class IngredientListPresenter extends RecyclerView.Adapter<IngredientItem
     }
 
     @Override
-    public void onBindViewHolder(IngredientItemViewModel holder, int position) {
+    public void onBindViewHolder(IngredientItemViewHolder holder, int position) {
 //        holder.getName().setText;
     }
 
