@@ -10,10 +10,10 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
-import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -28,7 +28,7 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
-        implements OnItemInteraction<Tag> {
+        implements OnTagInteraction {
 
     static final int bottomSpaceItem = 1;
     static final int item_layout = R.layout.tags_item;
@@ -87,7 +87,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
             cursor.moveToPosition(position);
             Tag tag = holder.getReusableTag();
             model.performReadEntity(cursor, tag);
-            holder.bind(tag);
+            holder.bind(position, tag);
         } else {
             Timber.w("Cursor closed duding binding views.");
         }
@@ -99,15 +99,31 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
     }
 
     @Override
-    public void onItemClicked(@NonNull Tag tag) {
+    public void onItemClicked(int position, @NonNull Tag tag) {
         if (activityModel.isInSelectMode()) {
             view.setResultAndReturn(tag.getId(), tag.getName());
         }
     }
 
     @Override
-    public void onItemLongClicked(@NonNull Tag tag) {
-        subscribe(view.showRemoveTagDialog().subscribe(deleteTag(tag)));
+    public void onItemLongClicked(final int position, @NonNull final Tag tag) {
+        addSubscription(
+                view.showRemoveTagDialog()
+                        .flatMap(new Func1<Void, Observable<Cursor>>() {
+                            @Override
+                            public Observable<Cursor> call(Void aVoid) {
+                                return model.removeAndRefresh(tag.getId());
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new OnCursor() {
+                            @Override
+                            public void onNext(Cursor cursor) {
+                                super.onNext(cursor);
+                                notifyItemRemoved(position);
+                            }
+                        })
+        );
     }
 
     @Override
@@ -117,26 +133,30 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
     }
 
     void onAddTagClicked(@NonNull Observable<Void> clicks) {
-        subscribeToCursor(clicks
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        Timber.v("Add tag clicked");
-                    }
-                })
-                .flatMap(showNewTagDialog())
-                .map(trim())
-                .filter(notEmpty())
-                .flatMap(addTagRefresh())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<Cursor>() {
-                    @Override
-                    public void call(Cursor cursor) {
-                        view.scrollToPosition(cursor.getPosition());
-                    }
-                })
-                .retry());
+        addSubscription(
+                clicks.subscribeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Action1<Void>() {
+                            @Override
+                            public void call(Void aVoid) {
+                                Timber.v("Add tag clicked");
+                            }
+                        })
+                        .flatMap(showNewTagDialog())
+                        .map(trim())
+                        .filter(notEmpty())
+                        .flatMap(addTagRefresh())
+                        .retry()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new OnCursor() {
+                            @Override
+                            public void onNext(Cursor cursor) {
+                                super.onNext(cursor);
+                                int newItemPosition = cursor.getPosition();
+                                notifyItemInserted(newItemPosition);
+                                view.scrollToPosition(newItemPosition);
+                            }
+                        })
+        );
     }
 
     @NonNull
@@ -175,16 +195,6 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
             @Override
             public String call(String s) {
                 return s.trim();
-            }
-        };
-    }
-
-    @NonNull
-    Action1<Void> deleteTag(final Tag tag) {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                subscribeToCursor(model.removeAndRefresh(tag.getId()));
             }
         };
     }

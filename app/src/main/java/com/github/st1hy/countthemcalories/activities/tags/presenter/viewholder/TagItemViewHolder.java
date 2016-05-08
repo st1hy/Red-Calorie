@@ -5,23 +5,25 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TagItemViewHolder extends TagViewHolder implements View.OnLongClickListener, View.OnClickListener {
+public class TagItemViewHolder extends TagViewHolder implements View.OnLongClickListener,
+        View.OnClickListener {
 
     @Bind(R.id.tags_item_name)
     TextView name;
     @Bind(R.id.tag_button)
     View button;
 
-    final OnItemInteraction<Tag> listener;
+    final OnTagInteraction listener;
+    int position;
+
     private final Tag tag = new Tag();
 
-    public TagItemViewHolder(@NonNull View itemView, @NonNull OnItemInteraction<Tag> listener) {
+    public TagItemViewHolder(@NonNull View itemView, @NonNull OnTagInteraction listener) {
         super(itemView);
         this.listener = listener;
         ButterKnife.bind(this, itemView);
@@ -32,7 +34,7 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
     @Override
     public boolean onLongClick(View v) {
         if (tag != null) {
-            listener.onItemLongClicked(tag);
+            listener.onItemLongClicked(position, tag);
             return true;
         } else return false;
     }
@@ -40,7 +42,7 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
     @Override
     public void onClick(View v) {
         if (tag != null) {
-            listener.onItemClicked(tag);
+            listener.onItemClicked(position, tag);
         }
     }
 
@@ -49,7 +51,8 @@ public class TagItemViewHolder extends TagViewHolder implements View.OnLongClick
         return tag;
     }
 
-    public void bind(@NonNull Tag tag) {
+    public void bind(int position, @NonNull Tag tag) {
+        this.position = position;
         name.setText(tag.getName());
     }
 }

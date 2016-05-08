@@ -27,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -130,7 +131,7 @@ public class TagsDaoAdapterTest {
 
         verify(cursor).moveToPosition(0);
         verify(model).performReadEntity(cursor, tag);
-        verify(mockViewHolder).bind(tag);
+        verify(mockViewHolder).bind(anyInt(), eq(tag));
         verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
 
@@ -141,7 +142,7 @@ public class TagsDaoAdapterTest {
         when(model.removeAndRefresh(anyLong())).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(1);
 
-        presenter.onItemLongClicked(tag);
+        presenter.onItemLongClicked(1, tag);
 
         verify(view).showRemoveTagDialog();
         verify(model).removeAndRefresh(tag.getId());
@@ -154,7 +155,7 @@ public class TagsDaoAdapterTest {
         when(activityModel.isInSelectMode()).thenReturn(true);
         final Tag tag = new Tag(0x231L, "Name");
 
-        presenter.onItemClicked(tag);
+        presenter.onItemClicked(1, tag);
 
         verify(activityModel).isInSelectMode();
         verify(view).setResultAndReturn(tag.getId(), tag.getName());

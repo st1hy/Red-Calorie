@@ -62,7 +62,7 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
                                     .debounce(debounceTime, TimeUnit.MILLISECONDS)
                     );
         }
-        Observable<Cursor> cursorObservable = sequenceObservable
+        addSubscription(sequenceObservable
                 .doOnNext(new Action1<CharSequence>() {
                     @Override
                     public void call(CharSequence text) {
@@ -76,8 +76,15 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
                         Timber.e(e, "Search exploded");
                     }
                 })
-                .retry();
-        subscribeToCursor(cursorObservable);
+                .retry()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new OnCursor() {
+                    @Override
+                    public void onNext(Cursor cursor) {
+                        super.onNext(cursor);
+                        notifyDataSetChanged();
+                    }
+                }));
     }
 
     @Override
@@ -86,33 +93,9 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     }
 
     @CallSuper
-    protected final void subscribeToCursor(@NonNull Observable<Cursor> cursorObservable) {
-        subscriptions.add(cursorObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Cursor>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e, "Error when providing cursor");
-                    }
-
-                    @Override
-                    public void onNext(Cursor cursor) {
-                        onCursorUpdate(cursor);
-                    }
-                }));
-    }
-
-
-    @CallSuper
     protected void onCursorUpdate(@NonNull Cursor cursor) {
-        Timber.v("Db cursor query ended");
         closeCursor(false);
         RxDaoRecyclerAdapter.this.cursor = cursor;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -144,7 +127,27 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     }
 
     @CallSuper
-    protected void subscribe(@NonNull Subscription subscription) {
+    protected void addSubscription(@NonNull Subscription subscription) {
         subscriptions.add(subscription);
+    }
+
+
+    protected class OnCursor extends Subscriber<Cursor> {
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.e(e, "Error when providing cursor");
+        }
+
+        @Override
+        @CallSuper
+        public void onNext(Cursor cursor) {
+            Timber.v("Db cursor query ended");
+            onCursorUpdate(cursor);
+        }
     }
 }
