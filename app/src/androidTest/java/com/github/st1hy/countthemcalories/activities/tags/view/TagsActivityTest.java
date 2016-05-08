@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
@@ -49,7 +50,7 @@ public class TagsActivityTest {
     };
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
-    public final IntentsTestRule<TagsActivity> main = new IntentsTestRule<>(TagsActivity.class);
+    public final IntentsTestRule<TagsActivity> main = new IntentsTestRule<>(TagsActivity.class, true, false);
     private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
@@ -78,6 +79,7 @@ public class TagsActivityTest {
 
     @Test
     public void testAddRemoveNewTag() throws Exception {
+        main.launchActivity(null);
         final String tagName = "My tag name";
         onView(ViewMatchers.withId(R.id.tags_add_new)).check(matches(isDisplayed()))
                 .perform(click());
@@ -100,6 +102,7 @@ public class TagsActivityTest {
 
     @Test
     public void testSearch() throws InterruptedException {
+        main.launchActivity(null);
         onView(withText(exampleTags[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
@@ -113,5 +116,16 @@ public class TagsActivityTest {
         onView(withText(exampleTags[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(doesNotExist());
+    }
+
+    @Test
+    public void testExcludeTags() throws Exception {
+        Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
+        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[] {exampleTags[0].getId()});
+        main.launchActivity(intent);
+        onView(withText(exampleTags[0].getName())).check(doesNotExist());
+        onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
+        onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
+
     }
 }

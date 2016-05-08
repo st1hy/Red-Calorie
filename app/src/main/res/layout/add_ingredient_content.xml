@@ -1,85 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_meal_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/add_ingredient_activity"
-    tools:context=".activities.addmeal.view.AddMealActivity">
-    <TableRow
-        android:gravity="center">
-        <EditText
-            android:id="@+id/add_ingredient_name"
-            android:layout_weight="1"
-            android:hint="@string/add_ingredient_name_hint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content">
-            <requestFocus/>
-        </EditText>
-        <FrameLayout>
-        <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            app:cardUseCompatPadding="true"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_gravity="end">
-            <ImageButton
-                android:id="@+id/add_ingredient_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:scaleType="centerInside"
-                android:background="@color/colorBackground"
-                android:contentDescription="@string/add_meal_photo_description"
-                android:src="@drawable/ic_add_a_photo_24px"/>
-        </android.support.v7.widget.CardView>
-        </FrameLayout>
-    </TableRow>
-    <android.support.v4.widget.Space
-        android:layout_width="0dp"
-        android:layout_height="8dp" />
-    <TableRow
-        android:gravity="center">
-        <EditText
-            android:id="@+id/add_ingredient_energy_density"
-            android:inputType="numberDecimal"
-            android:layout_weight="1"
-            android:hint="@string/add_ingredient_energy_density_hint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content">
-        </EditText>
-        <Button
-            android:id="@+id/add_ingredient_select_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="?actionBarSize"
-            android:textSize="12sp"
-            tools:text="kcal / 100 g"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:text=""/>
-    </TableRow>
-    <android.support.v4.widget.Space
-        android:layout_width="0dp"
-        android:layout_height="8dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_ingredient_categories_name"
-        android:textSize="16sp"
-        style="@style/TextAppearance.AppCompat.Body1"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/add_ingredient_categories_recycler"
+    tools:context=".activities.addmeal.view.AddMealActivity"
+    tools:showIn="@layout/add_ingredient_activity">
+
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/bottom_sheet_behavior"
-        tools:listitem="@layout/add_ingredient_tag">
-    </android.support.v7.widget.RecyclerView>
-</TableLayout>
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TableRow android:gravity="center">
+
+            <EditText
+                android:id="@+id/add_ingredient_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/add_ingredient_name_hint">
+
+                <requestFocus />
+            </EditText>
+
+            <FrameLayout>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="4dp"
+                    app:cardElevation="4dp"
+                    app:cardUseCompatPadding="true">
+
+                    <ImageButton
+                        android:id="@+id/add_ingredient_image"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@color/colorBackground"
+                        android:contentDescription="@string/add_meal_photo_description"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_add_a_photo_24px" />
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
+        </TableRow>
+
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="8dp" />
+
+        <TableRow android:gravity="center">
+
+            <EditText
+                android:id="@+id/add_ingredient_energy_density"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/add_ingredient_energy_density_hint"
+                android:inputType="numberDecimal"/>
+
+            <Button
+                android:id="@+id/add_ingredient_select_unit"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="?actionBarSize"
+                android:text=""
+                android:textSize="12sp"
+                tools:text="kcal / 100 g" />
+        </TableRow>
+
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="8dp" />
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_ingredient_categories_name"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_ingredient_categories_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            tools:listitem="@layout/add_ingredient_tag"/>
+    </TableLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Provider;
@@ -20,6 +21,8 @@ import dagger.Lazy;
 import dagger.internal.DoubleCheckLazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
+import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.dao.query.WhereCondition;
 
 public class TagsModel extends RxDatabaseModel<Tag> {
     private final Lazy<TagDao> dao;
@@ -84,6 +87,22 @@ public class TagsModel extends RxDatabaseModel<Tag> {
     protected CursorQuery filteredSortedByNameQuery() {
         return dao().queryBuilder()
                 .where(TagDao.Properties.Name.like(""))
+                .orderAsc(TagDao.Properties.Name)
+                .buildCursor();
+    }
+
+    @NonNull
+    @Override
+    protected CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
+                                                     @NonNull final Collection<Long> excludedIds) {
+        QueryBuilder<Tag> builder = dao().queryBuilder();
+        final WhereCondition notInList = TagDao.Properties.Id.notIn(excludedIds);
+        if (!partOfName.isEmpty()) {
+            builder = builder.where(TagDao.Properties.Name.like("%" + partOfName + "%"), notInList);
+        } else {
+            builder = builder.where(notInList);
+        }
+        return  builder
                 .orderAsc(TagDao.Properties.Name)
                 .buildCursor();
     }

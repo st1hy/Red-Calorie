@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
 import com.google.common.base.Optional;
 
+import java.util.Collection;
+
 import rx.Observable;
 
 public interface AddIngredientView extends WithPictureView {
@@ -16,7 +18,10 @@ public interface AddIngredientView extends WithPictureView {
 
     void setEnergyDensityValue(@NonNull String energyValue);
 
-    void openSelectTagScreen();
+    /**
+     * @param tagIds add to excluded
+     */
+    void openSelectTagScreen(@NonNull Collection<Long> tagIds);
 
     @NonNull
     Observable<CharSequence> getNameObservable();
@@ -27,4 +32,8 @@ public interface AddIngredientView extends WithPictureView {
     void showNameError(@NonNull Optional<Integer> errorResId);
 
     void showValueError(@NonNull Optional<Integer> errorResId);
+
+    void requestFocusToName();
+
+    void requestFocusToValue();
 }

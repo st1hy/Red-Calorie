@@ -43,6 +43,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
@@ -59,7 +60,11 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class AddIngredientActivityTest {
-    private static final String[] exampleTags = {"Tag 1", "Tag 2", "Meat"};
+    private static final Tag[] exampleTags = new Tag[]{
+            new Tag(1L, "Tag 1"),
+            new Tag(2L, "Tag 2"),
+            new Tag(3L, "Meat"),
+    };
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(AddIngredientActivity.class);
@@ -78,7 +83,7 @@ public class AddIngredientActivityTest {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
-        tagDao.insertInTx(new Tag(null, exampleTags[0]), new Tag(null, exampleTags[1]), new Tag(null, exampleTags[2]));
+        tagDao.insertInTx(exampleTags);
         assertEquals(3, tagDao.loadAll().size());
         component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
         Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
@@ -187,11 +192,19 @@ public class AddIngredientActivityTest {
                 .perform(click());
         onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
-        onView(withText(exampleTags[1])).check(matches(isDisplayed()))
+        onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.add_ingredient_title)).check(matches(isDisplayed()));
 
-        onView(withText(exampleTags[1])).check(matches(isDisplayed()));
+        onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testAddCurrentTagsToExcludedFromSearch() throws Exception {
+        testAddTag();
+        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(hasExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[]{exampleTags[1].getId()}));
+
+    }
 }

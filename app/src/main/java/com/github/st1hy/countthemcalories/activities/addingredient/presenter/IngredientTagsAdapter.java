@@ -17,9 +17,7 @@ import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 
 public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Integer> {
     static final int TAG = R.layout.add_ingredient_tag;
@@ -28,7 +26,6 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
 
     final IngredientTagsModel model;
     final AddIngredientView view;
-    final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
     public int getItemViewType(int position) {
@@ -37,16 +34,6 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         } else {
             return ADD_TAG;
         }
-    }
-
-    public void onStart() {
-        subscriptions.add(model.datasetChangedObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(notifyDataSetChangedAction()));
-    }
-
-    public void onStop() {
-        subscriptions.clear();
     }
 
     @Inject
@@ -92,7 +79,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         holder.addNewObservable().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.openSelectTagScreen();
+                view.openSelectTagScreen(model.getTagIds());
             }
         });
     }
@@ -104,22 +91,13 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
 
     public void onNewTagAdded(long tagId, @NonNull String tagName) {
         model.addTag(tagId, tagName);
+        notifyDataSetChanged();
     }
 
     @Override
     public void onItemClicked(@NonNull Integer position) {
         model.removeAt(position);
         notifyDataSetChanged();
-    }
-
-    @NonNull
-    private Action1<Void> notifyDataSetChangedAction() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                notifyDataSetChanged();
-            }
-        };
     }
 
     public void onSaveState(@NonNull Bundle outState) {

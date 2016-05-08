@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
+import com.github.st1hy.countthemcalories.database.IngredientTemplateDao.Properties;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -122,7 +123,7 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
     @Override
     protected CursorQuery allSortedByName() {
         return dao().queryBuilder()
-                .orderAsc(IngredientTemplateDao.Properties.Name)
+                .orderAsc(Properties.Name)
                 .buildCursor();
     }
 
@@ -130,8 +131,18 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
         return dao().queryBuilder()
-                .where(IngredientTemplateDao.Properties.Name.like(""))
-                .orderAsc(IngredientTemplateDao.Properties.Name)
+                .where(Properties.Name.like(""))
+                .orderAsc(Properties.Name)
+                .buildCursor();
+    }
+
+    @NonNull
+    @Override
+    protected CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
+                                                     @NonNull final Collection<Long> excludedIds) {
+        return dao().queryBuilder()
+                .where(Properties.Name.like(partOfName), TagDao.Properties.Id.notIn(excludedIds))
+                .orderAsc(Properties.Name)
                 .buildCursor();
     }
 
@@ -143,7 +154,7 @@ public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
     @NonNull
     @Override
     protected Property getKeyProperty() {
-        return IngredientTemplateDao.Properties.Id;
+        return Properties.Id;
     }
 
     @Override

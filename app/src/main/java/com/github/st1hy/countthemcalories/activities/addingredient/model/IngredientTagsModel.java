@@ -14,16 +14,10 @@ import com.google.common.collect.Collections2;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
-
 public class IngredientTagsModel {
     final TagsModel tagsModel;
     final ArrayList<Tag> tags;
     final ParcelableProxy parcelableProxy;
-
-    private final Subject<Void, Void> onDataSetChanged = PublishSubject.<Void>create().toSerialized();
 
     public IngredientTagsModel(@NonNull TagsModel tagsModel, @Nullable Bundle savedState) {
         this.tagsModel = tagsModel;
@@ -49,9 +43,9 @@ public class IngredientTagsModel {
         return tags.get(position);
     }
 
-    public void addTag(long tagId, @NonNull String tagName) {
+    public int addTag(long tagId, @NonNull String tagName) {
         tags.add(new Tag(tagId, tagName));
-        onDataSetChanged.onNext(null);
+        return tags.size() - 1;
     }
 
     public void removeAt(int position) {
@@ -65,11 +59,6 @@ public class IngredientTagsModel {
 
     public void onSaveState(@NonNull Bundle outState) {
         outState.putParcelable(ParcelableProxy.STATE_MODEL, parcelableProxy.snapshot(this));
-    }
-
-    @NonNull
-    public Observable<Void> datasetChangedObservable() {
-        return onDataSetChanged;
     }
 
     @NonNull

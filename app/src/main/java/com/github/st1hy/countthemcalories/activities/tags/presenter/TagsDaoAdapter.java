@@ -19,6 +19,8 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Strings;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -124,6 +126,16 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
                             }
                         })
         );
+    }
+
+    @NonNull
+    @Override
+    protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
+        Collection<Long> excludedIds = activityModel.getExcludedTagIds();
+        if (excludedIds.isEmpty())
+            return super.getAllWithFilter(filter);
+        else
+            return model.getAllFiltered(filter, excludedIds);
     }
 
     @Override

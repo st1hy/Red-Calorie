@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -65,6 +66,12 @@ public abstract class RxDatabaseModel<T> {
         return fromDatabaseTask(filtered(partOfName));
     }
 
+    @NonNull
+    public Observable<Cursor> getAllFiltered(@NonNull String partOfName,
+                                             @NonNull Collection<Long> excludedIds) {
+        return fromDatabaseTask(filteredExclude(partOfName, excludedIds));
+    }
+
     /**
      * @return observable with Cursor at position of the added tag on the list, if its not filtered out
      * in that case cursor will be moved to first element
@@ -104,6 +111,10 @@ public abstract class RxDatabaseModel<T> {
 
     @NonNull
     protected abstract CursorQuery filteredSortedByNameQuery();
+
+    @NonNull
+    protected abstract CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
+                                                              @NonNull final Collection<Long> excludedIds);
 
     protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
 
@@ -172,6 +183,18 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     private Callable<Cursor> loadAll() {
         return filtered("");
+    }
+
+    @NonNull
+    private Callable<Cursor> filteredExclude(@NonNull final String partOfName,
+                                             @NonNull final Collection<Long> excludedIds) {
+        if (excludedIds.isEmpty()) return query(getQueryOf(partOfName));
+        else return new Callable<Cursor>() {
+            @Override
+            public Cursor call() throws Exception {
+                return filteredExcludeSortedQuery(partOfName, excludedIds).query();
+            }
+        };
     }
 
     @NonNull
@@ -324,5 +347,4 @@ public abstract class RxDatabaseModel<T> {
             }
         };
     }
-
 }

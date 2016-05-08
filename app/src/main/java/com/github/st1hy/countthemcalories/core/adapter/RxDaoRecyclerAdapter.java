@@ -103,9 +103,14 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
         return new Func1<CharSequence, Observable<Cursor>>() {
             @Override
             public Observable<Cursor> call(CharSequence text) {
-                return databaseModel.getAllFiltered(text.toString());
+                return getAllWithFilter(text.toString());
             }
         };
+    }
+
+    @NonNull
+    protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
+        return databaseModel.getAllFiltered(filter);
     }
 
     private void closeCursor(boolean notify) {

@@ -184,7 +184,6 @@ public class AddIngredientActivityRoboTest {
         return tag;
     }
 
-
     @SuppressLint("SetTextI18n")
     @Test
     public void testSaveWithTags() throws Exception {

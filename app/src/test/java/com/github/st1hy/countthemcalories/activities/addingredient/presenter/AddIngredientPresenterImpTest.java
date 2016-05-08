@@ -130,6 +130,7 @@ public class AddIngredientPresenterImpTest {
         verify(model).canCreateIngredient(anyString(), anyString());
         verify(view).showNameError(Optional.<Integer>absent());
         verify(view).showValueError(eq(Optional.of(NO_VALUE.getErrorResId())));
+        verify(view).requestFocusToValue();
         verifyNoMoreInteractions(view, model);
     }
 }

@@ -153,11 +153,30 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     private void onCreateIngredientResult(@NonNull List<IngredientTypeCreateError> errors) {
+        showErrorMessage(errors);
+        if (!errors.isEmpty()) {
+            requestFocusToField(errors.get(0));
+        }
+    }
+
+    private void showErrorMessage(@NonNull List<IngredientTypeCreateError> errors) {
         view.showNameError(searchListFor(errors, NO_NAME));
         if (errors.contains(NO_VALUE)) {
             view.showValueError(Optional.of(NO_VALUE.getErrorResId()));
         } else {
             view.showValueError(searchListFor(errors, ZERO_VALUE));
+        }
+    }
+
+    private void requestFocusToField(@NonNull IngredientTypeCreateError firstError) {
+        switch (firstError) {
+            case NO_NAME:
+                view.requestFocusToName();
+                break;
+            case NO_VALUE:
+            case ZERO_VALUE:
+                view.requestFocusToValue();
+                break;
         }
     }
 

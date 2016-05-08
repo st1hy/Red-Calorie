@@ -26,6 +26,8 @@ import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActiv
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
+import java.util.Collection;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -114,14 +116,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     protected void onStart() {
         super.onStart();
-        tagsPresenter.onStart();
         presenter.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        tagsPresenter.onStop();
         presenter.onStop();
     }
 
@@ -158,9 +158,18 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    public void openSelectTagScreen() {
+    public void openSelectTagScreen(@NonNull Collection<Long> tagIds) {
         Intent intent = new Intent(this, TagsActivity.class);
         intent.setAction(TagsActivity.ACTION_PICK_TAG);
+        if (!tagIds.isEmpty()) {
+            long[] ids = new long[tagIds.size()];
+            int i = 0;
+            for (Long id : tagIds) {
+             ids[i] = id;
+                i++;
+            }
+            intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, ids);
+        }
         startActivityForResult(intent, REQUEST_PICK_TAG);
     }
 
@@ -192,6 +201,16 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         } else {
             energyDensityValue.setError(null);
         }
+    }
+
+    @Override
+    public void requestFocusToName() {
+        name.requestFocus();
+    }
+
+    @Override
+    public void requestFocusToValue() {
+        energyDensityValue.requestFocus();
     }
 
     @Override
