@@ -95,6 +95,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         });
         ingredientList.setAdapter(adapter);
         ingredientList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        ingredientList.setNestedScrollingEnabled(false);
     }
 
     @Override

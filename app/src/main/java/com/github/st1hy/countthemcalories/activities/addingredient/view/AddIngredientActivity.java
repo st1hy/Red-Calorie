@@ -98,6 +98,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
 
         tagsRecycler.setAdapter(tagsPresenter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        tagsRecycler.setNestedScrollingEnabled(false);
     }
 
     @Override

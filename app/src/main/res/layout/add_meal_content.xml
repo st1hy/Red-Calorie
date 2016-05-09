@@ -1,71 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/add_meal_content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.addmeal.view.AddMealActivity"
     tools:showIn="@layout/add_meal_activity"
-    tools:context=".activities.addmeal.view.AddMealActivity">
-    <TableRow
-        android:layout_width="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:id="@+id/add_meal_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
-        <android.support.v7.widget.CardView
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            app:cardUseCompatPadding="true">
-            <ImageButton
-                android:id="@+id/add_meal_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:scaleType="centerInside"
-                android:background="@color/colorBackground"
-                android:contentDescription="@string/add_meal_photo_description"
-                android:src="@drawable/ic_add_a_photo_24px"/>
-        </android.support.v7.widget.CardView>
-        <EditText
-            android:id="@+id/add_meal_name"
-            android:layout_weight="1"
-            android:hint="@string/add_meal_name_hint"
+            android:gravity="center">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
+
+                <ImageButton
+                    android:id="@+id/add_meal_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@color/colorBackground"
+                    android:contentDescription="@string/add_meal_photo_description"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_add_a_photo_24px" />
+            </android.support.v7.widget.CardView>
+
+            <EditText
+                android:id="@+id/add_meal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/add_meal_name_hint">
+
+                <requestFocus />
+            </EditText>
+        </TableRow>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_meal_ingredients_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <requestFocus/>
-        </EditText>
-    </TableRow>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/add_meal_ingredients_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/add_meal_ingredient_item"
-        >
-    </android.support.v7.widget.RecyclerView>
-    <LinearLayout
-        android:id="@+id/add_meal_empty_ingredients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:text="@string/add_meal_no_ingredients_yet"
-            android:minHeight="?listPreferredItemHeight"
-            android:gravity="center"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="?android:textColorPrimary"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/add_meal_ingredient_item" />
+
+        <LinearLayout
+            android:id="@+id/add_meal_empty_ingredients"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/add_meal_button_add_ingredient"
-            android:text="@string/add_meal_button_add_ingredient"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-</TableLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="?listPreferredItemHeight"
+                android:text="@string/add_meal_no_ingredients_yet"
+                android:textColor="?android:textColorPrimary" />
+
+            <Button
+                android:id="@+id/add_meal_button_add_ingredient"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_meal_button_add_ingredient" />
+        </LinearLayout>
+    </TableLayout>
+</android.support.v4.widget.NestedScrollView>
