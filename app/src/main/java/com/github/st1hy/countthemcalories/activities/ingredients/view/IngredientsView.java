@@ -15,4 +15,6 @@ public interface IngredientsView extends DrawerView {
 
     @NonNull
     Observable<Void> getOnAddIngredientClickedObservable();
+
+    void setResultAndReturn(long ingredientId);
 }

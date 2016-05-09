@@ -31,6 +31,7 @@ import rx.Observable;
 
 public class IngredientsActivity extends DrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
+    public static final String EXTRA_INGREDIENT_TYPE_ID = "extra ingredient type id";
 
     @Inject
     IngredientsPresenter presenter;
@@ -94,5 +95,13 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     @Override
     public Observable<Void> getOnAddIngredientClickedObservable() {
         return Observable.merge(RxView.clicks(fab), RxView.clicks(noIngredientsButton));
+    }
+
+    @Override
+    public void setResultAndReturn(long ingredientId) {
+        Intent result = new Intent();
+        result.putExtra(EXTRA_INGREDIENT_TYPE_ID, ingredientId);
+        setResult(RESULT_OK, result);
+        finish();
     }
 }

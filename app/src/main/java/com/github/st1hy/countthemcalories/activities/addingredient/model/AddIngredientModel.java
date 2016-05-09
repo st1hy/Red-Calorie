@@ -35,7 +35,7 @@ public class AddIngredientModel extends WithPictureModel {
     final SettingsModel settingsModel;
     final IngredientTagsModel tagsModel;
     final IngredientTypesModel databaseModel;
-    ParcelableProxy parcelableProxy;
+    final ParcelableProxy parcelableProxy;
 
     String name;
     String energyValue;
@@ -50,6 +50,7 @@ public class AddIngredientModel extends WithPictureModel {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;
         this.databaseModel = databaseModel;
+        ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
         }
@@ -66,6 +67,7 @@ public class AddIngredientModel extends WithPictureModel {
             this.imageUri = Uri.EMPTY;
             parcelableProxy = new ParcelableProxy();
         }
+        this.parcelableProxy = parcelableProxy;
     }
 
     public void onSaveState(@NonNull Bundle outState) {
@@ -195,6 +197,34 @@ public class AddIngredientModel extends WithPictureModel {
         return getEnergyUnit(value).getValue().compareTo(BigDecimal.ZERO) > 0;
     }
 
+    @NonNull
+    private Func1<Cursor, List<IngredientTypeCreateError>> intoNoError() {
+        return new Func1<Cursor, List<IngredientTypeCreateError>>() {
+            @Override
+            public List<IngredientTypeCreateError> call(Cursor cursor) {
+                return Collections.emptyList();
+            }
+        };
+    }
+
+    public enum IngredientTypeCreateError {
+        NO_NAME(R.string.add_ingredient_name_error_empty),
+        NO_VALUE(R.string.add_ingredient_energy_density_name_error_empty),
+        ZERO_VALUE(R.string.add_ingredient_energy_density_name_error_zero);
+
+        private final int errorResId;
+
+        IngredientTypeCreateError(@StringRes int errorResId) {
+            this.errorResId = errorResId;
+        }
+
+        @StringRes
+        public int getErrorResId() {
+            return errorResId;
+        }
+
+    }
+
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";
         EnergyDensityUnit unit;
@@ -241,33 +271,6 @@ public class AddIngredientModel extends WithPictureModel {
             dest.writeString(energyValue);
             dest.writeString(EnergyDensityUtils.getString(unit));
             dest.writeParcelable(imageUri, flags);
-        }
-    }
-
-    @NonNull
-    private Func1<Cursor, List<IngredientTypeCreateError>> intoNoError() {
-        return new Func1<Cursor, List<IngredientTypeCreateError>>() {
-            @Override
-            public List<IngredientTypeCreateError> call(Cursor cursor) {
-                return Collections.emptyList();
-            }
-        };
-    }
-
-    public enum IngredientTypeCreateError {
-        NO_NAME(R.string.add_ingredient_name_error_empty),
-        NO_VALUE(R.string.add_ingredient_energy_density_name_error_empty),
-        ZERO_VALUE(R.string.add_ingredient_energy_density_name_error_zero);
-
-        private final int errorResId;
-
-        IngredientTypeCreateError(@StringRes int errorResId) {
-            this.errorResId = errorResId;
-        }
-
-        @StringRes
-        public int getErrorResId() {
-            return errorResId;
         }
     }
 }

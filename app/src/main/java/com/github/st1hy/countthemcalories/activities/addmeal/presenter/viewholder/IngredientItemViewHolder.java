@@ -31,4 +31,7 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
+    public void setName(String name) {
+        this.name.setText(name);
+    }
 }

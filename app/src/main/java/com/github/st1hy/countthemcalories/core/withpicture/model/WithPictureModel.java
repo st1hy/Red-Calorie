@@ -10,4 +10,5 @@ public abstract class WithPictureModel {
 
     @ArrayRes
     public abstract int getImageSourceOptionArrayResId();
+
 }

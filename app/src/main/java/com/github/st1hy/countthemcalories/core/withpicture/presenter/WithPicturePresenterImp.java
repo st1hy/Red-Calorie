@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.core.withpicture.presenter;
 
 import android.Manifest;
 import android.net.Uri;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
@@ -48,6 +49,7 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
                 });
     }
 
+    @CallSuper
     public void onStop() {
         subscriptions.clear();
     }

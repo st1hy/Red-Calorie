@@ -132,7 +132,9 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
 
     @Override
     public void onItemClicked(@NonNull IngredientTemplate ingredient) {
-
+        if (activityModel.isInSelectMode()) {
+            view.setResultAndReturn(ingredient.getId());
+        }
     }
 
     @Override

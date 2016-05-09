@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -18,22 +20,27 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActiv
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class AddMealActivity extends WithPictureActivity implements AddMealView {
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
-    public static final String EXTRA_INGREDIENT_TYPE_ID = "extra ingredient type id";
 
     @Inject
     AddMealPresenter presenter;
+    @Inject
+    IngredientsAdapter adapter;
     @Inject
     Picasso picasso;
 
@@ -41,6 +48,8 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     Toolbar toolbar;
     @Bind(R.id.add_meal_image)
     ImageView mealImage;
+    @Bind(R.id.add_meal_name)
+    EditText name;
     @Bind(R.id.add_meal_ingredients_list)
     RecyclerView ingredientList;
     @Bind(R.id.add_meal_empty_ingredients)
@@ -53,11 +62,11 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     AddMealActivityComponent component;
 
     @NonNull
-    protected AddMealActivityComponent getComponent() {
+    protected AddMealActivityComponent getComponent(@Nullable Bundle savedInstanceState) {
         if (component == null) {
             component = DaggerAddMealActivityComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .addMealActivityModule(new AddMealActivityModule(this))
+                    .addMealActivityModule(new AddMealActivityModule(this, savedInstanceState))
                     .build();
         }
         return component;
@@ -68,7 +77,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_meal_activity);
         ButterKnife.bind(this);
-        getComponent().inject(this);
+        getComponent(savedInstanceState).inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -84,16 +93,31 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
                 presenter.onImageClicked();
             }
         });
-        ingredientList.setAdapter(presenter.getIngredientListAdapter());
+        ingredientList.setAdapter(adapter);
         ingredientList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        final View.OnClickListener onAddIngredientClicked = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onAddNewIngredientClicked();
-            }
-        };
-        addIngredientFab.setOnClickListener(onAddIngredientClicked);
-        addIngredientButton.setOnClickListener(onAddIngredientClicked);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
+    public void setName(@NonNull String name) {
+        this.name.setText(name);
+    }
+
+    @NonNull
+    @Override
+    public Observable<CharSequence> getNameObservable() {
+        return RxTextView.textChanges(name);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getAddIngredientObservable() {
+        return Observable.merge(RxView.clicks(addIngredientButton), RxView.clicks(addIngredientFab));
     }
 
     @Override
@@ -108,6 +132,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.onSaveState(outState);
+    }
+
+    @Override
     public void openOverviewActivity() {
         Intent intent = new Intent(this, OverviewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -118,8 +148,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PICK_INGREDIENT) {
             if (resultCode == RESULT_OK) {
-                int intExtra = data.getIntExtra(EXTRA_INGREDIENT_TYPE_ID, -1);
-                presenter.onIngredientReceived(intExtra);
+                long ingredientId = data.getLongExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_ID, -1L);
+                if (ingredientId != -1L) {
+                    adapter.onIngredientReceived(ingredientId);
+                }
             }
         } else super.onActivityResult(requestCode, resultCode, data);
     }

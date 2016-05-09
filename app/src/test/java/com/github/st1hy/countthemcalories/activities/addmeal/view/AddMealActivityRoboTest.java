@@ -43,7 +43,7 @@ public class AddMealActivityRoboTest {
         assertThat(activity.presenter, notNullValue());
         assertThat(activity.picasso, notNullValue());
         assertThat(activity.toolbar, notNullValue());
-        assertThat(activity.getComponent(), notNullValue());
+        assertThat(activity.getComponent(null), notNullValue());
         assertThat(activity.component, notNullValue());
     }
 
