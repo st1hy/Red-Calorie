@@ -23,13 +23,13 @@ import rx.functions.Func2;
 import timber.log.Timber;
 
 public class MealIngredientsListModel {
-    private final IngredientTypesModel ingredientTypesModel;
-    private final ArrayList<Ingredient> ingredients;
-    private final ParcelableProxy parcelableProxy;
+    final IngredientTypesModel ingredientTypesModel;
+    final ArrayList<Ingredient> ingredients;
+    final ParcelableProxy parcelableProxy;
 
-    private final Observable<Integer> loadingObservable;
+    final Observable<Integer> loadingObservable;
 
-    public MealIngredientsListModel(@NonNull IngredientTypesModel ingredientTypesModel,
+        public MealIngredientsListModel(@NonNull IngredientTypesModel ingredientTypesModel,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
         ParcelableProxy parcelableProxy = null;
@@ -90,7 +90,7 @@ public class MealIngredientsListModel {
         Observable<Integer> loading = notLoaded.concatMap(new Func1<Ingredient, Observable<IngredientTemplate>>() {
             @Override
             public Observable<IngredientTemplate> call(Ingredient ingredient) {
-                return ingredientTypesModel.getById(ingredient.getId());
+                return ingredientTypesModel.getById(ingredient.getIngredientTypeId());
             }
         }).zipWith(notLoaded, new Func2<IngredientTemplate, Ingredient, Ingredient>() {
             @Override

@@ -26,7 +26,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     public void onStart() {
         subscriptions.add(model.getItemsLoadedObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(notifyInserted()));
+                .subscribe(new MealIngredientsListModel.Loading() {
+                    @Override
+                    public void onCompleted() {
+                        notifyDataSetChanged();
+                    }
+                }));
     }
 
     public void onStop() {
