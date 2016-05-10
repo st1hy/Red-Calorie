@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.view;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
 
 import rx.Observable;
@@ -16,4 +17,6 @@ public interface AddMealView extends WithPictureView {
     @NonNull Observable<CharSequence> getNameObservable();
 
     @NonNull Observable<Void> getAddIngredientObservable();
+
+    void setEmptyIngredientsVisibility(@NonNull Visibility visibility);
 }

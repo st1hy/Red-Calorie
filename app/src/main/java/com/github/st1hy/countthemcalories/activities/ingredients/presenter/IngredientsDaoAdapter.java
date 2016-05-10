@@ -9,21 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsActivityModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -39,22 +35,19 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
     final IngredientsView view;
-    final IngredientsActivityModel activityModel;
-    final IngredientTypesModel model;
-    final SettingsModel settingsModel;
+    final IngredientsModel model;
+    final IngredientTypesDatabaseModel databaseModel;
     final Picasso picasso;
 
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
-                                 @NonNull IngredientsActivityModel activityModel,
-                                 @NonNull IngredientTypesModel model,
-                                 @NonNull SettingsModel settingsModel,
+                                 @NonNull IngredientsModel model,
+                                 @NonNull IngredientTypesDatabaseModel databaseModel,
                                  @NonNull Picasso picasso) {
-        super(model);
+        super(databaseModel);
         this.view = view;
-        this.activityModel = activityModel;
         this.model = model;
-        this.settingsModel = settingsModel;
+        this.databaseModel = databaseModel;
         this.picasso = picasso;
     }
 
@@ -89,21 +82,13 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
         if (cursor != null) {
             cursor.moveToPosition(position);
             IngredientTemplate ingredient = holder.getReusableIngredient();
-            model.performReadEntity(cursor, ingredient);
+            databaseModel.performReadEntity(cursor, ingredient);
             holder.setName(ingredient.getName());
-            holder.setEnergyDensity(getReadableEnergyDensity(ingredient));
+            holder.setEnergyDensity(model.getReadableEnergyDensity(ingredient));
             onBindImage(ingredient, holder);
         } else {
             Timber.w("Cursor closed duding binding views.");
         }
-    }
-
-    String getReadableEnergyDensity(@NonNull IngredientTemplate ingredient) {
-        EnergyDensity energyDensity = ingredient.getEnergyDensity();
-        AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
-        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
-        EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
-        return settingsModel.getUnitPlural(convertedToPreferred);
     }
 
     void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
@@ -132,7 +117,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
 
     @Override
     public void onItemClicked(@NonNull IngredientTemplate ingredient) {
-        if (activityModel.isInSelectMode()) {
+        if (model.isInSelectMode()) {
             view.setResultAndReturn(ingredient.getId());
         }
     }
@@ -141,5 +126,6 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     public void onItemLongClicked(@NonNull IngredientTemplate ingredient) {
         Timber.d("Long clicked on ingredient, %s", ingredient.getName());
     }
+
 
 }

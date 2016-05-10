@@ -8,19 +8,28 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.viewholder.IngredientItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import dagger.internal.Preconditions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> {
+    private final AddMealView view;
     private final MealIngredientsListModel model;
+    private final UnitNamesModel namesModel;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public IngredientsAdapter(@NonNull MealIngredientsListModel model) {
+    public IngredientsAdapter(@NonNull AddMealView view, @NonNull MealIngredientsListModel model,
+                              @NonNull UnitNamesModel namesModel) {
+        this.view = view;
         this.model = model;
+        this.namesModel = namesModel;
     }
 
     public void onStart() {
@@ -30,6 +39,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                     @Override
                     public void onCompleted() {
                         notifyDataSetChanged();
+                        onDataSetChanged();
                     }
                 }));
     }
@@ -59,7 +69,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     @Override
     public void onBindViewHolder(IngredientItemViewHolder holder, int position) {
         final Ingredient ingredient = model.getItemAt(position);
-        holder.setName(ingredient.getIngredientType().getName());
+        IngredientTemplate type = ingredient.getIngredientType();
+        holder.setName(type.getName());
+        holder.setEnergyDensity(namesModel.getReadableEnergyDensity(type.getEnergyDensity()));
+        holder.setAmount(namesModel.getReadableAmount(ingredient.getAmount(),
+                type.getEnergyDensity().getUnit()));
     }
 
     @Override
@@ -74,7 +88,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);
                 notifyItemInserted(itemPosition);
+                onDataSetChanged();
             }
         };
+    }
+
+    private void onDataSetChanged() {
+        view.setEmptyIngredientsVisibility(Visibility.of(getItemCount() == 0));
     }
 }

@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.model;
 import android.database.Cursor;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
@@ -29,14 +29,14 @@ import static org.mockito.Mockito.when;
 public class AddIngredientModelRoboTest {
 
     private IngredientTagsModel tagsModel;
-    private IngredientTypesModel typesModel;
+    private IngredientTypesDatabaseModel typesModel;
     private AddIngredientModel model;
 
     @Before
     public void setUp() throws Exception {
         SettingsModel settingsModel = Mockito.mock(SettingsModel.class);
         tagsModel = Mockito.mock(IngredientTagsModel.class);
-        typesModel = Mockito.mock(IngredientTypesModel.class);
+        typesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
         model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
     }
 

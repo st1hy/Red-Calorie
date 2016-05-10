@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -119,6 +120,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     public Observable<Void> getAddIngredientObservable() {
         return Observable.merge(RxView.clicks(addIngredientButton), RxView.clicks(addIngredientFab));
+    }
+
+    @Override
+    public void setEmptyIngredientsVisibility(@NonNull Visibility visibility) {
+        //noinspection WrongConstant
+        emptyIngredients.setVisibility(visibility.getVisibility());
     }
 
     @Override

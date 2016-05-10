@@ -31,7 +31,24 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setName(String name) {
+    public void setName(@NonNull String name) {
         this.name.setText(name);
+    }
+
+    public void setAmount(@NonNull String amount) {
+        this.amount.setText(amount);
+    }
+
+    public void setCalorieCount(@NonNull String calorieCount) {
+        this.calorieCount.setText(calorieCount);
+    }
+
+    public void setEnergyDensity(@NonNull String energyDensity) {
+        this.energyDensity.setText(energyDensity);
+    }
+
+    @NonNull
+    public ImageView getImage() {
+        return image;
     }
 }

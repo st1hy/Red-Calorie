@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
@@ -64,14 +64,14 @@ public class MealIngredientsListModelProxyTest {
         }
     };
 
-    private IngredientTypesModel ingredientTypesModel;
+    private IngredientTypesDatabaseModel ingredientTypesModel;
     private MealIngredientsListModel model;
 
     @Before
     public void setUp() throws Exception {
         Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
-        ingredientTypesModel = Mockito.mock(IngredientTypesModel.class);
+        ingredientTypesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
         model = new MealIngredientsListModel(ingredientTypesModel, null);
 
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {

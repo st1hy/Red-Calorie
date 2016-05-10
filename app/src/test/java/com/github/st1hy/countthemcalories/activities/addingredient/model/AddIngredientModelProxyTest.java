@@ -7,7 +7,7 @@ import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.ParcelableProxy;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
@@ -37,14 +37,14 @@ public class AddIngredientModelProxyTest {
     private SettingsModel settingsModel;
     private AddIngredientModel model;
     private IngredientTagsModel tagsModel;
-    private IngredientTypesModel typesModel;
+    private IngredientTypesDatabaseModel typesModel;
 
 
     @Before
     public void setUp() throws Exception {
         settingsModel = Mockito.mock(SettingsModel.class);
         tagsModel = Mockito.mock(IngredientTagsModel.class);
-        typesModel = Mockito.mock(IngredientTypesModel.class);
+        typesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
         model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);

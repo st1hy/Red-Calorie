@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
@@ -34,7 +34,7 @@ import rx.functions.Func1;
 public class AddIngredientModel extends WithPictureModel {
     final SettingsModel settingsModel;
     final IngredientTagsModel tagsModel;
-    final IngredientTypesModel databaseModel;
+    final IngredientTypesDatabaseModel databaseModel;
     final ParcelableProxy parcelableProxy;
 
     String name;
@@ -45,7 +45,7 @@ public class AddIngredientModel extends WithPictureModel {
     @Inject
     public AddIngredientModel(@NonNull SettingsModel settingsModel,
                               @NonNull IngredientTagsModel tagsModel,
-                              @NonNull IngredientTypesModel databaseModel,
+                              @NonNull IngredientTypesDatabaseModel databaseModel,
                               @Nullable Bundle savedState) {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;

@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
@@ -23,13 +23,15 @@ import rx.functions.Func2;
 import timber.log.Timber;
 
 public class MealIngredientsListModel {
-    final IngredientTypesModel ingredientTypesModel;
+
+    final IngredientTypesDatabaseModel ingredientTypesModel;
+
     final ArrayList<Ingredient> ingredients;
     final ParcelableProxy parcelableProxy;
 
     final Observable<Integer> loadingObservable;
 
-        public MealIngredientsListModel(@NonNull IngredientTypesModel ingredientTypesModel,
+    public MealIngredientsListModel(@NonNull IngredientTypesDatabaseModel ingredientTypesModel,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
         ParcelableProxy parcelableProxy = null;

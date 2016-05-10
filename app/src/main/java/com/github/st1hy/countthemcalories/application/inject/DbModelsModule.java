@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.application.inject;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 
@@ -21,7 +21,7 @@ public class DbModelsModule {
 
     @Provides
     @Singleton
-    public IngredientTypesModel provideIngredientsModel(Lazy<DaoSession> daoSession) {
-        return new IngredientTypesModel(daoSession);
+    public IngredientTypesDatabaseModel provideIngredientsModel(Lazy<DaoSession> daoSession) {
+        return new IngredientTypesDatabaseModel(daoSession);
     }
 }

@@ -1,17 +1,19 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
@@ -68,13 +70,21 @@ public class AddMealActivityModule {
 
     @Provides
     @PerActivity
-    public MealIngredientsListModel provideListModel(IngredientTypesModel model, @Nullable Bundle savedState) {
+    public MealIngredientsListModel provideListModel(IngredientTypesDatabaseModel model,
+                                                     @Nullable Bundle savedState) {
         return new MealIngredientsListModel(model, savedState);
     }
 
     @Provides
     @PerActivity
-    public IngredientsAdapter provideListAdapter(MealIngredientsListModel model) {
-        return new IngredientsAdapter(model);
+    public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
+                                                 UnitNamesModel namesModel) {
+        return new IngredientsAdapter(view, model, namesModel);
+    }
+
+    @Provides
+    @PerActivity
+    public Resources provideResources() {
+        return activity.getResources();
     }
 }

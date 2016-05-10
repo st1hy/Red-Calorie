@@ -237,13 +237,8 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_empty_ingredients)).check(matches(not(isDisplayed())));
         //TODO
     }
 
-    @Test
-    public void testAddIngredient() throws Exception {
-        //TODO
-//        onView(withText(R.string.add_meal_ingredients_title)).check(matches(isDisplayed()));
-
-    }
 }

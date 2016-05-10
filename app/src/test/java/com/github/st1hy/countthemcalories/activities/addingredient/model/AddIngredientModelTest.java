@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
@@ -44,7 +44,7 @@ public class AddIngredientModelTest {
     @Mock
     private IngredientTagsModel tagsModel;
     @Mock
-    private IngredientTypesModel typesModel;
+    private IngredientTypesDatabaseModel typesModel;
     private AddIngredientModel model;
 
     @Before

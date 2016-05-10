@@ -26,10 +26,10 @@ import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 
-public class IngredientTypesModel extends RxDatabaseModel<IngredientTemplate> {
+public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
     private final Lazy<IngredientTemplateDao> dao;
 
-    public IngredientTypesModel(@NonNull Lazy<DaoSession> session) {
+    public IngredientTypesDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
         this.dao = DoubleCheckLazy.create(new Provider<IngredientTemplateDao>() {
 

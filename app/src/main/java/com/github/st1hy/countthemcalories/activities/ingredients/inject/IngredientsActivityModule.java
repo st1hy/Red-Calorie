@@ -2,16 +2,16 @@ package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsActivityModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.squareup.picasso.Picasso;
@@ -48,11 +48,10 @@ public class IngredientsActivityModule {
     @PerActivity
     @Provides
     public IngredientsDaoAdapter providePresenterImp(IngredientsView view,
-                                                     IngredientsActivityModel activityModel,
-                                                     IngredientTypesModel model,
-                                                     SettingsModel settingsModel,
+                                                     IngredientsModel model,
+                                                     IngredientTypesDatabaseModel databaseModel,
                                                      Picasso picasso) {
-        return new IngredientsDaoAdapter(view, activityModel,model,settingsModel,picasso);
+        return new IngredientsDaoAdapter(view, model, databaseModel, picasso);
     }
 
     @Provides
@@ -65,5 +64,11 @@ public class IngredientsActivityModule {
     @Provides
     public DrawerPresenter provideDrawerPresenter(IngredientsPresenter presenter) {
         return presenter;
+    }
+
+    @Provides
+    @PerActivity
+    public Resources provideResources() {
+        return activity.getResources();
     }
 }
