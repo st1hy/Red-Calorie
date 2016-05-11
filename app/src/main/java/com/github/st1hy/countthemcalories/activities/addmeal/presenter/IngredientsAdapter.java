@@ -16,10 +16,11 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import dagger.internal.Preconditions;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> {
+public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements
+        IngredientItemViewHolder.Callback {
     private final AddMealView view;
     private final MealIngredientsListModel model;
     private final UnitNamesModel namesModel;
@@ -33,15 +34,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onStart() {
+        final int initialSize = getItemCount();
+        setEmptyViewVisibility();
+        Timber.d("Started count: %d", initialSize);
         subscriptions.add(model.getItemsLoadedObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MealIngredientsListModel.Loading() {
-                    @Override
-                    public void onCompleted() {
-                        notifyDataSetChanged();
-                        onDataSetChanged();
-                    }
-                }));
+                .subscribe(onInitialLoading(initialSize)));
     }
 
     public void onStop() {
@@ -49,8 +46,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onIngredientReceived(long ingredientTypeId) {
+        Timber.d("On received ingredient type");
         subscriptions.add(model.addIngredientOfType(ingredientTypeId)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(notifyInserted()));
     }
 
@@ -58,7 +55,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
-        return new IngredientItemViewHolder(view);
+        return new IngredientItemViewHolder(view, this);
     }
 
     @Override
@@ -68,12 +65,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     @Override
     public void onBindViewHolder(IngredientItemViewHolder holder, int position) {
+        holder.setPosition(position);
         final Ingredient ingredient = model.getItemAt(position);
         IngredientTemplate type = ingredient.getIngredientType();
         holder.setName(type.getName());
         holder.setEnergyDensity(namesModel.getReadableEnergyDensity(type.getEnergyDensity()));
         holder.setAmount(namesModel.getReadableAmount(ingredient.getAmount(),
                 type.getEnergyDensity().getUnit()));
+        holder.setCalorieCount(namesModel.getCalorieCount(ingredient.getAmount(), type.getEnergyDensity()));
+    }
+
+    @Override
+    public void onIngredientClicked(@NonNull View sharedIngredientCompact, int position) {
+        view.showIngredientDetails(sharedIngredientCompact, model.getItemAt(position));
     }
 
     @Override
@@ -82,18 +86,34 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @NonNull
+    private MealIngredientsListModel.Loading onInitialLoading(final int initialSize) {
+        return new MealIngredientsListModel.Loading() {
+            @Override
+            public void onCompleted() {
+                if (initialSize != getItemCount()) {
+                    Timber.d("Started loaded count: %d", getItemCount());
+                    notifyDataSetChanged();
+                    setEmptyViewVisibility();
+                }
+            }
+        };
+    }
+
+    @NonNull
     private MealIngredientsListModel.Loading notifyInserted() {
         return new MealIngredientsListModel.Loading() {
             @Override
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);
+                Timber.d("Ingredient loaded on position: %d, total: %d", itemPosition, getItemCount());
                 notifyItemInserted(itemPosition);
-                onDataSetChanged();
+                setEmptyViewVisibility();
             }
         };
     }
 
-    private void onDataSetChanged() {
+    private void setEmptyViewVisibility() {
         view.setEmptyIngredientsVisibility(Visibility.of(getItemCount() == 0));
     }
+
 }

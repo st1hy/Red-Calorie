@@ -90,17 +90,17 @@ public class SettingsModel {
     }
 
     @NonNull
-    public String getUnitPlural(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal decimal) {
+    public String getUnitName(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal decimal) {
         return resources.getString(unit.getFormatResId(), decimal.toPlainString());
     }
 
     @NonNull
-    public String getUnitPlural(@NonNull EnergyDensity energyDensity) {
+    public String getUnitName(@NonNull EnergyDensity energyDensity) {
         EnergyDensityUnit unit = energyDensity.getUnit();
         BigDecimal decimal = energyDensity.getValue()
                 .setScale(2, BigDecimal.ROUND_HALF_UP)
                 .stripTrailingZeros();
-        return getUnitPlural(unit, decimal);
+        return getUnitName(unit, decimal);
     }
 
     @NonNull

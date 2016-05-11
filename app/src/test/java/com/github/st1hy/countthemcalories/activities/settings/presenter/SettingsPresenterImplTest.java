@@ -55,7 +55,7 @@ public class SettingsPresenterImplTest {
         presenter.onLiquidUnitSettingsClicked();
 
         verify(preferencesModel, times(VolumetricEnergyDensityUnit.values().length))
-                .getUnitPlural(any(VolumetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
+                .getUnitName(any(VolumetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
         verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel).setPreferredVolumetricUnit(expected);
         verifyNoMoreInteractions(view);
@@ -71,7 +71,7 @@ public class SettingsPresenterImplTest {
 
         verify(view).showAlertDialog(anyInt(), any(String[].class));
         verify(preferencesModel, times(GravimetricEnergyDensityUnit.values().length))
-                .getUnitPlural(any(GravimetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
+                .getUnitName(any(GravimetricEnergyDensityUnit.class), eq(BigDecimal.ONE));
         verify(preferencesModel).setPreferredGravimetricUnit(expected);
         verifyNoMoreInteractions(view);
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
@@ -174,5 +176,26 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     protected ImageView getImageView() {
         return mealImage;
+    }
+
+    @Override
+    public void showIngredientDetails(@NonNull View sharedElement, @NonNull Ingredient ingredient) {
+//        IngredientDetailsDialogFragment fragment = IngredientDetailsDialogFragment.newInstance(ingredient);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
+        startActivity(new Intent(this, IngredientDetailsActivity.class), options.toBundle());
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            TransitionSet transitionSet = new TransitionSet()
+//                    .addTransition(new ChangeTransform())
+//                    .addTransition(new ChangeImageTransform());
+//            fragment.setSharedElementEnterTransition(transitionSet);
+//            fragment.setEnterTransition(new Fade());
+//            fragment.setSharedElementReturnTransition(transitionSet);
+//        }
+//        @SuppressLint("CommitTransaction")
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+//                .beginTransaction()
+//                .addSharedElement(sharedElement, "shared-ingredient-compact");
+//        fragment.show(fragmentTransaction, "");
     }
 }

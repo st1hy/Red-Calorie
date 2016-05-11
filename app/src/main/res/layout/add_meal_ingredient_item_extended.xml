@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/add_meal_ingredient_root"
+    android:minHeight="?listPreferredItemHeight"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:transitionName="ingredient-shared-view"
+    app:cardElevation="24dp"
+    app:cardCornerRadius="8dp"
+    app:cardUseCompatPadding="true">
+    <LinearLayout
+        android:id="@+id/add_meal_ingredient_extended"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:minWidth="300dp"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/add_meal_ingredient_compact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/add_meal_ingredient_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/add_meal_ingredient_photo_description"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="6dp"
+                android:layout_marginRight="6dp"
+                android:src="@drawable/ic_fork_and_knife_wide" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/add_meal_ingredient_item_name"
+                    style="@style/Base.TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    android:textSize="16sp"
+                    tools:text="Example ingredient name" />
+
+                <TextView
+                    android:id="@+id/add_meal_ingredient_energy_density"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    tools:text="400 kcal / 100 g" />
+
+                <TextView
+                    android:id="@+id/add_meal_ingredient_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    tools:text="40 g" />
+            </LinearLayout>
+
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/add_meal_ingredient_calorie_count"
+                style="@style/Base.TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?colorAccent"
+                android:textIsSelectable="false"
+                android:textSize="18sp"
+                tools:text="160 kcal" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/add_meal_ingredient_extention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <EditText
+                android:id="@+id/add_meal_ingredient_edit_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:hint="@string/add_meal_ingredient_amount_hint"
+                tools:hint="Amount of ingredient, i.e 200 g or ml">
+                <requestFocus/>
+            </EditText>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+            <LinearLayout
+                android:id="@+id/add_meal_ingredient_button_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                style="@style/Widget.AppCompat.ButtonBar"
+                android:gravity="center">
+                <ImageButton
+                    android:id="@+id/add_meal_ingredient_remove"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_delete_24px"
+                    android:contentDescription="@string/add_meal_ingredient_remove_description"/>
+                <ImageButton
+                    android:id="@+id/add_meal_ingredient_accept"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:src="@drawable/ic_done_24px"
+                    android:contentDescription="@string/add_meal_ingredient_accept_description"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

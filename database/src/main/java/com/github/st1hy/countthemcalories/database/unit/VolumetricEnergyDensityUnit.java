@@ -6,30 +6,32 @@ import android.support.annotation.StringRes;
 import com.github.st1hy.countthemcalories.database.R;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import static com.github.st1hy.countthemcalories.database.unit.AmountUnitType.VOLUME;
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.KJ_AT_GRAM_IN_KCAL_AT_GRAM;
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.KJ_AT_G_IN_KCAL_AT_100_GRAM;
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.KJ_AT_G_IN_KJ_AT_100_G;
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.KJ_AT_G_IN_KJ_AT_G;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.HUNDRED;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.ONE;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyUnit.KCAL;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyUnit.KJ;
 
 public enum VolumetricEnergyDensityUnit implements EnergyDensityUnit {
-    KCAL_AT_100ML(1, R.string.format_kcal_at_100ml, R.string.unit_kcal_at_100ml, KJ_AT_G_IN_KCAL_AT_100_GRAM),
-    KJ_AT_100ML(2, R.string.format_kj_at_100ml, R.string.unit_kj_at_100ml, KJ_AT_G_IN_KJ_AT_100_G),
-    KCAL_AT_ML(3, R.string.format_kcal_at_1ml, R.string.unit_kcal_at_1ml, KJ_AT_GRAM_IN_KCAL_AT_GRAM),
-    KJ_AT_ML(4, R.string.format_kj_at_1ml, R.string.unit_kj_at_1ml, KJ_AT_G_IN_KJ_AT_G);
+    KCAL_AT_100ML(1, R.string.format_kcal_at_100ml, R.string.unit_kcal_at_100ml, HUNDRED, KCAL),
+    KJ_AT_100ML(2, R.string.format_kj_at_100ml, R.string.unit_kj_at_100ml, HUNDRED, KJ),
+    KCAL_AT_ML(3, R.string.format_kcal_at_1ml, R.string.unit_kcal_at_1ml, ONE, KCAL),
+    KJ_AT_ML(4, R.string.format_kj_at_1ml, R.string.unit_kj_at_1ml, ONE, KJ);
 
     final int id; //keep constant
     final int formatResId;
     final int nameResId;
-    final BigDecimal conversionRate;
+    final BigDecimal amountBase;
+    final EnergyUnit energyUnit;
 
-    VolumetricEnergyDensityUnit(int id, @StringRes int formatResId, @StringRes int nameResId, BigDecimal conversionRate) {
+    VolumetricEnergyDensityUnit(int id, @StringRes int formatResId, @StringRes int nameResId,
+                                @NonNull BigDecimal amountBase, @NonNull EnergyUnit energyUnit) {
         this.id = id;
         this.formatResId = formatResId;
         this.nameResId = nameResId;
-        this.conversionRate = conversionRate;
+        this.amountBase = amountBase;
+        this.energyUnit = energyUnit;
     }
 
     @StringRes
@@ -50,16 +52,26 @@ public enum VolumetricEnergyDensityUnit implements EnergyDensityUnit {
         return VOLUME;
     }
 
+    @NonNull
+    @Override
+    public EnergyUnit getEnergyUnit() {
+        return energyUnit;
+    }
+
+    @NonNull
+    @Override
+    public BigDecimal getAmountBase() {
+        return amountBase;
+    }
 
 
     @NonNull
     @Override
     public BigDecimal convertValue(@NonNull BigDecimal value, @NonNull EnergyDensityUnit unit) {
         if (this == unit) return value;
-        VolumetricEnergyDensityUnit target = (VolumetricEnergyDensityUnit) unit;
-        BigDecimal multiply = value.multiply(conversionRate);
-        BigDecimal divide = multiply.divide(target.conversionRate, MathContext.DECIMAL32);
-        return divide.stripTrailingZeros();
+        if (!(unit instanceof VolumetricEnergyDensityUnit))
+            throw new IllegalArgumentException("Conversion only supported for the same unit type");
+        return EnergyDensityUtils.convertValue(value, this, unit);
     }
 
     @Override

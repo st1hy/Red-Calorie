@@ -82,7 +82,7 @@ public class SettingsModelTest {
 
     @Test
     public void testGeneratingUnitName() throws Exception {
-        String unitName = model.getUnitPlural(GravimetricEnergyDensityUnit.KJ_AT_G, BigDecimal.ONE);
+        String unitName = model.getUnitName(GravimetricEnergyDensityUnit.KJ_AT_G, BigDecimal.ONE);
         assertEquals("1 kJ / g", unitName);
     }
 

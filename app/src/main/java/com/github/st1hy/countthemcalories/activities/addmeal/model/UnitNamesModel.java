@@ -9,8 +9,10 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsMode
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import javax.inject.Inject;
 
@@ -29,7 +31,7 @@ public class UnitNamesModel {
         AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
         EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
         EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
-        return settingsModel.getUnitPlural(convertedToPreferred);
+        return settingsModel.getUnitName(convertedToPreferred);
     }
 
     @NonNull
@@ -38,12 +40,39 @@ public class UnitNamesModel {
     }
 
     @StringRes
-    private int getUnitFormat(@NonNull EnergyDensityUnit unit) {
+    public int getUnitFormat(@NonNull EnergyDensityUnit unit) {
         switch (unit.getAmountUnitType()) {
             case VOLUME:
                 return R.string.format_milliliter;
             case MASS:
                 return R.string.format_gram;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    @NonNull
+    public String getCalorieCount(@NonNull BigDecimal amount, @NonNull EnergyDensity energyDensity) {
+        AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
+        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
+        EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
+        EnergyUnit energyUnit = preferredUnitOfType.getEnergyUnit();
+        return resources.getString(getUnitFormat(energyUnit), convertedToPreferred.getValue()
+                .multiply(amount)
+                .divide(preferredUnitOfType.getAmountBase(), MathContext.DECIMAL64)
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString());
+    }
+
+
+    @StringRes
+    public int getUnitFormat(@NonNull EnergyUnit unit) {
+        switch (unit) {
+            case KCAL:
+                return R.string.format_kcal;
+            case KJ:
+                return R.string.format_kj;
             default:
                 throw new UnsupportedOperationException();
         }

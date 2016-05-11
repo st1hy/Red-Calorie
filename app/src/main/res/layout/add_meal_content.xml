@@ -78,5 +78,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/add_meal_button_add_ingredient" />
         </LinearLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="80dip" />
     </TableLayout>
 </android.support.v4.widget.NestedScrollView>

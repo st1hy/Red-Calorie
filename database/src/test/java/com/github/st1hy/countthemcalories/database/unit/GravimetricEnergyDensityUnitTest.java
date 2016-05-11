@@ -41,14 +41,6 @@ public class GravimetricEnergyDensityUnitTest {
     }
 
     @Test
-    public void testConversionValues() throws Exception {
-        assertEquals("0.04184", KCAL_AT_100G.conversionRate.toPlainString());
-        assertEquals("0.01", KJ_AT_100G.conversionRate.toPlainString());
-        assertEquals("4.184", KCAL_AT_G.conversionRate.toPlainString());
-        assertEquals("1", KJ_AT_G.conversionRate.toPlainString());
-    }
-
-    @Test
     public void testConversion() throws Exception {
         BigDecimal value = KCAL_AT_100G.convertValue(BigDecimal.valueOf(300, 0), KJ_AT_G);
         Assert.assertEquals("12.552", value.toPlainString());

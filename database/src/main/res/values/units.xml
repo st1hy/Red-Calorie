@@ -22,4 +22,6 @@
 
     <string name="format_gram">%s g</string>
     <string name="format_milliliter">%s ml</string>
+    <string name="format_kcal">%s kcal</string>
+    <string name="format_kj">%s kJ</string>
 </resources>

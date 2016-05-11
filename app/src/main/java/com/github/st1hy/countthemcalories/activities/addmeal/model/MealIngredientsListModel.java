@@ -64,13 +64,16 @@ public class MealIngredientsListModel {
     }
 
     /**
-     * @return notifies that items have been loaded to memory
+     * @return notifies that items have been loaded to memory, on main thread or immediate
      */
     @NonNull
     public Observable<Integer> getItemsLoadedObservable() {
         return loadingObservable;
     }
 
+    /**
+     * @return notifies when item has been loaded from database and what is its position, on main thread
+     */
     @NonNull
     public Observable<Integer> addIngredientOfType(long ingredientTypeId) {
         return ingredientTypesModel.getById(ingredientTypeId)
@@ -83,7 +86,9 @@ public class MealIngredientsListModel {
                         ingredient.setAmount(BigDecimal.ZERO);
                         return ingredient;
                     }
-                }).map(onIngredient());
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(onIngredient());
     }
 
     @NonNull
@@ -100,7 +105,8 @@ public class MealIngredientsListModel {
                 ingredient.setIngredientType(ingredientTemplate);
                 return ingredient;
             }
-        }).map(onIngredient()).replay().autoConnect().share();
+        }).observeOn(AndroidSchedulers.mainThread())
+                .map(onIngredient()).replay().autoConnect().share();
         loading.subscribe(new Loading());
         return loading;
     }

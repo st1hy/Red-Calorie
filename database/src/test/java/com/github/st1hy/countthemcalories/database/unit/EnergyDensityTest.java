@@ -65,7 +65,7 @@ public class EnergyDensityTest {
 
     @Test
     public void testGetPlural() throws Exception {
-        assertEquals(KCAL_AT_100G.getFormatResId(), energyDensity.getPluralResId());
+        assertEquals(KCAL_AT_100G.getFormatResId(), energyDensity.getFormatResId());
     }
 
 }

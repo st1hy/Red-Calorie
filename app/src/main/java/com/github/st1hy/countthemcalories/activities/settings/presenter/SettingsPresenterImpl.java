@@ -71,7 +71,7 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
         EnergyDensityUnit[] units = (EnergyDensityUnit[]) EnergyDensityUtils.getUnits(type);
         String[] values = new String[units.length];
         for (int i = 0; i < units.length; i++) {
-            values[i] = model.getUnitPlural(units[i], BigDecimal.ONE);
+            values[i] = model.getUnitName(units[i], BigDecimal.ONE);
         }
         view.showAlertDialog(model.getPreferredUnitDialogTitle(), values)
                 .subscribe(new Action1<Integer>() {

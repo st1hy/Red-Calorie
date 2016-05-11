@@ -5,14 +5,13 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.database.BuildConfig;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import timber.log.Timber;
 
 public class EnergyDensityUtils {
-    public static final BigDecimal KJ_AT_GRAM_IN_KCAL_AT_GRAM = BigDecimal.valueOf(4184, 3);
-    public static final BigDecimal KJ_AT_G_IN_KCAL_AT_100_GRAM = BigDecimal.valueOf(4184, 5);
-    public static final BigDecimal KJ_AT_G_IN_KJ_AT_G = BigDecimal.ONE;
-    public static final BigDecimal KJ_AT_G_IN_KJ_AT_100_G = BigDecimal.valueOf(1, 2);
+    static final BigDecimal ONE = BigDecimal.ONE;
+    static final BigDecimal HUNDRED = BigDecimal.valueOf(1, -2);
 
     public static Enum<? extends EnergyDensityUnit>[] getUnits(@NonNull AmountUnitType unitType) {
         switch (unitType) {
@@ -56,5 +55,13 @@ public class EnergyDensityUtils {
             bigDecimal = BigDecimal.ZERO;
         }
         return new EnergyDensity(unit, bigDecimal);
+    }
+
+    @NonNull
+    static BigDecimal convertValue(@NonNull BigDecimal value, @NonNull EnergyDensityUnit source, @NonNull EnergyDensityUnit target) {
+        BigDecimal multiply = value.multiply(source.getEnergyUnit().getInKJ()).multiply(target.getAmountBase());
+
+        BigDecimal divide = multiply.divide(target.getEnergyUnit().getInKJ().multiply(source.getAmountBase()), MathContext.DECIMAL64);
+        return divide.stripTrailingZeros();
     }
 }
