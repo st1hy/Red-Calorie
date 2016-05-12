@@ -180,22 +180,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
 
     @Override
     public void showIngredientDetails(@NonNull View sharedElement, @NonNull Ingredient ingredient) {
-//        IngredientDetailsDialogFragment fragment = IngredientDetailsDialogFragment.newInstance(ingredient);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
         startActivity(new Intent(this, IngredientDetailsActivity.class), options.toBundle());
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            TransitionSet transitionSet = new TransitionSet()
-//                    .addTransition(new ChangeTransform())
-//                    .addTransition(new ChangeImageTransform());
-//            fragment.setSharedElementEnterTransition(transitionSet);
-//            fragment.setEnterTransition(new Fade());
-//            fragment.setSharedElementReturnTransition(transitionSet);
-//        }
-//        @SuppressLint("CommitTransaction")
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-//                .beginTransaction()
-//                .addSharedElement(sharedElement, "shared-ingredient-compact");
-//        fragment.show(fragmentTransaction, "");
     }
 }
