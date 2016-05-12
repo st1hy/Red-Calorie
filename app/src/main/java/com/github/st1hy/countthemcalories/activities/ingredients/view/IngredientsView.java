@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import rx.Observable;
 
@@ -16,5 +17,5 @@ public interface IngredientsView extends DrawerView {
     @NonNull
     Observable<Void> getOnAddIngredientClickedObservable();
 
-    void setResultAndReturn(long ingredientId);
+    void setResultAndReturn(@NonNull IngredientTypeParcel ingredientTypeParcel);
 }

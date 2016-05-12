@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteracti
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -118,7 +119,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     @Override
     public void onItemClicked(@NonNull IngredientTemplate ingredient) {
         if (model.isInSelectMode()) {
-            view.setResultAndReturn(ingredient.getId());
+            view.setResultAndReturn(new IngredientTypeParcel(ingredient));
         }
     }
 

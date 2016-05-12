@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import dagger.internal.Preconditions;
 import rx.subscriptions.CompositeSubscription;
@@ -45,9 +46,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         subscriptions.clear();
     }
 
-    public void onIngredientReceived(long ingredientTypeId) {
+    public void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
         Timber.d("On received ingredient type");
-        subscriptions.add(model.addIngredientOfType(ingredientTypeId)
+        subscriptions.add(model.addIngredientOfType(typeParcel)
                 .subscribe(notifyInserted()));
     }
 

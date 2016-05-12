@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +39,11 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 return session().getIngredientTemplateDao();
             }
         });
+    }
+
+    @NonNull
+    public Observable<IngredientTemplate> unParcel(@NonNull IngredientTypeParcel typeParcel) {
+        return typeParcel.getWhenReady().get(session());
     }
 
     @Override

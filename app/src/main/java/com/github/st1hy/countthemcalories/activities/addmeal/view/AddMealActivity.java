@@ -22,11 +22,13 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActiv
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
@@ -158,9 +160,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_PICK_INGREDIENT) {
             if (resultCode == RESULT_OK) {
-                long ingredientId = data.getLongExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_ID, -1L);
-                if (ingredientId != -1L) {
-                    adapter.onIngredientReceived(ingredientId);
+                IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
+                if (typeParcel != null) {
+                    adapter.onIngredientReceived(typeParcel);
                 }
             }
         } else super.onActivityResult(requestCode, resultCode, data);
@@ -181,6 +183,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     public void showIngredientDetails(@NonNull View sharedElement, @NonNull Ingredient ingredient) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
-        startActivity(new Intent(this, IngredientDetailsActivity.class), options.toBundle());
+        Intent intent = new Intent(this, IngredientDetailsActivity.class);
+        intent.setAction(IngredientDetailsActivity.ACTION_EDIT_INGREDIENT);
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL, new IngredientTypeParcel(ingredient.getIngredientType()));
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, ingredient.getAmount().toPlainString());
+        startActivity(intent, options.toBundle());
     }
 }

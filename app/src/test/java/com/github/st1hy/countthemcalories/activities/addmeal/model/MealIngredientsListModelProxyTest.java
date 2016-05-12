@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
 import org.joda.time.DateTime;
@@ -75,10 +76,11 @@ public class MealIngredientsListModelProxyTest {
         model = new MealIngredientsListModel(ingredientTypesModel, null);
 
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
-            long id = exampleIngredientTemplate[i].getId();
-            when(ingredientTypesModel.getById(id))
+            IngredientTypeParcel typeParcel = new IngredientTypeParcel(exampleIngredientTemplate[i]);
+            when(ingredientTypesModel.unParcel(typeParcel))
                     .thenReturn(Observable.just(exampleIngredientTemplate[i]));
-            model.addIngredientOfType(id).subscribe();
+            when(ingredientTypesModel.getById(exampleIngredientTemplate[i].getId())).thenReturn(Observable.just(exampleIngredientTemplate[i]));
+            model.addIngredientOfType(typeParcel).subscribe();
             model.getItemAt(i).setAmount(amounts[i]);
         }
         assertThat(model.getItemsCount(), equalTo(3));

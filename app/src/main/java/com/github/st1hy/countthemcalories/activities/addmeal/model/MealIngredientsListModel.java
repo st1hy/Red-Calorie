@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 
 import java.math.BigDecimal;
@@ -75,9 +76,9 @@ public class MealIngredientsListModel {
      * @return notifies when item has been loaded from database and what is its position, on main thread
      */
     @NonNull
-    public Observable<Integer> addIngredientOfType(long ingredientTypeId) {
-        return ingredientTypesModel.getById(ingredientTypeId)
-                .subscribeOn(AndroidSchedulers.mainThread())
+    public Observable<Integer> addIngredientOfType(@NonNull IngredientTypeParcel typeParcel) {
+        return ingredientTypesModel.unParcel(typeParcel)
+                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Ingredient>() {
                     @Override
                     public Ingredient call(IngredientTemplate ingredientTemplate) {
@@ -87,7 +88,6 @@ public class MealIngredientsListModel {
                         return ingredient;
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(onIngredient());
     }
 

@@ -2,8 +2,6 @@ package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.BuildConfig;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -47,14 +45,19 @@ public class EnergyDensityUtils {
      */
     @NonNull
     public static EnergyDensity getOrZero(@NonNull EnergyDensityUnit unit, @NonNull String energyValue) {
-        BigDecimal bigDecimal;
+        return new EnergyDensity(unit, getOrZero(energyValue));
+    }
+
+    /**
+     * @return returns big decimal value of string or 0 if string is not in correct format
+     */
+    public static BigDecimal getOrZero(@NonNull String value) {
         try {
-            bigDecimal = new BigDecimal(energyValue);
+            return new BigDecimal(value);
         } catch (NumberFormatException e) {
-            if (BuildConfig.DEBUG) Timber.w("Value: '%s' is not valid BigInteger", energyValue);
-            bigDecimal = BigDecimal.ZERO;
+            Timber.w("Value: '%s' is not valid BigInteger", value);
+            return BigDecimal.ZERO;
         }
-        return new EnergyDensity(unit, bigDecimal);
     }
 
     @NonNull

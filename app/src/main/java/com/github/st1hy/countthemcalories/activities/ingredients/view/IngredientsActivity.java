@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Ingre
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
 
@@ -31,7 +32,7 @@ import rx.Observable;
 
 public class IngredientsActivity extends DrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
-    public static final String EXTRA_INGREDIENT_TYPE_ID = "extra ingredient type id";
+    public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcer";
 
     @Inject
     IngredientsPresenter presenter;
@@ -98,9 +99,9 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     }
 
     @Override
-    public void setResultAndReturn(long ingredientId) {
+    public void setResultAndReturn(@NonNull IngredientTypeParcel ingredientTypeParcel) {
         Intent result = new Intent();
-        result.putExtra(EXTRA_INGREDIENT_TYPE_ID, ingredientId);
+        result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, ingredientTypeParcel);
         setResult(RESULT_OK, result);
         finish();
     }

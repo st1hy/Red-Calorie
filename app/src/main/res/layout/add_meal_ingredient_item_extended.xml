@@ -60,13 +60,6 @@
                     android:layout_height="wrap_content"
                     android:textIsSelectable="false"
                     tools:text="400 kcal / 100 g" />
-
-                <TextView
-                    android:id="@+id/add_meal_ingredient_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="false"
-                    tools:text="40 g" />
             </LinearLayout>
 
             <android.support.v4.widget.Space

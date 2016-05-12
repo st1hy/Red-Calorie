@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
@@ -84,6 +86,16 @@ public class AddMealActivityRoboTest {
         assertThat(activity.ingredientList.getChildCount(), equalTo(1));
     }
 
+    @Test
+    public void testAddIngredient2() throws Exception {
+        assertThat(activity.ingredientList.getChildCount(), equalTo(0));
+
+        addIngredientPromParcel();
+
+        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+    }
+
+
 
     private void addIngredient() {
         activity.addIngredientFab.performClick();
@@ -94,7 +106,27 @@ public class AddMealActivityRoboTest {
         assertThat(requestIntent, hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT));
 
         Intent intent = new Intent();
-        intent.putExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_ID, IngredientsTestActivity.exampleIngredients[0].getId());
+        intent.putExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL, new IngredientTypeParcel(exampleIngredients[0]));
+        shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, intent);
+    }
+
+
+    private void addIngredientPromParcel() {
+        activity.addIngredientFab.performClick();
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent requestIntent = shadowActivity.peekNextStartedActivity();
+        assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientsActivity.class)));
+        assertThat(requestIntent, hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT));
+
+        Intent intent = new Intent();
+        IngredientTypeParcel typeParcel = new IngredientTypeParcel(exampleIngredients[0]);
+        Parcel parcel = Parcel.obtain();
+        typeParcel.writeToParcel(parcel,0);
+        parcel.setDataPosition(0);
+        IngredientTypeParcel fromParcel = IngredientTypeParcel.CREATOR.createFromParcel(parcel);
+        parcel.recycle();
+        intent.putExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL, fromParcel);
         shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, intent);
     }
 }
