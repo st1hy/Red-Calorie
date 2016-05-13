@@ -118,7 +118,7 @@ public class MealIngredientsListModel {
     }
 
     @NonNull
-    private Observable<Integer> loadItems(@NonNull List<Ingredient> ingredients) {
+    Observable<Integer> loadItems(@NonNull List<Ingredient> ingredients) {
         Observable<Ingredient> notLoaded = Observable.from(ingredients);
         Observable<Integer> loading = notLoaded.concatMap(new Func1<Ingredient, Observable<IngredientTemplate>>() {
             @Override

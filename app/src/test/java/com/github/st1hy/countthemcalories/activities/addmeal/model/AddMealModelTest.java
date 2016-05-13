@@ -11,7 +11,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel.ParcelableProxy.CREATOR;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,6 +56,11 @@ public class AddMealModelTest {
         Uri uri = Mockito.mock(Uri.class);
         model.setImageUri(uri);
         assertThat(model.getImageUri(), equalTo(uri));
+    }
 
+    @Test
+    public void testProxy() throws Exception {
+        assertThat(model.parcelableProxy.describeContents(), equalTo(0));
+        assertThat(CREATOR.newArray(4), allOf(instanceOf(AddMealModel.ParcelableProxy[].class), arrayWithSize(4)));
     }
 }

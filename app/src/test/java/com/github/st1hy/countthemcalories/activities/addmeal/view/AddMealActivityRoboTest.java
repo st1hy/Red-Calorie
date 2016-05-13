@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.view.View;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -33,6 +35,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExt
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -144,5 +147,47 @@ public class AddMealActivityRoboTest {
         assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL));
 
         shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, requestIntent);
+    }
+
+
+    @Test
+    public void testEditIngredient() throws Exception {
+        testAddIngredient();
+
+        checkFirstIngredientAmountEqualTo("0 g");
+
+        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent requestIntent = shadowActivity.getNextStartedActivity();
+        Intent result = new Intent(requestIntent);
+        result.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, "12.5");
+
+        shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, result);
+
+        checkFirstIngredientAmountEqualTo("12.5 g");
+    }
+
+    private void checkFirstIngredientAmountEqualTo(String amountString) {
+        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+        View childRoot = activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root);
+        assertThat(childRoot, notNullValue());
+        TextView amount = (TextView) childRoot.findViewById(R.id.add_meal_ingredient_amount);
+        assertThat(amount.getText().toString(), equalTo(amountString));
+    }
+
+    @Test
+    public void testRemoveIngredient() throws Exception {
+        testAddIngredient();
+
+        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
+
+        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent requestIntent = shadowActivity.getNextStartedActivity();
+
+        shadowActivity.receiveResult(requestIntent, IngredientDetailsActivity.RESULT_REMOVE, requestIntent);
+
+        assertThat(activity.ingredientList.getChildCount(), equalTo(0));
     }
 }

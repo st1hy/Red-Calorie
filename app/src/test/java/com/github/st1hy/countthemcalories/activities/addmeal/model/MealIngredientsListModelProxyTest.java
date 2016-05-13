@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
+import org.hamcrest.junit.MatcherAssert;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assert;
@@ -24,6 +25,7 @@ import org.robolectric.annotation.Config;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,7 +38,10 @@ import static com.github.st1hy.countthemcalories.activities.addmeal.model.MealIn
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
@@ -89,7 +94,7 @@ public class MealIngredientsListModelProxyTest {
     @After
     public void tearDown() throws Exception {
         TestRxPlugins.reset();
-        Timber.uproot(tree);
+        Timber.uprootAll();
     }
 
     @Test
@@ -160,5 +165,28 @@ public class MealIngredientsListModelProxyTest {
             assertThat(ing.getIngredientType(), equalTo(exampleIngredientTemplate[i]));
             assertThat(ing.getAmount(), equalTo(amounts[i]));
         }
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testModifyItemsException() throws Exception {
+        model.modifyIngredient(-5, null, null);
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testRemoveIngredientException() throws Exception {
+        model.removeIngredient(-4);
+    }
+
+    @Test
+    public void testProxyOther() throws Exception {
+        assertThat(model.parcelableProxy.describeContents(), equalTo(0));
+        MatcherAssert.assertThat(CREATOR.newArray(4), allOf(instanceOf(MealIngredientsListModel.ParcelableProxy[].class), arrayWithSize(4)));
+    }
+
+    @Test
+    public void testLoadingError() throws Exception {
+        Timber.uprootAll();
+        model.loadItems(Collections.singletonList(new Ingredient()));
+        //TODO Maybe check what will happen to the rest of the application
     }
 }

@@ -42,8 +42,10 @@ import rx.functions.Func0;
 import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
@@ -236,7 +238,6 @@ public class AddMealActivityTest {
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
-        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()));
         onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
@@ -248,4 +249,34 @@ public class AddMealActivityTest {
         onView(withText("42.6 g")).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testEditIngredient() throws Exception {
+        testAddIngredientButton();
+
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(clearText())
+                .perform(typeTextIntoFocusedView("12.06"));
+        onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(not(isDisplayed())));
+        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withText("12.06 g")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testRemoveIngredient() throws Exception {
+        testAddIngredientButton();
+
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(doesNotExist());
+        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+        onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
+    }
 }
