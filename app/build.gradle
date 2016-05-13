@@ -42,8 +42,9 @@ dependencies {
     final supportLibraryVersion = rootProject.ext.supportLibraryVersion
     final daggerVersion = rootProject.ext.daggerVersion
     final rxJavaVersion = rootProject.ext.rxJavaVersion
+    final rxAndroidVersion = rootProject.ext.rxAndroidVersion
     final timberVersion = rootProject.ext.timberVersion
-    final butterknifeVersion = '7.0.1'
+    final butterknifeVersion = '8.0.1'
 
     final jUnitVersion = rootProject.ext.jUnitVersion
     final robolectricVersion = rootProject.ext.robolectricVersion
@@ -62,12 +63,12 @@ dependencies {
     compile "com.android.support:cardview-v7:$supportLibraryVersion"
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.jakewharton.timber:timber:$timberVersion"
-    compile "io.reactivex:rxandroid:$rxJavaVersion"
+    compile "io.reactivex:rxandroid:$rxAndroidVersion"
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
     apt "com.google.dagger:dagger-compiler:$daggerVersion"
     compile "com.jakewharton:butterknife:$butterknifeVersion"
-//    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
 //    compile 'org.lucasr.twowayview:twowayview:0.1.4' //customize recycler layout
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'

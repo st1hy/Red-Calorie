@@ -35,7 +35,7 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
@@ -49,19 +49,19 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Inject
     Picasso picasso;
 
-    @Bind(R.id.add_meal_toolbar)
+    @BindView(R.id.add_meal_toolbar)
     Toolbar toolbar;
-    @Bind(R.id.add_meal_image)
+    @BindView(R.id.add_meal_image)
     ImageView mealImage;
-    @Bind(R.id.add_meal_name)
+    @BindView(R.id.add_meal_name)
     EditText name;
-    @Bind(R.id.add_meal_ingredients_list)
+    @BindView(R.id.add_meal_ingredients_list)
     RecyclerView ingredientList;
-    @Bind(R.id.add_meal_empty_ingredients)
+    @BindView(R.id.add_meal_empty_ingredients)
     View emptyIngredients;
-    @Bind(R.id.add_meal_button_add_ingredient)
+    @BindView(R.id.add_meal_button_add_ingredient)
     Button addIngredientButton;
-    @Bind(R.id.add_meal_fab_add_ingredient)
+    @BindView(R.id.add_meal_fab_add_ingredient)
     FloatingActionButton addIngredientFab;
 
     AddMealActivityComponent component;

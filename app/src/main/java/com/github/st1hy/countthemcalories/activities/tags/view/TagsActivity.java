@@ -29,7 +29,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.functions.Action1;
@@ -48,11 +48,11 @@ public class TagsActivity extends DrawerActivity implements TagsView {
     @Inject
     TagsDaoAdapter adapter;
 
-    @Bind(R.id.tags_recycler)
+    @BindView(R.id.tags_recycler)
     RecyclerView recyclerView;
-    @Bind(R.id.tags_add_new)
+    @BindView(R.id.tags_add_new)
     FloatingActionButton fab;
-    @Bind(R.id.tags_no_tags_button)
+    @BindView(R.id.tags_no_tags_button)
     View notTagsButton;
 
     SearchView searchView;

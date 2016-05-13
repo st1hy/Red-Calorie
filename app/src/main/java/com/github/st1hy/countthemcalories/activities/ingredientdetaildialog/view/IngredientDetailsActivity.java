@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.EditText;
@@ -19,7 +18,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
@@ -28,19 +27,19 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     public static final String EXTRA_INGREDIENT_TEMPLATE_PARCEL = "ingredient details extra template parcel";
     public static final String EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL = "ingredient details extra amount";
 
-    @Bind(R.id.add_meal_ingredient_accept)
+    @BindView(R.id.add_meal_ingredient_accept)
     ImageButton accept;
-    @Bind(R.id.add_meal_ingredient_remove)
+    @BindView(R.id.add_meal_ingredient_remove)
     ImageButton remove;
-    @Bind(R.id.add_meal_ingredient_edit_amount)
+    @BindView(R.id.add_meal_ingredient_edit_amount)
     EditText editAmount;
-    @Bind(R.id.add_meal_ingredient_item_name)
+    @BindView(R.id.add_meal_ingredient_item_name)
     TextView name;
-    @Bind(R.id.add_meal_ingredient_energy_density)
+    @BindView(R.id.add_meal_ingredient_energy_density)
     TextView energyDensity;
-    @Bind(R.id.add_meal_ingredient_calorie_count)
+    @BindView(R.id.add_meal_ingredient_calorie_count)
     TextView calorieCount;
-    @Bind(R.id.add_meal_ingredient_image)
+    @BindView(R.id.add_meal_ingredient_image)
     ImageView image;
 
     IngredientDetailComponent component;

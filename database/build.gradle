@@ -25,6 +25,7 @@ dependencies {
     final daggerVersion = rootProject.ext.daggerVersion
     final greenDaoVersion = rootProject.ext.greenDaoVersion
     final rxJavaVersion = rootProject.ext.rxJavaVersion
+    final rxAndroidVersion = rootProject.ext.rxAndroidVersion
     final timberVersion = rootProject.ext.timberVersion
 
     final jUnitVersion = rootProject.ext.jUnitVersion
@@ -34,9 +35,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile "com.android.support:support-annotations:$supportLibraryVersion"
-    compile "io.reactivex:rxandroid:$rxJavaVersion"
+    compile "io.reactivex:rxandroid:$rxAndroidVersion"
     compile "io.reactivex:rxjava:$rxJavaVersion"
-    compile "de.greenrobot:greendao:$greenDaoVersion"
+    compile "org.greenrobot:greendao:$greenDaoVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
     apt "com.google.dagger:dagger-compiler:$daggerVersion"
     compile "com.jakewharton.timber:timber:$timberVersion"

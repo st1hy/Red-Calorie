@@ -7,15 +7,15 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.database.Tag;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TagItemViewHolder extends TagViewHolder implements View.OnLongClickListener,
         View.OnClickListener {
 
-    @Bind(R.id.tags_item_name)
+    @BindView(R.id.tags_item_name)
     TextView name;
-    @Bind(R.id.tag_button)
+    @BindView(R.id.tag_button)
     View button;
 
     final OnTagInteraction listener;

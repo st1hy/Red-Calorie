@@ -26,7 +26,7 @@ import com.jakewharton.rxbinding.widget.RxSearchView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
@@ -39,11 +39,11 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     @Inject
     IngredientsDaoAdapter adapter;
 
-    @Bind(R.id.ingredients_fab)
+    @BindView(R.id.ingredients_fab)
     FloatingActionButton fab;
-    @Bind(R.id.ingredients_no_ingredients_button)
+    @BindView(R.id.ingredients_no_ingredients_button)
     View noIngredientsButton;
-    @Bind(R.id.ingredients_content)
+    @BindView(R.id.ingredients_content)
     RecyclerView recyclerView;
 
     SearchView searchView;

@@ -20,12 +20,13 @@ ext {
     compileSdkVersion = 23
     buildToolsVersion = '23.0.3'
 
-    supportLibraryVersion = '23.3.0'
+    supportLibraryVersion = '23.4.0'
     daggerVersion = '2.2'
 
-    rxJavaVersion = '1.1.0'
+    rxJavaVersion = '1.1.5'
+    rxAndroidVersion = '1.2.0'
     timberVersion = '4.1.2'
-    greenDaoVersion = '2.1.0'
+    greenDaoVersion = '2.2.0'
 
     robolectricVersion = '3.0'
     jUnitVersion = '4.12'

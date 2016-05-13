@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingsActivity extends DrawerActivity implements SettingsView {
@@ -23,13 +23,13 @@ public class SettingsActivity extends DrawerActivity implements SettingsView {
     @Inject
     SettingsPresenter presenter;
 
-    @Bind(R.id.settings_energy_density_liquid)
+    @BindView(R.id.settings_energy_density_liquid)
     View liquidUnitView;
-    @Bind(R.id.settings_drinks_unit)
+    @BindView(R.id.settings_drinks_unit)
     TextView liquidUnitText;
-    @Bind(R.id.settings_energy_density_solid)
+    @BindView(R.id.settings_energy_density_solid)
     View solidUnitView;
-    @Bind(R.id.settings_meals_unit)
+    @BindView(R.id.settings_meals_unit)
     TextView solidUnitText;
 
     @NonNull

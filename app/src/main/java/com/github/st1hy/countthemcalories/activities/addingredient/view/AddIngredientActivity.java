@@ -30,7 +30,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import timber.log.Timber;
@@ -44,17 +44,17 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Inject
     IngredientTagsAdapter tagsPresenter;
 
-    @Bind(R.id.add_ingredient_toolbar)
+    @BindView(R.id.add_ingredient_toolbar)
     Toolbar toolbar;
-    @Bind(R.id.add_ingredient_image)
+    @BindView(R.id.add_ingredient_image)
     ImageView ingredientImage;
-    @Bind(R.id.add_ingredient_name)
+    @BindView(R.id.add_ingredient_name)
     EditText name;
-    @Bind(R.id.add_ingredient_energy_density)
+    @BindView(R.id.add_ingredient_energy_density)
     EditText energyDensityValue;
-    @Bind(R.id.add_ingredient_select_unit)
+    @BindView(R.id.add_ingredient_select_unit)
     Button selectUnit;
-    @Bind(R.id.add_ingredient_categories_recycler)
+    @BindView(R.id.add_ingredient_categories_recycler)
     RecyclerView tagsRecycler;
 
     @NonNull

@@ -9,18 +9,18 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngredientItemViewHolder extends IngredientViewHolder implements View.OnClickListener {
 
-    @Bind(R.id.ingredients_item_button)
+    @BindView(R.id.ingredients_item_button)
     View ingredientButton;
-    @Bind(R.id.ingredients_item_name)
+    @BindView(R.id.ingredients_item_name)
     TextView name;
-    @Bind(R.id.ingredients_item_energy_density)
+    @BindView(R.id.ingredients_item_energy_density)
     TextView energyDensity;
-    @Bind(R.id.ingredients_item_image)
+    @BindView(R.id.ingredients_item_image)
     ImageView image;
 
     private final IngredientTemplate reusableIngredient = new IngredientTemplate();

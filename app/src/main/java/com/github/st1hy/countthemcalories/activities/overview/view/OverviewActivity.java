@@ -17,7 +17,7 @@ import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class OverviewActivity extends DrawerActivity implements OverviewView {
@@ -25,7 +25,7 @@ public class OverviewActivity extends DrawerActivity implements OverviewView {
     @Inject
     OverviewPresenter presenter;
 
-    @Bind(R.id.overview_fab)
+    @BindView(R.id.overview_fab)
     FloatingActionButton fab;
 
     OverviewActivityComponent component;

@@ -6,12 +6,12 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.jakewharton.rxbinding.view.RxView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Observable;
 
 public class AddNewTagViewHolder extends TagViewHolder {
 
-    @Bind(R.id.add_ingredient_category_add)
+    @BindView(R.id.add_ingredient_category_add)
     View addNewTag;
     private final Observable<Void> observable;
 
