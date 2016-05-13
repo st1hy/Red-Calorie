@@ -1,8 +1,10 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -14,7 +16,11 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inje
 import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailsModule;
 import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -26,6 +32,8 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     public static final String ACTION_EDIT_INGREDIENT = "ingredient details edit action";
     public static final String EXTRA_INGREDIENT_TEMPLATE_PARCEL = "ingredient details extra template parcel";
     public static final String EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL = "ingredient details extra amount";
+    public static final String EXTRA_INGREDIENT_ID_LONG = "ingredient details extra id long";
+    public static final int RESULT_REMOVE = 0x200;
 
     @BindView(R.id.add_meal_ingredient_accept)
     ImageButton accept;
@@ -41,6 +49,7 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     TextView calorieCount;
     @BindView(R.id.add_meal_ingredient_image)
     ImageView image;
+    @BindView(R.id.add_meal_ingredient_unit) TextView unit;
 
     IngredientDetailComponent component;
 
@@ -113,5 +122,40 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     @Override
     public void setAmountError(@Nullable String errorResId) {
         editAmount.setError(errorResId);
+    }
+
+    @NonNull
+    @Override
+    public ImageView getImageView() {
+        return image;
+    }
+
+    @Override
+    public void setUnitName(@StringRes int unitName) {
+        this.unit.setText(unitName);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getAcceptObservable() {
+        return RxView.clicks(accept);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getRemoveObservable() {
+        return RxView.clicks(remove);
+    }
+
+    @Override
+    public void setResultAndFinish(int resultCode, long ingredientId,
+                                   @NonNull IngredientTypeParcel parcel,
+                                   @NonNull BigDecimal amount) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
+        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, parcel);
+        intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        setResult(resultCode, intent);
+        finish();
     }
 }

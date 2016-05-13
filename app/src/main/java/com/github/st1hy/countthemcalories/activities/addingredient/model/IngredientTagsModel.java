@@ -48,8 +48,8 @@ public class IngredientTagsModel {
         return tags.size() - 1;
     }
 
-    public void removeAt(int position) {
-        tags.remove(position);
+    public void remove(@NonNull Tag tag) {
+        tags.remove(tag);
     }
 
     @NonNull

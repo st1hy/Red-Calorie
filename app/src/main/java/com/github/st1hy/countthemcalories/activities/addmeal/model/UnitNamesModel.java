@@ -77,4 +77,16 @@ public class UnitNamesModel {
                 throw new UnsupportedOperationException();
         }
     }
+
+    @StringRes
+    public int getUnitName(@NonNull EnergyDensityUnit unit) {
+        switch (unit.getAmountUnitType()) {
+            case VOLUME:
+                return R.string.unit_milliliter;
+            case MASS:
+                return R.string.unit_gram;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
 }

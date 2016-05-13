@@ -8,9 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -29,21 +31,14 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     ViewGroup compatView;
     @BindView(R.id.add_meal_ingredient_root)
     ViewGroup root;
-    int position;
     final Callback callback;
-
+    Ingredient ingredient;
 
     public IngredientItemViewHolder(@NonNull View itemView,
                                     @NonNull final Callback callback) {
         super(itemView);
         this.callback = callback;
         ButterKnife.bind(this, itemView);
-        root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClicked();
-            }
-        });
     }
 
     public void setName(@NonNull String name) {
@@ -62,8 +57,8 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         this.energyDensity.setText(energyDensity);
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setIngredient(@NonNull Ingredient ingredient) {
+        this.ingredient = ingredient;
     }
 
     @NonNull
@@ -71,12 +66,14 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         return image;
     }
 
-    void onItemClicked() {
-        callback.onIngredientClicked(root, position);
+    @OnClick(R.id.add_meal_ingredient_root)
+    public void onClicked() {
+        if (ingredient != null) callback.onIngredientClicked(root, ingredient);
     }
 
     public interface Callback {
-        void onIngredientClicked(@NonNull View sharedIngredientCompact, int position);
+        void onIngredientClicked(@NonNull View sharedIngredientCompact,
+                                 @NonNull Ingredient ingredient);
     }
 
 }

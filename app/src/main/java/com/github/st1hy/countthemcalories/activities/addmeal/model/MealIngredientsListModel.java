@@ -76,7 +76,8 @@ public class MealIngredientsListModel {
      * @return notifies when item has been loaded from database and what is its position, on main thread
      */
     @NonNull
-    public Observable<Integer> addIngredientOfType(@NonNull IngredientTypeParcel typeParcel) {
+    public Observable<Integer> addIngredientOfType(@NonNull IngredientTypeParcel typeParcel,
+                                                   @NonNull final BigDecimal amount) {
         return ingredientTypesModel.unParcel(typeParcel)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Ingredient>() {
@@ -84,11 +85,36 @@ public class MealIngredientsListModel {
                     public Ingredient call(IngredientTemplate ingredientTemplate) {
                         Ingredient ingredient = new Ingredient();
                         ingredient.setIngredientType(ingredientTemplate);
-                        ingredient.setAmount(BigDecimal.ZERO);
+                        ingredient.setAmount(amount);
                         return ingredient;
                     }
                 })
                 .map(onIngredient());
+    }
+
+    @NonNull
+    public Observable<Integer> modifyIngredient(final int position,
+                                                @NonNull IngredientTypeParcel typeParcel,
+                                                @NonNull final BigDecimal amount) {
+        if (position >= ingredients.size() || position < 0)
+            throw new ArrayIndexOutOfBoundsException("Cannot modify non-existing ingredient");
+        final Ingredient source = ingredients.get(position);
+        return ingredientTypesModel.unParcel(typeParcel)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<IngredientTemplate, Integer>() {
+                    @Override
+                    public Integer call(IngredientTemplate ingredientTemplate) {
+                        source.setIngredientType(ingredientTemplate);
+                        source.setAmount(amount);
+                        return position;
+                    }
+                });
+    }
+
+    public void removeIngredient(int position) {
+        if (position >= ingredients.size() || position < 0)
+            throw new ArrayIndexOutOfBoundsException("Cannot remove non-existing ingredient");
+        ingredients.remove(position);
     }
 
     @NonNull
@@ -124,6 +150,10 @@ public class MealIngredientsListModel {
                 return ingredients.size() - 1;
             }
         };
+    }
+
+    public int indexOf(@NonNull Ingredient ingredient) {
+        return ingredients.indexOf(ingredient);
     }
 
     public static class Loading extends Subscriber<Integer> {

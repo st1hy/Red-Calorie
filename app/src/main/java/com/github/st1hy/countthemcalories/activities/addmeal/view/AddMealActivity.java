@@ -27,11 +27,12 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
-import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
+
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,7 @@ import rx.Observable;
 
 public class AddMealActivity extends WithPictureActivity implements AddMealView {
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
+    public static final int REQUEST_EDIT_INGREDIENT = 0x3904;
 
     @Inject
     AddMealPresenter presenter;
@@ -158,14 +160,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_PICK_INGREDIENT) {
-            if (resultCode == RESULT_OK) {
-                IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
-                if (typeParcel != null) {
-                    adapter.onIngredientReceived(typeParcel);
-                }
-            }
-        } else super.onActivityResult(requestCode, resultCode, data);
+        if (!presenter.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -181,12 +178,20 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     }
 
     @Override
-    public void showIngredientDetails(@NonNull View sharedElement, @NonNull Ingredient ingredient) {
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
+    public void showIngredientDetails(long requestId,
+                                      @NonNull IngredientTypeParcel ingredientParcel,
+                                      @NonNull BigDecimal amount,
+                                      @Nullable View sharedElement) {
+        Bundle startOptions = null;
+        if (sharedElement != null) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
+            startOptions = options.toBundle();
+        }
         Intent intent = new Intent(this, IngredientDetailsActivity.class);
         intent.setAction(IngredientDetailsActivity.ACTION_EDIT_INGREDIENT);
-        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL, new IngredientTypeParcel(ingredient.getIngredientType()));
-        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, ingredient.getAmount().toPlainString());
-        startActivity(intent, options.toBundle());
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG, requestId);
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL, ingredientParcel);
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
     }
 }

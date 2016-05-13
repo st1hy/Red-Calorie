@@ -14,12 +14,13 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.A
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.database.Tag;
 
 import javax.inject.Inject;
 
 import rx.functions.Action1;
 
-public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Integer> {
+public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Tag> {
     static final int TAG = R.layout.add_ingredient_tag;
     static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     static final int ADD_CATEGORY_FIELDS_SIZE = 1;
@@ -71,8 +72,9 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     }
 
     void onBindTag(@NonNull ItemTagViewHolder viewHolder, int position) {
-        viewHolder.setCategoryName(model.getTagAt(position).getName());
-        viewHolder.setPosition(position);
+        Tag tag = model.getTagAt(position);
+        viewHolder.setCategoryName(tag.getName());
+        viewHolder.setTag(tag);
     }
 
     private void onBindAddTag(@NonNull AddNewTagViewHolder holder) {
@@ -95,8 +97,8 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     }
 
     @Override
-    public void onItemClicked(@NonNull Integer position) {
-        model.removeAt(position);
+    public void onItemClicked(@NonNull Tag tag) {
+        model.remove(tag);
         notifyDataSetChanged();
     }
 

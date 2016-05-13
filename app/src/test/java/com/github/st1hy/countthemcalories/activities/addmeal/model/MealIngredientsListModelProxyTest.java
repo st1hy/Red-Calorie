@@ -80,7 +80,7 @@ public class MealIngredientsListModelProxyTest {
             when(ingredientTypesModel.unParcel(typeParcel))
                     .thenReturn(Observable.just(exampleIngredientTemplate[i]));
             when(ingredientTypesModel.getById(exampleIngredientTemplate[i].getId())).thenReturn(Observable.just(exampleIngredientTemplate[i]));
-            model.addIngredientOfType(typeParcel).subscribe();
+            model.addIngredientOfType(typeParcel, new BigDecimal(3.2 + i)).subscribe();
             model.getItemAt(i).setAmount(amounts[i]);
         }
         assertThat(model.getItemsCount(), equalTo(3));

@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.Ingredien
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
+import com.squareup.picasso.Picasso;
 
 import dagger.Module;
 import dagger.Provides;
@@ -78,8 +79,8 @@ public class AddMealActivityModule {
     @Provides
     @PerActivity
     public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
-                                                 UnitNamesModel namesModel) {
-        return new IngredientsAdapter(view, model, namesModel);
+                                                 UnitNamesModel namesModel, Picasso picasso) {
+        return new IngredientsAdapter(view, model, namesModel, picasso);
     }
 
     @Provides

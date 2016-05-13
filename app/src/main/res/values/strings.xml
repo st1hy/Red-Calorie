@@ -55,5 +55,5 @@
     <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
-    <string name="add_meal_ingredient_amount_hint">Amount of ingredient i.e 200 g or ml</string>
+    <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
 </resources>

@@ -9,6 +9,7 @@ import android.os.Parcel;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -28,6 +29,7 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -82,6 +84,7 @@ public class AddMealActivityRoboTest {
         assertThat(activity.ingredientList.getChildCount(), equalTo(0));
 
         addIngredient();
+        handleNewIngredient();
 
         assertThat(activity.ingredientList.getChildCount(), equalTo(1));
     }
@@ -91,6 +94,7 @@ public class AddMealActivityRoboTest {
         assertThat(activity.ingredientList.getChildCount(), equalTo(0));
 
         addIngredientPromParcel();
+        handleNewIngredient();
 
         assertThat(activity.ingredientList.getChildCount(), equalTo(1));
     }
@@ -101,7 +105,7 @@ public class AddMealActivityRoboTest {
         activity.addIngredientFab.performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
-        Intent requestIntent = shadowActivity.peekNextStartedActivity();
+        Intent requestIntent = shadowActivity.getNextStartedActivity();
         assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientsActivity.class)));
         assertThat(requestIntent, hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT));
 
@@ -115,7 +119,7 @@ public class AddMealActivityRoboTest {
         activity.addIngredientFab.performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
-        Intent requestIntent = shadowActivity.peekNextStartedActivity();
+        Intent requestIntent = shadowActivity.getNextStartedActivity();
         assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientsActivity.class)));
         assertThat(requestIntent, hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT));
 
@@ -128,5 +132,17 @@ public class AddMealActivityRoboTest {
         parcel.recycle();
         intent.putExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL, fromParcel);
         shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, intent);
+    }
+
+    private void handleNewIngredient() {
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent requestIntent = shadowActivity.getNextStartedActivity();
+        assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientDetailsActivity.class)));
+        assertThat(requestIntent, hasAction(IngredientDetailsActivity.ACTION_EDIT_INGREDIENT));
+        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL));
+        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG));
+        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL));
+
+        shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, requestIntent);
     }
 }

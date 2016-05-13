@@ -30,6 +30,7 @@ import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class IngredientDetailModel {
@@ -66,7 +67,9 @@ public class IngredientDetailModel {
             if (isDataValid) {
                 IngredientTypeParcel typeParcel = intent.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
                 String valueAsString = intent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
+                long id = intent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -1L);
                 ingredient = new Ingredient();
+                ingredient.setId(id);
                 ingredient.setAmount(new BigDecimal(valueAsString));
                 ingredientObservable = loadFromParcel(typeParcel);
             } else {
@@ -201,9 +204,11 @@ public class IngredientDetailModel {
             public ParcelableProxy createFromParcel(Parcel source) {
                 ParcelableProxy parcelableProxy = new ParcelableProxy();
                 parcelableProxy.isReCreated = true;
+                long ingredientId = source.readLong();
                 long ingredientTypeId = source.readLong();
                 BigDecimal value = decimalConverter.convertToEntityProperty(source.readString());
                 Ingredient ingredient = new Ingredient();
+                ingredient.setId(ingredientId);
                 ingredient.setAmount(value);
                 ingredient.setIngredientTypeId(ingredientTypeId);
                 parcelableProxy.ingredient = ingredient;
@@ -223,6 +228,7 @@ public class IngredientDetailModel {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(ingredient.getId());
             dest.writeLong(ingredient.getIngredientTypeId());
             dest.writeString(decimalConverter.convertToDatabaseValue(ingredient.getAmount()));
         }

@@ -235,10 +235,17 @@ public class AddMealActivityTest {
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
-        onView(withId(R.id.add_meal_empty_ingredients)).check(matches(not(isDisplayed())));
-        //TODO
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()));
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(typeTextIntoFocusedView("42.6"));
+        onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(not(isDisplayed())));
+        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withText("42.6 g")).check(matches(isDisplayed()));
     }
 
 }
