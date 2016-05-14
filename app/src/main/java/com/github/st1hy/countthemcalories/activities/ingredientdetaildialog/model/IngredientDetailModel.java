@@ -93,6 +93,7 @@ public class IngredientDetailModel {
         return isDataValid;
     }
 
+    @NonNull
     public Observable<Ingredient> getIngredientObservable() {
         return ingredientObservable;
     }
@@ -102,7 +103,7 @@ public class IngredientDetailModel {
     }
 
     @NonNull
-    private Observable<Ingredient> loadItem(@NonNull Ingredient ingredient) {
+    Observable<Ingredient> loadItem(@NonNull Ingredient ingredient) {
         Observable<Ingredient> observable = ingredientTypesModel.getById(ingredient.getIngredientTypeId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Ingredient>() {
@@ -167,8 +168,8 @@ public class IngredientDetailModel {
     }
 
     public enum IngredientDetailError {
-        NO_VALUE(R.string.add_ingredient_energy_density_name_error_empty),
-        ZERO_VALUE(R.string.add_ingredient_energy_density_name_error_zero);
+        NO_VALUE(R.string.add_meal_energy_density_name_error_empty),
+        ZERO_VALUE(R.string.add_meal_energy_density_name_error_zero);
 
         private final int errorResId;
 

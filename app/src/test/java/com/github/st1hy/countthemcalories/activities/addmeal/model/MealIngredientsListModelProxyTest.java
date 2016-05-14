@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 
 import org.hamcrest.junit.MatcherAssert;
 import org.joda.time.DateTime;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -186,7 +188,14 @@ public class MealIngredientsListModelProxyTest {
     @Test
     public void testLoadingError() throws Exception {
         Timber.uprootAll();
-        model.loadItems(Collections.singletonList(new Ingredient()));
-        //TODO Maybe check what will happen to the rest of the application
+
+        final AtomicReference<Throwable> error = new AtomicReference<>();
+        model.loadItems(Collections.singletonList(new Ingredient())).subscribe(new SimpleSubscriber<Integer>() {
+            @Override
+            public void onError(Throwable e) {
+                error.set(e);
+            }
+        });
+        assertThat(error.get(), instanceOf(NullPointerException.class));
     }
 }

@@ -3,14 +3,17 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_title_subtext">You should really count them, you know?</string>
 
     <string name="action_settings">Settings</string>
-    <string name="drawer_title_subtext">You should really count them, you know?</string>
+
     <string name="nav_overview">Overview</string>
     <string name="nav_ingredients">Ingredients</string>
+    <string name="nav_categories">@string/tags_title</string>
+    <string name="nav_settings">@string/action_settings</string>
 
     <string name="overview_toolbar_title">@string/app_name</string>
-    <string name="ingredients_title">Ingredients</string>
+
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
     <string name="add_meal_name_hint">Name</string>
@@ -23,8 +26,17 @@
     <string name="add_meal_button_add_ingredient">Add ingredient</string>
     <string name="add_meal_no_ingredients_yet">No ingredients yet</string>
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
+    <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
+    <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
+    <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
+    <string name="add_meal_energy_density_name_error_empty">@string/add_ingredient_energy_density_name_error_empty</string>
+    <string name="add_meal_energy_density_name_error_zero">@string/add_ingredient_energy_density_name_error_zero</string>
+
+    <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_sort_title">Sort ingredients</string>
+    <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
+
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
     <string name="add_ingredient_save_action">Save</string>
@@ -32,15 +44,14 @@
     <string name="add_ingredient_categories_name">@string/tags_title</string>
     <string name="add_ingredient_add_category">Add category</string>
     <string name="add_ingredient_energy_density_hint">Amount of calories</string>
-    <string name="settings_title">Settings</string>
-    <string name="settings_current_unit">Current unit:</string>
-    <string name="settings_select_preferred_energy_unit_for_meals">Select preferred energy unit for meals</string>
-    <string name="settings_select_unit_dialog_title">Select unit</string>
-    <string name="settings_select_preferred_energy_unit_for_drinks">Select preferred energy unit for drinks</string>
     <string name="add_ingredient_select_unit_dialog_title">Select unit for this ingredient</string>
     <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
     <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
     <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
+    <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
+    <string name="add_ingredient_energy_density_name_error_empty">Amount has be specified!</string>
+    <string name="add_ingredient_energy_density_name_error_zero">Amount must be greater than zero!</string>
+
     <string name="tags_title">Categories</string>
     <string name="tags_new_tag_dialog">New category</string>
     <string name="tags_new_tag_hint">Category name</string>
@@ -48,12 +59,10 @@
     <string name="tags_remove_dialog_title">Remove category</string>
     <string name="tags_remove_information">Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
-    <string name="nav_categories">@string/tags_title</string>
-    <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
-    <string name="add_ingredient_energy_density_name_error_empty">Amount has be specified!</string>
-    <string name="add_ingredient_energy_density_name_error_zero">Amount must be greater than zero!</string>
-    <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
-    <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
-    <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
-    <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_current_unit">Current unit:</string>
+    <string name="settings_select_preferred_energy_unit_for_meals">Select preferred energy unit for meals</string>
+    <string name="settings_select_unit_dialog_title">Select unit</string>
+    <string name="settings_select_preferred_energy_unit_for_drinks">Select preferred energy unit for drinks</string>
 </resources>
