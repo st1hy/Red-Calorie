@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.settings.presenter;
 
-import com.github.st1hy.countthemcalories.activities.settings.model.EnergyUnit;
+import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
@@ -43,7 +43,7 @@ public class SettingsPresenterImplTest {
 
     @Before
     public void setup() {
-        presenter = new SettingsPresenterImpl(view, preferencesModel);
+        presenter = new SettingsPresenterImpl(view, preferencesModel, energyHolder, massHolder, volumeHolder);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SettingsPresenterImplTest {
     public void testNoViewChangesBeforeStart() throws Exception {
         final PublishSubject<SettingsChangedEvent> subject = PublishSubject.create();
         when(preferencesModel.toObservable()).thenReturn(subject);
-        subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KCAL_AT_100G));
+        subject.onNext(new UnitChangedEvent.Mass(GravimetricEnergyDensityUnit.KCAL_AT_100G));
         verifyZeroInteractions(view);
     }
 
@@ -92,7 +92,7 @@ public class SettingsPresenterImplTest {
         verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
         verify(view).showNavigationAsUp();
         presenter.onStop();
-        subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KCAL_AT_100G));
+        subject.onNext(new UnitChangedEvent.Mass(GravimetricEnergyDensityUnit.KCAL_AT_100G));
         verifyNoMoreInteractions(view);
     }
 
@@ -103,7 +103,7 @@ public class SettingsPresenterImplTest {
         presenter.onStart();
         verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
         verify(view).showNavigationAsUp();
-        subject.onNext(new EnergyUnit.Volume(VolumetricEnergyDensityUnit.KCAL_AT_100ML));
+        subject.onNext(new UnitChangedEvent.Volume(VolumetricEnergyDensityUnit.KCAL_AT_100ML));
         presenter.onStop();
         verify(view).setLiquidUnit(anyString());
         verifyNoMoreInteractions(view);
@@ -116,7 +116,7 @@ public class SettingsPresenterImplTest {
         presenter.onStart();
         verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
         verify(view).showNavigationAsUp();
-        subject.onNext(new EnergyUnit.Mass(GravimetricEnergyDensityUnit.KJ_AT_G));
+        subject.onNext(new UnitChangedEvent.Mass(GravimetricEnergyDensityUnit.KJ_AT_G));
         presenter.onStop();
         verify(view).setSolidUnit(anyString());
         verifyNoMoreInteractions(view);

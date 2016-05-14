@@ -2,25 +2,25 @@ package com.github.st1hy.countthemcalories.activities.settings.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.settings.model.EnergyUnit;
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
+import com.github.st1hy.countthemcalories.activities.settings.view.holder.SelectUnitViewHolder;
 import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
-import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.Unit;
+import com.jakewharton.rxbinding.view.RxView;
 
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 public class SettingsPresenterImpl extends AbstractDrawerPresenter implements SettingsPresenter {
@@ -40,19 +40,10 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
     @Override
     public void onStart() {
         super.onStart();
-        Subscription subscription= model.toObservable()
+        subscriptions.add(model.toObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<SettingsChangedEvent>() {
-                    @Override
-                    public void call(SettingsChangedEvent event) {
-                        if (event instanceof EnergyUnit.Mass)
-                            view.setSolidUnit(model.getUnitName(((EnergyUnit.Mass) event).getValue()));
-                        else if (event instanceof EnergyUnit.Volume)
-                            view.setLiquidUnit(model.getUnitName(((EnergyUnit.Volume) event).getValue()));
-
-                    }
-                });
-        subscriptions.add(subscription);
+                .subscribe(onUnitChanged()));
+        setupView();
     }
 
     @Override
@@ -60,57 +51,75 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
         super.onStop();
         subscriptions.clear();
     }
-
-
-    @Override
-    public void onLiquidUnitSettingsClicked() {
-        onUnitSettingsClicked(AmountUnitType.VOLUME);
-    }
-
-    private void onUnitSettingsClicked(@NonNull final AmountUnitType type) {
-        EnergyDensityUnit[] units = (EnergyDensityUnit[]) EnergyDensityUtils.getUnits(type);
-        String[] values = new String[units.length];
-        for (int i = 0; i < units.length; i++) {
-            values[i] = model.getUnitName(units[i], BigDecimal.ONE);
-        }
-        view.showAlertDialog(model.getPreferredUnitDialogTitle(), values)
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer which) {
-                        onSelectedUnitType(type, which);
-                    }
-                });
-    }
-
-    void onSelectedUnitType(@NonNull AmountUnitType type, int which) {
-        switch (type) {
-            case VOLUME: {
-                VolumetricEnergyDensityUnit unit = VolumetricEnergyDensityUnit.values()[which];
-                model.setPreferredVolumetricUnit(unit);
-                break;
-            }
-            case MASS: {
-                GravimetricEnergyDensityUnit unit = GravimetricEnergyDensityUnit.values()[which];
-                model.setPreferredGravimetricUnit(unit);
-                break;
-            }
-            default: throw new IllegalArgumentException();
-        }
-    }
-
-    @Override
-    public void onSolidUnitSettingsClicked() {
-        onUnitSettingsClicked(AmountUnitType.MASS);
-    }
-
-    @Override
-    public void showCurrentUnits() {
-        view.setLiquidUnit(model.getUnitName(model.getPreferredVolumetricUnit()));
-        view.setSolidUnit(model.getUnitName(model.getPreferredGravimetricUnit()));
-    }
-
     @Override
     protected DrawerMenuItem currentItem() {
         return DrawerMenuItem.SETTINGS;
+    }
+
+    @NonNull
+    private Action1<SettingsChangedEvent> onUnitChanged() {
+        return new Action1<SettingsChangedEvent>() {
+            @Override
+            public void call(SettingsChangedEvent event) {
+                if (event instanceof UnitChangedEvent) {
+                    onUnitChanged((UnitChangedEvent) event);
+                }
+            }
+        };
+    }
+
+    private void onUnitChanged(@NonNull UnitChangedEvent event) {
+        SettingUnit setting = event.getSetting();
+        getViewHolder(setting).setUnit(model.getUnitName(event.getUnit()));
+    }
+
+    void setupView() {
+        for (SettingUnit setting : SettingUnit.values()) {
+            SelectUnitViewHolder viewHolder = getViewHolder(setting);
+            subscriptions.add(RxView.clicks(viewHolder.getRoot())
+                    .flatMap(selectUnitDialog(setting))
+                    .subscribe(onUnitSelected(setting)));
+            viewHolder.setTitle(setting.getTitleRes());
+            viewHolder.setUnit(model.getUnitName(setting.getUnitFrom(model)));
+        }
+    }
+
+    @NonNull
+    private Func1<Void, Observable<Integer>> selectUnitDialog(@NonNull final SettingUnit setting) {
+        return new Func1<Void, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Void aVoid) {
+                Unit[] units = setting.options();
+                String[] values = new String[units.length];
+                for (int i = 0; i < units.length; i++) {
+                    values[i] = model.formatUnit(units[i], BigDecimal.ONE);
+                }
+                return view.showAlertDialog(model.getPreferredUnitDialogTitle(), values);
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<Integer> onUnitSelected(@NonNull final SettingUnit setting) {
+        return new Action1<Integer>() {
+            @Override
+            public void call(Integer which) {
+                setting.setUnitTo(model, which);
+            }
+        };
+    }
+
+    @NonNull
+    private SelectUnitViewHolder getViewHolder(@NonNull SettingUnit settingUnit) {
+        switch (settingUnit) {
+            case ENERGY:
+                return view.getEnergyHolder();
+            case MASS:
+                return view.getMassHolder();
+            case VOLUME:
+                return view.getVolumeHolder();
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 }

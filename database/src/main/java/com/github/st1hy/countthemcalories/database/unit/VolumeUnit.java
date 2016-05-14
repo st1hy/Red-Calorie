@@ -8,26 +8,26 @@ import com.github.st1hy.countthemcalories.database.R;
 
 import java.math.BigDecimal;
 
-public enum EnergyUnit implements Unit {
-    KJ(1, BigDecimal.ONE, R.string.unit_kj),
-    KCAL(2, BigDecimal.valueOf(4184, 3), R.string.unit_kcal);
+public enum VolumeUnit implements AmountUnit {
+    ML(1, BigDecimal.ONE, R.string.unit_milliliter),
+    ML100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_milliliter);
 
     private final int id;
-    private final BigDecimal inKJ;
+    private final BigDecimal inML;
     private final int nameRes;
 
-    EnergyUnit(int id, @NonNull BigDecimal inKJ, int nameRes) {
+    VolumeUnit(int id, @NonNull BigDecimal inML, int nameRes) {
         this.id = id;
-        this.inKJ = inKJ;
+        this.inML = inML;
         this.nameRes = nameRes;
     }
 
     /**
-     * @return base value of one converted into kJ
+     * @return base value of one converted into ml
      */
     @NonNull
     public BigDecimal getBase() {
-        return inKJ;
+        return inML;
     }
 
     @StringRes
@@ -35,17 +35,21 @@ public enum EnergyUnit implements Unit {
         return nameRes;
     }
 
+    @NonNull
+    @Override
+    public AmountUnitType getType() {
+        return AmountUnitType.VOLUME;
+    }
+
     public int getId() {
         return id;
     }
 
     @Nullable
-    public static EnergyUnit fromId(int id) {
+    public static VolumeUnit fromId(int id) {
         switch (id) {
-            case 1:
-                return KJ;
-            case 2:
-                return KCAL;
+            case 1: return ML;
+            case 2: return ML100;
         }
         return null;
     }

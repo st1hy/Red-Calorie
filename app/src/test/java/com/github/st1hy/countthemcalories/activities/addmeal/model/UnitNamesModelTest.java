@@ -58,7 +58,7 @@ public class UnitNamesModelTest {
     public void testGetCalorieCount() throws Exception {
         String calorieCount = model.getCalorieCount(new BigDecimal("2"),
                 EnergyDensityUtils.getOrZero(VolumetricEnergyDensityUnit.KJ_AT_ML, "10"));
-        double expected = 2 * 10 / EnergyUnit.KCAL.getInKJ().doubleValue();
+        double expected = 2 * 10 / EnergyUnit.KCAL.getBase().doubleValue();
         assertThat(calorieCount, equalTo(String.format(Locale.ENGLISH, "%.2f kcal", expected)));
     }
 

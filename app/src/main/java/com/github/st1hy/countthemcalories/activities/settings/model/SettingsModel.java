@@ -6,11 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.*;
 
 import java.math.BigDecimal;
 
@@ -18,14 +14,14 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
-import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_100ML;
-
 public class SettingsModel {
-    static final String PREFERRED_VOLUME_ENERGY_UNIT = "setting preferred volumetric energy unit";
-    static final String PREFERRED_MASS_ENERGY_UNIT = "setting preferred gravimetric energy unit";
-    static final GravimetricEnergyDensityUnit defaultGravimetricEnergyUnit = KCAL_AT_100G;
-    static final VolumetricEnergyDensityUnit defaultVolumetricEnergyUnit = KCAL_AT_100ML;
+    static final String PREFERRED_ENERGY_UNIT = "setting preferred energy unit";
+    static final String PREFERRED_MASS_UNIT = "setting preferred mass unit";
+    static final String PREFERRED_VOLUME_UNIT = "setting preferred volume unit";
+
+    static final EnergyUnit defaultUnitOfEnergy = EnergyUnit.KCAL;
+    static final MassUnit defaultUnitOfMass = MassUnit.G100;
+    static final VolumeUnit defaultUnitOfVolume = VolumeUnit.ML100;
 
     private final SharedPreferences preferences;
     private final Resources resources;
@@ -40,75 +36,71 @@ public class SettingsModel {
         observable = SettingsChangedEvent.create(this);
     }
 
-    public void setPreferredVolumetricUnit(@NonNull VolumetricEnergyDensityUnit unit) {
-        preferences.edit().putInt(PREFERRED_VOLUME_ENERGY_UNIT, unit.getId()).apply();
+    public void setEnergyUnit(@NonNull EnergyUnit unit) {
+        preferences.edit().putInt(PREFERRED_ENERGY_UNIT, unit.getId()).apply();
     }
 
     @NonNull
-    public VolumetricEnergyDensityUnit getPreferredVolumetricUnit() {
-        int id = preferences.getInt(PREFERRED_VOLUME_ENERGY_UNIT, -1);
-        if (id != -1) {
-            return VolumetricEnergyDensityUnit.fromId(id);
+    public EnergyUnit getEnergyUnit() {
+        int id = preferences.getInt(PREFERRED_ENERGY_UNIT, -1);
+        EnergyUnit unit = EnergyUnit.fromId(id);
+        if (unit != null) {
+            return unit;
         } else {
-            return defaultVolumetricEnergyUnit;
+            return defaultUnitOfEnergy;
         }
     }
 
-    public void setPreferredGravimetricUnit(@NonNull GravimetricEnergyDensityUnit unit) {
-        preferences.edit().putInt(PREFERRED_MASS_ENERGY_UNIT, unit.getId()).apply();
+    public void setMassUnit(@NonNull MassUnit unit) {
+        preferences.edit().putInt(PREFERRED_MASS_UNIT, unit.getId()).apply();
     }
 
     @NonNull
-    public GravimetricEnergyDensityUnit getPreferredGravimetricUnit() {
-        int id = preferences.getInt(PREFERRED_MASS_ENERGY_UNIT, -1);
-        if (id != -1) {
-            return GravimetricEnergyDensityUnit.fromId(id);
+    public MassUnit getMassUnit() {
+        int id = preferences.getInt(PREFERRED_MASS_UNIT, -1);
+        MassUnit unit = MassUnit.fromId(id);
+        if (unit != null) {
+            return unit;
         } else {
-            return defaultGravimetricEnergyUnit;
+            return defaultUnitOfMass;
         }
     }
 
-    public void setDefaultSettingsIfNotSet() {
-        boolean setVolumeEnergyUnit = preferences.getInt(PREFERRED_VOLUME_ENERGY_UNIT, -1) == -1;
-        boolean setMassEnergyUnit = preferences.getInt(PREFERRED_MASS_ENERGY_UNIT, -1) == -1;
+    public void setVolumeUnit(@NonNull VolumeUnit unit) {
+        preferences.edit().putInt(PREFERRED_VOLUME_UNIT, unit.getId()).apply();
+    }
 
-        if (setVolumeEnergyUnit || setMassEnergyUnit) {
-            SharedPreferences.Editor editor = preferences.edit();
-            if (setVolumeEnergyUnit)
-                editor.putInt(PREFERRED_VOLUME_ENERGY_UNIT, defaultVolumetricEnergyUnit.getId());
-            if (setMassEnergyUnit)
-                editor.putInt(PREFERRED_MASS_ENERGY_UNIT, defaultGravimetricEnergyUnit.getId());
-            editor.apply();
+    @NonNull
+    public VolumeUnit getVolumeUnit() {
+        int id = preferences.getInt(PREFERRED_VOLUME_UNIT, -1);
+        VolumeUnit unit = VolumeUnit.fromId(id);
+        if (unit != null) {
+            return unit;
+        } else {
+            return defaultUnitOfVolume;
         }
     }
 
     public void resetToDefaultSettings() {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(PREFERRED_VOLUME_ENERGY_UNIT, defaultVolumetricEnergyUnit.getId());
-        editor.putInt(PREFERRED_MASS_ENERGY_UNIT, defaultGravimetricEnergyUnit.getId());
+        editor.putInt(PREFERRED_ENERGY_UNIT, defaultUnitOfEnergy.getId());
+        editor.putInt(PREFERRED_MASS_UNIT, defaultUnitOfMass.getId());
+        editor.putInt(PREFERRED_VOLUME_UNIT, defaultUnitOfVolume.getId());
         editor.apply();
     }
 
     @NonNull
-    public String getUnitName(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal decimal) {
-        return resources.getString(unit.getFormatResId(), decimal.toPlainString());
+    public String formatUnit(@NonNull Unit unit, @NonNull BigDecimal decimal) {
+        String unitName = resources.getString(unit.getNameRes());
+        return resources.getString(R.string.format_value_simple, decimal.toPlainString(), unitName);
     }
 
     @NonNull
-    public String getUnitName(@NonNull EnergyDensity energyDensity) {
-        EnergyDensityUnit unit = energyDensity.getUnit();
-        BigDecimal decimal = energyDensity.getValue()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros();
-        return getUnitName(unit, decimal);
+    public String getUnitName(@NonNull Unit unit) {
+        return resources.getString(unit.getNameRes());
     }
 
     @NonNull
-    public String getUnitName(@NonNull EnergyDensityUnit unit) {
-        return resources.getString(unit.getNameResId());
-    }
-
-
     public Observable<SettingsChangedEvent> toObservable() {
         return observable;
     }
@@ -120,12 +112,13 @@ public class SettingsModel {
 
 
     @NonNull
-    public EnergyDensityUnit getPreferredFrom(@NonNull AmountUnitType type) {
+    public AmountUnit getAmountUnitFrom(@NonNull AmountUnitType type) {
         switch (type) {
             case VOLUME:
-                return getPreferredVolumetricUnit();
+                return getVolumeUnit();
             case MASS:
-                return getPreferredGravimetricUnit();
+                return getMassUnit();
+            case UNKNOWN:
             default:
                 throw new UnsupportedOperationException();
         }

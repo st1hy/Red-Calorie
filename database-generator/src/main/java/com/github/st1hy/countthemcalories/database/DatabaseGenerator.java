@@ -12,14 +12,14 @@ public class DatabaseGenerator {
     private static final String uriClassName = "android.net.Uri";
     private static final String uriConverterClassName = "com.github.st1hy.countthemcalories.database.property.UriPropertyConverter";
 
-    private static final String energyDensityClassName = "com.github.st1hy.countthemcalories.database.unit.EnergyDensity";
-    private static final String energyDensityConverterClassName = "com.github.st1hy.countthemcalories.database.property.EnergyDensityPropertyConverter";
+    private static final String amountUnitTypeClassName = "com.github.st1hy.countthemcalories.database.unit.AmountUnitType";
+    private static final String amountUnitTypeConverterClassName = "com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter";
 
     private static final String bigDecimalClassName = "java.math.BigDecimal";
     private static final String bigDecimalConverterClassName = "com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter";
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1002, "com.github.st1hy.countthemcalories.database");
+        Schema schema = new Schema(1003, "com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
 
@@ -30,8 +30,11 @@ public class DatabaseGenerator {
         ingredientTemplate.addStringProperty("imageUri").customType(uriClassName, uriConverterClassName);
         ingredientTemplate.addLongProperty("creationDate")
                 .customType(jodaTimeClassName, jodaTimeConverterClassName).notNull();
-        ingredientTemplate.addStringProperty("energyDensity")
-                .customType(energyDensityClassName, energyDensityConverterClassName)
+        ingredientTemplate.addIntProperty("amountType")
+                .customType(amountUnitTypeClassName, amountUnitTypeConverterClassName)
+                .notNull();
+        ingredientTemplate.addStringProperty("energyDensityAmount")
+                .customType(bigDecimalClassName, bigDecimalConverterClassName)
                 .notNull();
 
         Entity ingredientComponent = schema.addEntity("Ingredient");

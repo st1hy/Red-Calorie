@@ -1,29 +1,37 @@
 package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * Immutable energy density
  */
 public class EnergyDensity {
-    private final EnergyDensityUnit unit;
+    private final EnergyUnit energyUnit;
+    private final AmountUnit unit;
     private final BigDecimal value;
 
-    public EnergyDensity(@NonNull EnergyDensityUnit unit, @NonNull BigDecimal value) {
+    public EnergyDensity(@NonNull EnergyUnit energyUnit, @NonNull AmountUnit unit, @NonNull BigDecimal value) {
+        this.energyUnit = energyUnit;
         this.unit = unit;
         this.value = value;
     }
 
-    public EnergyDensity(@NonNull EnergyDensity gravimetricEnergyDensity) {
-        this.unit = gravimetricEnergyDensity.getUnit();
-        this.value = gravimetricEnergyDensity.getValue();
+    public EnergyDensity(@NonNull EnergyDensity energyDensity) {
+        this.energyUnit = energyDensity.energyUnit;
+        this.unit = energyDensity.unit;
+        this.value = energyDensity.value;
     }
 
     @NonNull
-    public EnergyDensityUnit getUnit() {
+    public EnergyUnit getEnergyUnit() {
+        return energyUnit;
+    }
+
+    @NonNull
+    public AmountUnit getAmountUnit() {
         return unit;
     }
 
@@ -32,19 +40,14 @@ public class EnergyDensity {
         return value;
     }
 
-    @StringRes
-    public int getFormatResId() {
-        return unit.getFormatResId();
-    }
-
     @NonNull
     public AmountUnitType getAmountUnitType() {
-        return unit.getAmountUnitType();
+        return unit.getType();
     }
 
     @Override
     public String toString() {
-        return value.toString() + " " + unit.toString();
+        return value.toPlainString() + " " + energyUnit + " / " + unit;
     }
 
     @Override
@@ -54,26 +57,32 @@ public class EnergyDensity {
 
         EnergyDensity that = (EnergyDensity) o;
 
-        return unit.equals(that.unit) && value.equals(that.value);
+        return energyUnit == that.energyUnit && unit.equals(that.unit) && value.equals(that.value);
+
     }
 
     @Override
     public int hashCode() {
-        int result = unit.hashCode();
+        int result = energyUnit.hashCode();
+        result = 31 * result + unit.hashCode();
         result = 31 * result + value.hashCode();
         return result;
     }
 
-    /**
-     * Converts energy density to other unit.
-     *
-     * @param unit targeted unit
-     * @return new energy density
-     */
     @NonNull
-    public EnergyDensity convertTo(@NonNull EnergyDensityUnit unit) {
-        if (unit.getAmountUnitType() != getAmountUnitType())
-            throw new IllegalArgumentException("Cannot convert energy density using this method; unknown mass density");
-        return new EnergyDensity(unit, this.unit.convertValue(value, unit));
+    public EnergyDensity convertTo(@NonNull EnergyUnit energyUnit, @NonNull AmountUnit unit) {
+        if (unit.getType() != getAmountUnitType())
+            throw new IllegalArgumentException("Cannot convert energy density using this method; different amount unit type");
+
+        final BigDecimal sourceEnergyBase = getEnergyUnit().getBase();
+        final BigDecimal sourceAmountBase = getAmountUnit().getBase();
+        final BigDecimal targetEnergyBase = energyUnit.getBase();
+        final BigDecimal targetAmountBase = unit.getBase();
+
+        BigDecimal convertedValue = value.multiply(sourceEnergyBase)
+                .multiply(targetAmountBase)
+                .divide(targetEnergyBase.multiply(sourceAmountBase), MathContext.DECIMAL64)
+                .stripTrailingZeros();
+        return new EnergyDensity(energyUnit, unit, convertedValue);
     }
 }

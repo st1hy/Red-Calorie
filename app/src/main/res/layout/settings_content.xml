@@ -10,96 +10,12 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/settings_app_bar"
     tools:context=".activities.settings.view.SettingsActivity">
-    <LinearLayout
-        android:id="@+id/settings_energy_density_liquid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:clickable="true"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_select_preferred_energy_unit_for_drinks"
-            android:textSize="18sp"
-            style="@style/TextAppearance.AppCompat.Body2"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_current_unit"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1"/>
-            <android.support.v4.widget.Space
-                android:layout_width="8dp"
-                android:layout_height="0dp"/>
-            <TextView
-                android:id="@+id/settings_drinks_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="kcal / 100 ml"
-                android:textIsSelectable="false"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1"/>
-        </LinearLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@drawable/tags_separator"/>
-    <LinearLayout
-        android:id="@+id/settings_energy_density_solid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:clickable="true"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_select_preferred_energy_unit_for_meals"
-            android:textSize="18sp"
-            style="@style/TextAppearance.AppCompat.Body2"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_current_unit"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1"/>
-            <android.support.v4.widget.Space
-                android:layout_width="8dp"
-                android:layout_height="0dp"/>
-            <TextView
-                android:id="@+id/settings_meals_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                tools:text="kcal / 100 g"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1"/>
-        </LinearLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@drawable/tags_separator"/>
+
+    <include layout="@layout/settings_select_unit"
+        android:id="@+id/settings_unit_energy"/>
+    <include layout="@layout/settings_select_unit"
+        android:id="@+id/settings_unit_mass" />
+    <include layout="@layout/settings_select_unit"
+        android:id="@+id/settings_unit_volume" />
+
 </LinearLayout>

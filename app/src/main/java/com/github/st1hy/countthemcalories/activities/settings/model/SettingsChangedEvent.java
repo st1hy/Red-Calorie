@@ -15,10 +15,12 @@ public abstract class SettingsChangedEvent {
     @Nullable
     public static SettingsChangedEvent from(@NonNull SettingsModel model, @NonNull String key) {
         switch (key) {
-            case SettingsModel.PREFERRED_MASS_ENERGY_UNIT:
-                return new EnergyUnit.Mass(model.getPreferredGravimetricUnit());
-            case SettingsModel.PREFERRED_VOLUME_ENERGY_UNIT:
-                return new EnergyUnit.Volume(model.getPreferredVolumetricUnit());
+            case SettingsModel.PREFERRED_ENERGY_UNIT:
+                return new UnitChangedEvent.Energy(model.getEnergyUnit());
+            case SettingsModel.PREFERRED_MASS_UNIT:
+                return new UnitChangedEvent.Mass(model.getMassUnit());
+            case SettingsModel.PREFERRED_VOLUME_UNIT:
+                return new UnitChangedEvent.Volume(model.getVolumeUnit());
             default:
                 return null;
         }

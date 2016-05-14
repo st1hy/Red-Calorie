@@ -68,8 +68,8 @@ public class SettingsModelTest {
         Subscription subscription = model.toObservable().subscribe(mock);
         model.resetToDefaultSettings();
         subscription.unsubscribe();
-        verify(mock).call(isA(EnergyUnit.Volume.class));
-        verify(mock).call(isA(EnergyUnit.Mass.class));
+        verify(mock).call(isA(UnitChangedEvent.Volume.class));
+        verify(mock).call(isA(UnitChangedEvent.Mass.class));
         assertThat(SettingsModel.defaultGravimetricEnergyUnit, equalTo(model.getPreferredGravimetricUnit()));
         assertThat(SettingsModel.defaultVolumetricEnergyUnit, equalTo(model.getPreferredVolumetricUnit()));
     }

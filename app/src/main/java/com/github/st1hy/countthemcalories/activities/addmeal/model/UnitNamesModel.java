@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
@@ -29,9 +30,20 @@ public class UnitNamesModel {
     @NonNull
     public String getReadableEnergyDensity(@NonNull EnergyDensity energyDensity) {
         AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
-        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
-        EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
-        return settingsModel.getUnitName(convertedToPreferred);
+        AmountUnit preferredUnitOfType = settingsModel.getAmountUnitFrom(amountUnitType);
+        EnergyUnit preferredEnergyUnit = settingsModel.getEnergyUnit();
+        return format(energyDensity.convertTo(preferredEnergyUnit, preferredUnitOfType));
+    }
+
+    @NonNull
+    String format(@NonNull EnergyDensity energyDensity) {
+        String energyUnit = resources.getString(energyDensity.getEnergyUnit().getNameRes());
+        String amountUnit = resources.getString(energyDensity.getAmountUnit().getNameRes());
+        String value = energyDensity.getValue()
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
+        return resources.getString(R.string.format_value_fraction, value, energyUnit, amountUnit);
     }
 
     @NonNull
@@ -54,7 +66,7 @@ public class UnitNamesModel {
     @NonNull
     public String getCalorieCount(@NonNull BigDecimal amount, @NonNull EnergyDensity energyDensity) {
         AmountUnitType amountUnitType = energyDensity.getAmountUnitType();
-        EnergyDensityUnit preferredUnitOfType = settingsModel.getPreferredFrom(amountUnitType);
+        EnergyDensityUnit preferredUnitOfType = settingsModel.getAmountUnitFrom(amountUnitType);
         EnergyDensity convertedToPreferred = energyDensity.convertTo(preferredUnitOfType);
         EnergyUnit energyUnit = preferredUnitOfType.getEnergyUnit();
         return resources.getString(getUnitFormat(energyUnit), convertedToPreferred.getValue()

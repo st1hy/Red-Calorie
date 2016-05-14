@@ -62,7 +62,8 @@
 
     <string name="settings_title">Settings</string>
     <string name="settings_current_unit">Current unit:</string>
-    <string name="settings_select_preferred_energy_unit_for_meals">Select preferred energy unit for meals</string>
     <string name="settings_select_unit_dialog_title">Select unit</string>
-    <string name="settings_select_preferred_energy_unit_for_drinks">Select preferred energy unit for drinks</string>
+    <string name="settings_unit_energy_title">Select preferred unit of energy</string>
+    <string name="settings_unit_mass_title">Select preferred unit of mass</string>
+    <string name="settings_unit_volume_title">Select preferred unit of volume</string>
 </resources>

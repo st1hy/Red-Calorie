@@ -2,35 +2,27 @@ package com.github.st1hy.countthemcalories.activities.settings.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
+import com.github.st1hy.countthemcalories.activities.settings.view.holder.SelectUnitViewHolder;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingsActivity extends DrawerActivity implements SettingsView {
     SettingsActivityComponent component;
 
-    @Inject
-    SettingsPresenter presenter;
+    @Inject SettingsPresenter presenter;
 
-    @BindView(R.id.settings_energy_density_liquid)
-    View liquidUnitView;
-    @BindView(R.id.settings_drinks_unit)
-    TextView liquidUnitText;
-    @BindView(R.id.settings_energy_density_solid)
-    View solidUnitView;
-    @BindView(R.id.settings_meals_unit)
-    TextView solidUnitText;
+    @Inject SelectUnitViewHolder energyHolder;
+    @Inject SelectUnitViewHolder massHolder;
+    @Inject SelectUnitViewHolder volumeHolder;
 
     @NonNull
     protected SettingsActivityComponent getComponent() {
@@ -48,30 +40,21 @@ public class SettingsActivity extends DrawerActivity implements SettingsView {
         setContentView(R.layout.settings_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
-
-        liquidUnitView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onLiquidUnitSettingsClicked();
-            }
-        });
-        solidUnitView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSolidUnitSettingsClicked();
-            }
-        });
-        presenter.showCurrentUnits();
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void setLiquidUnit(String unitName) {
-        liquidUnitText.setText(unitName);
+    @NonNull
+    public SelectUnitViewHolder getEnergyHolder() {
+        return energyHolder;
     }
 
-    @Override
-    public void setSolidUnit(String unitName) {
-        solidUnitText.setText(unitName);
+    @NonNull
+    public SelectUnitViewHolder getMassHolder() {
+        return massHolder;
+    }
+
+    @NonNull
+    public SelectUnitViewHolder getVolumeHolder() {
+        return volumeHolder;
     }
 }
