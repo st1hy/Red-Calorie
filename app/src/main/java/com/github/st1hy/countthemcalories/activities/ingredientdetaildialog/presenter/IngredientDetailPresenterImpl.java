@@ -15,6 +15,8 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.squareup.picasso.Picasso;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,6 +73,9 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         IngredientTemplate type = ingredient.getIngredientType();
         view.setName(type.getName());
         view.setEnergyDensity(namesModel.getReadableEnergyDensity(type.getEnergyDensity()));
+        if (ingredient.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            view.setAmount(ingredient.getAmount().toPlainString());
+        }
         setCalorieCount(model.getIngredient());
         if (!Uri.EMPTY.equals(type.getImageUri())) {
             bindImage(type);

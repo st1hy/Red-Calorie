@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.tags.inject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
@@ -23,12 +22,6 @@ public class TagsModule {
 
     public TagsModule(@NonNull TagsActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    @PerActivity
-    public Activity provideActivity() {
-        return activity;
     }
 
     @Provides

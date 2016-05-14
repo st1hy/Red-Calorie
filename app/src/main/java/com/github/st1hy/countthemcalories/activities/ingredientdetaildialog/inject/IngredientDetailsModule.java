@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -31,12 +30,6 @@ public class IngredientDetailsModule {
     @Nullable
     public Bundle provideBundle() {
         return bundle;
-    }
-
-    @Provides
-    @PerActivity
-    public Activity provideActivity() {
-        return activity;
     }
 
     @Provides

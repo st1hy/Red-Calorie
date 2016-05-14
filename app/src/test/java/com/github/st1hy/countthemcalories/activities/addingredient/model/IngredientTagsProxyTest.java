@@ -8,6 +8,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.Ingredi
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.database.Tag;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,9 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy.*;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -83,5 +88,12 @@ public class IngredientTagsProxyTest {
         assertThat(tag0.getName(), equalTo("Tag 1"));
         assertThat(tag1.getId(), equalTo(2L));
         assertThat(tag1.getName(), equalTo("Tag 2"));
+    }
+
+    @Test
+    public void testProxyOther() throws Exception {
+        MatcherAssert.assertThat(model.parcelableProxy.describeContents(), Matchers.equalTo(0));
+        assertThat(IngredientTagsModel.ParcelableProxy.CREATOR.newArray(4),
+                allOf(instanceOf(IngredientTagsModel.ParcelableProxy[].class), arrayWithSize(4)));
     }
 }

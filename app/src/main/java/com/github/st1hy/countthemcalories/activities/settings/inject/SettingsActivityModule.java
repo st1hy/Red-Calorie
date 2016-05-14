@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.settings.inject;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
@@ -20,12 +19,6 @@ public class SettingsActivityModule {
 
     public SettingsActivityModule(@NonNull SettingsActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    @PerActivity
-    public Activity provideActivity() {
-        return activity;
     }
 
     @Provides

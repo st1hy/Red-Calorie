@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,12 +25,6 @@ public class AddIngredientModule {
     public AddIngredientModule(@NonNull AddIngredientActivity activity, @Nullable Bundle savedState) {
         this.activity = activity;
         this.bundle = savedState;
-    }
-
-    @Provides
-    @PerActivity
-    public Activity provideActivity() {
-        return activity;
     }
 
     @Provides

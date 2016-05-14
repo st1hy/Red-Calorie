@@ -29,8 +29,8 @@
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
     <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
-    <string name="add_meal_energy_density_name_error_empty">@string/add_ingredient_energy_density_name_error_empty</string>
-    <string name="add_meal_energy_density_name_error_zero">@string/add_ingredient_energy_density_name_error_zero</string>
+    <string name="add_meal_amount_error_empty">@string/add_ingredient_energy_density_error_empty</string>
+    <string name="add_meal_amount_error_zero">@string/add_ingredient_energy_density_error_zero</string>
 
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
@@ -49,8 +49,8 @@
     <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
     <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
     <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
-    <string name="add_ingredient_energy_density_name_error_empty">Amount has be specified!</string>
-    <string name="add_ingredient_energy_density_name_error_zero">Amount must be greater than zero!</string>
+    <string name="add_ingredient_energy_density_error_empty">Amount has be specified!</string>
+    <string name="add_ingredient_energy_density_error_zero">Amount must be greater than zero!</string>
 
     <string name="tags_title">Categories</string>
     <string name="tags_new_tag_dialog">New category</string>

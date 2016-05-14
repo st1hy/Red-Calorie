@@ -12,6 +12,8 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsMode
 import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,9 @@ import org.robolectric.annotation.Config;
 import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
 import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -93,5 +98,12 @@ public class AddIngredientModelProxyTest {
         assertThat(model.getName(), equalTo(model.parcelableProxy.name));
         assertThat(model.getEnergyValue(), equalTo(model.parcelableProxy.energyValue));
         assertThat(model.getImageUri(), equalTo(model.parcelableProxy.imageUri));
+    }
+
+    @Test
+    public void testProxyOther() throws Exception {
+        MatcherAssert.assertThat(model.parcelableProxy.describeContents(), Matchers.equalTo(0));
+        assertThat(AddIngredientModel.ParcelableProxy.CREATOR.newArray(4),
+                allOf(instanceOf(AddIngredientModel.ParcelableProxy[].class), arrayWithSize(4)));
     }
 }

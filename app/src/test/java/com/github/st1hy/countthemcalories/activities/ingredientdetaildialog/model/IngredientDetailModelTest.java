@@ -172,11 +172,11 @@ public class IngredientDetailModelTest {
         assertThat(model.getErrorString("12.3"), nullValue());
         assertThat(model.getErrorString("0123214623363463"), nullValue());
         assertThat(model.getErrorString("0.00000"),
-                equalTo(resources.getString(R.string.add_meal_energy_density_name_error_zero)));
+                equalTo(resources.getString(R.string.add_meal_amount_error_zero)));
         assertThat(model.getErrorString("0"),
-                equalTo(resources.getString(R.string.add_meal_energy_density_name_error_zero)));
+                equalTo(resources.getString(R.string.add_meal_amount_error_zero)));
         assertThat(model.getErrorString(""),
-                equalTo(resources.getString(R.string.add_meal_energy_density_name_error_empty)));
+                equalTo(resources.getString(R.string.add_meal_amount_error_empty)));
     }
 
     @Test
@@ -208,7 +208,8 @@ public class IngredientDetailModelTest {
     @Test
     public void testProxyOther() throws Exception {
         assertThat(model.parcelableProxy.describeContents(), Matchers.equalTo(0));
-        MatcherAssert.assertThat(IngredientDetailModel.ParcelableProxy.CREATOR.newArray(4), allOf(instanceOf(IngredientDetailModel.ParcelableProxy[].class), arrayWithSize(4)));
+        MatcherAssert.assertThat(IngredientDetailModel.ParcelableProxy.CREATOR.newArray(4),
+                allOf(instanceOf(IngredientDetailModel.ParcelableProxy[].class), arrayWithSize(4)));
     }
 
 }

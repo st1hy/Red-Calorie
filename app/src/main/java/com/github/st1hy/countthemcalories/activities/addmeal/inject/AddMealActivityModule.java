@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,11 +38,6 @@ public class AddMealActivityModule {
         return bundle;
     }
 
-    @Provides
-    @PerActivity
-    public Activity provideActivity() {
-        return activity;
-    }
 
     @Provides
     @PerActivity

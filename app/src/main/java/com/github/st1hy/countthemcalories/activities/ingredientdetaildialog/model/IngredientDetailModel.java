@@ -168,8 +168,8 @@ public class IngredientDetailModel {
     }
 
     public enum IngredientDetailError {
-        NO_VALUE(R.string.add_meal_energy_density_name_error_empty),
-        ZERO_VALUE(R.string.add_meal_energy_density_name_error_zero);
+        NO_VALUE(R.string.add_meal_amount_error_empty),
+        ZERO_VALUE(R.string.add_meal_amount_error_zero);
 
         private final int errorResId;
 

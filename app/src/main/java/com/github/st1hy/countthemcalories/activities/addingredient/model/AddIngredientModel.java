@@ -209,8 +209,8 @@ public class AddIngredientModel extends WithPictureModel {
 
     public enum IngredientTypeCreateError {
         NO_NAME(R.string.add_ingredient_name_error_empty),
-        NO_VALUE(R.string.add_ingredient_energy_density_name_error_empty),
-        ZERO_VALUE(R.string.add_ingredient_energy_density_name_error_zero);
+        NO_VALUE(R.string.add_ingredient_energy_density_error_empty),
+        ZERO_VALUE(R.string.add_ingredient_energy_density_error_zero);
 
         private final int errorResId;
 
