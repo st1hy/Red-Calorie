@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.vie
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -30,7 +29,7 @@ public interface IngredientDetailView {
     @NonNull
     ImageView getImageView();
 
-    void setUnitName(@StringRes int unitName);
+    void setUnitName(@NonNull String unitName);
 
     @NonNull
     Observable<Void> getRemoveObservable();

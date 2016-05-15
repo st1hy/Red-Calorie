@@ -4,21 +4,21 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 
 import javax.inject.Inject;
 
 public class IngredientsModel {
     private final Intent intent;
-    final UnitNamesModel unitNamesModel;
+    final PhysicalQuantitiesModel physicalQuantitiesModel;
 
     @Inject
     public IngredientsModel(@Nullable Intent intent,
-                            @NonNull UnitNamesModel unitNamesModel) {
+                            @NonNull PhysicalQuantitiesModel physicalQuantitiesModel) {
         this.intent = intent;
-        this.unitNamesModel = unitNamesModel;
+        this.physicalQuantitiesModel = physicalQuantitiesModel;
     }
 
     public boolean isInSelectMode() {
@@ -26,7 +26,7 @@ public class IngredientsModel {
     }
 
     @NonNull
-    public String getReadableEnergyDensity(@NonNull IngredientTemplate ingredient) {
-        return unitNamesModel.getReadableEnergyDensity(ingredient.getEnergyDensity());
+    public String getReadableEnergyDensity(@NonNull EnergyDensity energyDensity) {
+        return physicalQuantitiesModel.convertAndFormat(energyDensity);
     }
 }

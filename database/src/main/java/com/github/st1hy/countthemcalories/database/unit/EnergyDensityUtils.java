@@ -3,28 +3,12 @@ package com.github.st1hy.countthemcalories.database.unit;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import timber.log.Timber;
 
 public class EnergyDensityUtils {
-
-
-//    @NonNull
-//    public static String getString(@NonNull EnergyDensityUnit unit) {
-//        return unit.getAmountUnitType().name() + "@" + unit.name();
-//    }
-//
-//    @NonNull
-//    public static EnergyDensityUnit fromString(@NonNull String string) {
-//        String[] split = string.split("@");
-//        if (split.length != 2) throw new IllegalArgumentException();
-//        AmountUnitType unitType = AmountUnitType.valueOf(split[0]);
-//        EnergyDensityUnit[] units = (EnergyDensityUnit[]) getUnits(unitType);
-//        for (EnergyDensityUnit unit : units) {
-//            if (unit.name().equals(split[1])) return unit;
-//        }
-//        throw new IllegalArgumentException();
-//    }
+    public static final MathContext DEFAULT_PRECISION = MathContext.DECIMAL64;
 
     /**
      * @return returns Energy density of provided unit and string representation of big decimal value
@@ -45,6 +29,24 @@ public class EnergyDensityUtils {
         } catch (NumberFormatException e) {
             Timber.w("Value: '%s' is not valid BigInteger", value);
             return BigDecimal.ZERO;
+        }
+    }
+
+    @NonNull
+    public static EnergyUnit getDefaultEnergyUnit() {
+        return EnergyUnit.KJ;
+    }
+
+    @NonNull
+    public static AmountUnit getDefaultAmountUnit(@NonNull AmountUnitType amountType) {
+        switch (amountType) {
+            case VOLUME:
+                return VolumeUnit.ML;
+            case MASS:
+                return MassUnit.G;
+            case UNKNOWN:
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 }

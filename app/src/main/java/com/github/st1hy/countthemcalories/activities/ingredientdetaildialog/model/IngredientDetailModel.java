@@ -163,8 +163,8 @@ public class IngredientDetailModel {
         return Optional.absent();
     }
 
-    public void setIngredientAmount(@NonNull String ingredientAmount) {
-        ingredient.setAmount(EnergyDensityUtils.getOrZero(ingredientAmount));
+    public void setIngredientAmount(@NonNull BigDecimal ingredientAmount) {
+        ingredient.setAmount(ingredientAmount);
     }
 
     public enum IngredientDetailError {

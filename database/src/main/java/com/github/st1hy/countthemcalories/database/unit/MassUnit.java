@@ -9,8 +9,20 @@ import com.github.st1hy.countthemcalories.database.R;
 import java.math.BigDecimal;
 
 public enum MassUnit implements AmountUnit {
-    G(1, BigDecimal.ONE, R.string.unit_gram),
-    G100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_gram);
+    G(1, BigDecimal.ONE, R.string.unit_gram) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return this;
+        }
+    },
+    G100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_gram) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return G;
+        }
+    };
 
     private final int id;
     private final BigDecimal inG;

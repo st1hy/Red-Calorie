@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -85,7 +86,8 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
             IngredientTemplate ingredient = holder.getReusableIngredient();
             databaseModel.performReadEntity(cursor, ingredient);
             holder.setName(ingredient.getName());
-            holder.setEnergyDensity(model.getReadableEnergyDensity(ingredient));
+            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
+            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
             onBindImage(ingredient, holder);
         } else {
             Timber.w("Cursor closed duding binding views.");

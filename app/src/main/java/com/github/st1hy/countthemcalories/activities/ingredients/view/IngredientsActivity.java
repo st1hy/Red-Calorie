@@ -13,6 +13,7 @@ import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
@@ -33,6 +34,8 @@ import rx.Observable;
 public class IngredientsActivity extends DrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
     public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcer";
+
+    public static final int REQUEST_SELECT_TYPE = 0x127;
 
     @Inject
     IngredientsPresenter presenter;
@@ -81,8 +84,9 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     }
 
     @Override
-    public void openNewIngredientScreen() {
+    public void openNewIngredientScreen(@NonNull String action) {
         Intent intent = new Intent(this, AddIngredientActivity.class);
+        intent.setAction(action);
         startActivity(intent);
     }
 
@@ -104,5 +108,17 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
         result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, ingredientTypeParcel);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    @Override
+    public void selectIngredientType() {
+        startActivityForResult(new Intent(this, SelectIngredientTypeActivity.class), REQUEST_SELECT_TYPE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SELECT_TYPE) {
+            presenter.onSelectIngredientTypeResult(resultCode);
+        } super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -10,9 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -36,6 +36,9 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class AddIngredientActivity extends WithPictureActivity implements AddIngredientView {
+    public static final String ACTION_CREATE_MEAL = "add meal ingredient";
+    public static final String ACTION_CREATE_DRINK = "add drink ingredient";
+
     private static final int REQUEST_PICK_TAG = 0x2010;
     AddIngredientComponent component;
 
@@ -52,8 +55,8 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     EditText name;
     @BindView(R.id.add_ingredient_energy_density)
     EditText energyDensityValue;
-    @BindView(R.id.add_ingredient_select_unit)
-    Button selectUnit;
+    @BindView(R.id.add_ingredient_unit)
+    TextView energyDensityUnit;
     @BindView(R.id.add_ingredient_categories_recycler)
     RecyclerView tagsRecycler;
 
@@ -87,12 +90,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
             @Override
             public void onClick(View v) {
                 presenter.onImageClicked();
-            }
-        });
-        selectUnit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSelectUnitClicked();
             }
         });
 
@@ -145,7 +142,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
 
     @Override
     public void setSelectedUnitName(@NonNull String unitName) {
-        selectUnit.setText(unitName);
+        energyDensityUnit.setText(unitName);
     }
 
     @Override

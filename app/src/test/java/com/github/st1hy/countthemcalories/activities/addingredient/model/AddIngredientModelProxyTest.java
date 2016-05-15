@@ -52,7 +52,7 @@ public class AddIngredientModelProxyTest {
         typesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
 
         model.setUnit(KCAL_AT_ML);
         model.setName("testName");
@@ -65,7 +65,7 @@ public class AddIngredientModelProxyTest {
         Bundle bundle = new Bundle();
 
         model.onSaveState(bundle);
-        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel, typesModel, bundle);
+        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, bundle, intent);
 
         assertThat(model.unit.getValue(), equalTo(restoredModel.unit.getValue()));
         assertThat(model.getName(), equalTo(restoredModel.getName()));

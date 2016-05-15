@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -62,5 +64,17 @@ public class AddIngredientModule {
     @PerActivity
     public IngredientTagsModel provideIngredientTagModel(TagsModel tagsModel, @Nullable Bundle savedState) {
         return new IngredientTagsModel(tagsModel, savedState);
+    }
+
+    @Provides
+    @PerActivity
+    public Resources provideResources() {
+        return activity.getResources();
+    }
+
+    @Provides
+    @PerActivity
+    public Intent provideIntent() {
+        return activity.getIntent();
     }
 }

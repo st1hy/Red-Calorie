@@ -25,19 +25,19 @@ import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class UnitNamesModelTest {
+public class PhysicalQuantitiesModelTest {
 
-    private UnitNamesModel model;
+    private PhysicalQuantitiesModel model;
 
     @Before
     public void setUp() throws Exception {
         CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
-        model = new UnitNamesModel(application.getComponent().getSettingsModel(), application.getResources());
+        model = new PhysicalQuantitiesModel(application.getComponent().getSettingsModel(), application.getResources());
     }
 
     @Test
     public void testGetReadableEnergyDensity() throws Exception {
-        String energyDensity = model.getReadableEnergyDensity(
+        String energyDensity = model.convertToPreferredAndGetString(
                 EnergyDensityUtils.getOrZero(KCAL_AT_100G, "12.5"));
         assertThat(energyDensity, equalTo("12.5 kcal / 100 g"));
     }

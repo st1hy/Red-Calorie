@@ -16,7 +16,7 @@
 
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
-    <string name="add_meal_name_hint">Name</string>
+    <string name="add_meal_name_hint">Meal name</string>
     <string name="add_meal_photo_description">Photography of a meal</string>
     <string name="add_meal_image_select_from_gallery">Select picture from gallery</string>
     <string name="add_meal_image_select_from_camera">Make a picture</string>
@@ -44,7 +44,6 @@
     <string name="add_ingredient_categories_name">@string/tags_title</string>
     <string name="add_ingredient_add_category">Add category</string>
     <string name="add_ingredient_energy_density_hint">Amount of calories</string>
-    <string name="add_ingredient_select_unit_dialog_title">Select unit for this ingredient</string>
     <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
     <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
     <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
@@ -66,4 +65,8 @@
     <string name="settings_unit_energy_title">Select preferred unit of energy</string>
     <string name="settings_unit_mass_title">Select preferred unit of mass</string>
     <string name="settings_unit_volume_title">Select preferred unit of volume</string>
+
+    <string name="select_ingredient_type_title">Select ingredient type</string>
+    <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
+    <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
 </resources>

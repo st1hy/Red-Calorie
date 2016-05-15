@@ -2,8 +2,13 @@ package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
+
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultAmountUnit;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultEnergyUnit;
 
 /**
  * Immutable energy density
@@ -81,8 +86,24 @@ public class EnergyDensity {
 
         BigDecimal convertedValue = value.multiply(sourceEnergyBase)
                 .multiply(targetAmountBase)
-                .divide(targetEnergyBase.multiply(sourceAmountBase), MathContext.DECIMAL64)
+                .divide(targetEnergyBase.multiply(sourceAmountBase), EnergyDensityUtils.DEFAULT_PRECISION)
                 .stripTrailingZeros();
         return new EnergyDensity(energyUnit, unit, convertedValue);
     }
+
+    @NonNull
+    public static EnergyDensity from(@NonNull IngredientTemplate template) {
+        return fromDatabaseValue(template.getAmountType(), template.getEnergyDensityAmount());
+    }
+
+    @NonNull
+    public static EnergyDensity fromDatabaseValue(@NonNull AmountUnitType amountType, @NonNull BigDecimal amount) {
+        return new EnergyDensity(getDefaultEnergyUnit(), getDefaultAmountUnit(amountType), amount);
+    }
+
+    @NonNull
+    public EnergyDensity convertToDatabaseFormat() {
+        return convertTo(getDefaultEnergyUnit(), getDefaultAmountUnit(getAmountUnitType()));
+    }
+
 }

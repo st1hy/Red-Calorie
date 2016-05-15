@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
 
 public interface AddIngredientPresenter extends WithPicturePresenter {
-    void onSelectUnitClicked();
-
     void onStart();
 
     void onSaveState(@NonNull Bundle outState);

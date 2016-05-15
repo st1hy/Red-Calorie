@@ -45,13 +45,19 @@ public class SettingsActivityModule {
 
     @Provides
     @PerActivity
+    public SettingsView provideView() {
+        return activity;
+    }
+
+    @Provides
+    @PerActivity
     public UnitsViewHolder provideUnitsHolder() {
         return new UnitsViewHolder(activity);
     }
 
     @Provides
     @PerActivity
-    @Named("energyHolder")
+    @Named("energy")
     public SelectUnitViewHolder provideEnergyHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getEnergy());
     }
@@ -59,14 +65,14 @@ public class SettingsActivityModule {
 
     @Provides
     @PerActivity
-    @Named("massHolder")
+    @Named("mass")
     public SelectUnitViewHolder provideMassHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getMass());
     }
 
     @Provides
     @PerActivity
-    @Named("volumeHolder")
+    @Named("volume")
     public SelectUnitViewHolder provideVolumeHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getVolume());
     }

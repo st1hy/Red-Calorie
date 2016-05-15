@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
@@ -73,7 +73,7 @@ public class AddMealActivityModule {
     @Provides
     @PerActivity
     public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
-                                                 UnitNamesModel namesModel, Picasso picasso) {
+                                                 PhysicalQuantitiesModel namesModel, Picasso picasso) {
         return new IngredientsAdapter(view, model, namesModel, picasso);
     }
 

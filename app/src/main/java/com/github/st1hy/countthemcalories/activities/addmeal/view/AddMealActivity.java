@@ -30,7 +30,6 @@ import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActiv
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 
@@ -48,8 +47,6 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     AddMealPresenter presenter;
     @Inject
     IngredientsAdapter adapter;
-    @Inject
-    Picasso picasso;
 
     @BindView(R.id.add_meal_toolbar)
     Toolbar toolbar;

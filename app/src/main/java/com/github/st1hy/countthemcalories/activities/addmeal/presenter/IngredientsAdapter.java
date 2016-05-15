@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
@@ -18,6 +18,8 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -29,16 +31,16 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         IngredientItemViewHolder.Callback {
     private final AddMealView view;
     private final MealIngredientsListModel model;
-    private final UnitNamesModel namesModel;
+    private final PhysicalQuantitiesModel quantityModel;
     private final Picasso picasso;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     public IngredientsAdapter(@NonNull AddMealView view, @NonNull MealIngredientsListModel model,
-                              @NonNull UnitNamesModel namesModel, @NonNull Picasso picasso) {
+                              @NonNull PhysicalQuantitiesModel quantityModel, @NonNull Picasso picasso) {
         this.view = view;
         this.model = model;
-        this.namesModel = namesModel;
+        this.quantityModel = quantityModel;
         this.picasso = picasso;
     }
 
@@ -103,13 +105,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @Override
-    public void onIngredientClicked(@NonNull View sharedIngredientCompact, @NonNull Ingredient ingredient) {
+    public void onIngredientClicked(@NonNull View sharedIngredientCompact,
+                                    @NonNull Ingredient ingredient) {
         IngredientTypeParcel typeParcel = new IngredientTypeParcel(ingredient.getIngredientType());
         BigDecimal amount = ingredient.getAmount();
         int position = model.indexOf(ingredient);
         view.showIngredientDetails(position, typeParcel, amount, sharedIngredientCompact);
     }
-
 
     @Override
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -124,14 +126,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         holder.setIngredient(ingredient);
         IngredientTemplate type = ingredient.getIngredientType();
         holder.setName(type.getName());
-        holder.setEnergyDensity(namesModel.getReadableEnergyDensity(type.getEnergyDensity()));
-        holder.setAmount(namesModel.getReadableAmount(ingredient.getAmount(),
-                type.getEnergyDensity().getUnit()));
-        holder.setCalorieCount(namesModel.getCalorieCount(ingredient.getAmount(), type.getEnergyDensity()));
+        final EnergyDensity energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
+        holder.setEnergyDensity(quantityModel.format(energyDensity));
+        final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
+        final BigDecimal amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        holder.setAmount(quantityModel.format(amount, amountUnit));
+        holder.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
         onBindImage(type, holder);
     }
 
-    void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
+    void onBindImage(@NonNull IngredientTemplate ingredient,
+                     @NonNull IngredientItemViewHolder holder) {
         picasso.cancelRequest(holder.getImage());
         Uri imageUri = ingredient.getImageUri();
         if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {

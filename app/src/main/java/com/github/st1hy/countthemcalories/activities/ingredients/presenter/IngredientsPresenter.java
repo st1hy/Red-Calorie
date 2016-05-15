@@ -4,4 +4,5 @@ import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 
 public interface IngredientsPresenter extends DrawerPresenter {
 
+    void onSelectIngredientTypeResult(int resultCode);
 }

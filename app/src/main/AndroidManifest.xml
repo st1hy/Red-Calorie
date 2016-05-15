@@ -51,6 +51,10 @@
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.Dialog"
             />
+        <activity android:name=".activities.addingredient.view.SelectIngredientTypeActivity"
+            android:label="@string/select_ingredient_type_title"
+            android:theme="@style/AppTheme.Dialog"
+            />
     </application>
 
 </manifest>

@@ -51,7 +51,7 @@ public class AddIngredientModelTest {
     public void setUp() throws Exception {
         when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
         when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
     }
 
     @Test

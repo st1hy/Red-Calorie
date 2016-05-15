@@ -9,8 +9,20 @@ import com.github.st1hy.countthemcalories.database.R;
 import java.math.BigDecimal;
 
 public enum VolumeUnit implements AmountUnit {
-    ML(1, BigDecimal.ONE, R.string.unit_milliliter),
-    ML100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_milliliter);
+    ML(1, BigDecimal.ONE, R.string.unit_milliliter) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return this;
+        }
+    },
+    ML100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_milliliter) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return ML;
+        }
+    };
 
     private final int id;
     private final BigDecimal inML;

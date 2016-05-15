@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,14 +12,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 
 import org.joda.time.DateTime;
 
@@ -35,80 +39,75 @@ public class AddIngredientModel extends WithPictureModel {
     final SettingsModel settingsModel;
     final IngredientTagsModel tagsModel;
     final IngredientTypesDatabaseModel databaseModel;
+    final Resources resources;
+    final Intent intent;
     final ParcelableProxy parcelableProxy;
+
+    final EnergyUnit energyUnit;
+    final AmountUnit amountUnit;
 
     String name;
     String energyValue;
-    final ObservableValue<EnergyDensityUnit> unit;
+    AmountUnitType amountType;
     Uri imageUri;
 
     @Inject
     public AddIngredientModel(@NonNull SettingsModel settingsModel,
                               @NonNull IngredientTagsModel tagsModel,
                               @NonNull IngredientTypesDatabaseModel databaseModel,
-                              @Nullable Bundle savedState) {
+                              @NonNull Resources resources,
+                              @Nullable Bundle savedState,
+                              @Nullable Intent intent) {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;
         this.databaseModel = databaseModel;
+        this.resources = resources;
+        this.intent = intent;
         ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
         }
         if (parcelableProxy != null) {
-            this.unit = new ObservableValue<>(parcelableProxy.unit);
             this.name = parcelableProxy.name;
             this.energyValue = parcelableProxy.energyValue;
+            this.amountType = parcelableProxy.amountType;
             this.imageUri = parcelableProxy.imageUri;
         } else {
-            EnergyDensityUnit defaultUnit = settingsModel.getPreferredGravimetricUnit();
             this.name = "";
             this.energyValue = "";
-            this.unit = new ObservableValue<>(defaultUnit);
+            this.amountType = getUnitTypeFrom(intent);
             this.imageUri = Uri.EMPTY;
             parcelableProxy = new ParcelableProxy();
         }
         this.parcelableProxy = parcelableProxy;
+        energyUnit = settingsModel.getEnergyUnit();
+        amountUnit = settingsModel.getAmountUnitFrom(amountType);
+    }
+
+    @NonNull
+    private AmountUnitType getUnitTypeFrom(@Nullable Intent intent) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action != null) {
+                switch (action) {
+                    case AddIngredientActivity.ACTION_CREATE_DRINK:
+                        return AmountUnitType.MASS;
+                    case AddIngredientActivity.ACTION_CREATE_MEAL:
+                        return AmountUnitType.VOLUME;
+                }
+            }
+        }
+        return AmountUnitType.MASS;
     }
 
     public void onSaveState(@NonNull Bundle outState) {
         outState.putParcelable(ParcelableProxy.STATE_MODEL, parcelableProxy.snapshot(this));
     }
 
-    public void setUnit(@NonNull EnergyDensityUnit unit) {
-        this.unit.setValue(unit);
-    }
-
     @NonNull
-    public Observable<EnergyDensityUnit> getUnitObservable() {
-        return unit.asObservable();
-    }
-
-    @NonNull
-    public EnergyDensityUnit[] getUnitSelection() {
-        return new EnergyDensityUnit[]{
-                settingsModel.getPreferredGravimetricUnit(),
-                settingsModel.getPreferredVolumetricUnit()
-        };
-    }
-
-    @NonNull
-    public String[] getUnitSelectionOptions() {
-        EnergyDensityUnit[] unitSelection = getUnitSelection();
-        String[] options = new String[unitSelection.length];
-        for (int i = 0; i < unitSelection.length; i++) {
-            options[i] = settingsModel.getUnitName(unitSelection[i]);
-        }
-        return options;
-    }
-
-    @NonNull
-    public Func1<EnergyDensityUnit, String> unitAsString() {
-        return new Func1<EnergyDensityUnit, String>() {
-            @Override
-            public String call(EnergyDensityUnit energyDensityUnit) {
-                return settingsModel.getUnitName(energyDensityUnit);
-            }
-        };
+    public String getEnergyDensityUnit() {
+        return resources.getString(R.string.format_value_fraction, "",
+                settingsModel.getUnitName(energyUnit), settingsModel.getUnitName(amountUnit));
     }
 
     @Override
@@ -119,11 +118,6 @@ public class AddIngredientModel extends WithPictureModel {
     @Override
     public int getImageSourceOptionArrayResId() {
         return R.array.add_ingredient_image_select_options;
-    }
-
-    @StringRes
-    public int getSelectUnitDialogTitle() {
-        return R.string.add_ingredient_select_unit_dialog_title;
     }
 
     public void setName(@NonNull String name) {
@@ -157,8 +151,12 @@ public class AddIngredientModel extends WithPictureModel {
     public Observable<List<IngredientTypeCreateError>> insertIntoDatabase() {
         List<IngredientTypeCreateError> errorList = canCreateIngredient();
         if (errorList.isEmpty()) {
-            IngredientTemplate template = new IngredientTemplate(null, getName(), getImageUri(),
-                    DateTime.now(), getEnergyUnit());
+            IngredientTemplate template = new IngredientTemplate();
+            template.setName(getName());
+            template.setImageUri(getImageUri());
+            template.setCreationDate(DateTime.now());
+            template.setAmountType(amountType);
+            template.setEnergyDensityAmount(getEnergyUnit().convertToDatabaseFormat().getValue());
             return databaseModel.addNewAndRefresh(template, tagsModel.getTagIds())
                     .map(intoNoError());
         } else{
@@ -173,7 +171,7 @@ public class AddIngredientModel extends WithPictureModel {
 
     @NonNull
     EnergyDensity getEnergyUnit(@NonNull String value) {
-        return EnergyDensityUtils.getOrZero(unit.getValue(), value);
+        return EnergyDensityUtils.getOrZero(energyUnit, amountUnit, value);
     }
 
     @NonNull
@@ -227,16 +225,16 @@ public class AddIngredientModel extends WithPictureModel {
 
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";
-        EnergyDensityUnit unit;
         String name;
         String energyValue;
         Uri imageUri;
+        AmountUnitType amountType;
 
         ParcelableProxy() {
         }
 
         ParcelableProxy snapshot(@NonNull AddIngredientModel model) {
-            this.unit = model.unit.getValue();
+            this.amountType = model.amountType;
             this.name = model.name;
             this.energyValue = model.energyValue;
             this.imageUri = model.imageUri;
@@ -249,7 +247,7 @@ public class AddIngredientModel extends WithPictureModel {
                 ParcelableProxy parcelableProxy = new ParcelableProxy();
                 parcelableProxy.name = source.readString();
                 parcelableProxy.energyValue = source.readString();
-                parcelableProxy.unit = EnergyDensityUtils.fromString(source.readString());
+                parcelableProxy.amountType = AmountUnitType.valueOf(source.readString());
                 parcelableProxy.imageUri = source.readParcelable(Uri.class.getClassLoader());
                 return parcelableProxy;
             }
@@ -269,7 +267,7 @@ public class AddIngredientModel extends WithPictureModel {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(name);
             dest.writeString(energyValue);
-            dest.writeString(EnergyDensityUtils.getString(unit));
+            dest.writeString(amountType.toString());
             dest.writeParcelable(imageUri, flags);
         }
     }

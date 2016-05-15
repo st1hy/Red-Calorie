@@ -10,7 +10,7 @@ import rx.Observable;
 
 public interface IngredientsView extends DrawerView {
 
-    void openNewIngredientScreen();
+    void openNewIngredientScreen(@NonNull String action);
 
     void setNoIngredientButtonVisibility(@NonNull Visibility visibility);
 
@@ -18,4 +18,6 @@ public interface IngredientsView extends DrawerView {
     Observable<Void> getOnAddIngredientClickedObservable();
 
     void setResultAndReturn(@NonNull IngredientTypeParcel ingredientTypeParcel);
+
+    void selectIngredientType();
 }

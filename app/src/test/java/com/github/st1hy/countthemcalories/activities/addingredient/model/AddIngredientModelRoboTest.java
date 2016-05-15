@@ -43,7 +43,7 @@ public class AddIngredientModelRoboTest {
         SettingsModel settingsModel = Mockito.mock(SettingsModel.class);
         tagsModel = Mockito.mock(IngredientTagsModel.class);
         typesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
     }
 
     //JodaTime complains of missing timezones without Robolectric

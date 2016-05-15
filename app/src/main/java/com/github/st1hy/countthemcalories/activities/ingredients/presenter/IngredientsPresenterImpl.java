@@ -4,6 +4,8 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
@@ -47,6 +49,18 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
     }
 
     @Override
+    public void onSelectIngredientTypeResult(int resultCode) {
+        switch (resultCode) {
+            case SelectIngredientTypeActivity.RESULT_DRINK:
+                view.openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_DRINK);
+                break;
+            case SelectIngredientTypeActivity.RESULT_MEAL:
+                view.openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_MEAL);
+                break;
+        }
+    }
+
+    @Override
     public boolean onClickedOnAction(@IdRes int actionItemId) {
         if (actionItemId == R.id.action_sorting) {
             //TODO implement sorting
@@ -59,7 +73,7 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
         subscribe(observable.subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.openNewIngredientScreen();
+                view.selectIngredientType();
             }
         }));
     }
@@ -67,5 +81,4 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
     private void subscribe(@NonNull Subscription subscription) {
         subscriptions.add(subscription);
     }
-
 }

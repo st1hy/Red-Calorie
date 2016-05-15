@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.state.Selection;
 
@@ -54,7 +55,7 @@ public class IngredientsPresenterTest {
 
         presenter.onStart();
 
-        verify(view).openNewIngredientScreen();
+        verify(view).openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_MEAL);
         verify(view).setMenuItemSelection(eq(INGREDIENTS.getMenuItemId()), any(Selection.class));
         verify(view).getOnAddIngredientClickedObservable();
         verify(view).showNavigationAsUp();

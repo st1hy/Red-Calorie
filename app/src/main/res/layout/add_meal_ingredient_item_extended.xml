@@ -5,8 +5,6 @@
     android:id="@+id/add_meal_ingredient_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:minHeight="?listPreferredItemHeight"
     android:transitionName="ingredient-shared-view"
     app:cardCornerRadius="4dp"
     app:cardElevation="24dp"

@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.settings.view.holder.Select
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.ButterKnife;
 
@@ -20,9 +21,9 @@ public class SettingsActivity extends DrawerActivity implements SettingsView {
 
     @Inject SettingsPresenter presenter;
 
-    @Inject SelectUnitViewHolder energyHolder;
-    @Inject SelectUnitViewHolder massHolder;
-    @Inject SelectUnitViewHolder volumeHolder;
+    @Inject @Named("energy") SelectUnitViewHolder energyHolder;
+    @Inject @Named("mass") SelectUnitViewHolder massHolder;
+    @Inject @Named("volume") SelectUnitViewHolder volumeHolder;
 
     @NonNull
     protected SettingsActivityComponent getComponent() {

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -131,7 +130,7 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     }
 
     @Override
-    public void setUnitName(@StringRes int unitName) {
+    public void setUnitName(@NonNull String unitName) {
         this.unit.setText(unitName);
     }
 

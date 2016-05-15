@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.UnitNamesModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.model.IngredientDetailModel.IngredientLoader;
 import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailView;
@@ -13,6 +13,9 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -25,19 +28,21 @@ import rx.subscriptions.CompositeSubscription;
 
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
-    private final UnitNamesModel namesModel;
+    private final PhysicalQuantitiesModel quantityModel;
     private final IngredientDetailView view;
     private final Picasso picasso;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+    private EnergyDensity energyDensity;
+
     @Inject
     public IngredientDetailPresenterImpl(@NonNull IngredientDetailModel model,
-                                         @NonNull UnitNamesModel namesModel,
+                                         @NonNull PhysicalQuantitiesModel quantityModel,
                                          @NonNull IngredientDetailView view,
                                          @NonNull Picasso picasso) {
         this.model = model;
-        this.namesModel = namesModel;
+        this.quantityModel = quantityModel;
         this.view = view;
         this.picasso = picasso;
     }
@@ -72,15 +77,18 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     private void bindViews(Ingredient ingredient) {
         IngredientTemplate type = ingredient.getIngredientType();
         view.setName(type.getName());
-        view.setEnergyDensity(namesModel.getReadableEnergyDensity(type.getEnergyDensity()));
-        if (ingredient.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-            view.setAmount(ingredient.getAmount().toPlainString());
+        energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
+        view.setEnergyDensity(quantityModel.format(energyDensity));
+        final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
+        final BigDecimal amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            view.setAmount(amount.toPlainString());
         }
-        setCalorieCount(model.getIngredient());
+        view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
         if (!Uri.EMPTY.equals(type.getImageUri())) {
             bindImage(type);
         }
-        view.setUnitName(namesModel.getUnitName(type.getEnergyDensity().getUnit()));
+        view.setUnitName(quantityModel.getUnitNameFrom(type.getAmountType()));
 
         subscriptions.add(view.getAmountObservable()
                 .skip(1)
@@ -96,11 +104,6 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 .into(view.getImageView())
                 .asObservable()
                 .subscribe());
-    }
-
-    private void setCalorieCount(@NonNull Ingredient ingredient) {
-        view.setCalorieCount(namesModel.getCalorieCount(ingredient.getAmount(),
-                ingredient.getIngredientType().getEnergyDensity()));
     }
 
     private boolean checkAmountCorrect(@NonNull String amount) {
@@ -119,10 +122,12 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         };
     }
 
-    private void onAmountChanges(@NonNull String amount) {
-        checkAmountCorrect(amount);
-        model.setIngredientAmount(amount);
-        setCalorieCount(model.getIngredient());
+    private void onAmountChanges(@NonNull String amountString) {
+        checkAmountCorrect(amountString);
+        final BigDecimal amount = EnergyDensityUtils.getOrZero(amountString);
+        final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
+        model.setIngredientAmount(quantityModel.convertAmountToDatabase(amount, amountUnit));
+        view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
     }
 
     @NonNull
