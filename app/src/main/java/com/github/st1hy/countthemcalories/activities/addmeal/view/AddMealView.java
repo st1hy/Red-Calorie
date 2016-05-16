@@ -30,5 +30,8 @@ public interface AddMealView extends WithPictureView {
     void showIngredientDetails(long requestID,
                                @NonNull IngredientTypeParcel ingredientParcel,
                                @NonNull BigDecimal amount,
-                               @Nullable View sharedIngredientCompact);
+                               @Nullable View sharedIngredientCompact,
+                               @Nullable String sharedElementName);
+
+    void scrollTo(int itemPosition);
 }

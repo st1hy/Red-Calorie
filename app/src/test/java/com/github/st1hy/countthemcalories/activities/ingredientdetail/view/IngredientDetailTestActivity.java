@@ -1,13 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.DaggerIngredientDetailTestComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailTestComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailsModule;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.DaggerIngredientDetailTestComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailTestComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailsModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;

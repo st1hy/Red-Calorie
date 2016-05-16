@@ -242,7 +242,6 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(not(isDisplayed())));
         onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
@@ -260,7 +259,6 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("12.06"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(not(isDisplayed())));
         onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
@@ -275,7 +273,6 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(doesNotExist());
         onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
     }

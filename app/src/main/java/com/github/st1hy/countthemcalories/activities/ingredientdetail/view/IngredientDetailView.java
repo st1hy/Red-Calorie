@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

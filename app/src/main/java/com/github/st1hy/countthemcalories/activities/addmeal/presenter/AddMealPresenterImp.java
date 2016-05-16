@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class AddMealPresenterImp extends WithPicturePresenterImp implements AddMealPresenter {
     private final AddMealView view;

@@ -9,7 +9,7 @@ import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIn
 import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult.REMOVE;
 import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult.UNKNOWN;
 import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult.fromIngredientDetailResult;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.RESULT_REMOVE;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.RESULT_REMOVE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 

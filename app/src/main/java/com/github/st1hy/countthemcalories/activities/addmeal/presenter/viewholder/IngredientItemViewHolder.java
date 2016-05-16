@@ -66,14 +66,15 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         return image;
     }
 
-    @OnClick(R.id.add_meal_ingredient_root)
+    @OnClick(R.id.add_meal_ingredient_compact)
     public void onClicked() {
-        if (ingredient != null) callback.onIngredientClicked(root, ingredient);
+        if (ingredient != null) callback.onIngredientClicked(image, ingredient, "ingredient-shared-view-image");
     }
 
     public interface Callback {
         void onIngredientClicked(@NonNull View sharedIngredientCompact,
-                                 @NonNull Ingredient ingredient);
+                                 @NonNull Ingredient ingredient,
+                                 @NonNull String sharedElementName);
     }
 
 }

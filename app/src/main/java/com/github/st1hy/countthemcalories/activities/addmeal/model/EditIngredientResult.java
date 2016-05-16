@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 
 public enum EditIngredientResult {
     EDIT, REMOVE, UNKNOWN;

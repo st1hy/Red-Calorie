@@ -12,17 +12,21 @@
         android:id="@+id/ingredients_item_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_margin="0dp"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
             android:id="@+id/add_meal_ingredient_image_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:layout_marginRight="6dp"
             android:layout_weight="0"
             app:cardCornerRadius="4dp"
             app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
             app:cardUseCompatPadding="true">
 
             <ImageView
@@ -33,7 +37,9 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_fork_and_knife_wide" />
         </android.support.v7.widget.CardView>
-
+        <android.support.v4.widget.Space
+            android:layout_width="4dp"
+            android:layout_height="match_parent" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 tools:text="Example ingredient name" />
 
             <TextView

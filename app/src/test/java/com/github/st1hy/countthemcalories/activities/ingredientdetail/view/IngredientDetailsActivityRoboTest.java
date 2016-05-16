@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
 
 
 import android.app.Activity;
@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter.IngredientDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -27,9 +27,9 @@ import java.math.BigDecimal;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.inject;
 
 import com.github.st1hy.countthemcalories.core.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;

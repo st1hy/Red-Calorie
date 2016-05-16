@@ -1,19 +1,22 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.model.IngredientDetailModel;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.model.IngredientDetailModel.IngredientLoader;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.model.IngredientDetailModel;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.model.IngredientDetailModel.IngredientLoader;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailView;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.squareup.picasso.Picasso;
@@ -85,9 +88,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             view.setAmount(amount.toPlainString());
         }
         view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
-        if (!Uri.EMPTY.equals(type.getImageUri())) {
-            bindImage(type);
-        }
+        bindImage(type);
         view.setUnitName(quantityModel.getUnitName(amountUnit));
 
         subscriptions.add(view.getAmountObservable()
@@ -98,12 +99,19 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     }
 
     private void bindImage(@NonNull IngredientTemplate type) {
-        subscriptions.add(RxPicasso.Builder.with(picasso, type.getImageUri())
-                .centerCrop()
-                .fit()
-                .into(view.getImageView())
-                .asObservable()
-                .subscribe());
+        if (!Uri.EMPTY.equals(type.getImageUri())) {
+            subscriptions.add(RxPicasso.Builder.with(picasso, type.getImageUri())
+                    .centerCrop()
+                    .fit()
+                    .into(view.getImageView())
+                    .asObservable()
+                    .subscribe());
+
+        } else {
+            @DrawableRes int imageRes = type.getAmountType() == AmountUnitType.VOLUME ?
+                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
+            view.getImageView().setImageResource(imageRes);
+        }
     }
 
     private boolean checkAmountCorrect(@NonNull String amount) {

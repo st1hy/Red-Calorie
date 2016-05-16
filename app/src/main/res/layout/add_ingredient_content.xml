@@ -36,22 +36,21 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_add_a_photo_24px" />
         </android.support.v7.widget.CardView>
-        <LinearLayout
-            android:gravity="center"
+        <android.support.v4.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="8dp" />
+        <EditText
+            android:id="@+id/add_ingredient_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:hint="@string/add_ingredient_name_hint">
 
-            <EditText
-                android:id="@+id/add_ingredient_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/add_ingredient_name_hint">
-
-                <requestFocus />
-            </EditText>
-
-        </LinearLayout>
+            <requestFocus />
+        </EditText>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
 
         <android.support.v4.widget.Space
             android:layout_width="0dp"

@@ -22,7 +22,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActiv
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -178,10 +178,11 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     public void showIngredientDetails(long requestId,
                                       @NonNull IngredientTypeParcel ingredientParcel,
                                       @NonNull BigDecimal amount,
-                                      @Nullable View sharedElement) {
+                                      @Nullable View sharedElement,
+                                      @Nullable String sharedElementName) {
         Bundle startOptions = null;
         if (sharedElement != null) {
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, "ingredient-shared-view");
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, sharedElementName);
             startOptions = options.toBundle();
         }
         Intent intent = new Intent(this, IngredientDetailsActivity.class);
@@ -190,5 +191,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL, ingredientParcel);
         intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
         startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
+    }
+
+    @Override
+    public void scrollTo(int itemPosition) {
+        ingredientList.scrollToPosition(itemPosition);
     }
 }

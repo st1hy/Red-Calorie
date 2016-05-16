@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
 
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
@@ -56,7 +58,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
-        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO, null);
+        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO, null, null);
     }
 
     public void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
@@ -105,12 +107,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @Override
-    public void onIngredientClicked(@NonNull View sharedIngredientCompact,
-                                    @NonNull Ingredient ingredient) {
+    public void onIngredientClicked(@NonNull View sharedElement,
+                                    @NonNull Ingredient ingredient,
+                                    @NonNull String sharedElementName) {
         IngredientTypeParcel typeParcel = new IngredientTypeParcel(ingredient.getIngredientType());
         BigDecimal amount = ingredient.getAmount();
         int position = model.indexOf(ingredient);
-        view.showIngredientDetails(position, typeParcel, amount, sharedIngredientCompact);
+        view.showIngredientDetails(position, typeParcel, amount, sharedElement, sharedElementName);
     }
 
     @Override
@@ -145,7 +148,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                     .fit()
                     .into(holder.getImage());
         } else {
-            holder.getImage().setImageResource(R.drawable.ic_fork_and_knife_wide);
+            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
+            holder.getImage().setImageResource(imageRes);
         }
     }
 
@@ -169,6 +174,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);
                 notifyItemInserted(itemPosition);
+                view.scrollTo(itemPosition);
                 setEmptyViewVisibility();
             }
         };

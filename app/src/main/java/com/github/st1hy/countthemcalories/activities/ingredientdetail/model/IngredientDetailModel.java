@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.model;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.model;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -28,10 +28,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class IngredientDetailModel {
     final IngredientTypesDatabaseModel ingredientTypesModel;

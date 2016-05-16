@@ -78,8 +78,7 @@ public class MealIngredientsListModel {
     @NonNull
     public Observable<Integer> addIngredientOfType(@NonNull IngredientTypeParcel typeParcel,
                                                    @NonNull final BigDecimal amount) {
-        return ingredientTypesModel.unParcel(typeParcel)
-                .observeOn(AndroidSchedulers.mainThread())
+        return unparcel(typeParcel).observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Ingredient>() {
                     @Override
                     public Ingredient call(IngredientTemplate ingredientTemplate) {
@@ -99,8 +98,7 @@ public class MealIngredientsListModel {
         if (position >= ingredients.size() || position < 0)
             throw new ArrayIndexOutOfBoundsException("Cannot modify non-existing ingredient");
         final Ingredient source = ingredients.get(position);
-        return ingredientTypesModel.unParcel(typeParcel)
-                .observeOn(AndroidSchedulers.mainThread())
+        return unparcel(typeParcel).observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Integer>() {
                     @Override
                     public Integer call(IngredientTemplate ingredientTemplate) {
@@ -109,6 +107,11 @@ public class MealIngredientsListModel {
                         return position;
                     }
                 });
+    }
+
+    @NonNull
+    public Observable<IngredientTemplate> unparcel(@NonNull IngredientTypeParcel typeParcel) {
+        return ingredientTypesModel.unParcel(typeParcel);
     }
 
     public void removeIngredient(int position) {

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -156,7 +156,7 @@ public class AddMealActivityRoboTest {
 
         checkFirstIngredientAmountEqualTo("0 g");
 
-        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
+        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
         Intent result = new Intent(requestIntent);
@@ -180,9 +180,8 @@ public class AddMealActivityRoboTest {
         testAddIngredient();
 
         assertThat(activity.ingredientList.getChildCount(), equalTo(1));
-        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
 
-        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root).performClick();
+        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
 

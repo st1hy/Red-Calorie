@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.inject;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter.IngredientDetailPresenter;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter.IngredientDetailPresenterImpl;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenterImpl;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailView;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;

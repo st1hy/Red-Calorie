@@ -33,15 +33,22 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_add_a_photo_24px" />
         </android.support.v7.widget.CardView>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
 
         <EditText
             android:id="@+id/add_meal_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:hint="@string/add_meal_name_hint">
 
             <requestFocus />
         </EditText>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/add_meal_ingredients_list"

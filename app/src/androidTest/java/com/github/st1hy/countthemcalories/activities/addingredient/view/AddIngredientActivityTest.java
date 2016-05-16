@@ -190,6 +190,7 @@ public class AddIngredientActivityTest {
 
     @Test
     public void testAddTag() throws Exception {
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(betterScrollTo())
                 .perform(click());

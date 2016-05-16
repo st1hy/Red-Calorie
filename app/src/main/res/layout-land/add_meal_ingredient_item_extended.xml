@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_meal_ingredient_root"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:transitionName="ingredient-shared-view"
     app:cardCornerRadius="4dp"
@@ -29,22 +29,25 @@
             <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_marginRight="6dp"
                 android:layout_weight="0"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="0dp"
+                app:cardBackgroundColor="@android:color/transparent"
                 app:cardUseCompatPadding="true">
 
                 <ImageView
                     android:id="@+id/add_meal_ingredient_image"
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
+                    android:transitionName="ingredient-shared-view-image"
+                    android:layout_width="@dimen/list_item_image_size"
+                    android:layout_height="@dimen/list_item_image_size"
                     android:contentDescription="@string/add_meal_ingredient_photo_description"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_fork_and_knife_wide" />
             </android.support.v7.widget.CardView>
 
+            <android.support.v4.widget.Space
+                android:layout_width="4dp"
+                android:layout_height="match_parent" />
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -58,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textIsSelectable="false"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/ingredient_detail_title_size"
                     tools:text="Example ingredient name" />
 
                 <TextView
@@ -68,6 +71,9 @@
                     android:textIsSelectable="false"
                     tools:text="400 kcal / 100 g" />
             </LinearLayout>
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/add_meal_ingredient_calorie_count"
@@ -95,7 +101,6 @@
                 android:inputType="numberDecimal"
                 tools:hint="Amount i.e 200 g or ml">
 
-                <requestFocus />
             </EditText>
 
             <android.support.v4.widget.Space
@@ -107,7 +112,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textIsSelectable="false"
                 android:textSize="18sp"
                 tools:text="g" />
         </LinearLayout>

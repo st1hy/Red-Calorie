@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
@@ -103,7 +105,9 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
                     .fit()
                     .into(holder.getImage());
         } else {
-            holder.getImage().setImageResource(R.drawable.ic_fork_and_knife_wide);
+            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
+            holder.getImage().setImageResource(imageRes);
         }
     }
 

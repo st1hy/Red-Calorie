@@ -1,19 +1,23 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.CardView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.DaggerIngredientDetailComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.inject.IngredientDetailsModule;
-import com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.presenter.IngredientDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.DaggerIngredientDetailComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailsModule;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
@@ -49,6 +53,8 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     @BindView(R.id.add_meal_ingredient_image)
     ImageView image;
     @BindView(R.id.add_meal_ingredient_unit) TextView unit;
+    @BindView(R.id.add_meal_ingredient_root)
+    CardView cardRoot;
 
     IngredientDetailComponent component;
 
@@ -155,6 +161,8 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
         intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, parcel);
         intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
         setResult(resultCode, intent);
-        finish();
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
+        ActivityCompat.finishAfterTransition(this);
     }
 }
