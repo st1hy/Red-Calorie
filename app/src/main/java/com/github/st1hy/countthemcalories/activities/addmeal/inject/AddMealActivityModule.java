@@ -59,7 +59,7 @@ public class AddMealActivityModule {
 
     @Provides
     @PerActivity
-    public WithPicturePresenter providePicturePresenter(AddMealPresenterImp presenter) {
+    public WithPicturePresenter providePicturePresenter(AddMealPresenter presenter) {
         return presenter;
     }
 
