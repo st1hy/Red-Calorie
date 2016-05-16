@@ -88,7 +88,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         if (!Uri.EMPTY.equals(type.getImageUri())) {
             bindImage(type);
         }
-        view.setUnitName(quantityModel.getUnitNameFrom(type.getAmountType()));
+        view.setUnitName(quantityModel.getUnitName(amountUnit));
 
         subscriptions.add(view.getAmountObservable()
                 .skip(1)

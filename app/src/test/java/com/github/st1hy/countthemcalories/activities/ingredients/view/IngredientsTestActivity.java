@@ -19,27 +19,28 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
-import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import org.joda.time.DateTime;
 
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsTestActivity.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 
 public class IngredientsTestActivity extends IngredientsActivity {
 
-    public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[] {
-            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(),
-                    getOrZero(KCAL_AT_100G, "300.5")),
-            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(),
-                    getOrZero(VolumetricEnergyDensityUnit.KJ_AT_ML, "6.04")),
+    public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
+            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,
+                    getOrZero("20.5")), // kJ / g in database
+            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+                    getOrZero("6.04")), // kJ / ml in database
     };
-    public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[] {
+    public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[]{
             new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
             new JointIngredientTag(2L, exampleTags[0].getId(), exampleIngredients[1].getId()),
             new JointIngredientTag(3L, exampleTags[1].getId(), exampleIngredients[1].getId()),
     };
+    public static final IngredientTemplate additionalIngredient = new IngredientTemplate(3L, "Ingredient 23",
+            Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME, getOrZero("2.04"));
 
 
     @NonNull

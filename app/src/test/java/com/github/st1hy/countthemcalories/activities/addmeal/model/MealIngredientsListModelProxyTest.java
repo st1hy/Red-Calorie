@@ -10,7 +10,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.Ingredien
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 
 import org.hamcrest.junit.MatcherAssert;
@@ -37,9 +37,6 @@ import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel.ParcelableProxy.CREATOR;
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
-import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KCAL_AT_ML;
-import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,13 +51,13 @@ import static org.mockito.Mockito.when;
 public class MealIngredientsListModelProxyTest {
     final IngredientTemplate[] exampleIngredientTemplate = new IngredientTemplate[]{
             new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"),
-                    DateTime.now(), EnergyDensityUtils.getOrZero(KCAL_AT_100G, "329.7")),
+                    DateTime.now(), AmountUnitType.MASS, new BigDecimal("329.7")),
             new IngredientTemplate(2L, "Ingredient 2", Uri.parse("http://example.com"),
-                    DateTime.now(), EnergyDensityUtils.getOrZero(KCAL_AT_ML, "42.0")),
+                    DateTime.now(), AmountUnitType.VOLUME, new BigDecimal("42.0")),
             new IngredientTemplate(3L, "Ingredient 3", Uri.EMPTY,
-                    DateTime.now(), EnergyDensityUtils.getOrZero(KJ_AT_100ML, "60")),
+                    DateTime.now(), AmountUnitType.VOLUME, new BigDecimal("60")),
     };
-    final BigDecimal[] amounts = new BigDecimal[] {
+    final BigDecimal[] amounts = new BigDecimal[]{
             new BigDecimal("32.5"),
             new BigDecimal("42.50"),
             new BigDecimal("52.0"),
@@ -108,7 +105,7 @@ public class MealIngredientsListModelProxyTest {
         MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, bundle);
 
         Assert.assertThat(restoredModel.ingredients, hasSize(exampleIngredientTemplate.length));
-        for (int i  = 0; i < exampleIngredientTemplate.length; i++) {
+        for (int i = 0; i < exampleIngredientTemplate.length; i++) {
             Ingredient ing = restoredModel.getItemAt(i);
             assertThat(ing.getIngredientType(), equalTo(exampleIngredientTemplate[i]));
             assertThat(ing.getAmount(), equalTo(amounts[i]));
@@ -149,7 +146,7 @@ public class MealIngredientsListModelProxyTest {
         assertThat(integers, hasItems(0, 1, 2));
 
         Assert.assertThat(restoredModel.ingredients, hasSize(exampleIngredientTemplate.length));
-        for (int i  = 0; i < exampleIngredientTemplate.length; i++) {
+        for (int i = 0; i < exampleIngredientTemplate.length; i++) {
             Ingredient ing = restoredModel.getItemAt(i);
             assertThat(ing.getIngredientType(), equalTo(exampleIngredientTemplate[i]));
             assertThat(ing.getAmount(), equalTo(amounts[i]));
@@ -162,7 +159,7 @@ public class MealIngredientsListModelProxyTest {
         model.parcelableProxy.snapshot(model);
 
         Assert.assertThat(model.parcelableProxy.ingredients, hasSize(exampleIngredientTemplate.length));
-        for (int i  = 0; i < exampleIngredientTemplate.length; i++) {
+        for (int i = 0; i < exampleIngredientTemplate.length; i++) {
             Ingredient ing = model.parcelableProxy.ingredients.get(i);
             assertThat(ing.getIngredientType(), equalTo(exampleIngredientTemplate[i]));
             assertThat(ing.getAmount(), equalTo(amounts[i]));

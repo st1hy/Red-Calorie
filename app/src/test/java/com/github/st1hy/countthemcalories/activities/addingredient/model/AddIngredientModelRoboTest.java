@@ -1,11 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
+import android.content.res.Resources;
 import android.database.Cursor;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import org.junit.Before;
@@ -13,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Collections;
@@ -26,6 +29,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -40,10 +44,12 @@ public class AddIngredientModelRoboTest {
 
     @Before
     public void setUp() throws Exception {
-        SettingsModel settingsModel = Mockito.mock(SettingsModel.class);
+        CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
+        SettingsModel settingsModel = application.getComponent().getSettingsModel();
         tagsModel = Mockito.mock(IngredientTagsModel.class);
         typesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
+        Resources resources = application.getResources();
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, null);
     }
 
     //JodaTime complains of missing timezones without Robolectric
@@ -55,8 +61,7 @@ public class AddIngredientModelRoboTest {
         Cursor cursor = Mockito.mock(Cursor.class);
 
         when(tagsModel.getTagIds()).thenReturn(tagIds);
-        when(typesModel.addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds)))
-                .thenReturn(Observable.just(cursor));
+        doReturn(Observable.just(cursor)).when(typesModel).addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds));
 
         model.insertIntoDatabase();
 

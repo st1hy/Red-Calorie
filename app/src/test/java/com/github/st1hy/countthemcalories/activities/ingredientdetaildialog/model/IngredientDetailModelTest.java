@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.Ingredien
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TestError;
@@ -41,7 +42,6 @@ import static com.github.st1hy.countthemcalories.activities.ingredientdetaildial
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetaildialog.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,7 +57,7 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class IngredientDetailModelTest {
-    final IngredientTemplate example = new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"), DateTime.now(), EnergyDensityUtils.getOrZero(KCAL_AT_100G, "329.7"));
+    final IngredientTemplate example = new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"), DateTime.now(), AmountUnitType.MASS, EnergyDensityUtils.getOrZero("329.7"));
 
     final BigDecimal amount = new BigDecimal("32.5");
 
@@ -182,7 +182,7 @@ public class IngredientDetailModelTest {
     @Test
     public void testSetAmount() throws Exception {
         final String expected = "3214555.55555";
-        model.setIngredientAmount(expected);
+        model.setIngredientAmount(new BigDecimal(expected));
 
         assertThat(model.getIngredient().getAmount().toPlainString(),
                 equalTo(expected));

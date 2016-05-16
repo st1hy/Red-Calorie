@@ -7,13 +7,10 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChan
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
-import com.github.st1hy.countthemcalories.activities.settings.view.holder.SelectUnitViewHolder;
+import com.github.st1hy.countthemcalories.activities.settings.view.SelectUnitViewHolder;
 import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
-import com.jakewharton.rxbinding.view.RxView;
-
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -51,6 +48,18 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
         super.onStop();
         subscriptions.clear();
     }
+
+    void setupView() {
+        for (SettingUnit setting : SettingUnit.values()) {
+            SelectUnitViewHolder viewHolder = getViewHolder(setting);
+            subscriptions.add(viewHolder.clickObservable()
+                    .flatMap(selectUnitDialog(setting))
+                    .subscribe(onUnitSelected(setting)));
+            viewHolder.setTitle(setting.getTitleRes());
+            viewHolder.setUnit(model.getUnitName(setting.getUnitFrom(model)));
+        }
+    }
+
     @Override
     protected DrawerMenuItem currentItem() {
         return DrawerMenuItem.SETTINGS;
@@ -73,17 +82,6 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
         getViewHolder(setting).setUnit(model.getUnitName(event.getUnit()));
     }
 
-    void setupView() {
-        for (SettingUnit setting : SettingUnit.values()) {
-            SelectUnitViewHolder viewHolder = getViewHolder(setting);
-            subscriptions.add(RxView.clicks(viewHolder.getRoot())
-                    .flatMap(selectUnitDialog(setting))
-                    .subscribe(onUnitSelected(setting)));
-            viewHolder.setTitle(setting.getTitleRes());
-            viewHolder.setUnit(model.getUnitName(setting.getUnitFrom(model)));
-        }
-    }
-
     @NonNull
     private Func1<Void, Observable<Integer>> selectUnitDialog(@NonNull final SettingUnit setting) {
         return new Func1<Void, Observable<Integer>>() {
@@ -92,7 +90,7 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
                 Unit[] units = setting.options();
                 String[] values = new String[units.length];
                 for (int i = 0; i < units.length; i++) {
-                    values[i] = model.formatUnit(units[i], BigDecimal.ONE);
+                    values[i] = model.getUnitName(units[i]);
                 }
                 return view.showAlertDialog(model.getPreferredUnitDialogTitle(), values);
             }

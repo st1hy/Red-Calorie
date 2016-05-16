@@ -14,7 +14,7 @@ import timber.log.Timber;
  * Master of DAO (schema version 1002): knows all DAOs.
 */
 public class DaoMaster extends AbstractDaoMaster {
-    public static final int SCHEMA_VERSION = 1002;
+    public static final int SCHEMA_VERSION = 1003;
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {

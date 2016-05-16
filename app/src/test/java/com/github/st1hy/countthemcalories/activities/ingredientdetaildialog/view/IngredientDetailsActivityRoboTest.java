@@ -40,7 +40,7 @@ import static org.robolectric.Shadows.shadowOf;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class IngredientDetailsActivityRoboTest {
     final IngredientTemplate ingredientTemplate = IngredientsTestActivity.exampleIngredients[0];
-    final BigDecimal amount = new BigDecimal("24.6");
+    final BigDecimal amount = new BigDecimal("24.65");
     final long requestId = -1L;
 
     private final Timber.Tree tree = new Timber.Tree() {
@@ -93,9 +93,9 @@ public class IngredientDetailsActivityRoboTest {
         setupActivity();
         assertThat(activity.name.getText().toString(), equalTo(ingredientTemplate.getName()));
         assertThat(activity.editAmount.getText().toString(), equalTo(amount.toPlainString()));
-        assertThat(activity.energyDensity.getText().toString(), equalTo("300.5 kcal / 100 g"));
+        assertThat(activity.energyDensity.getText().toString(), equalTo("489.96 kcal / 100 g")); //20,5 [kJ] / 4,184 [kcal/kJ] * 100 [100g/g]
         assertThat(activity.unit.getText().toString(), equalTo("g"));
-        assertThat(activity.calorieCount.getText().toString(), equalTo("73.92 kcal"));
+        assertThat(activity.calorieCount.getText().toString(), equalTo("120.78 kcal"));
     }
 
     @Test

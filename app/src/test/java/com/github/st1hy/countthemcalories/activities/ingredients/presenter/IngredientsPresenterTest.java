@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.state.Selection;
 
@@ -50,18 +51,41 @@ public class IngredientsPresenterTest {
 
 
     @Test
-    public void testOpenNewIngredients() throws Exception {
+    public void testOpenNewIngredientsWithMealIntent() throws Exception {
         when(view.getOnAddIngredientClickedObservable()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
-
-        verify(view).openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_MEAL);
+        verify(view).selectIngredientType();
         verify(view).setMenuItemSelection(eq(INGREDIENTS.getMenuItemId()), any(Selection.class));
         verify(view).getOnAddIngredientClickedObservable();
         verify(view).showNavigationAsUp();
         verify(daoAdapter).onStart();
         verifyNoMoreInteractions(view, daoAdapter);
+        presenter.onSelectIngredientTypeResult(SelectIngredientTypeActivity.RESULT_MEAL);
+
+        verify(view).openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_MEAL);
+        verifyNoMoreInteractions(view, daoAdapter);
     }
+
+
+
+    @Test
+    public void testOpenNewIngredientsWithDrinkIntent() throws Exception {
+        when(view.getOnAddIngredientClickedObservable()).thenReturn(Observable.<Void>just(null));
+
+        presenter.onStart();
+        verify(view).selectIngredientType();
+        verify(view).setMenuItemSelection(eq(INGREDIENTS.getMenuItemId()), any(Selection.class));
+        verify(view).getOnAddIngredientClickedObservable();
+        verify(view).showNavigationAsUp();
+        verify(daoAdapter).onStart();
+        verifyNoMoreInteractions(view, daoAdapter);
+        presenter.onSelectIngredientTypeResult(SelectIngredientTypeActivity.RESULT_DRINK);
+
+        verify(view).openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_DRINK);
+        verifyNoMoreInteractions(view, daoAdapter);
+    }
+
 
     @Test
     public void testOnStop() throws Exception {

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.settings.view.holder;
+package com.github.st1hy.countthemcalories.activities.settings.view;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -6,26 +6,23 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.jakewharton.rxbinding.view.RxView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class SelectUnitViewHolder {
-    private final View root;
 
+    @BindView(R.id.settings_unit_item_root)
+    View root;
     @BindView(R.id.settings_unit_item_title)
     TextView title;
     @BindView(R.id.settings_unit_item_current_unit)
     TextView unit;
 
     public SelectUnitViewHolder(@NonNull View root) {
-        this.root = root;
         ButterKnife.bind(this, root);
-    }
-
-    @NonNull
-    public View getRoot() {
-        return root;
     }
 
     public void setTitle(@StringRes int titleRes) {
@@ -34,5 +31,10 @@ public class SelectUnitViewHolder {
 
     public void setUnit(@NonNull String unit) {
         this.unit.setText(unit);
+    }
+
+    @NonNull
+    public Observable<Void> clickObservable() {
+        return RxView.clicks(root);
     }
 }

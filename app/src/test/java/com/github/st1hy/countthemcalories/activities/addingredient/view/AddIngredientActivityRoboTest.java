@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,14 +13,11 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientTestComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
-import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +32,7 @@ import org.robolectric.fakes.RoboMenu;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import rx.plugins.TestRxPlugins;
@@ -48,7 +45,6 @@ import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -76,20 +72,6 @@ public class AddIngredientActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uproot(tree);
         TestRxPlugins.reset();
-    }
-
-    @Test
-    public void testActivityStart() {
-        assertThat(activity, notNullValue());
-        assertThat(activity.presenter, notNullValue());
-        assertThat(activity.toolbar, notNullValue());
-        assertThat(activity.getComponent(null), notNullValue());
-        assertThat(activity.component, notNullValue());
-        assertThat(activity.energyDensityValue, notNullValue());
-        assertThat(activity.ingredientImage, notNullValue());
-        assertThat(activity.name, notNullValue());
-        assertThat(activity.tagsRecycler, notNullValue());
-        assertThat(activity.selectUnit, notNullValue());
     }
 
     @SuppressLint("SetTextI18n")
@@ -138,18 +120,6 @@ public class AddIngredientActivityRoboTest {
     }
 
     @Test
-    public void testClickSelectUnit() throws Exception {
-        activity.selectUnit.performClick();
-        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
-        assertThat(shadowAlertDialog, notNullValue());
-        assertThat(shadowAlertDialog.getTitle().toString(), equalTo(activity.getString(R.string.add_ingredient_select_unit_dialog_title)));
-        CharSequence selectedItem = shadowAlertDialog.getItems()[1];
-        shadowAlertDialog.clickOnItem(1);
-        assertTrue(shadowAlertDialog.hasBeenDismissed());
-        assertEquals(selectedItem, activity.selectUnit.getText());
-    }
-
-    @Test
     public void testAddRemoveTag() throws Exception {
         assertThat(activity.tagsRecycler.getChildCount(), equalTo(1));
 
@@ -188,11 +158,9 @@ public class AddIngredientActivityRoboTest {
     @Test
     public void testSaveWithTags() throws Exception {
         final String name = "Name";
-        final String value = "300.6";
+        final String value = "300.6"; //default in settings model kcal / 100 g
         activity.name.setText(name);
         activity.energyDensityValue.setText(value);
-        SettingsModel model = new SettingsModel(PreferenceManager.getDefaultSharedPreferences(activity), activity.getResources());
-        GravimetricEnergyDensityUnit preferredUnit = model.getPreferredGravimetricUnit();
 
         Tag tag = addTag(0);
         Tag tag1 = addTag(1);
@@ -211,8 +179,8 @@ public class AddIngredientActivityRoboTest {
         IngredientTemplate template = list.get(0);
         assertThat(template.getId(), notNullValue());
         assertThat(template.getName(), equalTo(name));
-        EnergyDensity energyDensity = template.getEnergyDensity().convertTo(preferredUnit);
-        assertThat(energyDensity.getValue().toPlainString(), equalTo(value));
+        BigDecimal energyDensity = template.getEnergyDensityAmount();
+        assertThat(energyDensity.toPlainString(), equalTo("12.577104")); //default in database kJ / g double precision
         List<JointIngredientTag> tags = template.getTags();
         assertThat(tags, hasSize(2));
         assertThat(tags.get(0).getTag().getId(), equalTo(tag.getId()));

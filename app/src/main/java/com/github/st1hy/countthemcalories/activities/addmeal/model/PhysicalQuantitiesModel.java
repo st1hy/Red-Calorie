@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.database.unit.Unit;
 
 import java.math.BigDecimal;
 
@@ -48,20 +49,25 @@ public class PhysicalQuantitiesModel {
         return format(convertToPreferred(energyDensity));
     }
 
-    @NonNull
-    public AmountUnit convertToPreferred(@NonNull AmountUnit amountUnit) {
-        return settingsModel.getAmountUnitFrom(amountUnit.getType());
-    }
+//    @NonNull
+//    public AmountUnit convertToPreferred(@NonNull AmountUnit amountUnit) {
+//        return settingsModel.getAmountUnitFrom(amountUnit.getType());
+//    }
 
     @NonNull
     public String format(@NonNull BigDecimal amount, @NonNull AmountUnit unit) {
-        return resources.getString(R.string.format_value_simple, amount.toPlainString(), settingsModel.getUnitName(unit));
+        return resources.getString(R.string.format_value_simple, amount.toPlainString(), getUnitName(unit));
     }
 
     @NonNull
-    public String convertAndFormat(@NonNull BigDecimal amount, @NonNull AmountUnit unit) {
-        return format(amount, convertToPreferred(unit));
+    public String getUnitName(@NonNull Unit unit) {
+        return settingsModel.getUnitName(unit);
     }
+
+//    @NonNull
+//    public String convertAndFormat(@NonNull BigDecimal amount, @NonNull AmountUnit unit) {
+//        return format(amount, convertToPreferred(unit));
+//    }
 
     /**
      * Calculates and formats energy from amount and energy density
@@ -74,22 +80,20 @@ public class PhysicalQuantitiesModel {
     @NonNull
     public String formatEnergyCount(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
                                     @NonNull EnergyDensity energyDensity) {
-
-        return resources.getString(R.string.format_value_simple,
-                energyDensity.getValue()
-                        .multiply(amount)
-                        .multiply(amountUnit.getBase())
-                        .divide(energyDensity.getAmountUnit().getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP)
-                        .stripTrailingZeros()
-                        .toPlainString(),
-                settingsModel.getUnitName(energyDensity.getEnergyUnit())
-        );
+        String amountString = energyDensity.getValue()
+                .multiply(amount)
+                .multiply(amountUnit.getBase())
+                .divide(energyDensity.getAmountUnit().getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
+        String energyUnitName = getUnitName(energyDensity.getEnergyUnit());
+        return resources.getString(R.string.format_value_simple, amountString, energyUnitName);
     }
 
     @NonNull
     public String getUnitNameFrom(@NonNull AmountUnitType amountUnitType) {
-        return settingsModel.getUnitName(settingsModel.getAmountUnitFrom(amountUnitType));
+        return getUnitName(settingsModel.getAmountUnitFrom(amountUnitType));
     }
 
     @NonNull

@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
@@ -15,8 +14,8 @@ public class SelectIngredientTypeActivity extends BaseActivity {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.select_ingredient_type_activity);
         ButterKnife.bind(this);
     }

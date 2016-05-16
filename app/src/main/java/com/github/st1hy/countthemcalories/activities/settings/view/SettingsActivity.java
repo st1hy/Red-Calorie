@@ -8,7 +8,6 @@ import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSetti
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
-import com.github.st1hy.countthemcalories.activities.settings.view.holder.SelectUnitViewHolder;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 
 import javax.inject.Inject;

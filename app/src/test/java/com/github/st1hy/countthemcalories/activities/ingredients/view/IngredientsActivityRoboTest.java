@@ -7,11 +7,14 @@ import android.content.Intent;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsTestComponent;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +26,12 @@ import org.robolectric.shadows.ShadowActivity;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -64,10 +69,31 @@ public class IngredientsActivityRoboTest {
     @Test
     public void testAddIngredient() throws Exception {
         setupActivity();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
         activity.fab.performClick();
 
-        Intent request = shadowOf(activity).peekNextStartedActivity();
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent request = shadowActivity.getNextStartedActivity();
+        assertThat(request, hasComponent(new ComponentName(activity, SelectIngredientTypeActivity.class)));
+
+        shadowActivity.receiveResult(request, SelectIngredientTypeActivity.RESULT_DRINK, null);
+        request = shadowActivity.getNextStartedActivity();
         assertThat(request, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
+        assertThat(request, hasAction(AddIngredientActivity.ACTION_CREATE_DRINK));
+
+        addAdditionalIngredientToDatabase();
+        shadowActivity.receiveResult(request, AddIngredientActivity.RESULT_OK, null);
+        activity.adapter.onStop();
+        activity.adapter.onStart();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+    }
+
+    private void addAdditionalIngredientToDatabase() {
+        IngredientsTestComponent component = (IngredientsTestComponent) activity.component;
+        component.getDaoSession().insert(IngredientsTestActivity.additionalIngredient);
+        Assert.assertThat(component.getDaoSession().getIngredientTemplateDao().loadAll(), hasSize(3));
     }
 
     @Test

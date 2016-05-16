@@ -91,9 +91,9 @@ public class AddIngredientModel extends WithPictureModel {
             if (action != null) {
                 switch (action) {
                     case AddIngredientActivity.ACTION_CREATE_DRINK:
-                        return AmountUnitType.MASS;
-                    case AddIngredientActivity.ACTION_CREATE_MEAL:
                         return AmountUnitType.VOLUME;
+                    case AddIngredientActivity.ACTION_CREATE_MEAL:
+                        return AmountUnitType.MASS;
                 }
             }
         }

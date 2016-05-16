@@ -1,43 +1,35 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
+import android.content.res.Resources;
+
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit;
-import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.database.unit.MassUnit;
+import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import rx.functions.Action1;
-
 import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
 import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
 import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE;
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
-import static com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit.KJ_AT_100ML;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddIngredientModelTest {
 
-    final GravimetricEnergyDensityUnit expectedDefault = KCAL_AT_100G;
-    final VolumetricEnergyDensityUnit expectedDefaultLiquid = KJ_AT_100ML;
+    final EnergyUnit expectedEnergy = EnergyUnit.KCAL;
+    final MassUnit expectedMass = MassUnit.G100;
+    final VolumeUnit expectedVolume = VolumeUnit.ML100;
 
     @Mock
     private SettingsModel settingsModel;
@@ -45,59 +37,16 @@ public class AddIngredientModelTest {
     private IngredientTagsModel tagsModel;
     @Mock
     private IngredientTypesDatabaseModel typesModel;
+    @Mock
+    private Resources resources;
     private AddIngredientModel model;
 
     @Before
     public void setUp() throws Exception {
-        when(settingsModel.getPreferredGravimetricUnit()).thenReturn(expectedDefault);
-        when(settingsModel.getPreferredVolumetricUnit()).thenReturn(expectedDefaultLiquid);
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
-    }
-
-    @Test
-    public void testGetUnitSelection() throws Exception {
-        EnergyDensityUnit[] unitSelection = model.getUnitSelection();
-        assertThat(unitSelection, Matchers.<EnergyDensityUnit>arrayContaining(expectedDefault, expectedDefaultLiquid));
-    }
-
-    @Test
-    public void testGetUnitSelectionOptions() throws Exception {
-        when(settingsModel.getUnitName(expectedDefault)).thenReturn("1");
-        when(settingsModel.getUnitName(expectedDefaultLiquid)).thenReturn("2");
-        String[] options = model.getUnitSelectionOptions();
-        assertThat(options, arrayContaining("1", "2"));
-
-    }
-
-    @Test
-    public void testSetUnit() throws Exception {
-        final AtomicInteger callCount = new AtomicInteger(0);
-        EnergyDensityUnit expectedValue = expectedDefault;
-        final AtomicReference<EnergyDensityUnit> expected = new AtomicReference<>(expectedValue);
-        model.getUnitObservable().subscribe(new Action1<EnergyDensityUnit>() {
-            @Override
-            public void call(EnergyDensityUnit energyDensityUnit) {
-                callCount.incrementAndGet();
-                assertThat(expected.get(), equalTo(energyDensityUnit));
-            }
-        });
-        expectedValue = VolumetricEnergyDensityUnit.KCAL_AT_ML;
-        expected.set(expectedValue);
-        model.setUnit(expected.get());
-        assertEquals(2, callCount.get());
-    }
-
-    @Test
-    public void testUnitAsString() throws Exception {
-        VolumetricEnergyDensityUnit expected = VolumetricEnergyDensityUnit.KJ_AT_100ML;
-        model.unitAsString().call(expected);
-        verify(settingsModel).getUnitName(expected);
-    }
-
-    @Test
-    public void testGetUnitDialogTitle() throws Exception {
-        int title = model.getSelectUnitDialogTitle();
-        assertEquals(R.string.add_ingredient_select_unit_dialog_title, title);
+        when(settingsModel.getEnergyUnit()).thenReturn(expectedEnergy);
+        when(settingsModel.getMassUnit()).thenReturn(expectedMass);
+        when(settingsModel.getVolumeUnit()).thenReturn(expectedVolume);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, null);
     }
 
     @Test
@@ -121,7 +70,7 @@ public class AddIngredientModelTest {
         model.energyValue = "";
         assertThat(model.canCreateIngredient(), hasItems(NO_VALUE));
         model.name = "";
-        model.energyValue = "0";;
+        model.energyValue = "0";
         assertThat(model.canCreateIngredient(), hasItems(NO_NAME, ZERO_VALUE));
         model.name = "";
         model.energyValue = "1";

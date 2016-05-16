@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenterImpl;
-import com.github.st1hy.countthemcalories.activities.settings.view.holder.SelectUnitViewHolder;
+import com.github.st1hy.countthemcalories.activities.settings.view.SelectUnitViewHolder;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
-import com.github.st1hy.countthemcalories.activities.settings.view.holder.UnitsViewHolder;
+import com.github.st1hy.countthemcalories.activities.settings.view.UnitsViewHolder;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 

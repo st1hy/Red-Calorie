@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.settings.view.holder;
+package com.github.st1hy.countthemcalories.activities.settings.view;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
