@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -33,42 +33,55 @@ public class SettingsActivityTest {
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
 
-    @Before
-    public void setUp() throws Exception {
-        SettingsActivity activity = main.getActivity();
-        CaloriesCounterApplication application = (CaloriesCounterApplication) activity.getApplication();
+
+    @After
+    public void tearDown() throws Exception {
+        CaloriesCounterApplication application = (CaloriesCounterApplication) main.getActivity().getApplication();
         application.getComponent().getSettingsModel().resetToDefaultSettings();
     }
 
     @Test
-    public void testLiquidSettings() throws Exception {
-        onView(withText("kcal / 100 ml"))
-                .check(matches(isDisplayed()));
-        onView(ViewMatchers.withText(R.string.settings_select_preferred_energy_unit_for_drinks))
+    public void testEnergySettings() throws Exception {
+        onView(withText("kcal")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(R.string.settings_unit_energy_title))
                 .check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.settings_select_unit_dialog_title))
                 .check(matches(isDisplayed()));
-        onView(withText("1 kJ / ml"))
+        onView(withText("kJ"))
                 .check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText("kJ / ml"))
+        onView(withText("kJ"))
                 .check(matches(isDisplayed()));
     }
 
     @Test
-    public void testSolidSettings() throws Exception {
-        onView(withText("kcal / 100 g"))
-                .check(matches(isDisplayed()));
-        onView(withText(R.string.settings_select_preferred_energy_unit_for_meals))
+    public void testMassSettings() throws Exception {
+        onView(withText("100 g")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(R.string.settings_unit_mass_title))
                 .check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.settings_select_unit_dialog_title))
                 .check(matches(isDisplayed()));
-        onView(withText("1 kJ / g"))
+        onView(withText("g"))
                 .check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText("kJ / g"))
+        onView(withText("g"))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testVolumeSettings() throws Exception {
+        onView(withText("100 ml")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(R.string.settings_unit_volume_title))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(R.string.settings_select_unit_dialog_title))
+                .check(matches(isDisplayed()));
+        onView(withText("ml"))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText("ml"))
                 .check(matches(isDisplayed()));
     }
 }

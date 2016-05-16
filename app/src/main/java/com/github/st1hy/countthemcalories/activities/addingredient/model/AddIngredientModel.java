@@ -107,7 +107,8 @@ public class AddIngredientModel extends WithPictureModel {
     @NonNull
     public String getEnergyDensityUnit() {
         return resources.getString(R.string.format_value_fraction, "",
-                settingsModel.getUnitName(energyUnit), settingsModel.getUnitName(amountUnit));
+                settingsModel.getUnitName(energyUnit), settingsModel.getUnitName(amountUnit))
+                .trim();
     }
 
     @Override

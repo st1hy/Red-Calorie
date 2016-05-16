@@ -8,10 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.github.st1hy.countthemcalories.core.Utils;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -27,7 +26,6 @@ public class ImageViewMatchers {
     public static Matcher<View> withDrawable(@DrawableRes final int resId) {
         return new BoundedMatcher<View, ImageView>(ImageView.class) {
             private Resources resources;
-            private final Utils utils = new Utils();
 
             @Override
             public boolean matchesSafely(ImageView item) {
@@ -35,10 +33,20 @@ public class ImageViewMatchers {
                     resources = item.getResources();
                     Context context = item.getContext();
                     Bitmap expectedBitmap = toBitmap(item.getDrawable());
-                    Bitmap bitmap = toBitmap(utils.getDrawableSafely(context, resId));
+                    Bitmap bitmap = toBitmap(getDrawableSafely(context));
                     return isEqual(expectedBitmap, bitmap);
                 } finally {
                     resources = null;
+                }
+            }
+
+            @Nullable
+            private Drawable getDrawableSafely(Context context) {
+                try {
+                    return ResourcesCompat.getDrawable(context.getResources(), resId,
+                            context.getTheme());
+                } catch (Resources.NotFoundException e) {
+                    return null;
                 }
             }
 

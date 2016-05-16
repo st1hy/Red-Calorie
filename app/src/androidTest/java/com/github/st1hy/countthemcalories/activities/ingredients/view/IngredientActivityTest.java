@@ -10,6 +10,7 @@ import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -18,7 +19,7 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
-import com.github.st1hy.countthemcalories.database.unit.VolumetricEnergyDensityUnit;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
@@ -49,17 +50,16 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
-import static com.github.st1hy.countthemcalories.database.unit.GravimetricEnergyDensityUnit.KCAL_AT_100G;
 import static org.hamcrest.Matchers.hasSize;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class IngredientActivityTest {
-    public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[] {
-            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(),
-                    getOrZero(KCAL_AT_100G, "300.5")),
-            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(),
-                    getOrZero(VolumetricEnergyDensityUnit.KJ_AT_ML, "6.04")),
+    public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
+            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,
+                    getOrZero("20.5")), // kJ / g in database
+            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+                    getOrZero("6.04")), // kJ / ml in database
     };
     public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[] {
             new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
@@ -125,6 +125,8 @@ public class IngredientActivityTest {
     public void testAddIngredient() throws Exception {
         onView(withId(R.id.ingredients_fab)).check(matches(isDisplayed()))
                 .perform(click());
+        intended(hasComponent(new ComponentName(getTargetContext(), SelectIngredientTypeActivity.class)));
+        onView(withId(R.id.select_ingredient_type_meal)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddIngredientActivity.class)));
         onView(withHint(R.string.add_ingredient_name_hint)).check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("New ingredient name"));

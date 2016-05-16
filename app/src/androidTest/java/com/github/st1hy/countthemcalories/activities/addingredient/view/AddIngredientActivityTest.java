@@ -10,7 +10,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -45,10 +44,13 @@ import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.betterScrollTo;
 import static com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivityTest.resourceToUri;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
@@ -67,7 +69,7 @@ public class AddIngredientActivityTest {
     };
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
-    public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(AddIngredientActivity.class);
+    public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(AddIngredientActivity.class, true, false);
 
     private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
@@ -76,10 +78,6 @@ public class AddIngredientActivityTest {
 
     @Before
     public void onSetUp() {
-        // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
-        // every test run. In this case all external Intents will be blocked.
-        intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
-
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
@@ -87,6 +85,12 @@ public class AddIngredientActivityTest {
         assertEquals(3, tagDao.loadAll().size());
         component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
         Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
+
+        main.launchActivity(new Intent(AddIngredientActivity.ACTION_CREATE_DRINK));
+
+        // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
+        // every test run. In this case all external Intents will be blocked.
+        intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
     }
 
     @After
@@ -96,16 +100,14 @@ public class AddIngredientActivityTest {
     }
 
     @Test
-    public void testDisplaysTitle() {
-        onView(allOf(withChild(ViewMatchers.withText(R.string.add_ingredient_title)), withId(R.id.add_ingredient_toolbar)))
+    public void testDisplaysElements() {
+        onView(allOf(withChild(withText(R.string.add_ingredient_title)), withId(R.id.add_ingredient_toolbar)))
                 .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testDisplaysUnit() throws Exception {
-        onView(withId(R.id.add_ingredient_select_unit))
-                .check(matches(isDisplayed()));
-
+        onView(allOf(withText("kcal / 100 ml"), withId(R.id.add_ingredient_unit))).check(matches(isDisplayed()));
+        onView(withHint(R.string.add_ingredient_name_hint)).check(matches(isDisplayed()))
+                .check(matches(hasFocus()));
+        onView(withHint(R.string.add_ingredient_energy_density_hint)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -189,6 +191,7 @@ public class AddIngredientActivityTest {
     @Test
     public void testAddTag() throws Exception {
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
+                .perform(betterScrollTo())
                 .perform(click());
         onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
