@@ -4,7 +4,8 @@ Android app for keeping your calories in check.
 
 +Here will be description of another Android app excersice.
 
-## Current state: pre-alpha 0.1 "Here be dragons"
+## Current state: pre-alpha 0.2 alpha
+*
 
 ## General project goal:
 * TDD from the beggining via esspresso / mockito / roboelectic
