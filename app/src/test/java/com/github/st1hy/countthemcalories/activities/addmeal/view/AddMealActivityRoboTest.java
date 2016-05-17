@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.Ingre
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealActivityRoboTest {
     private AddMealActivity activity;
     private final Timber.Tree tree = new Timber.Tree() {
@@ -168,7 +169,6 @@ public class AddMealActivityRoboTest {
     }
 
     private void checkFirstIngredientAmountEqualTo(String amountString) {
-        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
         View childRoot = activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root);
         assertThat(childRoot, notNullValue());
         TextView amount = (TextView) childRoot.findViewById(R.id.add_meal_ingredient_amount);

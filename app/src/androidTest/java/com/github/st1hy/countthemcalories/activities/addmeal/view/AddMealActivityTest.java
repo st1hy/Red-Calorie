@@ -52,6 +52,7 @@ import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
@@ -193,7 +194,7 @@ public class AddMealActivityTest {
         //If doesn't crash is good
     }
 
-    public static Uri resourceToUri (Context context, @DrawableRes int resID) {
+    public static Uri resourceToUri(Context context, @DrawableRes int resID) {
         return new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
                 .authority(context.getPackageName())
@@ -275,5 +276,31 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
+    }
+
+    @Test
+    public void testAddIngredientWithIncorrectValue() throws Exception {
+        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
+                hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
+        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint))
+                .check(matches(hasErrorText(getTargetContext().getString(R.string.add_meal_amount_error_empty))))
+                .perform(typeTextIntoFocusedView("0"))
+                .check(matches(hasErrorText(getTargetContext().getString(R.string.add_meal_amount_error_zero))))
+                .perform(typeTextIntoFocusedView("1"));
+        onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withText("1 g")).check(matches(isDisplayed()));
     }
 }

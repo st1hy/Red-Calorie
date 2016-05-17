@@ -2,8 +2,9 @@ package com.github.st1hy.countthemcalories.core.ui;
 
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.core.permissions.Permission;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @Ignore("request permission is not supported by Robolectric")
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class BaseActivityRoboTest {
     private BaseActivity activity;
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel;
@@ -82,32 +83,48 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     }
 
     @Override
-    public boolean handleActivityResult(int requestCode, int resultCode, Intent data) {
+    public boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == AddMealActivity.REQUEST_PICK_INGREDIENT) {
-            if (resultCode == IngredientsActivity.RESULT_OK) {
-                IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
-                if (typeParcel != null) {
-                    adapter.onIngredientReceived(typeParcel);
-                } else {
-                    Timber.w("Pick ingredient returned incomplete result ok");
-                }
+            if (!handlePickIngredientResult(resultCode, data)) {
+                Timber.w("Pick ingredient returned incomplete result: %d, intent: %s", resultCode, data);
             }
             return true;
         } else if (requestCode == AddMealActivity.REQUEST_EDIT_INGREDIENT) {
-            EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
-            if (result != EditIngredientResult.UNKNOWN ) {
-                long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
-                IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
-                String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-                if (requestId != -2L && parcel != null && stringExtra != null) {
-                    BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
-                    adapter.onIngredientEditFinished(requestId, parcel, amount, result);
-                } else {
-                    Timber.w("Edit ingredient returned incomplete result: %s, intent: %s", result, data);
-                }
+            if (!handleEditIngredientResponse(resultCode, data)) {
+                Timber.w("Edit ingredient returned incomplete result: %d, intent: %s", resultCode, data);
             }
             return true;
         } else return false;
+    }
+
+    /**
+     * @return false if data or resultCode was in incorrect state
+     */
+    private boolean handlePickIngredientResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == IngredientsActivity.RESULT_OK) {
+            if (data == null) return false;
+            IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
+            if (typeParcel == null) return false;
+            adapter.onIngredientReceived(typeParcel);
+        }
+        return true;
+    }
+
+    /**
+     * @return false if data or result was in incorrect state
+     */
+    private boolean handleEditIngredientResponse(int resultCode, @Nullable Intent data) {
+        EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
+        if (result != EditIngredientResult.UNKNOWN) {
+            if (data == null) return false;
+            long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
+            IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
+            String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
+            if (requestId == -2L || parcel == null || stringExtra == null) return false;
+            BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
+            adapter.onIngredientEditFinished(requestId, parcel, amount, result);
+        }
+        return true;
     }
 
     void onSaveButtonClicked() {

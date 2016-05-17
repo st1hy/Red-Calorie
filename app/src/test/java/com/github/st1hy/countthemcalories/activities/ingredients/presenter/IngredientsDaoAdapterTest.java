@@ -4,6 +4,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 
 import org.junit.Before;
@@ -16,7 +17,7 @@ import org.robolectric.annotation.Config;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientsDaoAdapterTest {
 
     private IngredientsView view;

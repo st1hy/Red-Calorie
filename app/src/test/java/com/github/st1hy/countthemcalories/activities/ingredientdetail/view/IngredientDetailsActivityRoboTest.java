@@ -11,7 +11,9 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
+import org.hamcrest.core.IsEqual;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
@@ -37,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientDetailsActivityRoboTest {
     final IngredientTemplate ingredientTemplate = IngredientsTestActivity.exampleIngredients[0];
     final BigDecimal amount = new BigDecimal("24.65");
@@ -145,4 +148,21 @@ public class IngredientDetailsActivityRoboTest {
         assertThat(resultIntent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -124321L),  equalTo(requestId));
         assertThat(resultIntent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL), equalTo(expectedAmount));
     }
+
+    @Test
+    public void testDisplayErrorOnAccept() throws Exception {
+        Intent intent = buildIntent();
+        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, "0");
+
+        activity = Robolectric.buildActivity(IngredientDetailTestActivity.class)
+                .withIntent(intent)
+                .setup().get();
+
+        assertThat(activity.editAmount.getError(), nullValue());
+        activity.accept.performClick();
+        ShadowActivity shadowActivity = shadowOf(activity);
+        assertThat(shadowActivity.isFinishing(), equalTo(false));
+        assertThat(activity.editAmount.getError(), IsEqual.<CharSequence>equalTo(activity.getString(R.string.add_meal_amount_error_empty)));
+    }
+
 }

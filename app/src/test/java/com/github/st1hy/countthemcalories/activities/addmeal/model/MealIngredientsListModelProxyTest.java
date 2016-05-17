@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 
 import org.hamcrest.junit.MatcherAssert;
@@ -47,7 +48,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class MealIngredientsListModelProxyTest {
     final IngredientTemplate[] exampleIngredientTemplate = new IngredientTemplate[]{
             new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"),

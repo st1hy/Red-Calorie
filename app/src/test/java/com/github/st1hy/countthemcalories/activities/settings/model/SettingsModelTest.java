@@ -7,6 +7,7 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -27,7 +28,7 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class SettingsModelTest {
     private SettingsModel model;
 

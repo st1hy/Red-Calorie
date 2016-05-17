@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -36,7 +37,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientsActivityRoboTest {
 
     private IngredientsActivity activity;

@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsMode
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,7 +33,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddIngredientModelProxyTest {
 
     final EnergyUnit expectedEnergy = EnergyUnit.KCAL;

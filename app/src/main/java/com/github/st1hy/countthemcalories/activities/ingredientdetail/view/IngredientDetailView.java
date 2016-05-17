@@ -39,4 +39,7 @@ public interface IngredientDetailView {
 
     void setResultAndFinish(int resultCode, long ingredientId,
                             @NonNull IngredientTypeParcel parcel, @NonNull BigDecimal amount);
+
+    @NonNull
+    String getCurrentAmount();
 }

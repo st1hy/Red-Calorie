@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -110,7 +111,10 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
 
     @Override
     public void setAmount(@NonNull String readableAmount) {
-        this.editAmount.setText(readableAmount);
+        Editable text = this.editAmount.getText();
+        text.clear();
+        text.append(readableAmount);
+//        this.editAmount.setText(readableAmount);
     }
 
     @Override
@@ -164,5 +168,11 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
         ActivityCompat.finishAfterTransition(this);
+    }
+
+    @NonNull
+    @Override
+    public String getCurrentAmount() {
+        return editAmount.getText().toString();
     }
 }

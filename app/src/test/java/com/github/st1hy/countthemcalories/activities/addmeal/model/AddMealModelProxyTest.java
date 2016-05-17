@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealModelProxyTest {
 
     final String testName = "Name";

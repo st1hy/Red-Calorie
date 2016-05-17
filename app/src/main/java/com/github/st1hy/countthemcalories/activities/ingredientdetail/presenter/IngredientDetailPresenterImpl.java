@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
@@ -95,7 +96,9 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 .skip(1)
                 .subscribe(onAmountChanged()));
         subscriptions.add(view.getRemoveObservable().subscribe(onRemoveClicked()));
-        subscriptions.add(view.getAcceptObservable().subscribe(onAcceptClicked()));
+        subscriptions.add(view.getAcceptObservable()
+                .filter(formCompleted())
+                .subscribe(onAcceptClicked()));
     }
 
     private void bindImage(@NonNull IngredientTemplate type) {
@@ -163,5 +166,15 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 ingredient.getId(),
                 new IngredientTypeParcel(ingredient.getIngredientType()),
                 ingredient.getAmount());
+    }
+
+    @NonNull
+    private Func1<? super Void, Boolean> formCompleted() {
+        return new Func1<Void, Boolean>() {
+            @Override
+            public Boolean call(Void aVoid) {
+                return checkAmountCorrect(view.getCurrentAmount());
+            }
+        };
     }
 }

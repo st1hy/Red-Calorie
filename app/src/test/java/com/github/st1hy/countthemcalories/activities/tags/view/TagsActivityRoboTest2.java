@@ -5,6 +5,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+ @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 @LargeTest
 public class TagsActivityRoboTest2 {
 
