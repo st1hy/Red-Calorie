@@ -34,4 +34,6 @@ public interface AddMealView extends WithPictureView {
                                @Nullable String sharedElementName);
 
     void scrollTo(int itemPosition);
+
+    void setTotalEnergy(@NonNull String totalEnergy);
 }

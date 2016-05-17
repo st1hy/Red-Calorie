@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
@@ -62,6 +63,8 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     Button addIngredientButton;
     @BindView(R.id.add_meal_fab_add_ingredient)
     FloatingActionButton addIngredientFab;
+    @BindView(R.id.add_meal_total_calories)
+    TextView totalCalories;
 
     AddMealActivityComponent component;
 
@@ -196,5 +199,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     public void scrollTo(int itemPosition) {
         ingredientList.scrollToPosition(itemPosition);
+    }
+
+    @Override
+    public void setTotalEnergy(@NonNull String totalEnergy) {
+        totalCalories.setText(totalEnergy);
     }
 }

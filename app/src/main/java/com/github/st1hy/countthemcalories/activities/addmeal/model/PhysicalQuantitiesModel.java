@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
@@ -49,13 +48,8 @@ public class PhysicalQuantitiesModel {
         return format(convertToPreferred(energyDensity));
     }
 
-//    @NonNull
-//    public AmountUnit convertToPreferred(@NonNull AmountUnit amountUnit) {
-//        return settingsModel.getAmountUnitFrom(amountUnit.getType());
-//    }
-
     @NonNull
-    public String format(@NonNull BigDecimal amount, @NonNull AmountUnit unit) {
+    public String format(@NonNull BigDecimal amount, @NonNull Unit unit) {
         return resources.getString(R.string.format_value_simple, amount.toPlainString(), getUnitName(unit));
     }
 
@@ -64,36 +58,38 @@ public class PhysicalQuantitiesModel {
         return settingsModel.getUnitName(unit);
     }
 
-//    @NonNull
-//    public String convertAndFormat(@NonNull BigDecimal amount, @NonNull AmountUnit unit) {
-//        return format(amount, convertToPreferred(unit));
-//    }
+    /**
+     * Calculates energy from amount and energy density
+     *
+     * @param amount        how much substance it is
+     * @param amountUnit    what unit is the amount in
+     * @param energyDensity what is its energy density
+     * @return amount of energy in unit of {@link EnergyDensity#getEnergyUnit()}
+     */
+    @NonNull
+    public BigDecimal getEnergyAmountFrom(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
+                                          @NonNull EnergyDensity energyDensity) {
+        return energyDensity.getValue()
+                .multiply(amount)
+                .multiply(amountUnit.getBase())
+                .divide(energyDensity.getAmountUnit().getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros();
+    }
 
     /**
      * Calculates and formats energy from amount and energy density
      *
      * @param amount        how much substance it is
-     * @param amountUnit    is what unit amount is
+     * @param amountUnit    what unit is the amount in
      * @param energyDensity what is its energy density
      * @return formatted value of energy
      */
     @NonNull
     public String formatEnergyCount(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
                                     @NonNull EnergyDensity energyDensity) {
-        String amountString = energyDensity.getValue()
-                .multiply(amount)
-                .multiply(amountUnit.getBase())
-                .divide(energyDensity.getAmountUnit().getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString();
-        String energyUnitName = getUnitName(energyDensity.getEnergyUnit());
-        return resources.getString(R.string.format_value_simple, amountString, energyUnitName);
-    }
-
-    @NonNull
-    public String getUnitNameFrom(@NonNull AmountUnitType amountUnitType) {
-        return getUnitName(settingsModel.getAmountUnitFrom(amountUnitType));
+        BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
+        return format(energyAmount, energyDensity.getEnergyUnit());
     }
 
     @NonNull
@@ -117,5 +113,10 @@ public class PhysicalQuantitiesModel {
         return amount.multiply(to.getBase())
                 .divide(from.getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
                 .stripTrailingZeros();
+    }
+
+    @NonNull
+    public SettingsModel getSettingsModel() {
+        return settingsModel;
     }
 }

@@ -48,7 +48,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     public void onStart() {
         final int initialSize = getItemCount();
-        setEmptyViewVisibility();
+        onDatSetChanged();
         subscriptions.add(model.getItemsLoadedObservable()
                 .subscribe(onInitialLoading(initialSize)));
     }
@@ -161,7 +161,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onCompleted() {
                 if (initialSize != getItemCount()) {
                     notifyDataSetChanged();
-                    setEmptyViewVisibility();
+                    onDatSetChanged();
                 }
             }
         };
@@ -175,7 +175,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 super.onNext(itemPosition);
                 notifyItemInserted(itemPosition);
                 view.scrollTo(itemPosition);
-                setEmptyViewVisibility();
+                onDatSetChanged();
             }
         };
     }
@@ -187,13 +187,34 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);
                 notifyItemChanged(itemPosition);
-                setEmptyViewVisibility();
+                onDatSetChanged();
             }
         };
     }
 
-    private void setEmptyViewVisibility() {
+    private void onDatSetChanged() {
+        setEmptyIngredientsVisibility();
+        setTotalCalories();
+    }
+
+    private void setEmptyIngredientsVisibility() {
         view.setEmptyIngredientsVisibility(Visibility.of(getItemCount() == 0));
+    }
+
+    private void setTotalCalories() {
+        BigDecimal energySum = BigDecimal.ZERO;
+        for (int i = 0; i < model.getItemsCount(); i++) {
+            Ingredient ingredient = model.getItemAt(i);
+            EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredient.getIngredientType());
+            EnergyDensity energyDensity = quantityModel.convertToPreferred(databaseEnergyDensity);
+            AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
+            BigDecimal energyAmount = quantityModel.getEnergyAmountFrom(ingredient.getAmount(),
+                    amountUnit, energyDensity);
+            energySum = energySum.add(energyAmount);
+        }
+        energySum = energySum.stripTrailingZeros();
+        String totalEnergy = quantityModel.format(energySum, quantityModel.getSettingsModel().getEnergyUnit());
+        view.setTotalEnergy(totalEnergy);
     }
 
 }

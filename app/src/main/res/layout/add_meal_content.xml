@@ -42,10 +42,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:singleLine="true"
+            android:lines="1"
             android:hint="@string/add_meal_name_hint">
 
             <requestFocus />
         </EditText>
+
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
             android:layout_height="16dp" />
@@ -59,6 +62,7 @@
             android:id="@+id/add_meal_empty_ingredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <Button
@@ -71,6 +75,6 @@
         </LinearLayout>
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="80dip"/>
+            android:layout_height="100dip"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
