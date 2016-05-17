@@ -12,14 +12,12 @@ import de.greenrobot.dao.internal.DaoConfig;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.database.Day;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.MealDao;
-import com.github.st1hy.countthemcalories.database.DayDao;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 
@@ -35,14 +33,12 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig ingredientTemplateDaoConfig;
     private final DaoConfig ingredientDaoConfig;
     private final DaoConfig mealDaoConfig;
-    private final DaoConfig dayDaoConfig;
     private final DaoConfig tagDaoConfig;
     private final DaoConfig jointIngredientTagDaoConfig;
 
     private final IngredientTemplateDao ingredientTemplateDao;
     private final IngredientDao ingredientDao;
     private final MealDao mealDao;
-    private final DayDao dayDao;
     private final TagDao tagDao;
     private final JointIngredientTagDao jointIngredientTagDao;
 
@@ -59,9 +55,6 @@ public class DaoSession extends AbstractDaoSession {
         mealDaoConfig = daoConfigMap.get(MealDao.class).clone();
         mealDaoConfig.initIdentityScope(type);
 
-        dayDaoConfig = daoConfigMap.get(DayDao.class).clone();
-        dayDaoConfig.initIdentityScope(type);
-
         tagDaoConfig = daoConfigMap.get(TagDao.class).clone();
         tagDaoConfig.initIdentityScope(type);
 
@@ -71,14 +64,12 @@ public class DaoSession extends AbstractDaoSession {
         ingredientTemplateDao = new IngredientTemplateDao(ingredientTemplateDaoConfig, this);
         ingredientDao = new IngredientDao(ingredientDaoConfig, this);
         mealDao = new MealDao(mealDaoConfig, this);
-        dayDao = new DayDao(dayDaoConfig, this);
         tagDao = new TagDao(tagDaoConfig, this);
         jointIngredientTagDao = new JointIngredientTagDao(jointIngredientTagDaoConfig, this);
 
         registerDao(IngredientTemplate.class, ingredientTemplateDao);
         registerDao(Ingredient.class, ingredientDao);
         registerDao(Meal.class, mealDao);
-        registerDao(Day.class, dayDao);
         registerDao(Tag.class, tagDao);
         registerDao(JointIngredientTag.class, jointIngredientTagDao);
     }
@@ -87,7 +78,6 @@ public class DaoSession extends AbstractDaoSession {
         ingredientTemplateDaoConfig.getIdentityScope().clear();
         ingredientDaoConfig.getIdentityScope().clear();
         mealDaoConfig.getIdentityScope().clear();
-        dayDaoConfig.getIdentityScope().clear();
         tagDaoConfig.getIdentityScope().clear();
         jointIngredientTagDaoConfig.getIdentityScope().clear();
     }
@@ -102,10 +92,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public MealDao getMealDao() {
         return mealDao;
-    }
-
-    public DayDao getDayDao() {
-        return dayDao;
     }
 
     public TagDao getTagDao() {

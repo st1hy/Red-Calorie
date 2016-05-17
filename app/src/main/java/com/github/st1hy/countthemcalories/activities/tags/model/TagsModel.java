@@ -47,13 +47,11 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         dao().readEntity(cursor, output, 0);
     }
 
-
     @NonNull
     public Observable<Cursor> getAllFiltered(@NonNull String partOfName,
                                              @NonNull Collection<Long> excludedIds) {
         return fromDatabaseTask(filteredExclude(partOfName, excludedIds));
     }
-
 
     @NonNull
     @Override

@@ -15,16 +15,12 @@ public class Meal {
     private Long id;
     private String name;
     private DateTime creationDate;
-    private Long consumptionDayId;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
     private transient MealDao myDao;
-
-    private Day consumptionDay;
-    private Long consumptionDay__resolvedKey;
 
     private List<Ingredient> ingredients;
 
@@ -35,11 +31,10 @@ public class Meal {
         this.id = id;
     }
 
-    public Meal(Long id, String name, DateTime creationDate, Long consumptionDayId) {
+    public Meal(Long id, String name, DateTime creationDate) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
-        this.consumptionDayId = consumptionDayId;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -70,39 +65,6 @@ public class Meal {
 
     public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public Long getConsumptionDayId() {
-        return consumptionDayId;
-    }
-
-    public void setConsumptionDayId(Long consumptionDayId) {
-        this.consumptionDayId = consumptionDayId;
-    }
-
-    /** To-one relationship, resolved on first access. */
-    public Day getConsumptionDay() {
-        Long __key = this.consumptionDayId;
-        if (consumptionDay__resolvedKey == null || !consumptionDay__resolvedKey.equals(__key)) {
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            DayDao targetDao = daoSession.getDayDao();
-            Day consumptionDayNew = targetDao.load(__key);
-            synchronized (this) {
-                consumptionDay = consumptionDayNew;
-            	consumptionDay__resolvedKey = __key;
-            }
-        }
-        return consumptionDay;
-    }
-
-    public void setConsumptionDay(Day consumptionDay) {
-        synchronized (this) {
-            this.consumptionDay = consumptionDay;
-            consumptionDayId = consumptionDay == null ? null : consumptionDay.getId();
-            consumptionDay__resolvedKey = consumptionDayId;
-        }
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

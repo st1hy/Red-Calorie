@@ -19,7 +19,7 @@ import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 
 public class MealDatabaseModel extends RxDatabaseModel<Meal> {
-    
+
     private final Lazy<MealDao> mealDaoLazy;
 
     public MealDatabaseModel(@NonNull Lazy<DaoSession> session) {
@@ -45,7 +45,6 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     @Override
     protected Meal performGetById(long id) {
         Meal meal = dao().load(id);
-        meal.getConsumptionDay();
         meal.getIngredients();
         return meal;
     }
@@ -54,7 +53,6 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     @Override
     protected Meal performInsert(@NonNull Meal meal) {
         dao().insert(meal);
-        meal.getConsumptionDay();
         meal.getIngredients();
         return meal;
     }

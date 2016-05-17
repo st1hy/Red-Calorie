@@ -19,7 +19,7 @@ public class DatabaseGenerator {
     private static final String bigDecimalConverterClassName = "com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter";
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1003, "com.github.st1hy.countthemcalories.database");
+        Schema schema = new Schema(1004, "com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
 
@@ -51,13 +51,6 @@ public class DatabaseGenerator {
         meal.addStringProperty("name").index();
         meal.addLongProperty("creationDate").customType(jodaTimeClassName, jodaTimeConverterClassName)
                 .notNull();
-        Property consumptionDayId = meal.addLongProperty("consumptionDayId").getProperty();
-
-        Entity day = schema.addEntity("Day");
-        day.setTableName("DAYS");
-        day.addIdProperty().index().unique().autoincrement();
-        day.addLongProperty("date").customType(jodaTimeClassName, jodaTimeConverterClassName)
-                .unique().index().notNull();
 
         //Tag, for adding categories to ingredients
         Entity tag = schema.addEntity("Tag");
@@ -74,10 +67,6 @@ public class DatabaseGenerator {
         Property ingredientTypeIdFromJoint = jointIngredientTypeTag.addLongProperty("ingredientTypeId")
                 .notNull().index().getProperty();
 
-        //what was eaten this day
-        day.addToMany(meal, consumptionDayId, "eatenMeals");
-        //when this meal was eaten
-        meal.addToOne(day, consumptionDayId, "consumptionDay");
         //what ingredients is this meal is composed of
         meal.addToMany(ingredientComponent, isInMealId, "ingredients");
         //what meal is this ingredient part of
@@ -95,13 +84,6 @@ public class DatabaseGenerator {
         jointIngredientTypeTag.addToOne(tag, tagIdFromJoint, "tag");
         //What ingredient type is pointed by this joint ingredient-tag
         jointIngredientTypeTag.addToOne(ingredientTemplate, ingredientTypeIdFromJoint, "ingredientType");
-
-//        ContentProvider ingredientsContentProvider = ingredientTemplate.addContentProvider();
-//        ingredientsContentProvider.setBasePath("ingredients");
-//        ContentProvider mealsContentProvider = meal.addContentProvider();
-//        mealsContentProvider.setBasePath("meals");
-//        ContentProvider dayContentProvider = day.addContentProvider();
-//        dayContentProvider.setBasePath("days");
 
         new DaoGenerator().generateAll(schema, "database/src/main/java", "database/src/main/java", "database/src/androidTest/java");
     }
