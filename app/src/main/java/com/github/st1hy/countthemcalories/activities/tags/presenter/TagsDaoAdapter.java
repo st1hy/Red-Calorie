@@ -164,7 +164,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
                             public void onNext(Cursor cursor) {
                                 super.onNext(cursor);
                                 int newItemPosition = cursor.getPosition();
-                                notifyItemInserted(newItemPosition);
+                                notifyDataSetChanged();
                                 view.scrollToPosition(newItemPosition);
                             }
                         })

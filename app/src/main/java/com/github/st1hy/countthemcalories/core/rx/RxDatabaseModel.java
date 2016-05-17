@@ -8,7 +8,6 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -24,7 +23,7 @@ public abstract class RxDatabaseModel<T> {
     private final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
     private CursorQuery allSortedByNameQuery;
     private CursorQuery filteredSortedByNameQuery;
-    private String lastFilter = "";
+    protected String lastFilter = "";
 
     public RxDatabaseModel(@NonNull Lazy<DaoSession> session) {
         this.session = session;
@@ -64,12 +63,6 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     public Observable<Cursor> getAllFiltered(@NonNull String partOfName) {
         return fromDatabaseTask(filtered(partOfName));
-    }
-
-    @NonNull
-    public Observable<Cursor> getAllFiltered(@NonNull String partOfName,
-                                             @NonNull Collection<Long> excludedIds) {
-        return fromDatabaseTask(filteredExclude(partOfName, excludedIds));
     }
 
     /**
@@ -112,9 +105,6 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     protected abstract CursorQuery filteredSortedByNameQuery();
 
-    @NonNull
-    protected abstract CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
-                                                              @NonNull final Collection<Long> excludedIds);
 
     protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
 
@@ -185,17 +175,6 @@ public abstract class RxDatabaseModel<T> {
         return filtered("");
     }
 
-    @NonNull
-    private Callable<Cursor> filteredExclude(@NonNull final String partOfName,
-                                             @NonNull final Collection<Long> excludedIds) {
-        if (excludedIds.isEmpty()) return query(getQueryOf(partOfName));
-        else return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                return filteredExcludeSortedQuery(partOfName, excludedIds).query();
-            }
-        };
-    }
 
     @NonNull
     private Callable<Cursor> filtered(@NonNull final String partOfName) {
@@ -280,12 +259,12 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    private Callable<CursorQuery> lastQuery() {
+    protected Callable<CursorQuery> lastQuery() {
         return getQueryOf(lastFilter);
     }
 
     @NonNull
-    private Callable<CursorQuery> getQueryOf(@NonNull final String partOfName) {
+    protected Callable<CursorQuery> getQueryOf(@NonNull final String partOfName) {
         return new Callable<CursorQuery>() {
             @Override
             public CursorQuery call() throws Exception {
@@ -302,7 +281,7 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    private Callable<Cursor> query(@NonNull final Callable<CursorQuery> queryCall) {
+    protected Callable<Cursor> query(@NonNull final Callable<CursorQuery> queryCall) {
         return new Callable<Cursor>() {
             @Override
             public Cursor call() throws Exception {

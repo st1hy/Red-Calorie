@@ -142,16 +142,6 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 .buildCursor();
     }
 
-    @NonNull
-    @Override
-    protected CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
-                                                     @NonNull final Collection<Long> excludedIds) {
-        return dao().queryBuilder()
-                .where(Properties.Name.like(partOfName), TagDao.Properties.Id.notIn(excludedIds))
-                .orderAsc(Properties.Name)
-                .buildCursor();
-    }
-
     @Override
     protected long readKey(@NonNull Cursor cursor, int columnIndex) {
         return dao().readKey(cursor, columnIndex);
