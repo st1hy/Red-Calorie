@@ -13,6 +13,11 @@
     <string name="nav_settings">@string/action_settings</string>
 
     <string name="overview_toolbar_title">@string/app_name</string>
+    <string name="overview_no_meals_text_funny">Are you sure you haven\'t eaten today? Prolonged malnutrition may result in:\n- being very slim\n- poor mood\n- sickness and/or death</string>
+    <string name="overview_no_meals_answer_ok">OK, add meal</string>
+    <string name="overview_no_meals_answer_hide">Soon</string>
+    <string name="overview_empty_meals">Nothing eaten today?</string>
+    <string name="overview_add_new_meal">Add new meal</string>
 
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
