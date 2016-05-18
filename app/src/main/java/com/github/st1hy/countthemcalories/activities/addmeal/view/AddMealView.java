@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import rx.Observable;
 
 public interface AddMealView extends WithPictureView {
-    void openOverviewActivity();
+    void setResultAndFinish();
 
     void openAddIngredient();
 
@@ -36,4 +36,8 @@ public interface AddMealView extends WithPictureView {
     void scrollTo(int itemPosition);
 
     void setTotalEnergy(@NonNull String totalEnergy);
+
+    void showNameError(@Nullable String error);
+
+    void showIngredientsError(@Nullable String ingredientsError);
 }

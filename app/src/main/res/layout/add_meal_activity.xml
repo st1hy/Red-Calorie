@@ -20,34 +20,13 @@
             android:title="@string/overview_toolbar_title"
             app:popupTheme="@style/AppTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
-
-    <include layout="@layout/add_meal_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:orientation="vertical">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_meal_fab_add_ingredient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_add_48px_no_padding"
-            android:tint="@color/colorBackground" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
             android:gravity="end"
             android:orientation="horizontal"
-            android:padding="8dp"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:padding="8dp">
 
             <TextView
                 style="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
@@ -69,6 +48,17 @@
                 android:textColor="?android:textColorPrimary"
                 tools:text="250 kcal" />
         </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
 
-    </LinearLayout>
+    <include layout="@layout/add_meal_content" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_meal_fab_add_ingredient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_48px_no_padding"
+        android:tint="@color/colorBackground" />
+
 </android.support.design.widget.CoordinatorLayout>

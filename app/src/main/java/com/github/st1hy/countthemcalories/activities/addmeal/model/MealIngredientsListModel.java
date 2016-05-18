@@ -159,6 +159,10 @@ public class MealIngredientsListModel {
         return ingredients.indexOf(ingredient);
     }
 
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
     public static class Loading extends Subscriber<Integer> {
 
         @Override

@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -51,7 +52,7 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
         if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
         view.setName(model.getName());
 
-        subscriptions.add(view.getNameObservable().subscribe(setNameToModel()));
+        subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
         subscriptions.add(view.getAddIngredientObservable().subscribe(onAddNewIngredient()));
         adapter.onStart();
     }
@@ -128,7 +129,39 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     }
 
     void onSaveButtonClicked() {
-        view.openOverviewActivity();
+        if (validateMeal()) {
+            model.saveToDatabase().subscribe(new Subscriber<Void>() {
+                @Override
+                public void onCompleted() {
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Timber.e(e, "Error saving meal to database");
+                }
+
+                @Override
+                public void onNext(Void aVoid) {
+                    view.setResultAndFinish();
+                }
+            });
+        }
+    }
+
+    private boolean validateMeal() {
+        return validateName() & validateIngredients();
+    }
+
+    private boolean validateName() {
+        String nameError = model.getNameError();
+        view.showNameError(nameError);
+        return nameError == null;
+    }
+
+    private boolean validateIngredients() {
+        String ingredientsError = model.getIngredientsError();
+        view.showIngredientsError(ingredientsError);
+        return ingredientsError == null;
     }
 
     @NonNull
@@ -137,6 +170,7 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
             @Override
             public void call(CharSequence charSequence) {
                 model.setName(charSequence.toString());
+                validateName();
             }
         };
     }

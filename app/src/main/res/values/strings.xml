@@ -31,6 +31,8 @@
     <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
     <string name="add_meal_amount_error_empty">@string/add_ingredient_energy_density_error_empty</string>
     <string name="add_meal_amount_error_zero">@string/add_ingredient_energy_density_error_zero</string>
+    <string name="add_meal_name_empty_error">Name cannot be empty</string>
+    <string name="add_meal_ingredients_empty_error">You must add at least one ingredient</string>
 
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>

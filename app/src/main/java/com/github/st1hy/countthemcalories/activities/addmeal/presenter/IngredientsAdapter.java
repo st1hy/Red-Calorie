@@ -175,6 +175,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 super.onNext(itemPosition);
                 notifyItemInserted(itemPosition);
                 view.scrollTo(itemPosition);
+                view.showIngredientsError(null);
                 onDatSetChanged();
             }
         };

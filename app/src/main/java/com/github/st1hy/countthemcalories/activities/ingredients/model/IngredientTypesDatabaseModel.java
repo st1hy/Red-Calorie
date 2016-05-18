@@ -74,18 +74,19 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
         return data;
     }
 
+
     @NonNull
-    public Observable<Cursor> addNewAndRefresh(@NonNull final IngredientTemplate data,
+    public Observable<Void> addNew(@NonNull final IngredientTemplate data,
                                                @NonNull final Collection<Long> tagIds) {
-        return fromDatabaseTask(insertNewRefreshCall(data, tagIds));
+        return fromDatabaseTask(insertNewCall(data, tagIds));
     }
 
     @NonNull
-    private Callable<Cursor> insertNewRefreshCall(@NonNull final IngredientTemplate data,
+    private Callable<Void> insertNewCall(@NonNull final IngredientTemplate data,
                                                   @NonNull final Collection<Long> tagIds) {
-        return new Callable<Cursor>() {
+        return new Callable<Void>() {
             @Override
-            public Cursor call() throws Exception {
+            public Void call() throws Exception {
                 IngredientTemplate template = performInsert(data);
                 JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
                 TagDao tagDao = session().getTagDao();
@@ -101,7 +102,7 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 template.refresh();
                 template.resetTags();
                 template.getTags();
-                return refresh().call();
+                return null;
             }
         };
     }

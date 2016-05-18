@@ -1,8 +1,10 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.content.res.Resources;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +25,15 @@ public class AddMealModelTest {
 
     @Mock
     private MealIngredientsListModel listModel;
+    @Mock
+    private Resources resources;
+    @Mock
+    private MealDatabaseModel databaseModel;
     private AddMealModel model;
 
     @Before
     public void setUp() throws Exception {
-        model = new AddMealModel(listModel, null);
+        model = new AddMealModel(listModel, databaseModel, resources, null);
     }
 
     @Test

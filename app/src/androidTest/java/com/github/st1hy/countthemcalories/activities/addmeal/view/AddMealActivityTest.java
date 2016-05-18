@@ -20,7 +20,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
@@ -47,11 +46,13 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.assertNoUnverifiedIntents;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
@@ -63,6 +64,7 @@ import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryInt
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -104,9 +106,13 @@ public class AddMealActivityTest {
     }
 
     @Test
-    public void testCanSaveResult() {
+    public void testCanShowErrorOnSave() {
         onView(withId(R.id.action_save)).perform(click());
-        intended(hasComponent(new ComponentName(getTargetContext(), OverviewActivity.class)));
+        onView(withHint(R.string.add_meal_name_hint))
+                .check(matches(hasErrorText(getTargetContext().getString(R.string.add_meal_name_empty_error))));
+        onView(withText(R.string.add_meal_ingredients_empty_error)).check(matches(isDisplayed()));
+        assertNoUnverifiedIntents();
+        assertThat(main.getActivity().isFinishing(), equalTo(false));
     }
 
     @Test

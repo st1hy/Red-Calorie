@@ -1,10 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
@@ -12,26 +14,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealModelProxyTest {
 
     final String testName = "Name";
     final Uri testUri = Uri.parse("http://test.org/");
 
     private MealIngredientsListModel listModel;
+    private Resources resources;
+    private MealDatabaseModel databaseModel;
     private AddMealModel model;
 
 
     @Before
     public void setUp() throws Exception {
         listModel = Mockito.mock(MealIngredientsListModel.class);
-        model = new AddMealModel(listModel, null);
+        resources = RuntimeEnvironment.application.getResources();
+        databaseModel = Mockito.mock(MealDatabaseModel.class);
+        model = new AddMealModel(listModel, databaseModel, resources, null);
 
         model.setName(testName);
         model.setImageUri(testUri);
@@ -43,7 +50,7 @@ public class AddMealModelProxyTest {
         Bundle bundle = new Bundle();
 
         model.onSaveState(bundle);
-        AddMealModel restoredModel = new AddMealModel(listModel, bundle);
+        AddMealModel restoredModel = new AddMealModel(listModel, databaseModel, resources, bundle);
 
         assertThat(model.getName(), equalTo(restoredModel.getName()));
         assertThat(model.getImageUri(), equalTo(restoredModel.getImageUri()));

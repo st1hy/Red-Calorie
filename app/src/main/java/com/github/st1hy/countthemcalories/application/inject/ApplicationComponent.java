@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -31,6 +32,8 @@ public interface ApplicationComponent {
     TagsModel getTagsModel();
 
     IngredientTypesDatabaseModel getIngredientTypesModel();
+
+    MealDatabaseModel getMealsModel();
 
     void inject(CaloriesCounterApplication application);
 

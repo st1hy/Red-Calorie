@@ -48,8 +48,30 @@ public class AddMealPresenterTest {
 
     @Test
     public void testSave() {
+        when(model.getNameError()).thenReturn(null);
+        when(model.getIngredientsError()).thenReturn(null);
+        when(model.saveToDatabase()).thenReturn(Observable.<Void>just(null));
+
         presenter.onClickedOnAction(R.id.action_save);
-        verify(view).openOverviewActivity();
+        verify(model).getNameError();
+        verify(model).getIngredientsError();
+        verify(model).saveToDatabase();
+        verify(view).setResultAndFinish();
+        verify(view).showNameError(null);
+        verify(view).showIngredientsError(null);
+        verifyNoMoreInteractions(view, permissionsHelper, ingredientsAdapter, model);
+    }
+
+    @Test
+    public void testSaveErrors() {
+        when(model.getNameError()).thenReturn("error");
+        when(model.getIngredientsError()).thenReturn("error2");
+
+        presenter.onClickedOnAction(R.id.action_save);
+        verify(model).getNameError();
+        verify(model).getIngredientsError();
+        verify(view).showNameError("error");
+        verify(view).showIngredientsError("error2");
         verifyNoMoreInteractions(view, permissionsHelper, ingredientsAdapter, model);
     }
 
@@ -61,7 +83,7 @@ public class AddMealPresenterTest {
         when(model.getImageUri()).thenReturn(uri);
 
         when(view.showImage(uri)).thenReturn(Observable.just(RxPicasso.PicassoEvent.SUCCESS));
-        when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name2"));
+        when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name","Name2"));
         when(view.getAddIngredientObservable()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
@@ -70,6 +92,8 @@ public class AddMealPresenterTest {
         verify(model).setImageUri(uri);
         verify(model).getName();
         verify(view).setName("Name");
+        verify(model).getNameError();
+        verify(view).showNameError(null);
         verify(model).setName("Name2");
         verify(view).openAddIngredient();
         verify(view).getAddIngredientObservable();

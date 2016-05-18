@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -158,7 +157,7 @@ public class AddIngredientModel extends WithPictureModel {
             template.setCreationDate(DateTime.now());
             template.setAmountType(amountType);
             template.setEnergyDensityAmount(getEnergyUnit().convertToDatabaseFormat().getValue());
-            return databaseModel.addNewAndRefresh(template, tagsModel.getTagIds())
+            return databaseModel.addNew(template, tagsModel.getTagIds())
                     .map(intoNoError());
         } else{
             return Observable.just(errorList);
@@ -197,10 +196,10 @@ public class AddIngredientModel extends WithPictureModel {
     }
 
     @NonNull
-    private Func1<Cursor, List<IngredientTypeCreateError>> intoNoError() {
-        return new Func1<Cursor, List<IngredientTypeCreateError>>() {
+    private Func1<Void, List<IngredientTypeCreateError>> intoNoError() {
+        return new Func1<Void, List<IngredientTypeCreateError>>() {
             @Override
-            public List<IngredientTypeCreateError> call(Cursor cursor) {
+            public List<IngredientTypeCreateError> call(Void aVoid) {
                 return Collections.emptyList();
             }
         };

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -67,6 +67,8 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     TextView totalCalories;
 
     AddMealActivityComponent component;
+
+    @Nullable Snackbar ingredientsError;
 
     @NonNull
     protected AddMealActivityComponent getComponent(@Nullable Bundle savedInstanceState) {
@@ -152,10 +154,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     }
 
     @Override
-    public void openOverviewActivity() {
-        Intent intent = new Intent(this, OverviewActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+    public void setResultAndFinish() {
+        setResult(RESULT_OK);
+        finish();
     }
 
     @Override
@@ -204,5 +205,32 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Override
     public void setTotalEnergy(@NonNull String totalEnergy) {
         totalCalories.setText(totalEnergy);
+    }
+
+    @Override
+    public void showNameError(@Nullable String error) {
+        name.setError(error);
+    }
+
+    @Override
+    public void showIngredientsError(@Nullable String ingredientsError) {
+        boolean isShown = this.ingredientsError != null && this.ingredientsError.isShownOrQueued();
+        if (ingredientsError != null) {
+            if (!isShown) {
+                this.ingredientsError = Snackbar.make(addIngredientFab, ingredientsError, Snackbar.LENGTH_INDEFINITE);
+                this.ingredientsError.setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        super.onDismissed(snackbar, event);
+                        AddMealActivity.this.ingredientsError = null;
+                    }
+                });
+                this.ingredientsError.show();
+            }
+        } else {
+            if (isShown) {
+                this.ingredientsError.dismiss();
+            }
+        }
     }
 }

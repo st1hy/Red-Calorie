@@ -43,6 +43,7 @@
             android:id="@+id/add_ingredient_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
             android:textSize="20sp"
             android:hint="@string/add_ingredient_name_hint">
 

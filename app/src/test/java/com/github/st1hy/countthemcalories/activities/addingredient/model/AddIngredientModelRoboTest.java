@@ -62,12 +62,12 @@ public class AddIngredientModelRoboTest {
         Cursor cursor = Mockito.mock(Cursor.class);
 
         when(tagsModel.getTagIds()).thenReturn(tagIds);
-        doReturn(Observable.just(cursor)).when(typesModel).addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds));
+        doReturn(Observable.just(cursor)).when(typesModel).addNew(any(IngredientTemplate.class), eq(tagIds));
 
         model.insertIntoDatabase();
 
         verify(tagsModel).getTagIds();
-        verify(typesModel).addNewAndRefresh(any(IngredientTemplate.class), eq(tagIds));
+        verify(typesModel).addNew(any(IngredientTemplate.class), eq(tagIds));
     }
 
 

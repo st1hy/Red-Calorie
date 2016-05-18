@@ -65,6 +65,11 @@ public abstract class RxDatabaseModel<T> {
         return fromDatabaseTask(filtered(partOfName));
     }
 
+    @NonNull
+    public Observable<Void> addNew(@NonNull T data) {
+        return fromDatabaseTask(addNewCall(data));
+    }
+
     /**
      * @return observable with Cursor at position of the added tag on the list, if its not filtered out
      * in that case cursor will be moved to first element
@@ -136,6 +141,7 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
+    @NonNull
     private Callable<T> fromCursor(@NonNull final Cursor cursor, final int position) {
         return new Callable<T>() {
             @Override
@@ -147,6 +153,7 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
+    @NonNull
     private Callable<T> fromId(final long id) {
         return new Callable<T>() {
             @Override
@@ -156,6 +163,7 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
+    @NonNull
     private Callable<List<T>> fromId(final long id, final long... ids) {
         return new Callable<List<T>>() {
             @Override
@@ -182,6 +190,17 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
+    private Callable<Void> addNewCall(@NonNull final T data) {
+        return new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                performRemove(data);
+                return null;
+            }
+        };
+    }
+
+    @NonNull
     private Callable<Cursor> addNewAndRefreshCall(@NonNull final T data) {
         return new Callable<Cursor>() {
             @Override
@@ -197,6 +216,7 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
+    @NonNull
     private void moveCursorToKeyIfAble(@NonNull Cursor cursor, long key) {
         if (cursor.moveToFirst()) {
             int keyColumn = getKeyColumn(cursor);

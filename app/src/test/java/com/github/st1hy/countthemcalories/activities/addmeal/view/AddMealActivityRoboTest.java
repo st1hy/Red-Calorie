@@ -13,7 +13,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -34,6 +33,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAct
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
+import static com.github.st1hy.countthemcalories.core.baseview.BaseActivity.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -70,10 +70,24 @@ public class AddMealActivityRoboTest {
     public void testSaveButtonAction() throws Exception {
         ShadowActivity shadowActivity = shadowOf(activity);
         shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        activity.name.setText("Name");
+        addIngredient();
+        handleNewIngredient();
         shadowActivity.clickMenuItem(R.id.action_save);
+        assertThat(shadowActivity.isFinishing(), equalTo(true));
+        assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
+    }
 
-        Intent resultIntent = shadowActivity.peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, OverviewActivity.class)));
+
+    @Test
+    public void testSaveErrors() throws Exception {
+        ShadowActivity shadowActivity = shadowOf(activity);
+        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.clickMenuItem(R.id.action_save);
+        assertThat(shadowActivity.isFinishing(), equalTo(false));
+        assertThat(activity.name.getError(), notNullValue());
+        assertNotNull(activity.ingredientsError);
+        assertThat(activity.ingredientsError.isShownOrQueued(), equalTo(true));
     }
 
     @Test
@@ -97,7 +111,7 @@ public class AddMealActivityRoboTest {
     public void testAddIngredient2() throws Exception {
         assertThat(activity.ingredientList.getChildCount(), equalTo(0));
 
-        addIngredientPromParcel();
+        addIngredientFromParcel();
         handleNewIngredient();
 
         assertThat(activity.ingredientList.getChildCount(), equalTo(1));
@@ -119,7 +133,7 @@ public class AddMealActivityRoboTest {
     }
 
 
-    private void addIngredientPromParcel() {
+    private void addIngredientFromParcel() {
         activity.addIngredientFab.performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
