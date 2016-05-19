@@ -19,6 +19,22 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:text="@string/overview_toolbar_title"/>
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/overview_total_energy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textIsSelectable="false"
+                tools:text="2500 kcal"/>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

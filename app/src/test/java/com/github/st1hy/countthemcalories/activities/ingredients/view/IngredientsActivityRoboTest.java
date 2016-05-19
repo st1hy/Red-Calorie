@@ -3,17 +3,25 @@ package com.github.st1hy.countthemcalories.activities.ingredients.view;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsTestComponent;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest;
+import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
+import com.github.st1hy.countthemcalories.database.JointIngredientTag;
+import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +37,8 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
+import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest.exampleTags;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -40,7 +49,23 @@ import static org.robolectric.Shadows.shadowOf;
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientsActivityRoboTest {
 
+    public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
+            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,
+                    getOrZero("20.5")), // kJ / g in database
+            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+                    getOrZero("6.04")), // kJ / ml in database
+    };
+    public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[]{
+            new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
+            new JointIngredientTag(2L, exampleTags[0].getId(), exampleIngredients[1].getId()),
+            new JointIngredientTag(3L, exampleTags[1].getId(), exampleIngredients[1].getId()),
+    };
+    public static final IngredientTemplate additionalIngredient = new IngredientTemplate(3L, "Ingredient 23",
+            Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME, getOrZero("2.04"));
+
+
     private IngredientsActivity activity;
+    private DaoSession session;
 
     private final Timber.Tree tree = new Timber.Tree() {
         @Override
@@ -54,10 +79,24 @@ public class IngredientsActivityRoboTest {
         Timber.plant(tree);
         TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
+        session = OverviewActivityRoboTest.prepareDatabase();
+        addExampleIngredientsTagsAndJoin(session);
     }
 
     private void setupActivity() {
-        activity = Robolectric.setupActivity(IngredientsTestActivity.class);
+        activity = Robolectric.setupActivity(IngredientsActivity.class);
+    }
+
+    public static void addExampleIngredientsTagsAndJoin(DaoSession session) {
+        IngredientTemplateDao templateDao = session.getIngredientTemplateDao();
+        JointIngredientTagDao jointIngredientTagDao = session.getJointIngredientTagDao();
+        TagsActivityRoboTest.addExampleTags(session);
+        templateDao.deleteAll();
+        jointIngredientTagDao.deleteAll();
+        templateDao.insertInTx(exampleIngredients);
+        jointIngredientTagDao.insertInTx(exampleJoins);
+        session.clear();
+        templateDao.loadAll();
     }
 
     @After
@@ -92,9 +131,8 @@ public class IngredientsActivityRoboTest {
     }
 
     private void addAdditionalIngredientToDatabase() {
-        IngredientsTestComponent component = (IngredientsTestComponent) activity.component;
-        component.getDaoSession().insert(IngredientsTestActivity.additionalIngredient);
-        Assert.assertThat(component.getDaoSession().getIngredientTemplateDao().loadAll(), hasSize(3));
+        session.insert(additionalIngredient);
+        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
     }
 
     @Test
@@ -111,7 +149,7 @@ public class IngredientsActivityRoboTest {
     @Test
     public void testSelect() throws Exception {
         setupActivity();
-        activity = Robolectric.buildActivity(IngredientsTestActivity.class)
+        activity = Robolectric.buildActivity(IngredientsActivity.class)
                 .withIntent(new Intent(IngredientsActivity.ACTION_SELECT_INGREDIENT))
                 .setup().get();
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));

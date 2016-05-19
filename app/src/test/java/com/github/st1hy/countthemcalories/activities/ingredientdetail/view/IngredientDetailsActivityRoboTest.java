@@ -8,7 +8,9 @@ import android.os.Bundle;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenter;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
@@ -42,7 +44,7 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricGradleTestRunner.class)
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientDetailsActivityRoboTest {
-    final IngredientTemplate ingredientTemplate = IngredientsTestActivity.exampleIngredients[0];
+    final IngredientTemplate ingredientTemplate = IngredientsActivityRoboTest.exampleIngredients[0];
     final BigDecimal amount = new BigDecimal("24.65");
     final long requestId = -1L;
 
@@ -60,6 +62,8 @@ public class IngredientDetailsActivityRoboTest {
     public void setup() {
         Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
+        DaoSession session = OverviewActivityRoboTest.prepareDatabase();
+        IngredientsActivityRoboTest.addExampleIngredientsTagsAndJoin(session);
     }
 
     @After
@@ -70,14 +74,14 @@ public class IngredientDetailsActivityRoboTest {
 
     @Test
     public void testIncorrectIntent() throws Exception {
-        activity = Robolectric.setupActivity(IngredientDetailTestActivity.class);
+        activity = Robolectric.setupActivity(IngredientDetailsActivity.class);
         ShadowActivity shadowActivity = shadowOf(activity);
         assertThat(shadowActivity.isFinishing(), equalTo(true));
         assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_CANCELED));
     }
 
     private void setupActivity() {
-        activity = Robolectric.buildActivity(IngredientDetailTestActivity.class)
+        activity = Robolectric.buildActivity(IngredientDetailsActivity.class)
                 .withIntent(buildIntent())
                 .setup().get();
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
@@ -154,7 +158,7 @@ public class IngredientDetailsActivityRoboTest {
         Intent intent = buildIntent();
         intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, "0");
 
-        activity = Robolectric.buildActivity(IngredientDetailTestActivity.class)
+        activity = Robolectric.buildActivity(IngredientDetailsActivity.class)
                 .withIntent(intent)
                 .setup().get();
 

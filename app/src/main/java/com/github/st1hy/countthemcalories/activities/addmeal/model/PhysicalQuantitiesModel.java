@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
@@ -14,6 +15,8 @@ import com.github.st1hy.countthemcalories.database.unit.Unit;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+
+import rx.functions.Func1;
 
 public class PhysicalQuantitiesModel {
     final SettingsModel settingsModel;
@@ -118,5 +121,54 @@ public class PhysicalQuantitiesModel {
     @NonNull
     public SettingsModel getSettingsModel() {
         return settingsModel;
+    }
+
+    @NonNull
+    public Func1<Ingredient, BigDecimal> mapToEnergy() {
+        return new Func1<Ingredient, BigDecimal>() {
+            @Override
+            public BigDecimal call(Ingredient ingredient) {
+                EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredient.getIngredientType());
+                EnergyDensity energyDensity = convertToPreferred(databaseEnergyDensity);
+                AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
+                return getEnergyAmountFrom(ingredient.getAmount(), amountUnit, energyDensity);
+            }
+        };
+    }
+
+    @NonNull
+    public Func1<BigDecimal, String> energyAsString() {
+        return new Func1<BigDecimal, String>() {
+            @Override
+            public String call(BigDecimal decimal) {
+                return format(decimal, settingsModel.getEnergyUnit());
+            }
+        };
+    }
+
+    /**
+     * @return function that creates moving sum on each element
+     */
+    @NonNull
+    public Func1<BigDecimal, BigDecimal> sumAll() {
+        return new Func1<BigDecimal, BigDecimal>() {
+            BigDecimal sum = BigDecimal.ZERO;
+
+            @Override
+            public BigDecimal call(BigDecimal decimal) {
+                sum = sum.add(decimal);
+                return sum;
+            }
+        };
+    }
+
+    @NonNull
+    public Func1<BigDecimal, BigDecimal> setScale(final int scale) {
+        return new Func1<BigDecimal, BigDecimal>() {
+            @Override
+            public BigDecimal call(BigDecimal decimal) {
+                return decimal.setScale(scale, BigDecimal.ROUND_HALF_UP);
+            }
+        };
     }
 }

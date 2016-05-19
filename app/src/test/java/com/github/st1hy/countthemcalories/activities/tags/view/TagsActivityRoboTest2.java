@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -39,9 +40,11 @@ public class TagsActivityRoboTest2 {
         Timber.plant(tree);
         TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
-        Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
-        intent.putExtra(TagsTestActivity.EXTRA_EXCLUDE_TAG_IDS, new long[] { TagsTestActivity.exampleTags[0].getId()});
-        activity = Robolectric.buildActivity(TagsTestActivity.class)
+        TagsActivityRoboTest.addExampleTags(OverviewActivityRoboTest.prepareDatabase());
+
+        Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
+        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[] { TagsActivityRoboTest.exampleTags[0].getId()});
+        activity = Robolectric.buildActivity(TagsActivity.class)
                 .withIntent(intent)
                 .setup()
                 .get();

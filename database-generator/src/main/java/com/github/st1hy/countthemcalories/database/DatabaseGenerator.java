@@ -19,7 +19,7 @@ public class DatabaseGenerator {
     private static final String bigDecimalConverterClassName = "com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter";
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1004, "com.github.st1hy.countthemcalories.database");
+        Schema schema = new Schema(1005, "com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
         schema.setDefaultJavaPackageDao("com.github.st1hy.countthemcalories.database");
 
@@ -49,6 +49,7 @@ public class DatabaseGenerator {
         meal.setTableName("MEALS");
         meal.addIdProperty().index().unique().autoincrement().getProperty();
         meal.addStringProperty("name").index();
+        meal.addStringProperty("imageUri").customType(uriClassName, uriConverterClassName);
         meal.addLongProperty("creationDate").customType(jodaTimeClassName, jodaTimeConverterClassName)
                 .notNull();
 

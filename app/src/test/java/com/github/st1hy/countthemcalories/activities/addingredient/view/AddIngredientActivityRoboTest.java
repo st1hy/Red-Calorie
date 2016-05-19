@@ -10,14 +10,17 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientTestComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
+import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.After;
@@ -46,6 +49,7 @@ import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -53,6 +57,7 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricGradleTestRunner.class)
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddIngredientActivityRoboTest {
+    public static Tag[] exampleTags = new Tag[] {new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
 
     private AddIngredientActivity activity;
     private final Timber.Tree tree = new Timber.Tree() {
@@ -61,12 +66,29 @@ public class AddIngredientActivityRoboTest {
             System.out.println(message);
         }
     };
+    private DaoSession daoSession;
 
     @Before
     public void setup() {
         Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
-        activity = Robolectric.setupActivity(AddIngredientTestActivity.class);
+        daoSession = OverviewActivityRoboTest.prepareDatabase();
+        prepareDb();
+        activity = Robolectric.setupActivity(AddIngredientActivity.class);
+    }
+
+
+    private void prepareDb() {
+        TagDao tagDao = daoSession.getTagDao();
+        tagDao.deleteAll();
+        tagDao.insertOrReplaceInTx(exampleTags);
+        assertEquals(3, tagDao.loadAll().size());
+        IngredientTemplateDao templateDao = daoSession.getIngredientTemplateDao();
+        templateDao.deleteAll();
+        assertEquals(0, templateDao.loadAll().size());
+        JointIngredientTagDao jointIngredientTagDao = daoSession.getJointIngredientTagDao();
+        jointIngredientTagDao.deleteAll();
+        assertEquals(0, jointIngredientTagDao.loadAll().size());
     }
 
     @After
@@ -88,8 +110,6 @@ public class AddIngredientActivityRoboTest {
         assertTrue(shadowActivity.isFinishing());
         assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
 
-        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
-        DaoSession daoSession = component.getDaoSession();
         List<IngredientTemplate> list = daoSession.getIngredientTemplateDao().loadAll();
         assertThat(list.size(), equalTo(1));
     }
@@ -144,8 +164,6 @@ public class AddIngredientActivityRoboTest {
         assertThat(activityForResult.intent, hasAction(TagsActivity.ACTION_PICK_TAG));
         assertThat(activityForResult.intent, hasComponent(new ComponentName(activity, TagsActivity.class)));
 
-        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
-        DaoSession daoSession = component.getDaoSession();
         final Tag tag = daoSession.getTagDao().loadAll().get(position);
 
         Intent result = new Intent();
@@ -173,8 +191,6 @@ public class AddIngredientActivityRoboTest {
         assertTrue(shadowActivity.isFinishing());
         assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
 
-        AddIngredientTestComponent component = (AddIngredientTestComponent) activity.component;
-        DaoSession daoSession = component.getDaoSession();
         List<IngredientTemplate> list = daoSession.getIngredientTemplateDao().loadAll();
         assertThat(list.size(), equalTo(1));
         IngredientTemplate template = list.get(0);

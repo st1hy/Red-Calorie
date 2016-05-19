@@ -10,6 +10,8 @@ import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
 
+import org.joda.time.DateTime;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -20,11 +22,13 @@ import dagger.Lazy;
 import dagger.internal.DoubleCheckLazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
+import de.greenrobot.dao.query.Query;
 import rx.Observable;
 
 public class MealDatabaseModel extends RxDatabaseModel<Meal> {
 
     private final Lazy<MealDao> mealDaoLazy;
+    private Query<Meal> filteredByDateSortedByName;
 
     public MealDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
@@ -64,6 +68,31 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
                 meal.refresh();
                 meal.getIngredients();
                 return null;
+            }
+        };
+    }
+
+    @NonNull
+    public Observable<List<Meal>> getAllFiltered(@NonNull final DateTime from, @NonNull final DateTime to) {
+        return fromDatabaseTask(filteredBetween(from, to));
+    }
+
+    @NonNull
+    private Callable<List<Meal>> filteredBetween(@NonNull final DateTime from, @NonNull final DateTime to) {
+        return new Callable<List<Meal>>() {
+            @Override
+            public List<Meal> call() throws Exception {
+                Query<Meal> query = filteredByDateSortedByNameSingleton().forCurrentThread();
+                query.setParameter(0, from.getMillis());
+                query.setParameter(1, to.getMillis());
+                List<Meal> list = query.list();
+                for (Meal meal : list) {
+                    List<Ingredient> ingredients = meal.getIngredients();
+                    for (Ingredient ingredient : ingredients) {
+                        ingredient.getIngredientType();
+                    }
+                }
+                return list;
             }
         };
     }
@@ -113,6 +142,22 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
                 .where(MealDao.Properties.Name.like(""))
                 .orderAsc(MealDao.Properties.Name)
                 .buildCursor();
+    }
+
+    @NonNull
+    protected Query<Meal> filteredByDateSortedByName() {
+        return dao().queryBuilder()
+                .where(MealDao.Properties.CreationDate.between("", ""))
+                .orderAsc(MealDao.Properties.Name)
+                .build();
+    }
+
+    @NonNull
+    protected Query<Meal> filteredByDateSortedByNameSingleton() {
+        if (filteredByDateSortedByName == null) {
+            filteredByDateSortedByName = filteredByDateSortedByName();
+        }
+        return filteredByDateSortedByName;
     }
 
     @Override

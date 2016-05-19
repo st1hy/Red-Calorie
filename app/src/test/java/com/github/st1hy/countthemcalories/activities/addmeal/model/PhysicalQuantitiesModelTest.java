@@ -16,9 +16,15 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 @RunWith(RobolectricGradleTestRunner.class)
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
@@ -53,4 +59,26 @@ public class PhysicalQuantitiesModelTest {
         assertThat(calorieCount, equalTo("2.5 kcal"));
     }
 
+    @Test
+    public void testSumAll() throws Exception {
+        Observable.range(1, 5)
+                .map(new Func1<Integer, BigDecimal>() {
+                    @Override
+                    public BigDecimal call(Integer integer) {
+                        return new BigDecimal(integer);
+                    }
+                })
+                .map(model.sumAll())
+                .toList().subscribe(new Action1<List<BigDecimal>>() {
+            @Override
+            public void call(List<BigDecimal> bigDecimals) {
+                assertThat(bigDecimals, hasItems(of(1), of(3), of(6), of(10), of(15)));
+            }
+
+            BigDecimal of(int i) {
+                return new BigDecimal(i);
+            }
+        });
+
+    }
 }

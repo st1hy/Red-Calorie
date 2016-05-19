@@ -13,6 +13,9 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -32,7 +35,7 @@ import timber.log.Timber;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsTestActivity.exampleIngredients;
+import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest.exampleIngredients;
 import static com.github.st1hy.countthemcalories.core.baseview.BaseActivity.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -57,7 +60,9 @@ public class AddMealActivityRoboTest {
     public void setup() {
         Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
-        activity = Robolectric.setupActivity(AddMealTestActivity.class);
+        DaoSession daoSession = OverviewActivityRoboTest.prepareDatabase();
+        IngredientsActivityRoboTest.addExampleIngredientsTagsAndJoin(daoSession);
+        activity = Robolectric.setupActivity(AddMealActivity.class);
     }
 
     @After

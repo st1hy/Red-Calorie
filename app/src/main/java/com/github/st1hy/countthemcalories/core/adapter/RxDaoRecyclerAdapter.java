@@ -136,8 +136,7 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
         subscriptions.add(subscription);
     }
 
-
-    protected class OnCursor extends Subscriber<Cursor> {
+    public class OnCursor extends Subscriber<Cursor> {
 
         @Override
         public void onCompleted() {

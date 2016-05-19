@@ -4,7 +4,7 @@ Android app for keeping your calories in check.
 
 +Here will be description of another Android app excersice.
 
-## Current state: 0.2 alpha
+## Current state: 0.3 alpha
 *
 
 ## General project goal:

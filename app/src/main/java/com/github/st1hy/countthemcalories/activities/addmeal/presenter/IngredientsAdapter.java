@@ -27,6 +27,8 @@ import com.squareup.picasso.Picasso;
 import java.math.BigDecimal;
 
 import dagger.internal.Preconditions;
+import rx.Observable;
+import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements
@@ -203,19 +205,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     private void setTotalCalories() {
-        BigDecimal energySum = BigDecimal.ZERO;
-        for (int i = 0; i < model.getItemsCount(); i++) {
-            Ingredient ingredient = model.getItemAt(i);
-            EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredient.getIngredientType());
-            EnergyDensity energyDensity = quantityModel.convertToPreferred(databaseEnergyDensity);
-            AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-            BigDecimal energyAmount = quantityModel.getEnergyAmountFrom(ingredient.getAmount(),
-                    amountUnit, energyDensity);
-            energySum = energySum.add(energyAmount);
-        }
-        energySum = energySum.stripTrailingZeros();
-        String totalEnergy = quantityModel.format(energySum, quantityModel.getSettingsModel().getEnergyUnit());
-        view.setTotalEnergy(totalEnergy);
+        Observable.from(model.getIngredients())
+                .map(quantityModel.mapToEnergy())
+                .map(quantityModel.sumAll())
+                .lastOrDefault(BigDecimal.ZERO)
+                .map(quantityModel.energyAsString())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String totalEnergy) {
+                        view.setTotalEnergy(totalEnergy);
+                    }
+                });
     }
 
 }

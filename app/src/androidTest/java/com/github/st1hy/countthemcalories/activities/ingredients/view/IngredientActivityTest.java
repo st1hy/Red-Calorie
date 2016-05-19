@@ -25,6 +25,7 @@ import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,6 +85,12 @@ public class IngredientActivityTest {
         templateDao = session.getIngredientTemplateDao();
         component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
         Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        idlingDbProcess.unsubscribe();
+        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -9,7 +10,11 @@ import android.widget.EditText;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.database.DaoSession;
+import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.hamcrest.CoreMatchers;
@@ -30,6 +35,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
@@ -38,6 +44,12 @@ import static org.robolectric.Shadows.shadowOf;
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 @LargeTest
 public class TagsActivityRoboTest {
+    public static final Tag[] exampleTags = new Tag[] {
+            new Tag(1L, "Tag 1"),
+            new Tag(2L, "Tag 2"),
+            new Tag(3L, "Meal")
+    };
+
 
     private  TagsActivity activity;
     private final Timber.Tree tree = new Timber.Tree() {
@@ -52,11 +64,21 @@ public class TagsActivityRoboTest {
         Timber.plant(tree);
         TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
-        Intent intent = new Intent(TagsTestActivity.ACTION_PICK_TAG);
-        activity = Robolectric.buildActivity(TagsTestActivity.class)
+        addExampleTags(OverviewActivityRoboTest.prepareDatabase());
+        Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
+        activity = Robolectric.buildActivity(TagsActivity.class)
                 .withIntent(intent)
                 .setup()
                 .get();
+    }
+
+
+    public static void addExampleTags(@NonNull DaoSession session) {
+        TagDao tagDao = session.getTagDao();
+        tagDao.deleteAll();
+        tagDao.insertInTx(exampleTags);
+        tagDao.loadAll();
+        assertEquals(3, tagDao.loadAll().size());
     }
 
     @After
