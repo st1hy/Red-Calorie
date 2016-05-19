@@ -202,8 +202,8 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
             emptyList = Visibility.GONE;
             emptyListVariation = Visibility.GONE;
         }
-        view.setEmptyListVariationVisibility(emptyList);
-        view.setEmptyListVisibility(emptyListVariation);
+        view.setEmptyListVisibility(emptyList);
+        view.setEmptyListVariationVisibility(emptyListVariation);
     }
 
     private int getDaoItemCount() {
