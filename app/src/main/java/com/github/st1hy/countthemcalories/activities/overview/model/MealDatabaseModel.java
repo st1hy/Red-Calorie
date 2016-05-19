@@ -65,7 +65,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
                     ingredient.setPartOfMeal(meal);
                     ingredientDao.insert(ingredient);
                 }
-                meal.refresh();
+                meal.resetIngredients();
                 meal.getIngredients();
                 return null;
             }

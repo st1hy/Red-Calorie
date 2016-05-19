@@ -120,12 +120,12 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
         ingredientObservable.map(toNames())
-                .zipWith(
-                        decimalObservable
-                                .map(quantityModel.setScale(0))
-                                .map(quantityModel.energyAsString()),
-                        joinIngredientWithEnergy()
-                )
+//                .zipWith(
+//                        decimalObservable
+//                                .map(quantityModel.setScale(0))
+//                                .map(quantityModel.energyAsString()),
+//                        joinIngredientWithEnergy()
+//                )
                 .map(joinStrings())
                 .lastOrDefault(new StringBuilder(0))
                 .subscribe(new Action1<StringBuilder>() {
@@ -136,6 +136,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
                 });
         decimalObservable.map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
+                .map(quantityModel.setScale(0))
                 .map(quantityModel.energyAsString())
                 .subscribe(new Action1<String>() {
                     @Override
@@ -177,6 +178,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
                 .map(quantityModel.mapToEnergy())
                 .map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
+                .map(quantityModel.setScale(0))
                 .map(quantityModel.energyAsString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<String>() {

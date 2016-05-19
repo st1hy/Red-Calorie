@@ -11,9 +11,7 @@
         android:id="@+id/ingredients_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/ingredients_item"
-        tools:showIn="@layout/ingredients_app_bar"
-        tools:context=".activities.ingredients.view.IngredientsActivity">
+        tools:listitem="@layout/ingredients_item">
     </android.support.v7.widget.RecyclerView>
 
     <TextView

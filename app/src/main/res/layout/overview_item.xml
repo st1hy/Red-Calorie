@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overview_item_root"
+    style="@style/Base.Widget.AppCompat.Button.Borderless"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:minHeight="?listPreferredItemHeight"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
-
+    android:orientation="vertical"
+    android:padding="0dp">
     <LinearLayout
-        android:id="@+id/overview_item_root"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="0dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
             android:layout_weight="0"
             app:cardBackgroundColor="@android:color/transparent"
             app:cardCornerRadius="4dp"
@@ -37,13 +38,18 @@
                 android:src="@drawable/ic_fork_and_knife_wide"
                 android:transitionName="meal-shared-view-image" />
         </android.support.v7.widget.CardView>
+        <android.support.v4.widget.Space
+            android:layout_width="4dp"
+            android:layout_height="0dp" />
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
+            android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp">
+            android:layout_weight="1"
+            android:layout_gravity="top"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/overview_item_name"
@@ -76,9 +82,9 @@
             android:textIsSelectable="false"
             android:textSize="18sp"
             tools:text="1750 kcal" />
-
-        <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="wrap_content" />
     </LinearLayout>
-</android.support.v7.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/tags_separator"/>
+</LinearLayout>
