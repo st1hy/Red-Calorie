@@ -4,14 +4,12 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 
 import java.util.concurrent.Callable;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public abstract class DaoParcel<T> implements Parcelable {
@@ -79,8 +77,6 @@ public abstract class DaoParcel<T> implements Parcelable {
                 return Observable.just(dao);
             } else return Observable
                     .create(readDao(session, id))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(new Action1<R>() {
                         @Override
                         public void call(R r) {
