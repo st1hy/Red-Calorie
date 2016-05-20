@@ -36,7 +36,15 @@ public class IngredientTypeParcel extends DaoParcel<IngredientTemplate> {
             return new IngredientTypeParcel(id, new ReadFromDb<IngredientTemplate>(id) {
                 @Override
                 protected SessionReader<IngredientTemplate> readDao(@NonNull DaoSession session, long id) {
-                    return new SessionReader<>(session, IngredientTemplate.class, id);
+                    return new SessionReader<IngredientTemplate>(session, IngredientTemplate.class, id) {
+                        @Override
+                        public IngredientTemplate call() throws Exception {
+                            IngredientTemplate ingredientTemplate = super.call();
+                            ingredientTemplate.getTags();
+                            ingredientTemplate.getChildIngredients();
+                            return ingredientTemplate;
+                        }
+                    };
                 }
             });
         }

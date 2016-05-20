@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.inject.DaggerOverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
@@ -20,6 +22,7 @@ import com.github.st1hy.countthemcalories.activities.overview.presenter.MealsAda
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
@@ -29,6 +32,7 @@ import butterknife.ButterKnife;
 import rx.Observable;
 
 public class OverviewActivity extends DrawerActivity implements OverviewView {
+    public static final int REQEST_MEAL_DETAIL = 0x300;
 
     @Inject
     OverviewPresenter presenter;
@@ -115,5 +119,15 @@ public class OverviewActivity extends DrawerActivity implements OverviewView {
     @Override
     public Observable<Void> getDismissEmptyListVariationObservable() {
         return RxView.clicks(dismissVariation);
+    }
+
+    @Override
+    public void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView) {
+        Bundle startOptions = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(this, sharedView, "overview-shared-view-image")
+                .toBundle();
+        Intent intent = new Intent(this, MealDetailActivity.class);
+        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, mealParcel);
+        startActivityForResult(intent, REQEST_MEAL_DETAIL, startOptions);
     }
 }

@@ -36,7 +36,15 @@ public class TagParcel extends DaoParcel<Tag> {
             return new TagParcel(id, new ReadFromDb<Tag>(id) {
                 @Override
                 protected SessionReader<Tag> readDao(@NonNull DaoSession session, long id) {
-                    return new SessionReader<>(session, Tag.class, id);
+                    return new SessionReader<Tag>(session, Tag.class, id) {
+                        @Override
+                        public Tag call() throws Exception {
+                            Tag tag = super.call();
+                            tag.getIngredientTypes();
+                            //TODO check if how deep to load
+                            return tag;
+                        }
+                    };
                 }
             });
         }

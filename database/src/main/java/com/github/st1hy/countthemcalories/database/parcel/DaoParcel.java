@@ -75,7 +75,9 @@ public abstract class DaoParcel<T> implements Parcelable {
 
         @Override
         public Observable<R> get(@NonNull DaoSession session) {
-            return Observable
+            if (dao != null) {
+                return Observable.just(dao);
+            } else return Observable
                     .create(readDao(session, id))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

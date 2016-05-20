@@ -19,9 +19,11 @@ import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -34,7 +36,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -66,7 +67,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         DateTime now = DateTime.now();
         DateTime from = now.withTime(0, 0, 0, 0);
         DateTime to = now.withTime(23, 59, 59, 999);
-        subscriptions.add(model.getAllFiltered(from, to)
+        subscriptions.add(model.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnCursor()));
     }
@@ -113,6 +114,13 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         holder.setName(meal.getName());
         onBindIngredients(holder, meal.getIngredients());
         onBindImage(meal, holder);
+        holder.setDate(DateTimeFormat.shortTime().print(meal.getCreationDate()));
+        holder.onClick().subscribe(new Action1<View>() {
+            @Override
+            public void call(View sharedView) {
+                view.openMealDetails(new MealParcel(meal), sharedView);
+            }
+        });
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {
@@ -120,12 +128,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
         ingredientObservable.map(toNames())
-//                .zipWith(
-//                        decimalObservable
-//                                .map(quantityModel.setScale(0))
-//                                .map(quantityModel.energyAsString()),
-//                        joinIngredientWithEnergy()
-//                )
                 .map(joinStrings())
                 .lastOrDefault(new StringBuilder(0))
                 .subscribe(new Action1<StringBuilder>() {
@@ -218,17 +220,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
             @Override
             public String call(Ingredient ingredient) {
                 return ingredient.getIngredientType().getName();
-            }
-        };
-    }
-
-    @NonNull
-    private Func2<String, String, String> joinIngredientWithEnergy() {
-        return new Func2<String, String, String>() {
-
-            @Override
-            public String call(String name, String energy) {
-                return name + ": " + energy;
             }
         };
     }

@@ -82,7 +82,7 @@ public class IngredientDetailModel {
     }
 
     /**
-     * not null and valid only when #isDataValid is true, after #getIngredientObservable returns any value
+     * not null and valid only when #isDataValid is true, after #getMealObservable returns any value
      */
     @NonNull
     public Ingredient getIngredient() {

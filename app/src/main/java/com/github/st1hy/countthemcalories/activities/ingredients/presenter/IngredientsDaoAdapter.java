@@ -66,7 +66,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
 
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
             return new IngredientItemViewHolder(view, this);
         } else {

@@ -18,6 +18,9 @@
     <string name="overview_no_meals_answer_hide">Soon</string>
     <string name="overview_empty_meals">Nothing eaten today?</string>
     <string name="overview_add_new_meal">Add new meal</string>
+    <string name="overview_meal_remove_description">Remove this meal</string>
+    <string name="overview_meal_edit_description">Edit meal</string>
+    <string name="overview_meal_photo_description">Photography of a meal</string>
 
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
@@ -76,4 +79,5 @@
     <string name="select_ingredient_type_title">Select ingredient type</string>
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
+    <string name="meal_details_title">Meal details</string>
 </resources>

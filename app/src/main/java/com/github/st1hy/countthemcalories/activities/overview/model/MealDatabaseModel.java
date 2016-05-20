@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 
 import org.joda.time.DateTime;
 
@@ -28,7 +29,7 @@ import rx.Observable;
 public class MealDatabaseModel extends RxDatabaseModel<Meal> {
 
     private final Lazy<MealDao> mealDaoLazy;
-    private Query<Meal> filteredByDateSortedByName;
+    private Query<Meal> filteredByDateSortedByDate;
 
     public MealDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
@@ -38,6 +39,11 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
                 return session().getMealDao();
             }
         });
+    }
+
+    @NonNull
+    public Observable<Meal> unParcel(MealParcel mealParcel) {
+        return mealParcel.getWhenReady().get(session());
     }
 
     private MealDao dao() {
@@ -73,7 +79,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @NonNull
-    public Observable<List<Meal>> getAllFiltered(@NonNull final DateTime from, @NonNull final DateTime to) {
+    public Observable<List<Meal>> getAllFilteredSortedDate(@NonNull final DateTime from, @NonNull final DateTime to) {
         return fromDatabaseTask(filteredBetween(from, to));
     }
 
@@ -82,7 +88,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
         return new Callable<List<Meal>>() {
             @Override
             public List<Meal> call() throws Exception {
-                Query<Meal> query = filteredByDateSortedByNameSingleton().forCurrentThread();
+                Query<Meal> query = filteredByDateSortedByDateSingleton().forCurrentThread();
                 query.setParameter(0, from.getMillis());
                 query.setParameter(1, to.getMillis());
                 List<Meal> list = query.list();
@@ -145,19 +151,19 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @NonNull
-    protected Query<Meal> filteredByDateSortedByName() {
+    protected Query<Meal> filteredByDateSortedByDate() {
         return dao().queryBuilder()
                 .where(MealDao.Properties.CreationDate.between("", ""))
-                .orderAsc(MealDao.Properties.Name)
+                .orderAsc(MealDao.Properties.CreationDate)
                 .build();
     }
 
     @NonNull
-    protected Query<Meal> filteredByDateSortedByNameSingleton() {
-        if (filteredByDateSortedByName == null) {
-            filteredByDateSortedByName = filteredByDateSortedByName();
+    protected Query<Meal> filteredByDateSortedByDateSingleton() {
+        if (filteredByDateSortedByDate == null) {
+            filteredByDateSortedByDate = filteredByDateSortedByDate();
         }
-        return filteredByDateSortedByName;
+        return filteredByDateSortedByDate;
     }
 
     @Override
