@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivit
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
@@ -41,6 +42,7 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -215,4 +217,21 @@ public class OverviewActivityTest {
                 .perform(open()).check(matches(isOpen()));
     }
 
+    @Test
+    public void testEditMeal() throws Exception {
+        onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        intended(hasComponent(new ComponentName(getTargetContext(), MealDetailActivity.class)));
+        onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()));
+        onView(withId(R.id.overview_extended_edit)).perform(click());
+        intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
+        onView(withText(exampleMeals[0].getName()))
+                .check(matches(isDisplayed()))
+                .perform(clearText());
+        onView(withHint(R.string.add_meal_name_hint))
+                .perform(typeTextIntoFocusedView("Meal edited"));
+        onView(withText(R.string.add_meal_save_action)).perform(click());
+        onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
+        onView(withText("Meal edited")).check(matches(isDisplayed()));
+    }
 }

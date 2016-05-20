@@ -79,6 +79,7 @@ public class AddMealPresenterTest {
     public void testOnStart() throws Exception {
         final Uri uri = mock(Uri.class);
 
+        when(model.getLoading()).thenReturn(Observable.<Void>just(null));
         when(model.getName()).thenReturn("Name");
         when(model.getImageUri()).thenReturn(uri);
 
@@ -87,6 +88,7 @@ public class AddMealPresenterTest {
         when(view.getAddIngredientObservable()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
+        verify(model).getLoading();
         verify(model).getImageUri();
         verify(view).showImage(uri);
         verify(model).setImageUri(uri);

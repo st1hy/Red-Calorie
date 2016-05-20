@@ -7,6 +7,7 @@ import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -48,7 +49,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class MealIngredientsListModelProxyTest {
     final IngredientTemplate[] exampleIngredientTemplate = new IngredientTemplate[]{
             new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"),
@@ -71,6 +72,7 @@ public class MealIngredientsListModelProxyTest {
     };
 
     private IngredientTypesDatabaseModel ingredientTypesModel;
+    private MealDatabaseModel mealDatabaseModel;
     private MealIngredientsListModel model;
 
     @Before
@@ -78,7 +80,8 @@ public class MealIngredientsListModelProxyTest {
         Timber.plant(tree);
         TestRxPlugins.registerImmediateHookIO();
         ingredientTypesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
-        model = new MealIngredientsListModel(ingredientTypesModel, null);
+        mealDatabaseModel = Mockito.mock(MealDatabaseModel.class);
+        model = new MealIngredientsListModel(ingredientTypesModel, mealDatabaseModel, null, null);
 
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
             IngredientTypeParcel typeParcel = new IngredientTypeParcel(exampleIngredientTemplate[i]);
@@ -103,7 +106,7 @@ public class MealIngredientsListModelProxyTest {
 
         model.onSaveState(bundle);
 
-        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, bundle);
+        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, mealDatabaseModel, null, bundle);
 
         Assert.assertThat(restoredModel.ingredients, hasSize(exampleIngredientTemplate.length));
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
@@ -123,7 +126,7 @@ public class MealIngredientsListModelProxyTest {
         Bundle bundle = new Bundle();
         bundle.putParcelable(MealIngredientsListModel.ParcelableProxy.STATE_MODEL, fromParcel);
 
-        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, bundle);
+        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, mealDatabaseModel, null, bundle);
 
         final AtomicBoolean isCompleted = new AtomicBoolean(false);
         final List<Integer> integers = new ArrayList<>(5);

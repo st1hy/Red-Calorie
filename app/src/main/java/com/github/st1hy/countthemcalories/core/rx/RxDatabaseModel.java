@@ -85,6 +85,11 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
+    public Observable<Void> remove(@NonNull T data) {
+        return fromDatabaseTask(removeCall(data));
+    }
+
+    @NonNull
     public Observable<Cursor> removeAndRefresh(long id) {
         return fromDatabaseTask(removeAndRefreshCall(id));
     }
@@ -216,7 +221,6 @@ public abstract class RxDatabaseModel<T> {
         };
     }
 
-    @NonNull
     private void moveCursorToKeyIfAble(@NonNull Cursor cursor, long key) {
         if (cursor.moveToFirst()) {
             int keyColumn = getKeyColumn(cursor);
@@ -243,6 +247,18 @@ public abstract class RxDatabaseModel<T> {
             public Cursor call() throws Exception {
                 performRemove(data);
                 return refresh().call();
+            }
+        };
+    }
+
+
+    @NonNull
+    private Callable<Void> removeCall(@NonNull final T data) {
+        return new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                performRemove(data);
+                return null;
             }
         };
     }

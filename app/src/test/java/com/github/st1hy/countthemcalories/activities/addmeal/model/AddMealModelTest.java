@@ -33,7 +33,7 @@ public class AddMealModelTest {
 
     @Before
     public void setUp() throws Exception {
-        model = new AddMealModel(listModel, databaseModel, resources, null);
+        model = new AddMealModel(listModel, databaseModel, resources, null, null);
     }
 
     @Test

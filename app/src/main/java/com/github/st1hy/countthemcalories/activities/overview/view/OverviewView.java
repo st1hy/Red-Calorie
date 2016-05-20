@@ -25,4 +25,6 @@ public interface OverviewView extends DrawerView {
     Observable<Void> getDismissEmptyListVariationObservable();
 
     void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView);
+
+    void openEditMealScreen(@NonNull MealParcel mealParcel);
 }

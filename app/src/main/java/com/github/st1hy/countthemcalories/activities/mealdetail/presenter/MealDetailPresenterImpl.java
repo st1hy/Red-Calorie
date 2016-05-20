@@ -1,11 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailView;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -104,7 +106,9 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setResultEditAndFinish();
+                Intent intent = new Intent();
+                intent.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, model.getMeal().getId());
+                view.setResultAndFinish(MealDetailActivity.RESULT_EDIT, intent);
             }
         };
     }
@@ -114,7 +118,9 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setResultDeleteAndFinish();
+                Intent intent = new Intent();
+                intent.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, model.getMeal().getId());
+                view.setResultAndFinish(MealDetailActivity.RESULT_DELETE, intent);
             }
         };
     }

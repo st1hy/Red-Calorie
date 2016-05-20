@@ -1,15 +1,20 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 
 import java.math.BigDecimal;
@@ -25,6 +30,7 @@ import timber.log.Timber;
 
 public class MealIngredientsListModel {
 
+    final MealDatabaseModel databaseModel;
     final IngredientTypesDatabaseModel ingredientTypesModel;
 
     final ArrayList<Ingredient> ingredients;
@@ -33,8 +39,11 @@ public class MealIngredientsListModel {
     final Observable<Integer> loadingObservable;
 
     public MealIngredientsListModel(@NonNull IngredientTypesDatabaseModel ingredientTypesModel,
+                                    @NonNull MealDatabaseModel databaseModel,
+                                    @Nullable Intent intent,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
+        this.databaseModel = databaseModel;
         ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
@@ -50,7 +59,15 @@ public class MealIngredientsListModel {
         } else {
             parcelableProxy = new ParcelableProxy();
             ingredients = new ArrayList<>(5);
-            loadingObservable = Observable.empty();
+            Observable<Integer> observable = null;
+            if (intent != null) {
+                MealParcel parcel = intent.getParcelableExtra(AddMealActivity.EXTRA_MEAL_PARCEL);
+                if (parcel != null) {
+                    observable = loadItems(parcel);
+                }
+            }
+            if (observable == null) observable = Observable.empty();
+            loadingObservable = observable;
         }
         this.parcelableProxy = parcelableProxy;
     }
@@ -123,19 +140,42 @@ public class MealIngredientsListModel {
     @NonNull
     Observable<Integer> loadItems(@NonNull List<Ingredient> ingredients) {
         Observable<Ingredient> notLoaded = Observable.from(ingredients);
-        Observable<Integer> loading = notLoaded.concatMap(new Func1<Ingredient, Observable<IngredientTemplate>>() {
-            @Override
-            public Observable<IngredientTemplate> call(Ingredient ingredient) {
-                return ingredientTypesModel.getById(ingredient.getIngredientTypeId());
-            }
-        }).zipWith(notLoaded, new Func2<IngredientTemplate, Ingredient, Ingredient>() {
-            @Override
-            public Ingredient call(IngredientTemplate ingredientTemplate, Ingredient ingredient) {
-                ingredient.setIngredientType(ingredientTemplate);
-                return ingredient;
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .map(onIngredient()).replay().autoConnect().share();
+        Observable<Integer> loading = notLoaded
+                .concatMap(new Func1<Ingredient, Observable<IngredientTemplate>>() {
+                    @Override
+                    public Observable<IngredientTemplate> call(Ingredient ingredient) {
+                        return ingredientTypesModel.getById(ingredient.getIngredientTypeId());
+                    }
+                }).zipWith(notLoaded, new Func2<IngredientTemplate, Ingredient, Ingredient>() {
+                    @Override
+                    public Ingredient call(IngredientTemplate ingredientTemplate, Ingredient ingredient) {
+                        ingredient.setIngredientType(ingredientTemplate);
+                        return ingredient;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .map(onIngredient())
+                .replay().autoConnect().share();
+        loading.subscribe(new Loading());
+        return loading;
+    }
+
+    @NonNull
+    Observable<Integer> loadItems(@NonNull MealParcel mealParcel) {
+        Observable<Integer> loading = databaseModel.unParcel(mealParcel)
+                .map(new Func1<Meal, List<Ingredient>>() {
+                    @Override
+                    public List<Ingredient> call(Meal meal) {
+                        return meal.getIngredients();
+                    }
+                })
+                .concatMap(new Func1<List<Ingredient>, Observable<Ingredient>>() {
+                    @Override
+                    public Observable<Ingredient> call(List<Ingredient> ingredients) {
+                        return Observable.from(ingredients);
+                    }
+                })
+                .map(onIngredient())
+                .replay().autoConnect().share();
         loading.subscribe(new Loading());
         return loading;
     }
@@ -203,9 +243,11 @@ public class MealIngredientsListModel {
                 final int size = source.readInt();
                 ArrayList<Ingredient> ingredients = new ArrayList<>(size);
                 for (int i = 0; i < size; i++) {
+                    long ingredientId = source.readLong();
                     long ingredientTypeId = source.readLong();
                     BigDecimal value = decimalConverter.convertToEntityProperty(source.readString());
                     Ingredient ingredient = new Ingredient();
+                    if (ingredientId != -1L) ingredient.setId(ingredientId);
                     ingredient.setAmount(value);
                     ingredient.setIngredientTypeId(ingredientTypeId);
                     ingredients.add(ingredient);
@@ -229,6 +271,9 @@ public class MealIngredientsListModel {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(ingredients.size());
             for (Ingredient ingredient : ingredients) {
+                Long id = ingredient.getId();
+                if (id == null) id = -1L;
+                dest.writeLong(id);
                 dest.writeLong(ingredient.getIngredientTypeId());
                 dest.writeString(decimalConverter.convertToDatabaseValue(ingredient.getAmount()));
             }

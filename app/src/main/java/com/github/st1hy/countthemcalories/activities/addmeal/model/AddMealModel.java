@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,15 +10,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class AddMealModel extends WithPictureModel {
     final MealIngredientsListModel ingredientsListModel;
@@ -25,13 +30,16 @@ public class AddMealModel extends WithPictureModel {
     final MealDatabaseModel databaseModel;
     final Resources resources;
 
+    long mealId;
     String name;
     Uri imageUri;
+    final Observable<Void> loading;
 
     @Inject
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
                         @NonNull MealDatabaseModel databaseModel,
                         @NonNull Resources resources,
+                        @Nullable Intent intent,
                         @Nullable Bundle savedState) {
         this.ingredientsListModel = ingredientsListModel;
         this.databaseModel = databaseModel;
@@ -42,14 +50,49 @@ public class AddMealModel extends WithPictureModel {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
         }
         if (parcelableProxy != null) {
+            this.mealId = parcelableProxy.mealId;
             this.name = parcelableProxy.name;
             this.imageUri = parcelableProxy.imageUri;
+            loading = Observable.just(null);
         } else {
+            Observable<Void> observable = null;
+            parcelableProxy = new ParcelableProxy();
+            this.mealId = -1L;
             this.name = "";
             this.imageUri = Uri.EMPTY;
-            parcelableProxy = new ParcelableProxy();
+            if (intent != null) {
+                MealParcel parcel = intent.getParcelableExtra(AddMealActivity.EXTRA_MEAL_PARCEL);
+                if (parcel != null) {
+                    observable = loadParcel(parcel);
+                }
+            }
+            if (observable == null) observable = Observable.just(null);
+            loading = observable;
         }
         this.parcelableProxy = parcelableProxy;
+    }
+
+    Observable<Void> loadParcel(@NonNull MealParcel parcel) {
+        Observable<Meal> observable = databaseModel.unParcel(parcel).replay().autoConnect().share();
+        observable.subscribe(new Action1<Meal>() {
+            @Override
+            public void call(Meal meal) {
+                mealId = meal.getId();
+                name = meal.getName();
+                imageUri = meal.getImageUri();
+            }
+        });
+        return observable.map(new Func1<Meal, Void>() {
+            @Override
+            public Void call(Meal meal) {
+                return null;
+            }
+        });
+    }
+
+    @NonNull
+    public Observable<Void> getLoading() {
+        return loading;
     }
 
     @Override
@@ -89,10 +132,11 @@ public class AddMealModel extends WithPictureModel {
     @NonNull
     public Observable<Void> saveToDatabase() {
         Meal meal = new Meal();
+        if (mealId != -1L) meal.setId(mealId);
         meal.setName(getName());
         meal.setCreationDate(DateTime.now());
         meal.setImageUri(getImageUri());
-        return databaseModel.addNew(meal, ingredientsListModel.getIngredients());
+        return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
     }
 
     @Nullable
@@ -110,6 +154,7 @@ public class AddMealModel extends WithPictureModel {
 
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add meal model";
+        long mealId;
         String name;
         Uri imageUri;
 
@@ -117,6 +162,7 @@ public class AddMealModel extends WithPictureModel {
         }
 
         ParcelableProxy snapshot(@NonNull AddMealModel model) {
+            this.mealId = model.mealId;
             this.name = model.name;
             this.imageUri = model.imageUri;
             return this;
@@ -126,6 +172,7 @@ public class AddMealModel extends WithPictureModel {
             @Override
             public ParcelableProxy createFromParcel(Parcel source) {
                 ParcelableProxy parcelableProxy = new ParcelableProxy();
+                parcelableProxy.mealId = source.readLong();
                 parcelableProxy.name = source.readString();
                 parcelableProxy.imageUri = source.readParcelable(Uri.class.getClassLoader());
                 return parcelableProxy;
@@ -144,6 +191,7 @@ public class AddMealModel extends WithPictureModel {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(mealId);
             dest.writeString(name);
             dest.writeParcelable(imageUri, flags);
         }

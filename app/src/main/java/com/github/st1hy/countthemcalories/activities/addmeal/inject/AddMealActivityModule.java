@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.Ingredien
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
@@ -66,8 +68,10 @@ public class AddMealActivityModule {
     @Provides
     @PerActivity
     public MealIngredientsListModel provideListModel(IngredientTypesDatabaseModel model,
+                                                     MealDatabaseModel databaseModel,
+                                                     @Nullable Intent intent,
                                                      @Nullable Bundle savedState) {
-        return new MealIngredientsListModel(model, savedState);
+        return new MealIngredientsListModel(model, databaseModel, intent, savedState);
     }
 
     @Provides
@@ -81,5 +85,11 @@ public class AddMealActivityModule {
     @PerActivity
     public Resources provideResources() {
         return activity.getResources();
+    }
+
+    @Provides
+    @PerActivity
+    public Intent provideIntent() {
+        return activity.getIntent();
     }
 }

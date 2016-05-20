@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 import rx.Observable;
 
 public class OverviewActivity extends DrawerActivity implements OverviewView {
-    public static final int REQEST_MEAL_DETAIL = 0x300;
+    public static final int REQUEST_MEAL_DETAIL = 0x300;
 
     @Inject
     OverviewPresenter presenter;
@@ -128,6 +128,19 @@ public class OverviewActivity extends DrawerActivity implements OverviewView {
                 .toBundle();
         Intent intent = new Intent(this, MealDetailActivity.class);
         intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, mealParcel);
-        startActivityForResult(intent, REQEST_MEAL_DETAIL, startOptions);
+        startActivityForResult(intent, REQUEST_MEAL_DETAIL, startOptions);
+    }
+
+    @Override
+    public void openEditMealScreen(@NonNull MealParcel mealParcel) {
+        Intent intent = new Intent(this, AddMealActivity.class);
+        intent.putExtra(AddMealActivity.EXTRA_MEAL_PARCEL, mealParcel);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!presenter.onActivityResult(requestCode, resultCode, data))
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }

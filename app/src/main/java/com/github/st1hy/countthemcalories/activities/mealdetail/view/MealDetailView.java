@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.view;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
@@ -20,9 +21,7 @@ public interface MealDetailView {
 
     void setEnergy(@NonNull String energy);
 
-    void setResultEditAndFinish();
+    void setResultAndFinish(int resultCode, @NonNull Intent data);
 
     Observable<Void> getDeleteObservable();
-
-    void setResultDeleteAndFinish();
 }

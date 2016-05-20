@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -34,7 +35,6 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     private final AddMealView view;
     private final AddMealModel model;
     private final IngredientsAdapter adapter;
-
     @Inject
     public AddMealPresenterImp(@NonNull AddMealView view,
                                @NonNull PermissionsHelper permissionsHelper,
@@ -48,13 +48,26 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
 
     @Override
     public void onStart() {
-        Uri imageUri = model.getImageUri();
-        if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
-        view.setName(model.getName());
+        subscriptions.add(model.getLoading()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(setupView()));
+    }
 
-        subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
-        subscriptions.add(view.getAddIngredientObservable().subscribe(onAddNewIngredient()));
-        adapter.onStart();
+    @NonNull
+    private Action1<Void> setupView() {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                Uri imageUri = model.getImageUri();
+                if (!Uri.EMPTY.equals(imageUri)) onImageReceived(imageUri);
+                view.setName(model.getName());
+
+                subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
+                subscriptions.add(view.getAddIngredientObservable().subscribe(onAddNewIngredient()));
+
+                adapter.onStart();
+            }
+        };
     }
 
     @Override

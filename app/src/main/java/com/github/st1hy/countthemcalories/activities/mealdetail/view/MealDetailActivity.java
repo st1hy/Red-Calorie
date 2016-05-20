@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ public class MealDetailActivity extends BaseActivity implements MealDetailView {
     public static final String EXTRA_MEAL_PARCEL = "meal detail parcel";
     public static final int RESULT_EDIT = 0x51;
     public static final int RESULT_DELETE = 0x52;
+    public static final String EXTRA_RESULT_MEAL_ID_LONG = "extra result meal id";
 
     MealDetailComponent component;
 
@@ -113,19 +115,14 @@ public class MealDetailActivity extends BaseActivity implements MealDetailView {
     }
 
     @Override
-    public void setResultEditAndFinish() {
-        setResult(RESULT_EDIT);
-        ActivityCompat.finishAfterTransition(this);
-    }
-
-    @Override
     public Observable<Void> getDeleteObservable() {
         return RxView.clicks(removeButton);
     }
 
     @Override
-    public void setResultDeleteAndFinish() {
-        setResult(RESULT_DELETE);
+    public void setResultAndFinish(int resultCode, @NonNull Intent data) {
+        setResult(resultCode, data);
         ActivityCompat.finishAfterTransition(this);
     }
+
 }

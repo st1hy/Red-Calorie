@@ -38,7 +38,7 @@ public class AddMealModelProxyTest {
         listModel = Mockito.mock(MealIngredientsListModel.class);
         resources = RuntimeEnvironment.application.getResources();
         databaseModel = Mockito.mock(MealDatabaseModel.class);
-        model = new AddMealModel(listModel, databaseModel, resources, null);
+        model = new AddMealModel(listModel, databaseModel, resources, null, null);
 
         model.setName(testName);
         model.setImageUri(testUri);
@@ -50,7 +50,7 @@ public class AddMealModelProxyTest {
         Bundle bundle = new Bundle();
 
         model.onSaveState(bundle);
-        AddMealModel restoredModel = new AddMealModel(listModel, databaseModel, resources, bundle);
+        AddMealModel restoredModel = new AddMealModel(listModel, databaseModel, resources, null, bundle);
 
         assertThat(model.getName(), equalTo(restoredModel.getName()));
         assertThat(model.getImageUri(), equalTo(restoredModel.getImageUri()));

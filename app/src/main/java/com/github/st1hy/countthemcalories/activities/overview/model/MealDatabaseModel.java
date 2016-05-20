@@ -56,12 +56,12 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @NonNull
-    public Observable<Void> addNew(@NonNull Meal meal, Collection<Ingredient> ingredients) {
-        return fromDatabaseTask(addNewCall(meal, ingredients));
+    public Observable<Void> insertOrUpdate(@NonNull Meal meal, Collection<Ingredient> ingredients) {
+        return fromDatabaseTask(insertOrUpdateCall(meal, ingredients));
     }
 
     @NonNull
-    private Callable<Void> addNewCall(final Meal meal, final Collection<Ingredient> ingredients) {
+    private Callable<Void> insertOrUpdateCall(final Meal meal, final Collection<Ingredient> ingredients) {
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
@@ -69,7 +69,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
                 IngredientDao ingredientDao = session().getIngredientDao();
                 for (Ingredient ingredient : ingredients) {
                     ingredient.setPartOfMeal(meal);
-                    ingredientDao.insert(ingredient);
+                    ingredientDao.insertOrReplace(ingredient);
                 }
                 meal.resetIngredients();
                 meal.getIngredients();
@@ -114,7 +114,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     @NonNull
     @Override
     protected Meal performInsert(@NonNull Meal meal) {
-        dao().insert(meal);
+        dao().insertOrReplace(meal);
         meal.getIngredients();
         return meal;
     }

@@ -2,6 +2,8 @@ package com.github.st1hy.countthemcalories.activities.overview.presenter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +71,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         DateTime to = now.withTime(23, 59, 59, 999);
         subscriptions.add(model.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnCursor()));
+                .subscribe(new OnUpdatedDataSet()));
     }
 
     public void onStop() {
@@ -236,7 +238,53 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         };
     }
 
-    private class OnCursor extends Subscriber<List<Meal>> {
+    public void deleteMealWithId(long mealId) {
+        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
+        if (mealPair != null) {
+            final int mealPos = mealPair.first;
+            subscriptions.add(model.remove(mealPair.second)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onMealDeleted(mealPos)));
+        } else {
+            Timber.w("Meal with id: %s no longer exist", mealId);
+        }
+    }
+
+    @NonNull
+    private Action1<Void> onMealDeleted(final int mealPos) {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                list.remove(mealPos);
+                notifyItemRemoved(mealPos);
+                showTotal();
+                setEmptyListVisibility();
+            }
+        };
+    }
+
+    public void editMealWithId(long mealId) {
+        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
+        if (mealPair != null) {
+            view.openEditMealScreen(new MealParcel(mealPair.second));
+        } else {
+            Timber.w("Meal with id: %s no longer exist", mealId);
+        }
+    }
+
+    @Nullable
+    private Pair<Integer, Meal> getMealPositionWithId(long mealId) {
+        List<Meal> meals = this.list;
+        for (int i = 0; i < meals.size(); i++) {
+            Meal meal = meals.get(i);
+            if (meal.getId() != null && meal.getId() == mealId) {
+                return Pair.create(i, meal);
+            }
+        }
+        return null;
+    }
+
+    private class OnUpdatedDataSet extends Subscriber<List<Meal>> {
 
         @Override
         public void onCompleted() {

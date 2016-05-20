@@ -3,12 +3,14 @@ package com.github.st1hy.countthemcalories.activities.overview.view;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
@@ -22,6 +24,7 @@ import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
+import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.joda.time.DateTime;
@@ -42,8 +45,11 @@ import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -149,5 +155,41 @@ public class OverviewActivityRoboTest {
         assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, SettingsActivity.class)));
+    }
+
+    @Test
+    public void testEditMeal() throws Exception {
+        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
+        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_root);
+        item.performClick();
+        Intent intent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(intent);
+        assertThat(intent, hasComponent(new ComponentName(activity, MealDetailActivity.class)));
+        assertThat(intent, hasExtra(equalTo(MealDetailActivity.EXTRA_MEAL_PARCEL),
+                any(MealParcel.class)));
+        Intent result = new Intent();
+        result.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, exampleMeals[0].getId());
+        shadowOf(activity).receiveResult(intent, MealDetailActivity.RESULT_EDIT, result);
+        intent = shadowOf(activity).getNextStartedActivity();
+        assertThat(intent, hasComponent(new ComponentName(activity, AddMealActivity.class)));
+        assertThat(intent, hasExtra(equalTo(AddMealActivity.EXTRA_MEAL_PARCEL),
+                any(MealParcel.class)));
+    }
+
+
+    @Test
+    public void testRemoveMeal() throws Exception {
+        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
+        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_root);
+        item.performClick();
+        Intent intent = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(intent);
+        assertThat(intent, hasComponent(new ComponentName(activity, MealDetailActivity.class)));
+        assertThat(intent, hasExtra(equalTo(MealDetailActivity.EXTRA_MEAL_PARCEL),
+                any(MealParcel.class)));
+        Intent result = new Intent();
+        result.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, exampleMeals[0].getId());
+        shadowOf(activity).receiveResult(intent, MealDetailActivity.RESULT_DELETE, result);
+        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(2));
     }
 }
