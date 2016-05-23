@@ -59,7 +59,7 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
             @Override
             public void call(Void aVoid) {
                 Uri imageUri = model.getImageUri();
-                if (!Uri.EMPTY.equals(imageUri)) onImageReceived(imageUri);
+                if (!imageUri.equals(Uri.EMPTY)) onImageReceived(imageUri);
                 view.setName(model.getName());
 
                 subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));

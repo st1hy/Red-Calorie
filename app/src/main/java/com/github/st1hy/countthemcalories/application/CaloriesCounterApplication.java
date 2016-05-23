@@ -1,16 +1,12 @@
 package com.github.st1hy.countthemcalories.application;
 
 import android.content.Context;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
-
-import timber.log.Timber;
 
 public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;
@@ -18,28 +14,17 @@ public class CaloriesCounterApplication extends DatabaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        component = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this))
-                .build();
-        component.inject(this);
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build());
-        }
+        getComponent().inject(this);
     }
 
 
     @NonNull
     public ApplicationComponent getComponent() {
+        if (component == null) {
+            component = DaggerApplicationComponent.builder()
+                    .applicationModule(new ApplicationModule(this))
+                    .build();
+        }
         return component;
     }
 

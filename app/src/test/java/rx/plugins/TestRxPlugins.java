@@ -40,7 +40,7 @@ public class TestRxPlugins {
 
             @Override
             public Scheduler computation() {
-                return rx.schedulers.Schedulers.computation();
+                return rx.schedulers.Schedulers.trampoline();
             }
 
             @Override

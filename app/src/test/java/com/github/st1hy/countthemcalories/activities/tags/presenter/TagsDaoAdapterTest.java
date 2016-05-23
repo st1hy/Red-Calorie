@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class TagsDaoAdapterTest {
 
     private TagsView view;
@@ -44,7 +44,7 @@ public class TagsDaoAdapterTest {
     private Cursor cursor;
 
     @Before
-    public void setup() {
+    public void setUp() {
         cursor = Mockito.mock(Cursor.class);
         view = Mockito.mock(TagsView.class);
         model = Mockito.mock(TagsModel.class);
@@ -151,6 +151,7 @@ public class TagsDaoAdapterTest {
         verify(cursor).getCount();
         verifyNoMoreInteractions(model, view, cursor, activityModel);
     }
+
     @Test
     public void testOnItemClicked() throws Exception {
         when(activityModel.isInSelectMode()).thenReturn(true);
@@ -168,7 +169,7 @@ public class TagsDaoAdapterTest {
     public void testOnSearch() throws Exception {
         when(model.getAllFiltered("test")).thenReturn(Observable.just(cursor));
 
-        presenter.onSearch(Observable.<CharSequence>just("t","te","tes","test"));
+        presenter.onSearch(Observable.<CharSequence>just("t", "te", "tes", "test"));
 
         verify(model).getAllFiltered("t");
         verify(model).getAllFiltered("test");
