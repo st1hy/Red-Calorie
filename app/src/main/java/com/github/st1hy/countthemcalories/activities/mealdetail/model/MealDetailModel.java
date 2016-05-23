@@ -38,18 +38,12 @@ public class MealDetailModel {
         }
         if (parcelableProxy != null) {
             mealParcel = parcelableProxy.mealParcel;
-            isDataValid = mealParcel != null;
-            if (isDataValid) {
-                meal = mealParcel.getWhenReady().getOrNull();
-                if (meal == null) {
-                    mealObservable = loadFromParcel(mealParcel);
-                } else {
-                    mealObservable = Observable.just(meal);
-                }
+            isDataValid = true;
+            meal = mealParcel.getWhenReady().getOrNull();
+            if (meal == null) {
+                mealObservable = loadFromParcel(mealParcel);
             } else {
-                Timber.e("Incorrect state after restoring value: %s", intent);
-                meal = null;
-                mealObservable = Observable.empty();
+                mealObservable = Observable.just(meal);
             }
         } else {
             parcelableProxy = new ParcelableProxy();
@@ -91,7 +85,7 @@ public class MealDetailModel {
         savedState.putParcelable(ParcelableProxy.STATE_MODEL, parcelableProxy.snapshot(this));
     }
 
-    private Observable<Meal> loadFromParcel(@NonNull MealParcel mealParcel) {
+    Observable<Meal> loadFromParcel(@NonNull MealParcel mealParcel) {
         Observable<Meal> observable = databaseModel.unParcel(mealParcel)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<Meal>() {
@@ -125,7 +119,7 @@ public class MealDetailModel {
             @Override
             public ParcelableProxy createFromParcel(Parcel source) {
                 ParcelableProxy parcelableProxy = new ParcelableProxy();
-                parcelableProxy.mealParcel = MealParcel.CREATOR.createFromParcel(source);
+                parcelableProxy.mealParcel = source.readParcelable(getClass().getClassLoader());
                 return parcelableProxy;
             }
 

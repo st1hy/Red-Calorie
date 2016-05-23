@@ -56,7 +56,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientDetailModelTest {
     final IngredientTemplate example = new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"), DateTime.now(), AmountUnitType.MASS, EnergyDensityUtils.getOrZero("329.7"));
 

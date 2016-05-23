@@ -23,7 +23,6 @@ public class TestRxPlugins {
         Schedulers.reset();
     }
 
-
     public static void registerImmediateHookIO() {
         RxAndroidPlugins.getInstance().reset();
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {

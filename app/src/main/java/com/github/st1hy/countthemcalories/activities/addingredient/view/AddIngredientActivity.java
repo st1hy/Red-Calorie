@@ -106,12 +106,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Timber.d("Restoring saved state");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         presenter.onStart();

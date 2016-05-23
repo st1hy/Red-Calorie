@@ -31,11 +31,6 @@ public class ItemTagViewHolder extends TagViewHolder {
         categoryName.setText(name);
     }
 
-    @NonNull
-    public ImageButton getRemoveTag() {
-        return removeTag;
-    }
-
     public void setTag(@NonNull Tag tag) {
         this.tag = tag;
     }
