@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientDetailsActivityRoboTest {
     final IngredientTemplate ingredientTemplate = IngredientsActivityRoboTest.exampleIngredients[0];
     final BigDecimal amount = new BigDecimal("24.65");
@@ -149,7 +149,7 @@ public class IngredientDetailsActivityRoboTest {
         Intent resultIntent = shadowActivity.getResultIntent();
         IngredientTypeParcel parcel = resultIntent.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
         assertThat(parcel.getWhenReady().getOrNull(), equalTo(ingredientTemplate));
-        assertThat(resultIntent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -124321L),  equalTo(requestId));
+        assertThat(resultIntent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -124321L), equalTo(requestId));
         assertThat(resultIntent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL), equalTo(expectedAmount));
     }
 

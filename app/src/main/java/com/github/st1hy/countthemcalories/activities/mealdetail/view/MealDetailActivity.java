@@ -88,6 +88,12 @@ public class MealDetailActivity extends BaseActivity implements MealDetailView {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.onSaveState(outState);
+    }
+
+    @Override
     public void setName(@NonNull String name) {
         this.name.setText(name);
     }

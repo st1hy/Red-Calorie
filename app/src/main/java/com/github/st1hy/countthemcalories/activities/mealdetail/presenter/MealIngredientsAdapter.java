@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -56,14 +57,16 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
     @Override
     public void onBindViewHolder(IngredientViewHolder holder, int position) {
         Ingredient ingredient = ingredients.get(position);
-        holder.setName(ingredient.getIngredientType().getName());
+        IngredientTemplate ingredientType = ingredient.getIngredientType();
+        holder.setName(ingredientType.getName());
 
-        EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredient.getIngredientType());
+        EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientType);
         EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);
         AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        holder.setEnergy(quantitiesModel.formatEnergyCount(ingredient.getAmount(), amountUnit, energyDensity));
+        BigDecimal databaseAmount = ingredient.getAmount();
+        holder.setEnergy(quantitiesModel.formatEnergyCount(databaseAmount, amountUnit, energyDensity));
 
-        final BigDecimal amount = quantitiesModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        final BigDecimal amount = quantitiesModel.convertAmountFromDatabase(databaseAmount, amountUnit);
         holder.setAmount(quantitiesModel.format(amount, amountUnit));
     }
 

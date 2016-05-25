@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
@@ -61,6 +62,11 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         adapter.onStop();
     }
 
+    @Override
+    public void onSaveState(@NonNull Bundle outState) {
+        model.onSaveState(outState);
+    }
+
     @NonNull
     private Action1<Meal> onMealLoaded() {
         return new Action1<Meal>() {
@@ -88,9 +94,10 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
                 });
     }
 
-    private void bindImage(@NonNull Meal meal) {
-        if (!Uri.EMPTY.equals(meal.getImageUri())) {
-            subscriptions.add(RxPicasso.Builder.with(picasso, meal.getImageUri())
+    void bindImage(@NonNull Meal meal) {
+        Uri imageUri = meal.getImageUri();
+        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
+            subscriptions.add(RxPicasso.Builder.with(picasso, imageUri)
                     .centerCrop()
                     .fit()
                     .into(view.getImageView())
