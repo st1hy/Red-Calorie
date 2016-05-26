@@ -29,8 +29,8 @@ android {
     }
 
     productFlavors {
-        //Disable runtime development utilities such as stetho, leakcanary or tinydancer
-        nodevtools {}
+        //Enable runtime development utilities such as stetho, leakcanary or tinydancer
+        devtools {}
         production {}
     }
 
@@ -51,6 +51,17 @@ android {
                 output.outputFile = new File(dir, newApkName)
         }
     }
+
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize "3g"
+        incremental true
+        dexInProcess = true
+    }
+}
+
+configurations {
+    devtoolsDebugCompile
 }
 
 repositories {
@@ -97,11 +108,10 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.4.0'
     compile 'com.google.guava:guava:19.0'
 
-    debugCompile 'com.facebook.stetho:stetho:1.3.1'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    devtoolsDebugCompile 'com.facebook.stetho:stetho:1.3.1'
+    devtoolsDebugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    debugCompile 'com.github.brianPlummer:tinydancer:0.0.9'
-    testCompile 'com.facebook.stetho:stetho:1.3.1'
+    devtoolsDebugCompile 'com.github.brianPlummer:tinydancer:0.0.9'
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"

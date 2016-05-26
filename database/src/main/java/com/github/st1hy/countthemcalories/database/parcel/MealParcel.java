@@ -29,7 +29,7 @@ public class MealParcel extends DaoParcel<Meal> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(dao.getId());
+        dest.writeLong(id);
     }
 
     public static Creator<MealParcel> CREATOR = new Creator<MealParcel>() {

@@ -5,7 +5,7 @@
 
     <application
         tools:replace="android:name"
-        android:name=".application.CountThemCaloriesTestDebugApplication">
+        android:name=".application.DevToolsDebugApplication">
     </application>
 
 </manifest>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/ingredients_item_scrollview"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/ingredients_item_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                android:src="@drawable/ic_delete_24px"
+                android:tint="@color/colorBackground"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:minWidth="80dp"/>
+
+            <include layout="@layout/ingredients_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ImageButton
+                android:id="@+id/ingredients_item_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent"
+                android:src="@drawable/ic_edit_24px"
+                android:tint="@color/colorBackground"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:minWidth="80dp"/>
+        </LinearLayout>
+
+    </HorizontalScrollView>
+</LinearLayout>

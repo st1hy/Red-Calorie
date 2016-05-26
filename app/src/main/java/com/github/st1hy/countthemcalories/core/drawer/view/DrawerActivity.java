@@ -107,7 +107,9 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
 
     @Override
     public void openDrawerActivity(@NonNull DrawerMenuItem item) {
-        startActivity(new Intent(this, item.getActivityClass()));
+        Intent intent = new Intent(this, item.getActivityClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override

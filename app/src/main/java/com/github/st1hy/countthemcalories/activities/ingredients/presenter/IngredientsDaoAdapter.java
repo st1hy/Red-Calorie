@@ -34,7 +34,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
         implements OnItemInteraction<IngredientTemplate> {
     static final int bottomSpaceItem = 1;
     @LayoutRes
-    static final int item_layout = R.layout.ingredients_item;
+    static final int item_layout = R.layout.ingredients_item_scrolling;
     @LayoutRes
     static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
@@ -68,7 +68,9 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
-            return new IngredientItemViewHolder(view, this);
+            IngredientItemViewHolder holder = new IngredientItemViewHolder(view, this);
+            holder.fillParent(parent);
+            return holder;
         } else {
             return new EmptySpaceViewHolder(view);
         }
@@ -135,4 +137,21 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     }
 
 
+    @Override
+    public void onViewAttachedToWindow(IngredientViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof IngredientItemViewHolder) {
+            IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
+            ingredientHolder.resetScroll();
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(IngredientViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof IngredientItemViewHolder) {
+            IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
+            picasso.cancelRequest(ingredientHolder.getImage());
+        }
+    }
 }
