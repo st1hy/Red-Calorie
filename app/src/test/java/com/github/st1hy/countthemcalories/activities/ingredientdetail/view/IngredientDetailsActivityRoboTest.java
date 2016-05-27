@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.hamcrest.core.IsEqual;
 import org.junit.After;
@@ -48,19 +49,11 @@ public class IngredientDetailsActivityRoboTest {
     final BigDecimal amount = new BigDecimal("24.65");
     final long requestId = -1L;
 
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
-
-
     private IngredientDetailsActivity activity;
 
     @Before
     public void setup() {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         DaoSession session = OverviewActivityRoboTest.prepareDatabase();
         IngredientsActivityRoboTest.addExampleIngredientsTagsAndJoin(session);
@@ -68,12 +61,13 @@ public class IngredientDetailsActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
     }
 
     @Test
     public void testIncorrectIntent() throws Exception {
+        Timber.uprootAll(); //Don't print expected error
         activity = Robolectric.setupActivity(IngredientDetailsActivity.class);
         ShadowActivity shadowActivity = shadowOf(activity);
         assertThat(shadowActivity.isFinishing(), equalTo(true));

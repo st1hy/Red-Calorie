@@ -22,6 +22,7 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,17 +61,11 @@ public class AddIngredientActivityRoboTest {
     public static Tag[] exampleTags = new Tag[] {new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
 
     private AddIngredientActivity activity;
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
     private DaoSession daoSession;
 
     @Before
     public void setup() {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         daoSession = OverviewActivityRoboTest.prepareDatabase();
         prepareDb();
@@ -93,7 +88,7 @@ public class AddIngredientActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
     }
 

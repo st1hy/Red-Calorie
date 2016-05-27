@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActiv
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,16 +50,10 @@ import static org.robolectric.Shadows.shadowOf;
  @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealActivityRoboTest {
     private AddMealActivity activity;
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
 
     @Before
     public void setup() {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         DaoSession daoSession = OverviewActivityRoboTest.prepareDatabase();
         IngredientsActivityRoboTest.addExampleIngredientsTagsAndJoin(daoSession);
@@ -67,7 +62,7 @@ public class AddMealActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
     }
 

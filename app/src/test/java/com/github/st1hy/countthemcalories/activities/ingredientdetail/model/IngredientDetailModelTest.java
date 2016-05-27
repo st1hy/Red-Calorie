@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TestError;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.hamcrest.Matchers;
 import org.hamcrest.junit.MatcherAssert;
@@ -62,19 +63,13 @@ public class IngredientDetailModelTest {
 
     final BigDecimal amount = new BigDecimal("32.5");
 
-    final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
     private IngredientTypesDatabaseModel ingredientTypesModel;
     private Resources resources;
     private IngredientDetailModel model;
 
     @Before
     public void setUp() throws Exception {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         resources = RuntimeEnvironment.application.getResources();
         ingredientTypesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
@@ -114,6 +109,7 @@ public class IngredientDetailModelTest {
 
     @Test
     public void testInvalidIntent() throws Exception {
+        Timber.uprootAll(); //Don't print expected error
         model = new IngredientDetailModel(ingredientTypesModel, resources, null, null);
         assertThat(model.isDataValid(), equalTo(false));
         final AtomicReference<List<Ingredient>> list = new AtomicReference<>();

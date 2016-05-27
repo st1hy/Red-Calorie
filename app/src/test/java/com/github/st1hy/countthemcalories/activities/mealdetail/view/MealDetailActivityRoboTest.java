@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,19 +37,12 @@ import static org.robolectric.Shadows.shadowOf;
 public class MealDetailActivityRoboTest {
     private final Meal meal = OverviewActivityRoboTest.exampleMeals[0];
 
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
-
     MealDetailActivity activity;
 
 
     @Before
     public void setUp() throws Exception {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         DaoSession session = OverviewActivityRoboTest.prepareDatabase();
         OverviewActivityRoboTest.addMealsIngredients(session);
@@ -57,12 +51,13 @@ public class MealDetailActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
     }
 
     @Test
     public void testIncorrectIntent() throws Exception {
+        Timber.uprootAll(); //Don't print expected error
         MealDetailActivity activity = Robolectric.setupActivity(MealDetailActivity.class);
         ShadowActivity shadowActivity = shadowOf(activity);
         assertThat(shadowActivity.isFinishing(), equalTo(true));

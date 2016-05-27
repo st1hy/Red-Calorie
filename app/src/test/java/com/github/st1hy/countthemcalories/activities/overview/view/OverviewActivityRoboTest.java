@@ -26,6 +26,7 @@ import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -73,16 +74,9 @@ public class OverviewActivityRoboTest {
     private OverviewActivity activity;
     private DaoSession session;
 
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(tag + " " + message);
-        }
-    };
-
     @Before
     public void setup() {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         RxDaoRecyclerAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
 
@@ -120,7 +114,7 @@ public class OverviewActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
         RxDaoRecyclerAdapter.debounceTime = 250;
     }

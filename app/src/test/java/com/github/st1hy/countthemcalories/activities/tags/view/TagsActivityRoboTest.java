@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -50,18 +51,11 @@ public class TagsActivityRoboTest {
             new Tag(3L, "Meal")
     };
 
-
     private  TagsActivity activity;
-    private final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(tag +" " + message);
-        }
-    };
 
     @Before
     public void setup() throws Exception {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         addExampleTags(OverviewActivityRoboTest.prepareDatabase());
@@ -83,7 +77,7 @@ public class TagsActivityRoboTest {
 
     @After
     public void tearDown() throws Exception {
-        Timber.uproot(tree);
+        Timber.uprootAll();
         TestRxPlugins.reset();
         TagsDaoAdapter.debounceTime = 250;
     }

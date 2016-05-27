@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.hamcrest.junit.MatcherAssert;
 import org.joda.time.DateTime;
@@ -64,12 +65,6 @@ public class MealIngredientsListModelProxyTest {
             new BigDecimal("42.50"),
             new BigDecimal("52.0"),
     };
-    final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
 
     private IngredientTypesDatabaseModel ingredientTypesModel;
     private MealDatabaseModel mealDatabaseModel;
@@ -77,7 +72,7 @@ public class MealIngredientsListModelProxyTest {
 
     @Before
     public void setUp() throws Exception {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         ingredientTypesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
         mealDatabaseModel = Mockito.mock(MealDatabaseModel.class);

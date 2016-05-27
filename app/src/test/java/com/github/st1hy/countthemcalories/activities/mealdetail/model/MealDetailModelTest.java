@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TestError;
+import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -48,18 +49,12 @@ import static org.mockito.Mockito.when;
 public class MealDetailModelTest {
     public static final Meal example = new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now());
 
-    final Timber.Tree tree = new Timber.Tree() {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            System.out.println(message);
-        }
-    };
     private MealDatabaseModel mealDatabaseModel;
     private MealDetailModel model;
 
     @Before
     public void setUp() throws Exception {
-        Timber.plant(tree);
+        Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         mealDatabaseModel = Mockito.mock(MealDatabaseModel.class);
         when(mealDatabaseModel.unParcel(any(MealParcel.class)))
@@ -91,6 +86,7 @@ public class MealDetailModelTest {
 
     @Test
     public void testInvalidIntent() throws Exception {
+        Timber.uprootAll(); //Don't print expected error
         model = new MealDetailModel(mealDatabaseModel, null, null);
         assertThat(model.isDataValid(), equalTo(false));
         final AtomicReference<List<Meal>> list = new AtomicReference<>();
