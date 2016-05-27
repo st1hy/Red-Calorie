@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ingredients_item_scrollview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <HorizontalScrollView
-        android:id="@+id/ingredients_item_scrollview"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:orientation="vertical">
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/ingredients_item_delete_frame"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:background="@color/colorPrimary">
+
             <ImageButton
                 android:id="@+id/ingredients_item_delete"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
+                android:contentDescription="@string/ingredient_item_delete_ingredient"
+                android:minWidth="80dp"
                 android:src="@drawable/ic_delete_24px"
-                android:tint="@color/colorBackground"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:minWidth="80dp"/>
+                android:tint="@color/colorBackground" />
+        </FrameLayout>
 
-            <include layout="@layout/ingredients_item"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+        <include
+            layout="@layout/ingredients_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/ingredients_item_edit_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent">
 
             <ImageButton
                 android:id="@+id/ingredients_item_edit"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
+                android:contentDescription="@string/ingredients_item_edit_ingredient"
+                android:minWidth="80dp"
                 android:src="@drawable/ic_edit_24px"
-                android:tint="@color/colorBackground"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:minWidth="80dp"/>
-        </LinearLayout>
+                android:tint="@color/colorBackground" />
+        </FrameLayout>
+    </LinearLayout>
 
-    </HorizontalScrollView>
-</LinearLayout>
+</HorizontalScrollView>

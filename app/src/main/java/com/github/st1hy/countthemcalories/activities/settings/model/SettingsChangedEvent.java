@@ -8,7 +8,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
-import static android.content.SharedPreferences.*;
+import static android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 public abstract class SettingsChangedEvent {
 
@@ -32,26 +32,26 @@ public abstract class SettingsChangedEvent {
         return Observable.create(new Observable.OnSubscribe<SettingsChangedEvent>() {
             @Override
             public void call(final Subscriber<? super SettingsChangedEvent> subscriber) {
-                if (!subscriber.isUnsubscribed()) {
-                    final OnSharedPreferenceChangeListener preferenceChangeListener = new OnSharedPreferenceChangeListener() {
-                        @Override
-                        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                final OnSharedPreferenceChangeListener preferenceChangeListener = new OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                        if (!subscriber.isUnsubscribed()) {
                             SettingsChangedEvent event = SettingsChangedEvent.from(model, key);
                             if (event != null) {
                                 subscriber.onNext(event);
                             }
                         }
-                    };
-                    final SharedPreferences preferences = model.getPreferences();
-                    preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+                    }
+                };
+                final SharedPreferences preferences = model.getPreferences();
+                preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
 
-                    subscriber.add(new MainThreadSubscription() {
-                        @Override
-                        protected void onUnsubscribe() {
-                            preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
-                        }
-                    });
-                }
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        preferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+                    }
+                });
             }
         });
     }

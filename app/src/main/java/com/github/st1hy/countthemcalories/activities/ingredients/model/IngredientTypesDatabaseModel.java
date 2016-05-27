@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao.Properties;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -55,6 +56,8 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
     @Override
     protected IngredientTemplate performGetById(long id) {
         IngredientTemplate template = dao().load(id);
+        template.resetChildIngredients();
+        template.resetTags();
         template.getTags();
         template.getChildIngredients();
         return template;
@@ -113,12 +116,17 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
         List<JointIngredientTag> tags = data.getTags();
         data.delete();
         for (Ingredient ingredient : childIngredients) {
+            Meal meal = ingredient.getPartOfMeal();
+            meal.resetIngredients();
+            List<Ingredient> ingredients = meal.getIngredients();
             ingredient.delete();
+            ingredients.remove(ingredient);
+            if (ingredients.isEmpty()) meal.delete();
         }
         for (JointIngredientTag join : tags) {
-            join.getTag().getIngredientTypes().remove(join);
             join.delete();
         }
+        session().clear();
     }
 
     @Override

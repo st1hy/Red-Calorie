@@ -107,6 +107,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     @Override
     protected Meal performGetById(long id) {
         Meal meal = dao().load(id);
+        meal.resetIngredients();
         meal.getIngredients();
         return meal;
     }

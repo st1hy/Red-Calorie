@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
@@ -22,7 +23,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class AddMealModel extends WithPictureModel {
     final MealIngredientsListModel ingredientsListModel;
@@ -82,12 +82,7 @@ public class AddMealModel extends WithPictureModel {
                 imageUri = meal.getImageUri();
             }
         });
-        return observable.map(new Func1<Meal, Void>() {
-            @Override
-            public Void call(Meal meal) {
-                return null;
-            }
-        });
+        return observable.map(Functions.INTO_VOID);
     }
 
     @NonNull

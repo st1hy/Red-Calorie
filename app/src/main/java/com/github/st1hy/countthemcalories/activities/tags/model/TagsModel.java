@@ -57,6 +57,7 @@ public class TagsModel extends RxDatabaseModel<Tag> {
     @Override
     protected Tag performGetById(long id) {
         Tag tag = dao().load(id);
+        tag.resetIngredientTypes();
         tag.getIngredientTypes();
         return tag;
     }

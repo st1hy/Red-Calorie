@@ -20,4 +20,7 @@ public interface IngredientsView extends DrawerView {
     void setResultAndReturn(@NonNull IngredientTypeParcel ingredientTypeParcel);
 
     void selectIngredientType();
+
+    @NonNull
+    Observable<Void> showUsedIngredientRemoveConfirmationDialog();
 }

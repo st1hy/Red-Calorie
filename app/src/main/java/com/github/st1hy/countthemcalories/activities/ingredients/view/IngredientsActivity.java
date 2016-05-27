@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
@@ -113,6 +114,18 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     @Override
     public void selectIngredientType() {
         startActivityForResult(new Intent(this, SelectIngredientTypeActivity.class), REQUEST_SELECT_TYPE);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> showUsedIngredientRemoveConfirmationDialog() {
+        return RxAlertDialog.Builder.with(this)
+                .title(R.string.ingredients_remove_ingredient_dialog_title)
+                .message(R.string.ingredients_remove_ingredient_dialog_message)
+                .positiveButton(android.R.string.yes)
+                .negativeButton(android.R.string.no)
+                .show()
+                .observePositiveClick();
     }
 
     @Override

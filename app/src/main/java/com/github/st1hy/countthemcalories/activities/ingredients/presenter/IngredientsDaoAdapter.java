@@ -17,7 +17,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
-import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemInteraction;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -28,10 +28,14 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHolder, IngredientTemplate>
-        implements OnItemInteraction<IngredientTemplate> {
+        implements IngredientItemViewHolder.Callback {
     static final int bottomSpaceItem = 1;
     @LayoutRes
     static final int item_layout = R.layout.ingredients_item_scrolling;
@@ -89,6 +93,7 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
             cursor.moveToPosition(position);
             IngredientTemplate ingredient = holder.getReusableIngredient();
             databaseModel.performReadEntity(cursor, ingredient);
+            holder.setPosition(position);
             holder.setName(ingredient.getName());
             final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
             holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
@@ -125,24 +130,11 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     }
 
     @Override
-    public void onItemClicked(@NonNull IngredientTemplate ingredient) {
-        if (model.isInSelectMode()) {
-            view.setResultAndReturn(new IngredientTypeParcel(ingredient));
-        }
-    }
-
-    @Override
-    public void onItemLongClicked(@NonNull IngredientTemplate ingredient) {
-        Timber.d("Long clicked on ingredient, %s", ingredient.getName());
-    }
-
-
-    @Override
     public void onViewAttachedToWindow(IngredientViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if (holder instanceof IngredientItemViewHolder) {
             IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
-            ingredientHolder.resetScroll();
+            ingredientHolder.onAttached();
         }
     }
 
@@ -152,6 +144,54 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
         if (holder instanceof IngredientItemViewHolder) {
             IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
             picasso.cancelRequest(ingredientHolder.getImage());
+            ingredientHolder.onDetached();
         }
+    }
+
+    @Override
+    public void onIngredientClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
+        if (model.isInSelectMode()) {
+            view.setResultAndReturn(new IngredientTypeParcel(ingredientTemplate));
+        }
+    }
+
+    @Override
+    public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
+        databaseModel.getById(ingredientTemplate.getId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(showConfirmationIfUsed())
+                .flatMap(new Func1<IngredientTemplate, Observable<Cursor>>() {
+                    @Override
+                    public Observable<Cursor> call(IngredientTemplate ingredientTemplate) {
+                        return databaseModel.removeAndRefresh(ingredientTemplate);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Cursor>() {
+                    @Override
+                    public void call(Cursor cursor) {
+                        onCursorUpdate(cursor);
+                        notifyItemRemoved(position);
+                    }
+                });
+    }
+
+    @NonNull
+    private Func1<IngredientTemplate, Observable<IngredientTemplate>> showConfirmationIfUsed() {
+        return new Func1<IngredientTemplate, Observable<IngredientTemplate>>() {
+            @Override
+            public Observable<IngredientTemplate> call(IngredientTemplate ingredientTemplate) {
+                if (ingredientTemplate.getChildIngredients().isEmpty())
+                    return Observable.just(ingredientTemplate);
+                else
+                    return view.showUsedIngredientRemoveConfirmationDialog()
+                            .map(Functions.into(ingredientTemplate));
+            }
+        };
+    }
+
+    @Override
+    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
+
     }
 }
