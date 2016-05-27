@@ -11,6 +11,7 @@ import android.widget.SearchView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -38,6 +39,8 @@ import java.util.List;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -49,8 +52,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasSize;
 
 @RunWith(AndroidJUnit4.class)
@@ -69,20 +74,20 @@ public class IngredientActivityTest {
     };
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
-    public final IntentsTestRule<IngredientsActivity> main = new IntentsTestRule<>(IngredientsActivity.class);
+    public final IntentsTestRule<IngredientsActivity> main = new IntentsTestRule<>(IngredientsActivity.class, true, false);
     private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
-    private IngredientTemplateDao templateDao;
+    private DaoSession session;
 
 
     @Before
     public void setUp() throws Exception {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
-        DaoSession session = component.getDaoSession();
+        session = component.getDaoSession();
         addExampleIngredientsTagsAndJoin(session);
-        templateDao = session.getIngredientTemplateDao();
+        session.getIngredientTemplateDao();
         component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
         Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
     }
@@ -96,17 +101,23 @@ public class IngredientActivityTest {
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {
         IngredientTemplateDao templateDao = session.getIngredientTemplateDao();
         JointIngredientTagDao jointIngredientTagDao = session.getJointIngredientTagDao();
-        TagsActivityTest.addExampleTags(session);
+
+        session.getMealDao().deleteAll();
+        session.getIngredientDao().deleteAll();
         templateDao.deleteAll();
         jointIngredientTagDao.deleteAll();
+
+        TagsActivityTest.addExampleTags(session);
         templateDao.insertInTx(exampleIngredients);
         jointIngredientTagDao.insertInTx(exampleJoins);
+
         session.clear();
         templateDao.loadAll();
     }
 
     @Test
     public void testDisplaysIngredients() throws Exception {
+        main.launchActivity(null);
         for (IngredientTemplate ingr : exampleIngredients) {
             onView(withText(ingr.getName())).check(matches(isDisplayed()));
         }
@@ -114,15 +125,14 @@ public class IngredientActivityTest {
 
     @Test
     public void testSearch() throws InterruptedException {
+        main.launchActivity(null);
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withClassName(Matchers.equalTo(SearchView.class.getName())))
                 .check(matches(isDisplayed()))
                 .perform(click())
-                .perform(typeTextIntoFocusedView("Ingredient 2"));
-        synchronized (this) {
-            wait(500); //debounce
-        }
+                .perform(typeTextIntoFocusedView("Ingredient 2"))
+                .perform(loopMainThreadForAtLeast(500)); //Debounce
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
     }
@@ -130,6 +140,7 @@ public class IngredientActivityTest {
 
     @Test
     public void testAddIngredient() throws Exception {
+        main.launchActivity(null);
         onView(withId(R.id.ingredients_fab)).check(matches(isDisplayed()))
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), SelectIngredientTypeActivity.class)));
@@ -145,7 +156,51 @@ public class IngredientActivityTest {
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
         onView(withText("New ingredient name")).check(matches(isDisplayed()));
 
-        List<IngredientTemplate> ingredientTemplates = templateDao.loadAll();
+        List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
         assertThat(ingredientTemplates, hasSize(3));
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        main.launchActivity(null);
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(swipeRight());
+        onView(allOf(withId(R.id.ingredients_item_delete), isDisplayed()))
+                .perform(click());
+
+        onView(withText(exampleIngredients[0].getName()))
+                .check(doesNotExist());
+        List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
+        assertThat(ingredientTemplates, hasSize(1));
+    }
+
+    @Test
+    public void testDeleteWithMeal() throws Exception {
+        OverviewActivityTest.addExampleMealsIngredientsTags(session);
+        main.launchActivity(null);
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(swipeRight());
+        onView(allOf(withId(R.id.ingredients_item_delete), isDisplayed()))
+                .perform(click());
+
+        onView(withText(R.string.ingredients_remove_ingredient_dialog_title)).check(matches(isDisplayed()));
+        onView(withText(android.R.string.yes)).perform(click());
+        onView(withText(R.string.ingredients_remove_ingredient_dialog_title)).check(doesNotExist());
+        onView(withText(exampleIngredients[0].getName()))
+                .check(doesNotExist());
+        List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
+        assertThat(ingredientTemplates, hasSize(1));
+    }
+
+    @Test
+    public void testEditIngredient() throws Exception {
+        main.launchActivity(null);
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(swipeLeft());
+
+        onView(allOf(withId(R.id.ingredients_item_edit), isDisplayed()))
+                .perform(click());
+        intended(hasComponent(new ComponentName(getTargetContext(), AddIngredientActivity.class)));
+
     }
 }

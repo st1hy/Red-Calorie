@@ -58,6 +58,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -162,10 +163,9 @@ public class OverviewActivityTest {
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_overview));
         assertNoUnverifiedIntents();
-        onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
-        synchronized (this) {
-            wait(200); //Drawer maybe closing
-        }
+        onView(withId(R.id.overview_recycler_view))
+                .check(matches(isDisplayed()))
+                .perform(loopMainThreadForAtLeast(200)); //Drawer may be closing
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
     }
 

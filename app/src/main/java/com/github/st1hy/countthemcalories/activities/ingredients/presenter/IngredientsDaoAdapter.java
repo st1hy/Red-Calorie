@@ -192,6 +192,6 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
 
     @Override
     public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
-
+        view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
     }
 }

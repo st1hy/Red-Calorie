@@ -34,9 +34,10 @@ import rx.Observable;
 
 public class IngredientsActivity extends DrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
-    public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcer";
+    public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcel";
 
     public static final int REQUEST_SELECT_TYPE = 0x127;
+    public static final int REQUEST_EDIT = 0x128;
 
     @Inject
     IngredientsPresenter presenter;
@@ -126,6 +127,15 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
                 .negativeButton(android.R.string.no)
                 .show()
                 .observePositiveClick();
+    }
+
+    @Override
+    public void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel) {
+        Intent intent = new Intent(this, AddIngredientActivity.class);
+        intent.setAction(AddIngredientActivity.ACTION_EDIT);
+        intent.putExtra(AddIngredientActivity.EXTRA_EDIT_REQUEST_ID_LONG, requestID);
+        intent.putExtra(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, ingredientParcel);
+        startActivityForResult(intent, REQUEST_EDIT);
     }
 
     @Override

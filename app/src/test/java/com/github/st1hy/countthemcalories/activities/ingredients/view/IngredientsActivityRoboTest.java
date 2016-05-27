@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,17 +32,20 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowAlertDialog;
 
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -90,9 +94,14 @@ public class IngredientsActivityRoboTest {
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {
         IngredientTemplateDao templateDao = session.getIngredientTemplateDao();
         JointIngredientTagDao jointIngredientTagDao = session.getJointIngredientTagDao();
-        TagsActivityRoboTest.addExampleTags(session);
+
+        session.getMealDao().deleteAll();
+        session.getIngredientDao().deleteAll();
         templateDao.deleteAll();
         jointIngredientTagDao.deleteAll();
+
+        TagsActivityRoboTest.addExampleTags(session);
+
         templateDao.insertInTx(exampleIngredients);
         jointIngredientTagDao.insertInTx(exampleJoins);
         session.clear();
@@ -148,7 +157,6 @@ public class IngredientsActivityRoboTest {
 
     @Test
     public void testSelect() throws Exception {
-        setupActivity();
         activity = Robolectric.buildActivity(IngredientsActivity.class)
                 .withIntent(new Intent(IngredientsActivity.ACTION_SELECT_INGREDIENT))
                 .setup().get();
@@ -163,5 +171,42 @@ public class IngredientsActivityRoboTest {
         assertNotNull(ingredientTemplate);
         assertThat(ingredientTemplate.getId(), equalTo(exampleIngredients[0].getId()));
         assertThat(ingredientTemplate.getName(), equalTo(exampleIngredients[0].getName()));
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        setupActivity();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+    }
+
+    @Test
+    public void testDeleteWithDialog() throws Exception {
+        OverviewActivityRoboTest.addMealsIngredients(session);
+        setupActivity();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+    }
+
+    @Test
+    public void testEdit() throws Exception {
+        setupActivity();
+
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_edit).performClick();
+        Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
+        assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
+        assertThat(nextStartedActivity, hasAction(AddIngredientActivity.ACTION_EDIT));
+        assertThat(nextStartedActivity, hasExtra(equalTo(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL), notNullValue()));
+        IngredientTemplate template = nextStartedActivity.<IngredientTypeParcel>getParcelableExtra(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL)
+                .getWhenReady().getOrNull();
+        assertNotNull(template);
+        assertThat(template.getName(), equalTo(exampleIngredients[0].getName()));
     }
 }

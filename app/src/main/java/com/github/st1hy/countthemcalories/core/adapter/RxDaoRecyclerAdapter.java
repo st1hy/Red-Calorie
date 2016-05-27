@@ -69,7 +69,7 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
                         Timber.v("Search notification: queryText='%s'", text);
                     }
                 })
-                .switchMap(queryDatabaseFiltered())
+                .flatMap(queryDatabaseFiltered())
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable e) {

@@ -38,6 +38,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -109,10 +110,8 @@ public class TagsActivityTest {
         onView(withClassName(Matchers.equalTo(SearchView.class.getName())))
                 .check(matches(isDisplayed()))
                 .perform(click())
-                .perform(typeTextIntoFocusedView("Tag"));
-        synchronized (this) {
-            wait(500); //debounce
-        }
+                .perform(typeTextIntoFocusedView("Tag"))
+                .perform(loopMainThreadForAtLeast(500));//debounce
         onView(withText(exampleTags[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(doesNotExist());

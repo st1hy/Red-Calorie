@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.core.rx.ViewTreeScrollChangedListener;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
 
@@ -45,6 +47,7 @@ public class HorizontalScrollObservable {
     private final View touchOverlay;
     private final Observable<ViewScrollChangeEvent> observable;
     private final Observable<Void> idleObservable;
+    private final Utils utils = new Utils();
 
     private HorizontalScrollObservable(@NonNull View scrollView, @NonNull View touchOverlay) {
         this.scrollView = scrollView;
@@ -125,8 +128,13 @@ public class HorizontalScrollObservable {
 
     @NonNull
     private Observable<ViewScrollChangeEvent> getScrollingObservable() {
-        return RxView.scrollChangeEvents(scrollView)
-                .debounce(50, TimeUnit.MILLISECONDS)
+        Observable<ViewScrollChangeEvent> observable;
+        if (utils.hasMarshmallow()) {
+            observable = RxView.scrollChangeEvents(scrollView);
+        } else {
+            observable = ViewTreeScrollChangedListener.create(scrollView);
+        }
+        return observable.debounce(50, TimeUnit.MILLISECONDS)
                 .doOnNext(setLastScrollEvent());
     }
 
