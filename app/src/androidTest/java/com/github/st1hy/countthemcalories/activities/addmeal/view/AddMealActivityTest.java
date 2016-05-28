@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
@@ -20,7 +19,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -28,7 +26,6 @@ import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matcher;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -77,8 +74,6 @@ public class AddMealActivityTest {
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
 
-    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
-
     @Before
     public void onSetUp() {
         // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
@@ -89,15 +84,8 @@ public class AddMealActivityTest {
         DaoSession session = component.getDaoSession();
         IngredientActivityTest.addExampleIngredientsTagsAndJoin(session);
         session.getIngredientTemplateDao();
-        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
-        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
-    @After
-    public void tearDown() throws Exception {
-        idlingDbProcess.unsubscribe();
-        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
-    }
 
     @Test
     public void testDisplaysTitle() {

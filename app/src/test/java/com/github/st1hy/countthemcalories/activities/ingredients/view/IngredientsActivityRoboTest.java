@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -59,13 +60,15 @@ public class IngredientsActivityRoboTest {
                     getOrZero("20.5")), // kJ / g in database
             new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
                     getOrZero("6.04")), // kJ / ml in database
+            new IngredientTemplate(3L, "Ingredient 23", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+                    getOrZero("7.04")), // kJ / ml in database
     };
     public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[]{
             new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
             new JointIngredientTag(2L, exampleTags[0].getId(), exampleIngredients[1].getId()),
             new JointIngredientTag(3L, exampleTags[1].getId(), exampleIngredients[1].getId()),
     };
-    public static final IngredientTemplate additionalIngredient = new IngredientTemplate(3L, "Ingredient 23",
+    public static final IngredientTemplate additionalIngredient = new IngredientTemplate(4L, "Ingredient 3",
             Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME, getOrZero("2.04"));
 
 
@@ -113,7 +116,7 @@ public class IngredientsActivityRoboTest {
     public void testAddIngredient() throws Exception {
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
         activity.fab.performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
@@ -130,23 +133,23 @@ public class IngredientsActivityRoboTest {
         activity.adapter.onStop();
         activity.adapter.onStart();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
 
     private void addAdditionalIngredientToDatabase() {
         session.insert(additionalIngredient);
-        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
+        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(4));
     }
 
     @Test
     public void testSearch() throws Exception {
         setupActivity();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
 
         activity.searchView.performClick();
         activity.searchView.setQuery("Ingredient 2", true);
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
@@ -154,7 +157,7 @@ public class IngredientsActivityRoboTest {
         activity = Robolectric.buildActivity(IngredientsActivity.class)
                 .withIntent(new Intent(IngredientsActivity.ACTION_SELECT_INGREDIENT))
                 .setup().get();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
         activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button).performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         assertThat(shadowActivity.isFinishing(), equalTo(true));
@@ -171,9 +174,22 @@ public class IngredientsActivityRoboTest {
     public void testDelete() throws Exception {
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        TextView title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+        assertThat(title.getText().toString(), equalTo(exampleIngredients[0].getName()));
+
         activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(2));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+        assertThat(title.getText().toString(), equalTo(exampleIngredients[1].getName()));
+
+        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(1));
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+        Assert.assertThat(title.getText().toString(), equalTo(exampleIngredients[2].getName()));
     }
 
     @Test
@@ -181,18 +197,21 @@ public class IngredientsActivityRoboTest {
         OverviewActivityRoboTest.addMealsIngredients(session);
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
         activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(2));
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testEdit() throws Exception {
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
         activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_edit).performClick();
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));

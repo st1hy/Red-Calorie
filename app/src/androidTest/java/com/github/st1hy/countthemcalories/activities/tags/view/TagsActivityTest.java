@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
@@ -52,7 +51,7 @@ public class TagsActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<TagsActivity> main = new IntentsTestRule<>(TagsActivity.class, true, false);
-    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
+//    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
@@ -61,8 +60,8 @@ public class TagsActivityTest {
     public void setUp() throws Exception {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         addExampleTags(component.getDaoSession());
-        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
-        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
+//        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
+//        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     public static void addExampleTags(@NonNull DaoSession session) {
@@ -74,8 +73,8 @@ public class TagsActivityTest {
 
     @After
     public void tearDown() throws Exception {
-        idlingDbProcess.unsubscribe();
-        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
+//        idlingDbProcess.unsubscribe();
+//        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     @Test

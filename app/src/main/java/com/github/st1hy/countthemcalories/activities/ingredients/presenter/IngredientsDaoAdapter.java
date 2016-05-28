@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -46,6 +47,8 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     final IngredientsModel model;
     final IngredientTypesDatabaseModel databaseModel;
     final Picasso picasso;
+    final ObservableValue<Integer> removedItems = new ObservableValue<>(-1);
+    //TODO Removing item leaves already binded items below with wrong position
 
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
@@ -175,6 +178,8 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
                     }
                 });
     }
+
+
 
     @NonNull
     private Func1<IngredientTemplate, Observable<IngredientTemplate>> showConfirmationIfUsed() {

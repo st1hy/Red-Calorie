@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -27,7 +26,6 @@ import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -78,7 +76,6 @@ public class OverviewActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<OverviewActivity> main = new IntentsTestRule<>(OverviewActivity.class, true, false);
-    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
@@ -88,8 +85,6 @@ public class OverviewActivityTest {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         DaoSession session = component.getDaoSession();
         addExampleMealsIngredientsTags(session);
-        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
-        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
         main.launchActivity(null);
     }
 
@@ -108,12 +103,6 @@ public class OverviewActivityTest {
         assertThat(meals, hasSize(2));
         assertThat(exampleMeals[0].getIngredients(), hasSize(2));
         assertThat(exampleMeals[1].getIngredients(), hasSize(1));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        idlingDbProcess.unsubscribe();
-        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     @Test

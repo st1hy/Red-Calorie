@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.view;
 
 import android.content.ComponentName;
 import android.net.Uri;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -12,7 +11,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
-import com.github.st1hy.countthemcalories.activities.tags.view.DbProcessingIdleResource;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -26,7 +24,6 @@ import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,6 +63,8 @@ public class IngredientActivityTest {
                     getOrZero("20.5")), // kJ / g in database
             new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
                     getOrZero("6.04")), // kJ / ml in database
+            new IngredientTemplate(3L, "Ingredient 23", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+                    getOrZero("7.04")), // kJ / ml in database
     };
     public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[] {
             new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
@@ -75,7 +74,6 @@ public class IngredientActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<IngredientsActivity> main = new IntentsTestRule<>(IngredientsActivity.class, true, false);
-    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
@@ -88,14 +86,6 @@ public class IngredientActivityTest {
         session = component.getDaoSession();
         addExampleIngredientsTagsAndJoin(session);
         session.getIngredientTemplateDao();
-        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
-        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        idlingDbProcess.unsubscribe();
-        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {
@@ -157,7 +147,7 @@ public class IngredientActivityTest {
         onView(withText("New ingredient name")).check(matches(isDisplayed()));
 
         List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
-        assertThat(ingredientTemplates, hasSize(3));
+        assertThat(ingredientTemplates, hasSize(4));
     }
 
     @Test
@@ -171,6 +161,16 @@ public class IngredientActivityTest {
         onView(withText(exampleIngredients[0].getName()))
                 .check(doesNotExist());
         List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
+        assertThat(ingredientTemplates, hasSize(2));
+
+        onView(withText(exampleIngredients[1].getName()))
+                .perform(swipeRight());
+        onView(allOf(withId(R.id.ingredients_item_delete), isDisplayed()))
+                .perform(click());
+
+        onView(withText(exampleIngredients[1].getName()))
+                .check(doesNotExist());
+        ingredientTemplates = session.getIngredientTemplateDao().loadAll();
         assertThat(ingredientTemplates, hasSize(1));
     }
 
@@ -189,7 +189,7 @@ public class IngredientActivityTest {
         onView(withText(exampleIngredients[0].getName()))
                 .check(doesNotExist());
         List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
-        assertThat(ingredientTemplates, hasSize(1));
+        assertThat(ingredientTemplates, hasSize(2));
     }
 
     @Test

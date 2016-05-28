@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.core.rx;
 
 import android.support.annotation.NonNull;
 import android.support.test.espresso.IdlingResource;
