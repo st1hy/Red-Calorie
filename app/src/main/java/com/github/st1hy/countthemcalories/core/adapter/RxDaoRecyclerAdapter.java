@@ -15,6 +15,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -25,6 +27,8 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     final RxDatabaseModel<R> databaseModel;
 
     final CompositeSubscription subscriptions = new CompositeSubscription();
+    //Lazy
+    private Subject<RecyclerEvent, RecyclerEvent> changeEvents;
 
     Cursor cursor;
     Observable<CharSequence> onSearchObservable;
@@ -134,6 +138,14 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     @CallSuper
     protected void addSubscription(@NonNull Subscription subscription) {
         subscriptions.add(subscription);
+    }
+
+    @NonNull
+    protected Subject<RecyclerEvent, RecyclerEvent> getEventSubject() {
+        if (changeEvents == null) {
+            changeEvents = PublishSubject.<RecyclerEvent>create().toSerialized();
+        }
+        return changeEvents;
     }
 
     public class OnCursor extends Subscriber<Cursor> {

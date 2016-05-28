@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.HorizontalScrollObservable;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.jakewharton.rxbinding.internal.Functions;
 import com.jakewharton.rxbinding.view.RxView;
@@ -18,6 +19,7 @@ import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
@@ -74,6 +76,12 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
     @BindView(R.id.ingredients_item_content)
     View content;
     private int position;
+    private final Action1<RecyclerEvent> eventListener = new Action1<RecyclerEvent>() {
+        @Override
+        public void call(RecyclerEvent event) {
+            onRecyclerEvent(event);
+        }
+    };
 
     public IngredientItemViewHolder(@NonNull View itemView,
                                     @NonNull Callback interaction) {
@@ -83,11 +91,11 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
         scrollingObservable = HorizontalScrollObservable.create(scrollView);
     }
 
-
     @NonNull
     public IngredientTemplate getReusableIngredient() {
         return reusableIngredient;
     }
+
 
     public void setName(@NonNull String name) {
         this.name.setText(name);
@@ -134,6 +142,8 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
         subscriptions.add(scrollingObservable.getIdleObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(scrollToContent));
+        subscriptions.add(callback.getEvents()
+                .subscribe(eventListener));
     }
 
     public void onDetached() {
@@ -172,10 +182,30 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
         this.position = position;
     }
 
+    private void onRecyclerEvent(@NonNull RecyclerEvent event) {
+        switch (event.getType()) {
+            case ADDED:
+                if (event.getPosition() <= position) {
+                    position++;
+                }
+                break;
+            case REMOVED:
+                if (event.getPosition() <= position) {
+                    position--;
+                }
+                break;
+        }
+    }
+
     public interface Callback {
         void onIngredientClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+
         void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+
         void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+
+        @NonNull
+        Observable<RecyclerEvent> getEvents();
     }
 
 }

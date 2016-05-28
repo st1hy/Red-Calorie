@@ -16,9 +16,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.ObservableValue;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -47,8 +47,6 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
     final IngredientsModel model;
     final IngredientTypesDatabaseModel databaseModel;
     final Picasso picasso;
-    final ObservableValue<Integer> removedItems = new ObservableValue<>(-1);
-    //TODO Removing item leaves already binded items below with wrong position
 
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
@@ -163,23 +161,21 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
         databaseModel.getById(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(showConfirmationIfUsed())
-                .flatMap(new Func1<IngredientTemplate, Observable<Cursor>>() {
-                    @Override
-                    public Observable<Cursor> call(IngredientTemplate ingredientTemplate) {
-                        return databaseModel.removeAndRefresh(ingredientTemplate);
-                    }
-                })
+                .flatMap(deleteItem())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Cursor>() {
-                    @Override
-                    public void call(Cursor cursor) {
-                        onCursorUpdate(cursor);
-                        notifyItemRemoved(position);
-                    }
-                });
+                .subscribe(onItemRemoved(position));
     }
 
+    @Override
+    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
+        view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
+    }
 
+    @NonNull
+    @Override
+    public Observable<RecyclerEvent> getEvents() {
+        return getEventSubject();
+    }
 
     @NonNull
     private Func1<IngredientTemplate, Observable<IngredientTemplate>> showConfirmationIfUsed() {
@@ -195,8 +191,25 @@ public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHo
         };
     }
 
-    @Override
-    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
-        view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
+    @NonNull
+    private Func1<IngredientTemplate, Observable<Cursor>> deleteItem() {
+        return new Func1<IngredientTemplate, Observable<Cursor>>() {
+            @Override
+            public Observable<Cursor> call(IngredientTemplate ingredientTemplate) {
+                return databaseModel.removeAndRefresh(ingredientTemplate);
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<Cursor> onItemRemoved(final int position) {
+        return new Action1<Cursor>() {
+            @Override
+            public void call(Cursor cursor) {
+                onCursorUpdate(cursor);
+                getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
+                notifyItemRemoved(position);
+            }
+        };
     }
 }
