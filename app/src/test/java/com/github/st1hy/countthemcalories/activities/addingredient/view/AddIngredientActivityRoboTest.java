@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
@@ -50,6 +51,7 @@ import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -71,7 +73,6 @@ public class AddIngredientActivityRoboTest {
         prepareDb();
         activity = Robolectric.setupActivity(AddIngredientActivity.class);
     }
-
 
     private void prepareDb() {
         TagDao tagDao = daoSession.getTagDao();
@@ -201,4 +202,36 @@ public class AddIngredientActivityRoboTest {
         assertThat(tags.get(1).getTag().getName(), equalTo(tag1.getName()));
     }
 
+    @Test
+    public void testNameError() throws Exception {
+        assertThat(activity.name.getError(), nullValue());
+
+        activity.name.setText("");
+        activity.energyDensityValue.setText("12");
+
+        assertThat(activity.name.getError().toString(), equalTo(activity.getString(
+                AddIngredientModel.IngredientTypeCreateError.NO_NAME.getErrorResId()
+        )));
+        assertTrue(activity.name.hasFocus());
+        assertThat(shadowOf(activity).isFinishing(), equalTo(false));
+    }
+
+    @Test
+    public void testValueError() throws Exception {
+        assertThat(activity.energyDensityValue.getError(), nullValue());
+
+        activity.name.setText("Name");
+        activity.energyDensityValue.setText("0000");
+
+        assertThat(activity.energyDensityValue.getError().toString(), equalTo(activity.getString(
+                AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE.getErrorResId()
+        )));
+        assertTrue(activity.energyDensityValue.hasFocus());
+        assertThat(shadowOf(activity).isFinishing(), equalTo(false));
+    }
+
+    @Test
+    public void testGetImageView() throws Exception {
+        assertThat(activity.getImageView(), equalTo(activity.ingredientImage));
+    }
 }
