@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.model;
 
 import android.os.Bundle;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy;
@@ -9,33 +10,41 @@ import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.util.Arrays;
 
 import static com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy.CREATOR;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
-public class IngredientTagsProxyTest {
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+public class IngredientTagsTest {
 
+    @Mock
     TagsModel tagsModel;
     IngredientTagsModel model;
 
     @Before
     public void setUp() throws Exception {
-        tagsModel = Mockito.mock(TagsModel.class);
+        MockitoAnnotations.initMocks(this);
 
         model = new IngredientTagsModel(tagsModel, null);
 
@@ -96,5 +105,69 @@ public class IngredientTagsProxyTest {
         MatcherAssert.assertThat(model.parcelableProxy.describeContents(), Matchers.equalTo(0));
         assertThat(IngredientTagsModel.ParcelableProxy.CREATOR.newArray(4),
                 allOf(instanceOf(IngredientTagsModel.ParcelableProxy[].class), arrayWithSize(4)));
+    }
+
+
+    @Test
+    public void testGetTag() throws Exception {
+        assertThat(model.getTagAt(0), hasName("Tag 1"));
+        assertThat(model.getTagAt(1), hasName("Tag 2"));
+    }
+
+    @Test
+    public void testGetSize() throws Exception {
+        assertThat(model.getSize(), equalTo(2));
+    }
+
+    @Test
+    public void testReplaceTags() throws Exception {
+        model.replaceTags(Arrays.asList(new Tag(1L, "Tag replace 1"), new Tag(223L, "Tag replace 2")));
+        assertThat(model.getSize(), equalTo(2));
+        assertThat(model.getTagAt(0), hasValues(1L, "Tag replace 1"));
+        assertThat(model.getTagAt(1), hasValues(223L, "Tag replace 2"));
+    }
+
+    @Test
+    public void testRemove() throws Exception {
+        model.remove(model.getTagAt(0));
+        assertThat(model.getSize(), equalTo(1));
+        assertThat(model.getTagAt(0), hasName("Tag 2"));
+    }
+
+    @Test
+    public void testGetTagIds() throws Exception {
+        assertThat(model.getTagIds(), hasSize(2));
+        assertThat(model.getTagIds(), contains(1L, 2L));
+    }
+
+    @NonNull
+    private static Matcher<Tag> hasName(@NonNull final String name) {
+        return new TypeSafeMatcher<Tag>() {
+            @Override
+            protected boolean matchesSafely(Tag item) {
+                return name.equals(item.getName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has name: " + name);
+            }
+        };
+    }
+
+
+    @NonNull
+    private static Matcher<Tag> hasValues(@NonNull final Long id, @NonNull final String name) {
+        return new TypeSafeMatcher<Tag>() {
+            @Override
+            protected boolean matchesSafely(Tag item) {
+                return item.getId().equals(id) && name.equals(item.getName());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has id: " + id + " and has name: " + name);
+            }
+        };
     }
 }

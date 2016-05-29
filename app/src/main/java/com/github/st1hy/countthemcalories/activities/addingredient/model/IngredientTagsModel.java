@@ -48,6 +48,12 @@ public class IngredientTagsModel {
         return tags.size() - 1;
     }
 
+    //Called only when loading tags from existing Ingredient
+    void replaceTags(@NonNull Collection<Tag> tags) {
+        this.tags.clear();
+        this.tags.addAll(tags);
+    }
+
     public void remove(@NonNull Tag tag) {
         tags.remove(tag);
     }
@@ -62,7 +68,7 @@ public class IngredientTagsModel {
     }
 
     @NonNull
-    private Function<Tag, Long> tagsToLongs() {
+    static Function<Tag, Long> tagsToLongs() {
         return new Function<Tag, Long>() {
             @Nullable
             @Override

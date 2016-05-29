@@ -185,13 +185,15 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
     private void onRecyclerEvent(@NonNull RecyclerEvent event) {
         switch (event.getType()) {
             case ADDED:
-                if (event.getPosition() <= position) {
+                if (position >= event.getPosition()) {
                     position++;
+//                    Timber.w("Changed %s to position %d", getReusableIngredient().getName(), position);
                 }
                 break;
             case REMOVED:
-                if (event.getPosition() <= position) {
+                if (position > event.getPosition()) {
                     position--;
+//                    Timber.w("Changed %s to position %d", getReusableIngredient().getName(), position);
                 }
                 break;
         }

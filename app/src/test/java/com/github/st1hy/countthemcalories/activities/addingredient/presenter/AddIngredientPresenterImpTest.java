@@ -54,10 +54,10 @@ public class AddIngredientPresenterImpTest {
     @Test
     public void testSave() {
         List<IngredientTypeCreateError> errors = Collections.emptyList();
-        when(model.insertIntoDatabase()).thenReturn(Observable.just(errors));
+        when(model.saveIntoDatabase()).thenReturn(Observable.just(errors));
         presenter.onClickedOnAction(R.id.action_save);
 
-        verify(model).insertIntoDatabase();
+        verify(model).saveIntoDatabase();
         verify(view).setResultAndFinish();
     }
 
@@ -83,9 +83,11 @@ public class AddIngredientPresenterImpTest {
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name"));
         when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just(""));
         when(model.canCreateIngredient("Name", "")).thenReturn(Collections.singletonList(NO_VALUE));
+        when(model.getLoading()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
 
+        verify(model).getLoading();
         verify(model).getName();
         verify(model).getEnergyValue();
         verify(model).getImageUri();

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -15,6 +16,8 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +43,12 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 return session().getIngredientTemplateDao();
             }
         });
+    }
+
+    @NonNull
+    public Observable<Void> update(@NonNull final IngredientTemplate ingredientTemplate,
+                                   @NonNull final Collection<Long> tagIds) {
+        return fromDatabaseTask(updateCall(ingredientTemplate, tagIds));
     }
 
     @NonNull
@@ -77,30 +86,47 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
         return data;
     }
 
-
     @NonNull
     public Observable<Void> addNew(@NonNull final IngredientTemplate data,
-                                               @NonNull final Collection<Long> tagIds) {
+                                   @NonNull final Collection<Long> tagIds) {
         return fromDatabaseTask(insertNewCall(data, tagIds));
+    }
+
+
+    @NonNull
+    private Callable<Void> updateCall(@NonNull final IngredientTemplate ingredientTemplate, @NonNull final Collection<Long> tagIds) {
+        return new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                List<JointIngredientTag> jTags = ingredientTemplate.getTags();
+                for (JointIngredientTag jTag : jTags) {
+                    if (!tagIds.contains(jTag.getTagId())) {
+                        jTag.delete();
+                    }
+                }
+                Collection<Long> currentTagIds = Collections2.transform(jTags, intoTagIds());
+                for (Long tagId : tagIds) {
+                    if (!currentTagIds.contains(tagId)) {
+                        addJointTagWithIngredientTemplate(ingredientTemplate, tagId);
+                    }
+                }
+                dao().update(ingredientTemplate);
+                ingredientTemplate.resetTags();
+                ingredientTemplate.getTags();
+                return null;
+            }
+        };
     }
 
     @NonNull
     private Callable<Void> insertNewCall(@NonNull final IngredientTemplate data,
-                                                  @NonNull final Collection<Long> tagIds) {
+                                         @NonNull final Collection<Long> tagIds) {
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
                 IngredientTemplate template = performInsert(data);
-                JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
-                TagDao tagDao = session().getTagDao();
                 for (Long tagId : tagIds) {
-                    Tag tag = tagDao.load(tagId);
-                    JointIngredientTag join = new JointIngredientTag(null);
-                    join.setTag(tag);
-                    join.setIngredientType(template);
-                    jointDao.insert(join);
-                    tag.resetIngredientTypes();
-                    tag.getIngredientTypes();
+                    addJointTagWithIngredientTemplate(template, tagId);
                 }
                 template.refresh();
                 template.resetTags();
@@ -108,6 +134,19 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 return null;
             }
         };
+    }
+
+    private void addJointTagWithIngredientTemplate(@NonNull IngredientTemplate template,
+                                                   @NonNull Long tagId) {
+        JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
+        TagDao tagDao = session().getTagDao();
+        Tag tag = tagDao.load(tagId);
+        JointIngredientTag join = new JointIngredientTag(null);
+        join.setTag(tag);
+        join.setIngredientType(template);
+        jointDao.insert(join);
+        tag.resetIngredientTypes();
+        tag.getIngredientTypes();
     }
 
     @Override
@@ -165,5 +204,16 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
     @Override
     protected long getKey(IngredientTemplate ingredientTemplate) {
         return ingredientTemplate.getId();
+    }
+
+    @NonNull
+    private static Function<JointIngredientTag, Long> intoTagIds() {
+        return new Function<JointIngredientTag, Long>() {
+            @Nullable
+            @Override
+            public Long apply(JointIngredientTag jTag) {
+                return jTag.getTagId();
+            }
+        };
     }
 }

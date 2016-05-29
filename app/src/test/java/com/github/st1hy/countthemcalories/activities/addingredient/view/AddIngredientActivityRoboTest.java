@@ -56,9 +56,9 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddIngredientActivityRoboTest {
-    public static Tag[] exampleTags = new Tag[] {new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
+    public static Tag[] exampleTags = new Tag[]{new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
 
     private AddIngredientActivity activity;
     private DaoSession daoSession;

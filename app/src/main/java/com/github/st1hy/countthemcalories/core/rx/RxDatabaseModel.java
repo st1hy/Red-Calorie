@@ -46,6 +46,11 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
+    public Observable<Void> update(T dao) {
+        return fromDatabaseTask(updateCall(dao));
+    }
+
+    @NonNull
     public Observable<List<T>> getById(long id, long... ids) {
         return fromDatabaseTask(fromId(id, ids));
     }
@@ -359,6 +364,17 @@ public abstract class RxDatabaseModel<T> {
             @Override
             public void call() {
                 dbProcessingValue.setValue(DbProcessing.STARTED);
+            }
+        };
+    }
+
+    @NonNull
+    private Callable<Void> updateCall(final T dao) {
+        return new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                session().update(dao);
+                return null;
             }
         };
     }

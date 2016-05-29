@@ -42,6 +42,16 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     @Override
     public void onStart() {
+        subscriptions.add(model.getLoading()
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        onIngredientModelReady();
+                    }
+                }));
+    }
+
+    private void onIngredientModelReady() {
         Uri imageUri = model.getImageUri();
         if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
         view.setName(model.getName());
@@ -99,7 +109,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     private void onSaveClicked() {
-        model.insertIntoDatabase()
+        model.saveIntoDatabase()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onAddedIngredientToDatabase());
 
