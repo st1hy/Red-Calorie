@@ -17,7 +17,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewh
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
-import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -35,7 +35,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class IngredientsDaoAdapter extends RxDaoRecyclerAdapter<IngredientViewHolder, IngredientTemplate>
+public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHolder, IngredientTemplate>
         implements IngredientItemViewHolder.Callback {
     static final int bottomSpaceItem = 1;
     @LayoutRes

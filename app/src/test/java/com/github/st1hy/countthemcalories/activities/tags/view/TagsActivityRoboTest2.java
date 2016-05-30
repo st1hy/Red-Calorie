@@ -24,11 +24,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 @LargeTest
 public class TagsActivityRoboTest2 {
 
-    private  TagsActivity activity;
+    private TagsActivity activity;
 
     @Before
     public void setup() throws Exception {
@@ -38,7 +38,7 @@ public class TagsActivityRoboTest2 {
         TagsActivityRoboTest.addExampleTags(OverviewActivityRoboTest.prepareDatabase());
 
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
-        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[] { TagsActivityRoboTest.exampleTags[0].getId()});
+        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[]{TagsActivityRoboTest.exampleTags[0].getId()});
         activity = Robolectric.buildActivity(TagsActivity.class)
                 .withIntent(intent)
                 .setup()

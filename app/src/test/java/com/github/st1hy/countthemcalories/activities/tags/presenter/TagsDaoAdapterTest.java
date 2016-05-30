@@ -6,8 +6,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -17,7 +18,9 @@ import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -37,24 +40,31 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class TagsDaoAdapterTest {
 
+    @Mock
     private TagsView view;
-    private TagsModel model;
+    @Mock
+    private RxTagsDatabaseModel model;
+    @Mock
     private TagsActivityModel activityModel;
-    private TagsDaoAdapter presenter;
+    @Mock
     private Cursor cursor;
+    @Mock
+    private TagsViewModel viewModel;
+
+    private TagsDaoAdapter presenter;
 
     @Before
     public void setUp() {
-        cursor = Mockito.mock(Cursor.class);
-        view = Mockito.mock(TagsView.class);
-        model = Mockito.mock(TagsModel.class);
-        activityModel = Mockito.mock(TagsActivityModel.class);
-        presenter = new TestTagsPresenter(view, model, activityModel);
+        MockitoAnnotations.initMocks(this);
+        presenter = new TestTagsPresenter(view, model, activityModel, viewModel);
     }
 
     class TestTagsPresenter extends TagsDaoAdapter {
-        public TestTagsPresenter(@NonNull TagsView view, @NonNull TagsModel model, @NonNull TagsActivityModel activityModel) {
-            super(view, model, activityModel);
+        public TestTagsPresenter(@NonNull TagsView view,
+                                 @NonNull RxTagsDatabaseModel model,
+                                 @NonNull TagsActivityModel activityModel,
+                                 @NonNull TagsViewModel viewModel) {
+            super(view, model, activityModel, viewModel, commands);
         }
 
         @Override
@@ -85,7 +95,7 @@ public class TagsDaoAdapterTest {
 
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
-        verify(model).getNewTagDialogTitle();
+        verify(viewModel).getNewTagDialogTitle();
         verify(view).showEditTextDialog(anyInt());
         verify(model).addNewAndRefresh(any(Tag.class));
         verify(cursor).getPosition();

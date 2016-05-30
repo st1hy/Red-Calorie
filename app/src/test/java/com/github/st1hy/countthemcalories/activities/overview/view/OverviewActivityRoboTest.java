@@ -15,7 +15,7 @@ import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActiv
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 import com.github.st1hy.countthemcalories.application.inject.DbModelsModule;
-import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.core.inject.DaggerApplicationTestComponent;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -77,7 +77,7 @@ public class OverviewActivityRoboTest {
     @Before
     public void setup() {
         Timber.plant(TimberUtils.ABOVE_WARN);
-        RxDaoRecyclerAdapter.debounceTime = 0;
+        RxDaoSearchAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
 
         session = prepareDatabase();
@@ -116,7 +116,7 @@ public class OverviewActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uprootAll();
         TestRxPlugins.reset();
-        RxDaoRecyclerAdapter.debounceTime = 250;
+        RxDaoSearchAdapter.debounceTime = 250;
     }
 
     @Test

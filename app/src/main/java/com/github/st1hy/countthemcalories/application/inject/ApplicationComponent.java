@@ -6,7 +6,7 @@ import android.content.Context;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.squareup.picasso.Picasso;
@@ -29,7 +29,7 @@ public interface ApplicationComponent {
 
     SettingsModel getSettingsModel();
 
-    TagsModel getTagsModel();
+    RxTagsDatabaseModel getTagsModel();
 
     IngredientTypesDatabaseModel getIngredientTypesModel();
 

@@ -13,7 +13,8 @@ import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -28,9 +29,11 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
-public class RxDaoRecyclerAdapterTest {
+public class RxDaoSearchAdapterTest {
 
+    @Mock
     RxDatabaseModel<Void> model;
+    @Mock
     Cursor cursor;
 
     TestAdapter adapter;
@@ -38,8 +41,7 @@ public class RxDaoRecyclerAdapterTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        model = Mockito.mock(RxDatabaseModel.class);
-        cursor = Mockito.mock(Cursor.class);
+        MockitoAnnotations.initMocks(this);
         adapter = new TestAdapter(model);
         RecyclerView view = new RecyclerView(RuntimeEnvironment.application);
         view.setAdapter(adapter);
@@ -69,7 +71,7 @@ public class RxDaoRecyclerAdapterTest {
         }
     }
 
-    public static class TestAdapter extends RxDaoRecyclerAdapter<TestViewHolder, Void> {
+    public static class TestAdapter extends RxDaoSearchAdapter<TestViewHolder, Void> {
 
         public TestAdapter(@NonNull RxDatabaseModel<Void> databaseModel) {
             super(databaseModel);

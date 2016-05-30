@@ -2,9 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -28,11 +26,12 @@ import de.greenrobot.dao.query.QueryBuilder;
 import de.greenrobot.dao.query.WhereCondition;
 import rx.Observable;
 
-public class TagsModel extends RxDatabaseModel<Tag> {
+
+public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     private final Lazy<TagDao> dao;
     private List<Long> lastExcluded = Collections.emptyList();
 
-    public TagsModel(@NonNull Lazy<DaoSession> lazySession) {
+    public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
         super(lazySession);
         this.dao = DoubleCheckLazy.create(new Provider<TagDao>() {
             @Override
@@ -119,15 +118,9 @@ public class TagsModel extends RxDatabaseModel<Tag> {
         return tag.getId();
     }
 
-    @StringRes
-    public int getNewTagDialogTitle() {
-        return R.string.tags_new_tag_dialog;
-    }
-
     private TagDao dao() {
         return dao.get();
     }
-
 
     @NonNull
     private Callable<Cursor> filteredExclude(@NonNull final String partOfName,

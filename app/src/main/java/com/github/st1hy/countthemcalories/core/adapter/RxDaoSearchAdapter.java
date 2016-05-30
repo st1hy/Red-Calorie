@@ -5,8 +5,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
-
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -20,11 +18,11 @@ import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R> extends RecyclerView.Adapter<T>
+public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> extends RecyclerView.Adapter<T>
         implements DaoRecyclerAdapter {
 
     public static int debounceTime = 250;
-    final RxDatabaseModel<R> databaseModel;
+    final SearchableDatabase db;
 
     final CompositeSubscription subscriptions = new CompositeSubscription();
     //Lazy
@@ -33,8 +31,8 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     Cursor cursor;
     Observable<CharSequence> onSearchObservable;
 
-    public RxDaoRecyclerAdapter(@NonNull RxDatabaseModel<R> databaseModel) {
-        this.databaseModel = databaseModel;
+    public RxDaoSearchAdapter(@NonNull SearchableDatabase db) {
+        this.db = db;
     }
 
     @Override
@@ -99,7 +97,7 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
     @CallSuper
     protected void onCursorUpdate(@NonNull Cursor cursor) {
         closeCursor(false);
-        RxDaoRecyclerAdapter.this.cursor = cursor;
+        RxDaoSearchAdapter.this.cursor = cursor;
     }
 
     @NonNull
@@ -114,7 +112,7 @@ public abstract class RxDaoRecyclerAdapter<T extends RecyclerView.ViewHolder, R>
 
     @NonNull
     protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
-        return databaseModel.getAllFiltered(filter);
+        return db.getAllFiltered(filter);
     }
 
     private void closeCursor(boolean notify) {

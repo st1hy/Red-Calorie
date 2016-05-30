@@ -7,14 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
-import com.github.st1hy.countthemcalories.core.adapter.RxDaoRecyclerAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Strings;
@@ -29,7 +31,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
+public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag>
         implements OnTagInteraction {
 
     static final int bottomSpaceItem = 1;
@@ -37,19 +39,24 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
     static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
 
     final TagsView view;
-    final TagsModel model;
+//    final RxTagsDatabaseModel databaseModel;
     final TagsActivityModel activityModel;
+    final TagsViewModel viewModel;
+    final TagsDatabaseCommands commands;
 
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
-                          @NonNull TagsModel model,
-                          @NonNull TagsActivityModel activityModel) {
-        super(model);
+                          @NonNull RxTagsDatabaseModel databaseModel,
+                          @NonNull TagsActivityModel activityModel,
+                          @NonNull TagsViewModel viewModel,
+                          @NonNull TagsDatabaseCommands commands) {
+        super(databaseModel);
         this.view = view;
-        this.model = model;
+        this.databaseModel = databaseModel;
         this.activityModel = activityModel;
+        this.viewModel = viewModel;
+        this.commands = commands;
     }
-
 
     @Override
     public void onStart() {
@@ -88,7 +95,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
         if (cursor != null) {
             cursor.moveToPosition(position);
             Tag tag = holder.getReusableTag();
-            model.performReadEntity(cursor, tag);
+            databaseModel.performReadEntity(cursor, tag);
             holder.bind(position, tag);
         } else {
             Timber.w("Cursor closed duding binding views.");
@@ -114,7 +121,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
                         .flatMap(new Func1<Void, Observable<Cursor>>() {
                             @Override
                             public Observable<Cursor> call(Void aVoid) {
-                                return model.removeAndRefresh(tag.getId());
+                                return databaseModel.removeAndRefresh(tag.getId());
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -135,7 +142,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
         if (excludedIds.isEmpty())
             return super.getAllWithFilter(filter);
         else
-            return model.getAllFiltered(filter, excludedIds);
+            return databaseModel.getAllFiltered(filter, excludedIds);
     }
 
     @Override
@@ -176,7 +183,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
         return new Func1<String, Observable<Cursor>>() {
             @Override
             public Observable<Cursor> call(String tagName) {
-                return model.addNewAndRefresh(new Tag(null, tagName));
+                return databaseModel.addNewAndRefresh(new Tag(null, tagName));
             }
         };
     }
@@ -186,7 +193,7 @@ public class TagsDaoAdapter extends RxDaoRecyclerAdapter<TagViewHolder, Tag>
         return new Func1<Void, Observable<String>>() {
             @Override
             public Observable<String> call(Void aVoid) {
-                return view.showEditTextDialog(model.getNewTagDialogTitle());
+                return view.showEditTextDialog(viewModel.getNewTagDialogTitle());
             }
         };
     }

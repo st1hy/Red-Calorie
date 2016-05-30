@@ -3,24 +3,20 @@ package com.github.st1hy.countthemcalories.core.rx;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.core.event.DbProcessing;
+import com.github.st1hy.countthemcalories.core.adapter.SearchableDatabase;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import dagger.Lazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
-import rx.functions.Action0;
 import timber.log.Timber;
 
-public abstract class RxDatabaseModel<T> {
+public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     private final Lazy<DaoSession> session;
-    private final ObservableValue<DbProcessing> dbProcessingValue = new ObservableValue<>(DbProcessing.NOT_STARTED);
     private CursorQuery allSortedByNameQuery;
     private CursorQuery filteredSortedByNameQuery;
     protected String lastFilter = "";
@@ -29,50 +25,20 @@ public abstract class RxDatabaseModel<T> {
         this.session = session;
     }
 
-
     /**
      * Reads tag entity which is NOT cached or attached to dao into output
      */
     public abstract void performReadEntity(@NonNull Cursor cursor, @NonNull T output);
 
     @NonNull
-    public Observable<DbProcessing> getDbProcessingObservable() {
-        return dbProcessingValue.asObservable();
-    }
-
-    @NonNull
     public Observable<T> getById(long id) {
         return fromDatabaseTask(fromId(id));
     }
 
-    @NonNull
-    public Observable<Void> update(T dao) {
-        return fromDatabaseTask(updateCall(dao));
-    }
-
-    @NonNull
-    public Observable<List<T>> getById(long id, long... ids) {
-        return fromDatabaseTask(fromId(id, ids));
-    }
-
-    @NonNull
-    public Observable<T> getFromCursor(@NonNull Cursor cursor, int position) {
-        return fromDatabaseTask(fromCursor(cursor, position));
-    }
-
-    @NonNull
-    public Observable<Cursor> getAllObservable() {
-        return fromDatabaseTask(loadAll());
-    }
 
     @NonNull
     public Observable<Cursor> getAllFiltered(@NonNull String partOfName) {
         return fromDatabaseTask(filtered(partOfName));
-    }
-
-    @NonNull
-    public Observable<Void> addNew(@NonNull T data) {
-        return fromDatabaseTask(addNewCall(data));
     }
 
     /**
@@ -120,7 +86,6 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     protected abstract CursorQuery filteredSortedByNameQuery();
 
-
     protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
 
     @NonNull
@@ -136,9 +101,7 @@ public abstract class RxDatabaseModel<T> {
     @NonNull
     protected <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
         return Observable.fromCallable(callInTx(task))
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(onStarted())
-                .doOnTerminate(onFinished());
+                .subscribeOn(Schedulers.io());
     }
 
     @NonNull
@@ -147,18 +110,6 @@ public abstract class RxDatabaseModel<T> {
             @Override
             public R call() throws Exception {
                 return session().callInTx(task);
-            }
-        };
-    }
-
-    @NonNull
-    private Callable<T> fromCursor(@NonNull final Cursor cursor, final int position) {
-        return new Callable<T>() {
-            @Override
-            public T call() throws Exception {
-                cursor.moveToPosition(position);
-                long id = readKey(cursor, getKeyColumn(cursor));
-                return performGetById(id);
             }
         };
     }
@@ -174,40 +125,8 @@ public abstract class RxDatabaseModel<T> {
     }
 
     @NonNull
-    private Callable<List<T>> fromId(final long id, final long... ids) {
-        return new Callable<List<T>>() {
-            @Override
-            public List<T> call() throws Exception {
-                List<T> list = new ArrayList<>(ids.length + 1);
-                list.add(performGetById(id));
-                for (long i : ids) {
-                    list.add(performGetById(i));
-                }
-                return list;
-            }
-        };
-    }
-
-    @NonNull
-    private Callable<Cursor> loadAll() {
-        return filtered("");
-    }
-
-
-    @NonNull
     private Callable<Cursor> filtered(@NonNull final String partOfName) {
         return query(getQueryOf(partOfName));
-    }
-
-    @NonNull
-    private Callable<Void> addNewCall(@NonNull final T data) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                performRemove(data);
-                return null;
-            }
-        };
     }
 
     @NonNull
@@ -348,34 +267,4 @@ public abstract class RxDatabaseModel<T> {
         return filteredSortedByNameQuery;
     }
 
-    @NonNull
-    private Action0 onFinished() {
-        return new Action0() {
-            @Override
-            public void call() {
-                dbProcessingValue.setValue(DbProcessing.FINISHED);
-            }
-        };
-    }
-
-    @NonNull
-    private Action0 onStarted() {
-        return new Action0() {
-            @Override
-            public void call() {
-                dbProcessingValue.setValue(DbProcessing.STARTED);
-            }
-        };
-    }
-
-    @NonNull
-    private Callable<Void> updateCall(final T dao) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                session().update(dao);
-                return null;
-            }
-        };
-    }
 }

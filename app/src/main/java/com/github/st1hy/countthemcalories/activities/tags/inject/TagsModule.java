@@ -3,8 +3,8 @@ package com.github.st1hy.countthemcalories.activities.tags.inject;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenterImpl;
@@ -45,8 +45,8 @@ public class TagsModule {
 
     @Provides
     @PerActivity
-    public TagsDaoAdapter providePresentedAdapter(TagsView view, TagsModel model, TagsActivityModel activityModel) {
-        return new TagsDaoAdapter(view, model, activityModel);
+    public TagsDaoAdapter providePresentedAdapter(TagsView view, RxTagsDatabaseModel model, TagsActivityModel activityModel) {
+        return new TagsDaoAdapter(view, model, activityModel, viewModel, commands);
     }
 
     @Provides

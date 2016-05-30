@@ -42,16 +42,16 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 @LargeTest
 public class TagsActivityRoboTest {
-    public static final Tag[] exampleTags = new Tag[] {
+    public static final Tag[] exampleTags = new Tag[]{
             new Tag(1L, "Tag 1"),
             new Tag(2L, "Tag 2"),
             new Tag(3L, "Meal")
     };
 
-    private  TagsActivity activity;
+    private TagsActivity activity;
 
     @Before
     public void setup() throws Exception {

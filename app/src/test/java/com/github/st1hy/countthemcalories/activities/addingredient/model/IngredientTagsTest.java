@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -39,14 +39,14 @@ import static org.junit.Assert.assertThat;
 public class IngredientTagsTest {
 
     @Mock
-    TagsModel tagsModel;
+    RxTagsDatabaseModel rxTagsDatabaseModel;
     IngredientTagsModel model;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        model = new IngredientTagsModel(tagsModel, null);
+        model = new IngredientTagsModel(rxTagsDatabaseModel, null);
 
         model.addTag(1L, "Tag 1");
         model.addTag(2L, "Tag 2");
@@ -58,7 +58,7 @@ public class IngredientTagsTest {
 
         model.onSaveState(bundle);
 
-        IngredientTagsModel restoredModel = new IngredientTagsModel(tagsModel, bundle);
+        IngredientTagsModel restoredModel = new IngredientTagsModel(rxTagsDatabaseModel, bundle);
 
         assertThat(restoredModel.tags, hasSize(2));
         Tag tag0 = restoredModel.tags.get(0);

@@ -11,7 +11,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.presenter.Add
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
@@ -62,8 +61,8 @@ public class AddIngredientModule {
 
     @Provides
     @PerActivity
-    public IngredientTagsModel provideIngredientTagModel(TagsModel tagsModel, @Nullable Bundle savedState) {
-        return new IngredientTagsModel(tagsModel, savedState);
+    public IngredientTagsModel provideIngredientTagModel(@Nullable Bundle savedState) {
+        return new IngredientTagsModel(savedState);
     }
 
     @Provides

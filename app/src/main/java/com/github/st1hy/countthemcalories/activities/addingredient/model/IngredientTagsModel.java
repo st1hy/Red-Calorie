@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsModel;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -15,12 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class IngredientTagsModel {
-    final TagsModel tagsModel;
     final ArrayList<Tag> tags;
     final ParcelableProxy parcelableProxy;
 
-    public IngredientTagsModel(@NonNull TagsModel tagsModel, @Nullable Bundle savedState) {
-        this.tagsModel = tagsModel;
+    public IngredientTagsModel(@Nullable Bundle savedState) {
         ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
