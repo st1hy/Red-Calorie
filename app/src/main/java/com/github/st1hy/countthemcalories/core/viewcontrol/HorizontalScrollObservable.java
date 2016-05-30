@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
+package com.github.st1hy.countthemcalories.core.viewcontrol;
 
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;

@@ -42,7 +42,10 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerActions.open;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -53,11 +56,13 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasSize;
 
 
@@ -68,7 +73,7 @@ public class OverviewActivityTest {
             new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now()),
             new Meal(2L, "Meal 2", Uri.EMPTY, DateTime.now()),
     };
-    public static final Ingredient[] exampleIngredients = new Ingredient[] {
+    public static final Ingredient[] exampleIngredients = new Ingredient[]{
             new Ingredient(1L, new BigDecimal("30"), exampleMeals[0].getId(), IngredientActivityTest.exampleIngredients[0].getId()),
             new Ingredient(2L, new BigDecimal("20"), exampleMeals[0].getId(), IngredientActivityTest.exampleIngredients[1].getId()),
             new Ingredient(3L, new BigDecimal("70"), exampleMeals[1].getId(), IngredientActivityTest.exampleIngredients[1].getId()),
@@ -213,7 +218,23 @@ public class OverviewActivityTest {
         intended(hasComponent(new ComponentName(getTargetContext(), MealDetailActivity.class)));
         onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()));
         onView(withId(R.id.overview_extended_edit)).perform(click());
+        checkEditActivity();
+    }
+
+    @Test
+    public void testEditWithScroll() throws Exception {
+        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+                .check(matches(isDisplayed()))
+                .perform(swipeLeft());
+
+        onView(allOf(withId(R.id.overview_item_edit), isDisplayed())).perform(click());
+
+        checkEditActivity();
+    }
+
+    private void checkEditActivity() {
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
+
         onView(withText(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()))
                 .perform(clearText());
@@ -222,5 +243,18 @@ public class OverviewActivityTest {
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testDeleteSwipe() throws Exception {
+        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+                .check(matches(isDisplayed()))
+                .perform(swipeRight());
+
+        onView(allOf(withId(R.id.overview_item_delete), isDisplayed())).perform(click());
+
+
+        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+                .check(doesNotExist());
     }
 }

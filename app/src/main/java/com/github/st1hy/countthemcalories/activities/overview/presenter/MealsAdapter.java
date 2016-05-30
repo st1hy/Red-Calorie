@@ -41,8 +41,8 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
-    private static final int mealItemLayout = R.layout.overview_item;
+public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> implements MealItemHolder.Callback {
+    private static final int mealItemLayout = R.layout.overview_item_scrolling;
     private static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -65,15 +65,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         loadTodayMeals();
     }
 
-    private void loadTodayMeals() {
-        DateTime now = DateTime.now();
-        DateTime from = now.withTime(0, 0, 0, 0);
-        DateTime to = now.withTime(23, 59, 59, 999);
-        subscriptions.add(model.getAllFilteredSortedDate(from, to)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnUpdatedDataSet()));
-    }
-
     public void onStop() {
         subscriptions.clear();
     }
@@ -92,13 +83,14 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         return list.size() + 1;
     }
 
-
     @Override
     public AbstractMealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
         if (viewType == mealItemLayout) {
-            return new MealItemHolder(view);
+            MealItemHolder viewHolder =  new MealItemHolder(view, this);
+            viewHolder.fillParent(parent);
+            return viewHolder;
         } else {
             return new EmptyMealItemHolder(view);
         }
@@ -111,18 +103,75 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         }
     }
 
+    @Override
+    public void onViewAttachedToWindow(AbstractMealItemHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof MealItemHolder) {
+            ((MealItemHolder) holder).onAttached();
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(AbstractMealItemHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof MealItemHolder) {
+            ((MealItemHolder) holder).onDetached();
+        }
+    }
+
+    @Override
+    public void onMealClicked(@NonNull Meal meal, @NonNull View sharedImage) {
+        view.openMealDetails(new MealParcel(meal), sharedImage);
+    }
+
+    @Override
+    public void onDeleteClicked(@NonNull Meal meal) {
+        deleteMealWithId(meal.getId());
+    }
+
+    public void editMealWithId(long mealId) {
+        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
+        if (mealPair != null) {
+            onEditClicked(mealPair.second);
+        } else {
+            Timber.w("Meal with id: %s no longer exist", mealId);
+        }
+    }
+
+    @Override
+    public void onEditClicked(@NonNull Meal meal) {
+        view.openEditMealScreen(new MealParcel(meal));
+    }
+
+    public void deleteMealWithId(long mealId) {
+        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
+        if (mealPair != null) {
+            deleteMeal(mealPair.second, mealPair.first);
+        } else {
+            Timber.w("Meal with id: %s no longer exist", mealId);
+        }
+    }
+
+    private void loadTodayMeals() {
+        DateTime now = DateTime.now();
+        DateTime from = now.withTime(0, 0, 0, 0);
+        DateTime to = now.withTime(23, 59, 59, 999);
+        subscriptions.add(model.getAllFilteredSortedDate(from, to)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new OnUpdatedDataSet()));
+    }
+
+    private int getDaoItemCount() {
+        return list.size();
+    }
+
     private void onBindMealItemHolder(@NonNull MealItemHolder holder, int position) {
         final Meal meal = list.get(position);
         holder.setName(meal.getName());
         onBindIngredients(holder, meal.getIngredients());
         onBindImage(meal, holder);
+        holder.setMeal(meal);
         holder.setDate(DateTimeFormat.shortTime().print(meal.getCreationDate()));
-        holder.onClick().subscribe(new Action1<View>() {
-            @Override
-            public void call(View sharedView) {
-                view.openMealDetails(new MealParcel(meal), sharedView);
-            }
-        });
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {
@@ -163,11 +212,60 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         }
     }
 
+    @Nullable
+    private Pair<Integer, Meal> getMealPositionWithId(long mealId) {
+        List<Meal> meals = this.list;
+        for (int i = 0; i < meals.size(); i++) {
+            Meal meal = meals.get(i);
+            if (meal.getId() != null && meal.getId() == mealId) {
+                return Pair.create(i, meal);
+            }
+        }
+        return null;
+    }
+
+    private void deleteMeal(@NonNull Meal meal, int position) {
+        subscriptions.add(model.remove(meal)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onMealDeleted(position)));
+    }
+
+    @NonNull
+    private Action1<Void> onMealDeleted(final int mealPos) {
+        return new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                list.remove(mealPos);
+                notifyItemRemoved(mealPos);
+                showTotal();
+                setEmptyListVisibility();
+            }
+        };
+    }
+
     private void onNewDataSet(@NonNull List<Meal> meals) {
         this.list = meals;
         notifyDataSetChanged();
         showTotal();
         setEmptyListVisibility();
+    }
+
+    private void setEmptyListVisibility() {
+        Visibility emptyList, emptyListVariation;
+        if (list.size() == 0) {
+            if (new Random().nextInt(100) == 0) {
+                emptyList = Visibility.GONE;
+                emptyListVariation = Visibility.VISIBLE;
+            } else {
+                emptyList = Visibility.VISIBLE;
+                emptyListVariation = Visibility.GONE;
+            }
+        } else {
+            emptyList = Visibility.GONE;
+            emptyListVariation = Visibility.GONE;
+        }
+        view.setEmptyListVisibility(emptyList);
+        view.setEmptyListVariationVisibility(emptyListVariation);
     }
 
     private void showTotal() {
@@ -194,28 +292,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
 
     }
 
-    private void setEmptyListVisibility() {
-        Visibility emptyList, emptyListVariation;
-        if (list.size() == 0) {
-            if (new Random().nextInt(100) == 0) {
-                emptyList = Visibility.GONE;
-                emptyListVariation = Visibility.VISIBLE;
-            } else {
-                emptyList = Visibility.VISIBLE;
-                emptyListVariation = Visibility.GONE;
-            }
-        } else {
-            emptyList = Visibility.GONE;
-            emptyListVariation = Visibility.GONE;
-        }
-        view.setEmptyListVisibility(emptyList);
-        view.setEmptyListVariationVisibility(emptyListVariation);
-    }
-
-    private int getDaoItemCount() {
-        return list.size();
-    }
-
     @NonNull
     private Func1<Ingredient, String> toNames() {
         return new Func1<Ingredient, String>() {
@@ -236,52 +312,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
                 return builder.append(s).append('\n');
             }
         };
-    }
-
-    public void deleteMealWithId(long mealId) {
-        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
-        if (mealPair != null) {
-            final int mealPos = mealPair.first;
-            subscriptions.add(model.remove(mealPair.second)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onMealDeleted(mealPos)));
-        } else {
-            Timber.w("Meal with id: %s no longer exist", mealId);
-        }
-    }
-
-    @NonNull
-    private Action1<Void> onMealDeleted(final int mealPos) {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                list.remove(mealPos);
-                notifyItemRemoved(mealPos);
-                showTotal();
-                setEmptyListVisibility();
-            }
-        };
-    }
-
-    public void editMealWithId(long mealId) {
-        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
-        if (mealPair != null) {
-            view.openEditMealScreen(new MealParcel(mealPair.second));
-        } else {
-            Timber.w("Meal with id: %s no longer exist", mealId);
-        }
-    }
-
-    @Nullable
-    private Pair<Integer, Meal> getMealPositionWithId(long mealId) {
-        List<Meal> meals = this.list;
-        for (int i = 0; i < meals.size(); i++) {
-            Meal meal = meals.get(i);
-            if (meal.getId() != null && meal.getId() == mealId) {
-                return Pair.create(i, meal);
-            }
-        }
-        return null;
     }
 
     private class OnUpdatedDataSet extends Subscriber<List<Meal>> {

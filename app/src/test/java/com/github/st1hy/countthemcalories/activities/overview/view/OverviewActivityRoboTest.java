@@ -154,7 +154,7 @@ public class OverviewActivityRoboTest {
     @Test
     public void testEditMeal() throws Exception {
         Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_root);
+        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
         item.performClick();
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
@@ -174,7 +174,7 @@ public class OverviewActivityRoboTest {
     @Test
     public void testRemoveMeal() throws Exception {
         Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_root);
+        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
         item.performClick();
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);

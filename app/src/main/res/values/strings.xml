@@ -46,6 +46,10 @@
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_sort_title">Sort ingredients</string>
     <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
+    <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
+    <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
+    <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
+    <string name="ingredients_remove_ingredient_dialog_message">This ingredient is used somewhere in a meal. Removing this ingredient will change all meals that contains it.\nIs this what you want?</string>
 
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
@@ -79,9 +83,7 @@
     <string name="select_ingredient_type_title">Select ingredient type</string>
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
+
     <string name="meal_details_title">Meal details</string>
-    <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
-    <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
-    <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
-    <string name="ingredients_remove_ingredient_dialog_message">This ingredient is used somewhere in a meal. Removing this ingredient will change any meal that contains it.\nIs this what you want?</string>
+
 </resources>

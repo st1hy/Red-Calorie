@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:overScrollMode="ifContentScrolls"
+            android:overScrollMode="never"
             tools:listitem="@layout/overview_extended_ingredient_item">
 
         </android.support.v7.widget.RecyclerView>
