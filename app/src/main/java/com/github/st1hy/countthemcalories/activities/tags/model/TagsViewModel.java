@@ -10,4 +10,14 @@ public class TagsViewModel {
     public int getNewTagDialogTitle() {
         return R.string.tags_new_tag_dialog;
     }
+
+    @StringRes
+    public int getUndoDeleteMessage() {
+        return R.string.tags_undo_delete_message;
+    }
+
+    @StringRes
+    public int getUndoAddMessage() {
+        return R.string.tags_undo_add_message;
+    }
 }

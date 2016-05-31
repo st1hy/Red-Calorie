@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -22,6 +25,7 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapt
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
+import com.github.st1hy.countthemcalories.core.rx.RxSnackbar;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
@@ -54,8 +58,12 @@ public class TagsActivity extends DrawerActivity implements TagsView {
     FloatingActionButton fab;
     @BindView(R.id.tags_no_tags_button)
     View notTagsButton;
+    @BindView(R.id.tags_root)
+    CoordinatorLayout root;
 
     SearchView searchView;
+
+    Snackbar undo = null;
 
     @NonNull
     protected TagsComponent getComponent() {
@@ -82,6 +90,30 @@ public class TagsActivity extends DrawerActivity implements TagsView {
     @Override
     public Observable<Void> getOnAddTagClickedObservable() {
         return Observable.merge(RxView.clicks(fab), RxView.clicks(notTagsButton));
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> showUndoMessage(@StringRes int undoMessageResId) {
+        RxSnackbar rxSnackbar = RxSnackbar.make(root, undoMessageResId, Snackbar.LENGTH_LONG);
+        Observable<Void> observable = rxSnackbar.action(R.string.tags_undo);
+        undo = rxSnackbar.getSnackbar();
+        undo.setCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                undo = null;
+            }
+        });
+        rxSnackbar.show();
+        return observable;
+    }
+
+    @Override
+    public void hideUndoMessage() {
+        if (undo != null) {
+            undo.dismiss();
+            undo = null;
+        }
     }
 
     @NonNull

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -54,7 +55,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     @Override
-    protected Tag performGetById(long id) {
+    public Tag performGetById(long id) {
         Tag tag = dao().load(id);
         tag.resetIngredientTypes();
         tag.getIngredientTypes();
@@ -63,13 +64,18 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     @Override
-    protected Tag performInsert(@NonNull Tag data) {
+    public Tag performInsert(@NonNull Tag data) {
         dao().insert(data);
         return data;
     }
 
     @Override
     protected void performRemove(@NonNull Tag tag) {
+        rawRemove(tag);
+    }
+
+    @NonNull
+    public Pair<Tag, List<JointIngredientTag>> rawRemove(@NonNull Tag tag) {
         List<JointIngredientTag> joinTagIngredient = tag.getIngredientTypes();
         tag.delete();
         for (JointIngredientTag join : joinTagIngredient) {
@@ -77,13 +83,13 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
             join.delete();
             ingredient.getTags().remove(join);
         }
+        return Pair.create(tag, joinTagIngredient);
     }
 
     @Override
     protected void performRemoveAll() {
         dao().deleteAll();
     }
-
 
     @NonNull
     @Override

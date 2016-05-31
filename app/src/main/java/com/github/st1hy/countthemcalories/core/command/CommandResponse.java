@@ -31,5 +31,7 @@ public interface CommandResponse<Response, UndoResponse> {
      * See {@link CommandResponse#isUndoAvailable()} to check if this will happen.
      */
     @NonNull
-    Command<UndoResponse, Response> undo();
+    Observable<CommandResponse<UndoResponse, Response>> undo();
+
+    void invalidate();
 }

@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.core.rx;
 
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+
 import rx.functions.Func1;
 
 public class Functions {
@@ -30,5 +32,14 @@ public class Functions {
                 return t;
             }
         };
-    };
+    }
+
+    public static <T> Func1<CommandResponse<T, ?>, T> intoResponse() {
+        return new Func1<CommandResponse<T, ?>, T>() {
+            @Override
+            public T call(CommandResponse<T, ?> commandResponse) {
+                return commandResponse.getResponse();
+            }
+        };
+    }
 }

@@ -35,7 +35,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         return fromDatabaseTask(fromId(id));
     }
 
-
     @NonNull
     public Observable<Cursor> getAllFiltered(@NonNull String partOfName) {
         return fromDatabaseTask(filtered(partOfName));
@@ -71,7 +70,23 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     }
 
     @NonNull
-    protected abstract T performGetById(long id);
+    public Callable<Cursor> refresh() {
+        return query(lastQuery());
+    }
+
+    @NonNull
+    public <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
+        return Observable.fromCallable(callInTx(task))
+                .subscribeOn(Schedulers.io());
+    }
+
+    @NonNull
+    public abstract T performGetById(long id);
+
+    @NonNull
+    public DaoSession session() {
+        return session.get();
+    }
 
     @NonNull
     protected abstract T performInsert(@NonNull T data);
@@ -92,17 +107,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     protected abstract Property getKeyProperty();
 
     protected abstract long getKey(T t);
-
-    @NonNull
-    protected DaoSession session() {
-        return session.get();
-    }
-
-    @NonNull
-    protected <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
-        return Observable.fromCallable(callInTx(task))
-                .subscribeOn(Schedulers.io());
-    }
 
     @NonNull
     private <R> Callable<R> callInTx(@NonNull final Callable<R> task) {
@@ -175,7 +179,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         };
     }
 
-
     @NonNull
     private Callable<Void> removeCall(@NonNull final T data) {
         return new Callable<Void>() {
@@ -211,11 +214,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
                 return refresh().call();
             }
         };
-    }
-
-    @NonNull
-    protected Callable<Cursor> refresh() {
-        return query(lastQuery());
     }
 
     @NonNull

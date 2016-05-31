@@ -1,10 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
+import com.github.st1hy.countthemcalories.core.baseview.DialogView;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.baseview.DialogView;
 
 import rx.Observable;
 
@@ -29,4 +30,9 @@ public interface TagsView extends DialogView, DrawerView {
 
     @NonNull
     Observable<Void> getOnAddTagClickedObservable();
+
+    @NonNull
+    Observable<Void> showUndoMessage(@StringRes int undoMessageResId);
+
+    void hideUndoMessage();
 }

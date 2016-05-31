@@ -153,7 +153,7 @@ public class TagsDaoAdapterTest {
         when(model.removeAndRefresh(anyLong())).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(1);
 
-        presenter.onItemLongClicked(1, tag);
+        presenter.onTagLongClicked(1, tag);
 
         verify(view).showRemoveTagDialog();
         verify(model).removeAndRefresh(tag.getId());
@@ -167,7 +167,7 @@ public class TagsDaoAdapterTest {
         when(activityModel.isInSelectMode()).thenReturn(true);
         final Tag tag = new Tag(0x231L, "Name");
 
-        presenter.onItemClicked(1, tag);
+        presenter.onTagClicked(1, tag);
 
         verify(activityModel).isInSelectMode();
         verify(view).setResultAndReturn(tag.getId(), tag.getName());

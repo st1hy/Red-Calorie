@@ -39,17 +39,21 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
 
     @NonNull
     @Override
-    public Command<UndoResponse, Response> undo() {
-        return new Command<UndoResponse, Response>() {
-            @Override
-            public Observable<CommandResponse<UndoResponse, Response>> execute() {
-                return reverseIfAvailable();
-            }
-        };
+    public Observable<CommandResponse<UndoResponse, Response>> undo() {
+        if (isUndoAvailable()) {
+            return reverseIfAvailable();
+        } else
+            return getError();
+    }
+
+    @Override
+    public void invalidate() {
+        undoAvailability.invalidate();
     }
 
     private Observable<CommandResponse<UndoResponse, Response>> reverseIfAvailable() {
-        return undoAvailability().firstOrDefault(false)
+        return undoAvailability()
+                .firstOrDefault(false)
                 .filter(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean isAvailable) {
@@ -65,7 +69,7 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
                 .switchMap(new Func1<Boolean, Observable<CommandResponse<UndoResponse, Response>>>() {
                     @Override
                     public Observable<CommandResponse<UndoResponse, Response>> call(Boolean isAvailable) {
-                        return reverseCommand().execute();
+                        return reverseCommand();
                     }
                 }).mergeWith(undoAvailability()
                         .firstOrDefault(false)
@@ -77,10 +81,15 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
                         }).switchMap(new Func1<Boolean, Observable<? extends CommandResponse<UndoResponse, Response>>>() {
                             @Override
                             public Observable<? extends CommandResponse<UndoResponse, Response>> call(Boolean aBoolean) {
-                                return Observable.error(new IllegalStateException("Cannot undo command"));
+                                return getError();
                             }
                         })
                 );
+    }
+
+    @NonNull
+    private Observable<CommandResponse<UndoResponse, Response>> getError() {
+        return Observable.error(new IllegalStateException("Cannot undo command"));
     }
 
     @NonNull
@@ -88,12 +97,12 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
         return new Action0() {
             @Override
             public void call() {
-                undoAvailability.invalidate();
+                invalidate();
             }
         };
     }
 
     @NonNull
-    protected abstract Command<UndoResponse, Response> reverseCommand();
+    protected abstract Observable<CommandResponse<UndoResponse, Response>> reverseCommand();
 
 }

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -16,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.functions.Action1;
 
 public class IngredientItemViewHolder extends IngredientViewHolder {
 
@@ -45,14 +45,7 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
     @BindView(R.id.ingredients_item_content)
     View content;
 
-    private int position;
-
-    private final Action1<RecyclerEvent> eventListener = new Action1<RecyclerEvent>() {
-        @Override
-        public void call(RecyclerEvent event) {
-            onRecyclerEvent(event);
-        }
-    };
+    private final PositionDelegate position = new PositionDelegate();
 
     public IngredientItemViewHolder(@NonNull View itemView,
                                     @NonNull Callback interaction) {
@@ -88,17 +81,17 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
 
     @OnClick(R.id.ingredients_item_button)
     public void onContentClicked() {
-        callback.onIngredientClicked(reusableIngredient, position);
+        callback.onIngredientClicked(reusableIngredient, position.get());
     }
 
     @OnClick(R.id.ingredients_item_edit)
     public void onEditClicked() {
-        callback.onEditClicked(reusableIngredient, position);
+        callback.onEditClicked(reusableIngredient, position.get());
     }
 
     @OnClick(R.id.ingredients_item_delete)
     public void onDeleteClicked() {
-        callback.onDeleteClicked(reusableIngredient, position);
+        callback.onDeleteClicked(reusableIngredient, position.get());
     }
 
     public void fillParent(@NonNull final ViewGroup parent) {
@@ -107,31 +100,16 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
 
     public void onAttached() {
         scrollingItemDelegate.onAttached();
-        scrollingItemDelegate.subscribe(callback.getEvents()
-                .subscribe(eventListener));
+        position.onAttached(callback.getEvents());
     }
 
     public void onDetached() {
         scrollingItemDelegate.onDetached();
+        position.onDetached();
     }
 
     public void setPosition(int position) {
-        this.position = position;
-    }
-
-    private void onRecyclerEvent(@NonNull RecyclerEvent event) {
-        switch (event.getType()) {
-            case ADDED:
-                if (position >= event.getPosition()) {
-                    position++;
-                }
-                break;
-            case REMOVED:
-                if (position > event.getPosition()) {
-                    position--;
-                }
-                break;
-        }
+        this.position.set(position);
     }
 
     public interface Callback {
