@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapt
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.shadows.ShadowSnackbar;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
@@ -42,7 +43,8 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName,
+        shadows = {ShadowSnackbar.class})
 @LargeTest
 public class TagsActivityRoboTest {
     public static final Tag[] exampleTags = new Tag[]{
@@ -65,7 +67,6 @@ public class TagsActivityRoboTest {
                 .setup()
                 .get();
     }
-
 
     public static void addExampleTags(@NonNull DaoSession session) {
         TagDao tagDao = session.getTagDao();
@@ -159,5 +160,14 @@ public class TagsActivityRoboTest {
         activity.searchView.setQuery("Tag", true);
 
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+    }
+
+    @Test
+    public void testUndoRemove() throws Exception {
+        testRemoveItem();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        ShadowSnackbar.getLatest().performAction();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+
     }
 }

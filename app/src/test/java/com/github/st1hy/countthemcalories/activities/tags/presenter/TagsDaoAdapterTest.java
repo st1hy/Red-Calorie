@@ -9,11 +9,15 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.model.commands.InsertResult;
+import com.github.st1hy.countthemcalories.activities.tags.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TestError;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,14 +28,18 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Collections;
+
 import rx.Observable;
+import rx.plugins.TestRxPlugins;
 import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -50,20 +58,34 @@ public class TagsDaoAdapterTest {
     private Cursor cursor;
     @Mock
     private TagsViewModel viewModel;
+    @Mock
+    private TagsDatabaseCommands commands;
 
     private TagsDaoAdapter presenter;
 
+    @Mock
+    private CommandResponse commandResponse, undoResponse;
+    @Mock
+    private InsertResult result;
+
     @Before
     public void setUp() {
+        TestRxPlugins.registerImmediateMainThreadHook();
         MockitoAnnotations.initMocks(this);
-        presenter = new TestTagsPresenter(view, model, activityModel, viewModel);
+        presenter = new TestTagsPresenter(view, model, activityModel, viewModel, commands);
+
+        when(commandResponse.undoAvailability()).thenReturn(Observable.just(true));
+        when(commandResponse.undo()).thenReturn(Observable.just(undoResponse));
+        when(commandResponse.getResponse()).thenReturn(result);
+        when(result.getCursor()).thenReturn(cursor);
     }
 
     class TestTagsPresenter extends TagsDaoAdapter {
         public TestTagsPresenter(@NonNull TagsView view,
                                  @NonNull RxTagsDatabaseModel model,
                                  @NonNull TagsActivityModel activityModel,
-                                 @NonNull TagsViewModel viewModel) {
+                                 @NonNull TagsViewModel viewModel,
+                                 @NonNull TagsDatabaseCommands commands) {
             super(view, model, activityModel, viewModel, commands);
         }
 
@@ -81,46 +103,61 @@ public class TagsDaoAdapterTest {
         presenter.onStart();
 
         verify(view).getOnAddTagClickedObservable();
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
     public void testAddTagClick() throws Exception {
         final String tagName = "Tag name";
         final int position = 230;
+        final int message = 0x21;
+
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
-        when(model.addNewAndRefresh(any(Tag.class))).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(500);
-        when(cursor.getPosition()).thenReturn(position);
+        when(result.getNewItemPositionInCursor()).thenReturn(position);
+        when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
+        when(viewModel.getUndoAddMessage()).thenReturn(message);
 
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(viewModel).getNewTagDialogTitle();
         verify(view).showEditTextDialog(anyInt());
-        verify(model).addNewAndRefresh(any(Tag.class));
-        verify(cursor).getPosition();
+        verify(commands).insert(any(Tag.class));
+        //noinspection ResourceType
+        verify(view).showUndoMessage(message);
         verify(view).scrollToPosition(position);
         verify(cursor).getCount();
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        verify(commandResponse, times(2)).getResponse();
+        verify(commandResponse).undoAvailability();
+        verify(result).getCursor();
+        verify(result, times(2)).getNewItemPositionInCursor();
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
     public void testAddTagError() throws Exception {
         final String tagName = "Tag name";
         when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
-        when(model.addNewAndRefresh(new Tag(null, tagName))).thenThrow(new Error());
+        when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>error(new TestError()));
 
-        PublishSubject<Void> subject = PublishSubject.create();
+        Subject<Void, Void> subject = PublishSubject.create(); //Subject here to prevent from infinite loop when retry kicks in
         presenter.onAddTagClicked(subject);
         subject.onNext(null);
 
-        //Doesn't crash is good
-        verify(model).getNewTagDialogTitle();
+        verify(viewModel).getNewTagDialogTitle();
         verify(view).showEditTextDialog(anyInt());
-        verify(model).addNewAndRefresh(any(Tag.class));
+        verify(commands).insert(any(Tag.class));
 
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        subject.onNext(null);
+        verify(viewModel, times(2)).getNewTagDialogTitle();
+        verify(view, times(2)).showEditTextDialog(anyInt());
+        verify(commands, times(2)).insert(any(Tag.class));
+
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
@@ -129,6 +166,11 @@ public class TagsDaoAdapterTest {
 
         assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
         assertEquals(R.layout.tags_item_bottom_space, presenter.getItemViewType(1));
+
+        verify(cursor, times(2)).getCount();
+
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
@@ -143,23 +185,29 @@ public class TagsDaoAdapterTest {
         verify(cursor).moveToPosition(0);
         verify(model).performReadEntity(cursor, tag);
         verify(mockViewHolder).bind(anyInt(), eq(tag));
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
-    public void testLongPressItem() throws Exception {
+    public void testRemoveItem() throws Exception {
         when(view.showRemoveTagDialog()).thenReturn(Observable.<Void>just(null));
         final Tag tag = Mockito.mock(Tag.class);
-        when(model.removeAndRefresh(anyLong())).thenReturn(Observable.just(cursor));
+        when(commands.delete(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
+        when(commandResponse.getResponse()).thenReturn(cursor);
         when(cursor.getCount()).thenReturn(1);
 
         presenter.onTagLongClicked(1, tag);
 
         verify(view).showRemoveTagDialog();
-        verify(model).removeAndRefresh(tag.getId());
+        verify(commands).delete(tag);
+        verify(view).showUndoMessage(anyInt());
         verify(view).setNoTagsButtonVisibility(Visibility.GONE);
         verify(cursor).getCount();
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        verify(commandResponse).getResponse();
+        verify(commandResponse).undoAvailability();
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
     @Test
@@ -171,21 +219,59 @@ public class TagsDaoAdapterTest {
 
         verify(activityModel).isInSelectMode();
         verify(view).setResultAndReturn(tag.getId(), tag.getName());
-        verifyNoMoreInteractions(model, view, cursor, activityModel);
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
 
     @Test
     public void testOnSearch() throws Exception {
-        when(model.getAllFiltered("test")).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(0);
+        when(model.getAllFiltered("test", Collections.<Long>emptyList())).thenReturn(Observable.just(cursor));
 
         presenter.onSearch(Observable.<CharSequence>just("t", "te", "tes", "test"));
 
-        verify(model).getAllFiltered("t");
-        verify(model).getAllFiltered("test");
+        verify(activityModel, times(2)).getExcludedTagIds();
+        verify(model).getAllFiltered("t", Collections.<Long>emptyList());
+        verify(model).getAllFiltered("test", Collections.<Long>emptyList());
         verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
         verify(cursor).getCount();
-        verifyNoMoreInteractions(view, model);
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 
+    @Test
+    public void testAddThenUndo() throws Exception {
+        final String tagName = "Tag name";
+        final int position = 230;
+
+        when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
+        when(cursor.getCount()).thenReturn(500);
+        when(result.getNewItemPositionInCursor()).thenReturn(position);
+        when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
+        when(view.showUndoMessage(anyInt())).thenReturn(Observable.<Void>just(null));
+        when(undoResponse.getResponse()).thenReturn(cursor);
+
+        presenter.onAddTagClicked(Observable.<Void>just(null));
+
+        verify(viewModel).getNewTagDialogTitle();
+        verify(view).showEditTextDialog(anyInt());
+        verify(commands).insert(any(Tag.class));
+        verify(view).showUndoMessage(anyInt());
+        verify(view).scrollToPosition(position);
+        verify(cursor, times(2)).getCount();
+        verify(view, times(2)).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(commandResponse, times(2)).getResponse();
+        verify(commandResponse).undoAvailability();
+        verify(result).getCursor();
+        verify(result, times(2)).getNewItemPositionInCursor();
+
+        verify(commandResponse).undo();
+        verify(cursor).close();
+        verify(undoResponse).getResponse();
+
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
+
+    }
 }

@@ -5,10 +5,11 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -80,10 +81,11 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
                 })
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnCursor() {
+                .subscribe(new SimpleSubscriber<Cursor>() {
                     @Override
                     public void onNext(Cursor cursor) {
-                        super.onNext(cursor);
+                        Timber.v("Db cursor query ended");
+                        onCursorUpdate(cursor);
                         notifyDataSetChanged();
                     }
                 }));
@@ -144,24 +146,5 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
             changeEvents = PublishSubject.<RecyclerEvent>create().toSerialized();
         }
         return changeEvents;
-    }
-
-    public class OnCursor extends Subscriber<Cursor> {
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e, "Error when providing cursor");
-        }
-
-        @Override
-        @CallSuper
-        public void onNext(Cursor cursor) {
-            Timber.v("Db cursor query ended");
-            onCursorUpdate(cursor);
-        }
     }
 }

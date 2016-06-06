@@ -13,7 +13,6 @@ import dagger.Lazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
-import timber.log.Timber;
 
 public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     private final Lazy<DaoSession> session;
@@ -40,10 +39,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         return fromDatabaseTask(filtered(partOfName));
     }
 
-    /**
-     * @return observable with Cursor at position of the added tag on the list, if its not filtered out
-     * in that case cursor will be moved to first element
-     */
     @NonNull
     public Observable<Cursor> addNewAndRefresh(@NonNull T data) {
         return fromDatabaseTask(addNewAndRefreshCall(data));
@@ -138,30 +133,10 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         return new Callable<Cursor>() {
             @Override
             public Cursor call() throws Exception {
-                T newItem = performInsert(data);
-                Cursor cursor = refresh().call();
-                Timber.d("Cursor: %s", cursor);
-
-                final long newKey = getKey(newItem);
-                moveCursorToKeyIfAble(cursor, newKey);
-                return cursor;
+                performInsert(data);
+                return refresh().call();
             }
         };
-    }
-
-    private void moveCursorToKeyIfAble(@NonNull Cursor cursor, long key) {
-        if (cursor.moveToFirst()) {
-            int keyColumn = getKeyColumn(cursor);
-            boolean isFound = false;
-            do {
-                long readKey = readKey(cursor, keyColumn);
-                if (readKey == key) {
-                    isFound = true;
-                    break;
-                }
-            } while (cursor.moveToNext());
-            if (!isFound) cursor.moveToFirst();
-        }
     }
 
     private int getKeyColumn(@NonNull Cursor cursor) {
@@ -226,7 +201,7 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         return new Callable<CursorQuery>() {
             @Override
             public CursorQuery call() throws Exception {
-                lastFilter = partOfName;
+                cacheLastQuery(partOfName);
                 if (Strings.isNullOrEmpty(partOfName)) {
                     return allSortedByNameSingleton().forCurrentThread();
                 } else {
@@ -236,6 +211,10 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
                 }
             }
         };
+    }
+
+    protected void cacheLastQuery(@NonNull final String partOfName) {
+        lastFilter = partOfName;
     }
 
     @NonNull

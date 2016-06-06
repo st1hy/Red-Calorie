@@ -63,7 +63,7 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
 
     @NonNull
     @Override
-    protected IngredientTemplate performGetById(long id) {
+    public IngredientTemplate performGetById(long id) {
         IngredientTemplate template = dao().load(id);
         template.resetChildIngredients();
         template.resetTags();

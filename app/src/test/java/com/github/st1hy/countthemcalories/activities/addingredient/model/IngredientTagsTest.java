@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -18,7 +17,6 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
@@ -38,15 +36,13 @@ import static org.junit.Assert.assertThat;
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class IngredientTagsTest {
 
-    @Mock
-    RxTagsDatabaseModel rxTagsDatabaseModel;
     IngredientTagsModel model;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        model = new IngredientTagsModel(rxTagsDatabaseModel, null);
+        model = new IngredientTagsModel(null);
 
         model.addTag(1L, "Tag 1");
         model.addTag(2L, "Tag 2");
@@ -58,7 +54,7 @@ public class IngredientTagsTest {
 
         model.onSaveState(bundle);
 
-        IngredientTagsModel restoredModel = new IngredientTagsModel(rxTagsDatabaseModel, bundle);
+        IngredientTagsModel restoredModel = new IngredientTagsModel(bundle);
 
         assertThat(restoredModel.tags, hasSize(2));
         Tag tag0 = restoredModel.tags.get(0);

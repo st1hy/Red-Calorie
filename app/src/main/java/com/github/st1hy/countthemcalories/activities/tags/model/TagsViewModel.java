@@ -4,7 +4,13 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 
+import javax.inject.Inject;
+
 public class TagsViewModel {
+
+    @Inject
+    public TagsViewModel() {
+    }
 
     @StringRes
     public int getNewTagDialogTitle() {

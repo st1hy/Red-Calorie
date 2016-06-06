@@ -131,8 +131,6 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     @NonNull
     private Callable<Cursor> filteredExclude(@NonNull final String partOfName,
                                              @NonNull final Collection<Long> excludedIds) {
-        this.lastExcluded = excludedIds.isEmpty() ? Collections.<Long>emptyList()
-                : new ArrayList<>(excludedIds);
         if (excludedIds.isEmpty()) return query(getQueryOf(partOfName));
         else return query(filteredExcludeQueryCall(partOfName, excludedIds));
     }
@@ -160,7 +158,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     @NonNull
     private CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
                                                    @NonNull final Collection<Long> excludedIds) {
-        lastFilter = partOfName;
+        cacheLastQuery(partOfName, excludedIds);
         QueryBuilder<Tag> builder = dao().queryBuilder();
         final WhereCondition notInList = TagDao.Properties.Id.notIn(excludedIds);
         if (!partOfName.isEmpty()) {
@@ -173,4 +171,16 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
                 .buildCursor();
     }
 
+    @Override
+    protected void cacheLastQuery(@NonNull String partOfName) {
+        super.cacheLastQuery(partOfName);
+        lastExcluded = Collections.emptyList();
+    }
+
+    protected void cacheLastQuery(@NonNull final String partOfName,
+                                  @NonNull final Collection<Long> excludedIds) {
+        cacheLastQuery(partOfName);
+        lastExcluded = excludedIds.isEmpty() ? Collections.<Long>emptyList()
+                : new ArrayList<>(excludedIds);
+    }
 }

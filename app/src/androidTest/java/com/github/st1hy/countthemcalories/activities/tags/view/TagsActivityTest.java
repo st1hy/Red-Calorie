@@ -18,7 +18,6 @@ import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.hamcrest.Matchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -51,7 +50,6 @@ public class TagsActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
     public final IntentsTestRule<TagsActivity> main = new IntentsTestRule<>(TagsActivity.class, true, false);
-//    private final DbProcessingIdleResource idlingDbProcess = new DbProcessingIdleResource();
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
@@ -60,8 +58,6 @@ public class TagsActivityTest {
     public void setUp() throws Exception {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         addExampleTags(component.getDaoSession());
-//        component.getTagsModel().getDbProcessingObservable().subscribe(idlingDbProcess);
-//        Espresso.registerIdlingResources(idlingDbProcess.getIdlingResource());
     }
 
     public static void addExampleTags(@NonNull DaoSession session) {
@@ -71,14 +67,8 @@ public class TagsActivityTest {
         assertEquals(3, tagDao.loadAll().size());
     }
 
-    @After
-    public void tearDown() throws Exception {
-//        idlingDbProcess.unsubscribe();
-//        Espresso.unregisterIdlingResources(idlingDbProcess.getIdlingResource());
-    }
-
     @Test
-    public void testAddRemoveNewTag() throws Exception {
+    public void testAddNewTagUndo() throws Exception {
         main.launchActivity(null);
         final String tagName = "My tag name";
         onView(ViewMatchers.withId(R.id.tags_add_new)).check(matches(isDisplayed()))
@@ -89,6 +79,16 @@ public class TagsActivityTest {
         onView(withText(tagName)).check(matches(isDisplayed()));
         onView(withText(android.R.string.ok)).check(matches(isDisplayed()))
                 .perform(click());
+        onView(withText(tagName)).check(matches(isDisplayed()));
+
+        onView(withText(R.string.tags_undo)).perform(click());
+        onView(withText(tagName)).check(doesNotExist());
+    }
+
+    @Test
+    public void testRemoveTagUndo() throws Exception {
+        main.launchActivity(null);
+        final String tagName = exampleTags[1].getName();
         onView(withText(tagName)).check(matches(isDisplayed()))
                 .perform(longClick());
         onView(withText(R.string.tags_remove_dialog_title)).check(matches(isDisplayed()));
@@ -97,8 +97,10 @@ public class TagsActivityTest {
         onView(withText(android.R.string.yes)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(tagName)).check(doesNotExist());
-    }
 
+        onView(withText(R.string.tags_undo)).perform(click());
+        onView(withText(tagName)).check(matches(isDisplayed()));
+    }
 
     @Test
     public void testSearch() throws InterruptedException {
@@ -124,6 +126,6 @@ public class TagsActivityTest {
         onView(withText(exampleTags[0].getName())).check(doesNotExist());
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
-
     }
+
 }

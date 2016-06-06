@@ -15,7 +15,7 @@ import java.util.List;
 
 import rx.Observable;
 
-class DeleteCommand implements Command<Cursor, Cursor> {
+class DeleteCommand implements Command<Cursor, InsertResult> {
     final RxTagsDatabaseModel databaseModel;
     final TagsDatabaseCommands commands;
     final Tag tag;
@@ -29,19 +29,19 @@ class DeleteCommand implements Command<Cursor, Cursor> {
     }
 
     @Override
-    public Observable<CommandResponse<Cursor, Cursor>> executeInTx() {
+    public Observable<CommandResponse<Cursor, InsertResult>> executeInTx() {
         return databaseModel.fromDatabaseTask(this);
     }
 
     @Override
-    public CommandResponse<Cursor, Cursor> call() throws Exception {
+    public CommandResponse<Cursor, InsertResult> call() throws Exception {
         Tag dao = databaseModel.performGetById(tag.getId());
         Pair<Tag, List<JointIngredientTag>> tagListPair = databaseModel.rawRemove(dao);
         Cursor cursor = databaseModel.refresh().call();
         return new DeleteResponse(cursor, tagListPair.first, tagListPair.second);
     }
 
-    class DeleteResponse extends AbstractCommandResponse<Cursor, Cursor> {
+    class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
         final Tag removedTag;
         final List<JointIngredientTag> removedJTags;
 
@@ -55,8 +55,8 @@ class DeleteCommand implements Command<Cursor, Cursor> {
 
         @NonNull
         @Override
-        protected Observable<CommandResponse<Cursor, Cursor>> reverseCommand() {
-            return commands.insert(tag);
+        protected Observable<CommandResponse<InsertResult, Cursor>> reverseCommand() {
+            return commands.insert(tag, removedJTags);
         }
     }
 }
