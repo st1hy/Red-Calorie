@@ -7,6 +7,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -39,6 +40,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -135,17 +137,14 @@ public class TagsActivityRoboTest {
     @Test
     public void testRemoveItem() throws Exception {
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_button).performLongClick();
+        activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_delete).performClick();
 
-        ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
-        assertThat(shadowAlertDialog, notNullValue());
-        ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testSelectTag() throws Exception {
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_button).performClick();
+        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
         assertTrue(shadowOf(activity).isFinishing());
         Intent resultIntent = shadowOf(activity).getResultIntent();
         assertThat(resultIntent, CoreMatchers.notNullValue());
@@ -168,6 +167,22 @@ public class TagsActivityRoboTest {
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowSnackbar.getLatest().performAction();
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+    }
 
+    @Test
+    public void testEditTag() throws Exception {
+        TextView name = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
+        assertThat(name.getText().toString(), equalTo(exampleTags[2].getName()));
+        activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_edit).performClick();
+
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(latestAlertDialog);
+        EditText edit = (EditText) shadowOf(latestAlertDialog).getView().findViewById(R.id.tags_dialog_name);
+        assertNotNull(edit);
+        edit.setText("A new name");
+        latestAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+
+        name = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
+        assertThat(name.getText().toString(), equalTo("A new name"));
     }
 }

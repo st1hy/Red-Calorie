@@ -207,8 +207,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
             @Override
             public void call(Cursor cursor) {
                 onCursorUpdate(cursor);
-                getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
-                notifyItemRemoved(position);
+                notifyItemRemovedRx(position);
             }
         };
     }

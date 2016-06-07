@@ -14,7 +14,7 @@ public interface TagsView extends DialogView, DrawerView {
      * @return observable emitting new tag name to add
      */
     @NonNull
-    Observable<String> showEditTextDialog(int newTagDialogTitle);
+    Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText);
 
     void setNoTagsButtonVisibility(@NonNull  Visibility visibility);
 

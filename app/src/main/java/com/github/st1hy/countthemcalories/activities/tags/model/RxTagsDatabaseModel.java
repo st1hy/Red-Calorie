@@ -42,6 +42,22 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         });
     }
 
+    @NonNull
+    public Observable<Cursor> updateRefresh(@NonNull Tag tag) {
+        return fromDatabaseTask(updateRefreshCall(tag));
+    }
+
+    @NonNull
+    private Callable<Cursor> updateRefreshCall(@NonNull final Tag tag) {
+        return new Callable<Cursor>() {
+            @Override
+            public Cursor call() throws Exception {
+                dao().update(tag);
+                return refresh().call();
+            }
+        };
+    }
+
     @Override
     public void performReadEntity(@NonNull Cursor cursor, @NonNull Tag output) {
         dao().readEntity(cursor, output, 0);
@@ -76,14 +92,14 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     public Pair<Tag, List<JointIngredientTag>> rawRemove(@NonNull Tag tag) {
-        List<JointIngredientTag> joinTagIngredient = tag.getIngredientTypes();
+        List<JointIngredientTag> joinTagIngredients = tag.getIngredientTypes();
         tag.delete();
-        for (JointIngredientTag join : joinTagIngredient) {
+        for (JointIngredientTag join : joinTagIngredients) {
             IngredientTemplate ingredient = join.getIngredientType();
             join.delete();
             ingredient.getTags().remove(join);
         }
-        return Pair.create(tag, joinTagIngredient);
+        return Pair.create(tag, joinTagIngredients);
     }
 
     @Override
@@ -108,11 +124,6 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
                 .buildCursor();
     }
 
-    @Override
-    protected long readKey(@NonNull Cursor cursor, int columnIndex) {
-        return dao().readKey(cursor, columnIndex);
-    }
-
     @NonNull
     @Override
     protected Property getKeyProperty() {
@@ -120,7 +131,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     }
 
     @Override
-    protected long getKey(Tag tag) {
+    protected long getKey(@NonNull Tag tag) {
         return tag.getId();
     }
 

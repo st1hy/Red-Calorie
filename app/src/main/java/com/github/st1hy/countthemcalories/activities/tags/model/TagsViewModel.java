@@ -26,4 +26,9 @@ public class TagsViewModel {
     public int getUndoAddMessage() {
         return R.string.tags_undo_add_message;
     }
+
+    @StringRes
+    public int getEditTagDialogTitle() {
+        return R.string.tags_edit_tag_dialog;
+    }
 }

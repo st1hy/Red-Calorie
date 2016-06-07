@@ -24,6 +24,21 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         this.session = session;
     }
 
+
+    /**
+     * @return position of the item in cursor or -1 if item could not be found inside the cursor
+     */
+    public int findInCursor(@NonNull Cursor cursor, T data) {
+        int idColumn = cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
+        long daoId = getKey(data);
+        while (cursor.moveToNext()) {
+            if (daoId == cursor.getLong(idColumn)) {
+                return cursor.getPosition();
+            }
+        }
+        return -1;
+    }
+
     /**
      * Reads tag entity which is NOT cached or attached to dao into output
      */
@@ -40,11 +55,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     }
 
     @NonNull
-    public Observable<Cursor> addNewAndRefresh(@NonNull T data) {
-        return fromDatabaseTask(addNewAndRefreshCall(data));
-    }
-
-    @NonNull
     public Observable<Cursor> removeAndRefresh(@NonNull T data) {
         return fromDatabaseTask(removeAndRefreshCall(data));
     }
@@ -52,11 +62,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     @NonNull
     public Observable<Void> remove(@NonNull T data) {
         return fromDatabaseTask(removeCall(data));
-    }
-
-    @NonNull
-    public Observable<Cursor> removeAndRefresh(long id) {
-        return fromDatabaseTask(removeAndRefreshCall(id));
     }
 
     @NonNull
@@ -96,12 +101,10 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     @NonNull
     protected abstract CursorQuery filteredSortedByNameQuery();
 
-    protected abstract long readKey(@NonNull Cursor cursor, int columnIndex);
-
     @NonNull
     protected abstract Property getKeyProperty();
 
-    protected abstract long getKey(T t);
+    protected abstract long getKey(@NonNull T t);
 
     @NonNull
     private <R> Callable<R> callInTx(@NonNull final Callable<R> task) {
@@ -129,21 +132,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     }
 
     @NonNull
-    private Callable<Cursor> addNewAndRefreshCall(@NonNull final T data) {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                performInsert(data);
-                return refresh().call();
-            }
-        };
-    }
-
-    private int getKeyColumn(@NonNull Cursor cursor) {
-        return cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
-    }
-
-    @NonNull
     private Callable<Cursor> removeAndRefreshCall(@NonNull final T data) {
         return new Callable<Cursor>() {
             @Override
@@ -163,21 +151,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
                 return null;
             }
         };
-    }
-
-    @NonNull
-    private Callable<Cursor> removeAndRefreshCall(final long id) {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                performRemove(id);
-                return refresh().call();
-            }
-        };
-    }
-
-    private void performRemove(long id) {
-        performRemove(performGetById(id));
     }
 
     @NonNull

@@ -147,4 +147,20 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
         }
         return changeEvents;
     }
+
+    /**
+     * Same as {@link #notifyItemRemoved(int)} but also notifies event subject
+     */
+    protected void notifyItemRemovedRx(int position) {
+        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
+        notifyItemRemoved(position);
+    }
+
+    /**
+     * Same as {@link #notifyItemInserted(int)} but also notifies event subject
+     */
+    protected void notifyItemInsertedRx(int position) {
+        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.ADDED, position));
+        notifyItemInserted(position);
+    }
 }

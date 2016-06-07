@@ -41,7 +41,7 @@ import timber.log.Timber;
 public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> implements OnTagInteraction {
 
     static final int bottomSpaceItem = 1;
-    static final int item_layout = R.layout.tags_item;
+    static final int item_layout = R.layout.tags_item_scrolling;
     static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
 
     final TagsView view;
@@ -83,7 +83,9 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
-            return new TagItemViewHolder(view, this);
+            TagItemViewHolder item = new TagItemViewHolder(view, this);
+            item.fillParent(parent);
+            return item;
         } else {
             return new EmptySpaceViewHolder(view);
         }
@@ -133,24 +135,95 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
     public void onTagClicked(int position, @NonNull Tag tag) {
         if (activityModel.isInSelectMode()) {
             view.setResultAndReturn(tag.getId(), tag.getName());
+        } else {
+            //TODO Open ingredients and filter by tag
         }
     }
 
     @Override
-    public void onTagLongClicked(final int position, @NonNull final Tag tag) {
+    public void onEditClicked(final int position, @NonNull final Tag tag) {
         addSubscription(
-                view.showRemoveTagDialog()
-                        .flatMap(new Func1<Void, Observable<CommandResponse<Cursor, InsertResult>>>() {
-                            @Override
-                            public Observable<CommandResponse<Cursor, InsertResult>> call(Void aVoid) {
-                                return commands.delete(tag);
-                            }
-                        })
+                view.showEditTextDialog(viewModel.getEditTagDialogTitle(), tag.getName())
+                        .flatMap(updateTag(tag))
+                        .map(findNewPositionOf(tag))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onEditFinished(position))
+        );
+    }
+
+    @NonNull
+    private SimpleSubscriber<InsertResult> onEditFinished(final int position) {
+        return new SimpleSubscriber<InsertResult>() {
+            @Override
+            public void onNext(InsertResult result) {
+                onCursorUpdate(result.getCursor());
+                int newPosition = result.getNewItemPositionInCursor();
+                if (newPosition != -1) {
+                    notifyItemRemovedRx(position);
+                    notifyItemInsertedRx(newPosition);
+                } else {
+                    notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Cursor, InsertResult> findNewPositionOf(@NonNull final Tag tag) {
+        return new Func1<Cursor, InsertResult>() {
+            @Override
+            public InsertResult call(Cursor cursor) {
+                return new InsertResult(cursor, databaseModel.findInCursor(cursor, tag));
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<String, Observable<Cursor>> updateTag(@NonNull final Tag tag) {
+        return new Func1<String, Observable<Cursor>>() {
+            @Override
+            public Observable<Cursor> call(String newName) {
+                tag.setName(newName);
+                return databaseModel.updateRefresh(tag);
+            }
+        };
+    }
+
+    @Override
+    public void onDeleteClicked(final int position, @NonNull final Tag tag) {
+        addSubscription(
+                databaseModel.getById(tag.getId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(showWarningIfTagIsUsed())
+                        .flatMap(deleteTag(tag))
                         .doOnNext(showUndoRemoval())
                         .map(Functions.<Cursor>intoResponse())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onTagRemoved(position))
         );
+    }
+
+    @NonNull
+    private Func1<Void, Observable<CommandResponse<Cursor, InsertResult>>> deleteTag(@NonNull final Tag tag) {
+        return new Func1<Void, Observable<CommandResponse<Cursor, InsertResult>>>() {
+            @Override
+            public Observable<CommandResponse<Cursor, InsertResult>> call(Void aVoid) {
+                return commands.delete(tag);
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Tag, Observable<Void>> showWarningIfTagIsUsed() {
+        return new Func1<Tag, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(Tag tag) {
+                if (tag.getIngredientTypes().isEmpty())
+                    return Observable.just(null);
+                else
+                    return view.showRemoveTagDialog();
+            }
+        };
     }
 
     @NonNull
@@ -166,8 +239,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
             public void onNext(Cursor cursor) {
                 onCursorUpdate(cursor);
                 if (position != -1) {
-                    getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
-                    notifyItemRemoved(position);
+                    notifyItemRemovedRx(position);
                 } else {
                     notifyDataSetChanged();
                 }
@@ -250,15 +322,13 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
 
     @NonNull
     private SimpleSubscriber<InsertResult> onTagAdded() {
-        return  new SimpleSubscriber<InsertResult>() {
+        return new SimpleSubscriber<InsertResult>() {
             @Override
             public void onNext(InsertResult result) {
                 int newItemPosition = result.getNewItemPositionInCursor();
-                Timber.d("New item added: %d", newItemPosition);
                 onCursorUpdate(result.getCursor());
                 if (newItemPosition != -1) {
-                    getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.ADDED, newItemPosition));
-                    notifyItemInserted(newItemPosition);
+                    notifyItemInsertedRx(newItemPosition);
                     view.scrollToPosition(newItemPosition);
                 } else {
                     notifyDataSetChanged();
@@ -282,7 +352,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
         return new Func1<Void, Observable<String>>() {
             @Override
             public Observable<String> call(Void aVoid) {
-                return view.showEditTextDialog(viewModel.getNewTagDialogTitle());
+                return view.showEditTextDialog(viewModel.getNewTagDialogTitle(), "");
             }
         };
     }

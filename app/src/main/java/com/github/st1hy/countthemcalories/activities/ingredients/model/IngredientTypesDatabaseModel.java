@@ -190,11 +190,6 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
                 .buildCursor();
     }
 
-    @Override
-    protected long readKey(@NonNull Cursor cursor, int columnIndex) {
-        return dao().readKey(cursor, columnIndex);
-    }
-
     @NonNull
     @Override
     protected Property getKeyProperty() {
@@ -202,7 +197,7 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
     }
 
     @Override
-    protected long getKey(IngredientTemplate ingredientTemplate) {
+    protected long getKey(@NonNull IngredientTemplate ingredientTemplate) {
         return ingredientTemplate.getId();
     }
 

@@ -118,14 +118,16 @@ public class TagsActivity extends DrawerActivity implements TagsView {
 
     @NonNull
     @Override
-    public Observable<String> showEditTextDialog(int newTagDialogTitle) {
+    public Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText) {
         final RxAlertDialog rxAlertDialog = RxAlertDialog.Builder.with(this)
                 .title(newTagDialogTitle)
                 .customView(R.layout.tags_new_tag_dialog_content)
                 .positiveButton(android.R.string.ok)
+                .negativeButton(android.R.string.cancel)
                 .show();
         final EditText text = (EditText) assertNotNull(rxAlertDialog.getCustomView())
                 .findViewById(R.id.tags_dialog_name);
+        text.setText(initialText);
         text.setOnKeyListener(closeOnEnter(rxAlertDialog));
         RxTextView.editorActions(text)
                 .filter(imeActionDone())

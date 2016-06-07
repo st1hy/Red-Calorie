@@ -11,7 +11,6 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.database.TagDao;
 
 import java.util.List;
 
@@ -61,23 +60,10 @@ class InsertCommand implements Command<InsertResult, Cursor> {
 
     @NonNull
     private InsertResult getResult(@NonNull Cursor cursor, @NonNull Tag tag) {
-        int position = getNewItemPosition(cursor, tag);
+        int position = databaseModel.findInCursor(cursor, tag);
         return new InsertResult(cursor, position);
     }
 
-    /**
-     * @return position of new item or -1 if item could not be found inside the cursor
-     */
-    private int getNewItemPosition(@NonNull Cursor cursor, @NonNull Tag dao) {
-        int idColumn = cursor.getColumnIndexOrThrow(TagDao.Properties.Id.columnName);
-        long newDaoId = dao.getId();
-        while (cursor.moveToNext()) {
-            if (newDaoId == cursor.getLong(idColumn)) {
-                return cursor.getPosition();
-            }
-        }
-        return -1;
-    }
 
     class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
 

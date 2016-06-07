@@ -36,7 +36,7 @@ public class TagsDatabaseCommands {
 
     @NonNull
     Observable<CommandResponse<InsertResult, Cursor>> insert(@NonNull final Tag tag,
-                                                       @NonNull final List<JointIngredientTag> jTags) {
+                                                             @NonNull final List<JointIngredientTag> jTags) {
         return new InsertCommand(databaseModel, this, tag, jTags)
                 .executeInTx()
                 .compose(insertInvalidator);

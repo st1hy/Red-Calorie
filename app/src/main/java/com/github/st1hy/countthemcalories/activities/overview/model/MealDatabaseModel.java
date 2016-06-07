@@ -167,11 +167,6 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
         return filteredByDateSortedByDate;
     }
 
-    @Override
-    protected long readKey(@NonNull Cursor cursor, int columnIndex) {
-        return dao().readKey(cursor, columnIndex);
-    }
-
     @NonNull
     @Override
     protected Property getKeyProperty() {
@@ -179,7 +174,7 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @Override
-    protected long getKey(Meal meal) {
+    protected long getKey(@NonNull Meal meal) {
         return meal.getId();
     }
 }

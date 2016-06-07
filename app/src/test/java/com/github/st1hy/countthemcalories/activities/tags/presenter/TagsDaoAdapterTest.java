@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.T
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TestError;
@@ -38,6 +39,8 @@ import rx.subjects.Subject;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -113,7 +116,7 @@ public class TagsDaoAdapterTest {
         final int position = 230;
         final int message = 0x21;
 
-        when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
+        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(cursor.getCount()).thenReturn(500);
         when(result.getNewItemPositionInCursor()).thenReturn(position);
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
@@ -122,7 +125,7 @@ public class TagsDaoAdapterTest {
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt());
+        verify(view).showEditTextDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
         //noinspection ResourceType
         verify(view).showUndoMessage(message);
@@ -140,7 +143,7 @@ public class TagsDaoAdapterTest {
     @Test
     public void testAddTagError() throws Exception {
         final String tagName = "Tag name";
-        when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
+        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>error(new TestError()));
 
         Subject<Void, Void> subject = PublishSubject.create(); //Subject here to prevent from infinite loop when retry kicks in
@@ -148,12 +151,12 @@ public class TagsDaoAdapterTest {
         subject.onNext(null);
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt());
+        verify(view).showEditTextDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
 
         subject.onNext(null);
         verify(viewModel, times(2)).getNewTagDialogTitle();
-        verify(view, times(2)).showEditTextDialog(anyInt());
+        verify(view, times(2)).showEditTextDialog(anyInt(), anyString());
         verify(commands, times(2)).insert(any(Tag.class));
 
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
@@ -164,7 +167,7 @@ public class TagsDaoAdapterTest {
     public void testGetItemType() throws Exception {
         when(cursor.getCount()).thenReturn(1);
 
-        assertEquals(R.layout.tags_item, presenter.getItemViewType(0));
+        assertEquals(R.layout.tags_item_scrolling, presenter.getItemViewType(0));
         assertEquals(R.layout.tags_item_bottom_space, presenter.getItemViewType(1));
 
         verify(cursor, times(2)).getCount();
@@ -196,9 +199,14 @@ public class TagsDaoAdapterTest {
         when(commands.delete(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
         when(commandResponse.getResponse()).thenReturn(cursor);
         when(cursor.getCount()).thenReturn(1);
+        when(model.getById(anyLong())).thenReturn(Observable.just(tag));
+        when(tag.getIngredientTypes()).thenReturn(Collections.singletonList(new JointIngredientTag()));
 
-        presenter.onTagLongClicked(1, tag);
+        presenter.onDeleteClicked(1, tag);
 
+        verify(tag).getId();
+        verify(model).getById(anyLong());
+        verify(tag).getIngredientTypes();
         verify(view).showRemoveTagDialog();
         verify(commands).delete(tag);
         verify(view).showUndoMessage(anyInt());
@@ -207,7 +215,34 @@ public class TagsDaoAdapterTest {
         verify(commandResponse).getResponse();
         verify(commandResponse).undoAvailability();
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
-                undoResponse, result);
+                undoResponse, result, tag);
+    }
+
+
+    @Test
+    public void testRemoveItemTagNotUsed() throws Exception {
+        when(view.showRemoveTagDialog()).thenReturn(Observable.<Void>just(null));
+        final Tag tag = Mockito.mock(Tag.class);
+        when(commands.delete(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
+        when(commandResponse.getResponse()).thenReturn(cursor);
+        when(cursor.getCount()).thenReturn(1);
+        when(model.getById(anyLong())).thenReturn(Observable.just(tag));
+        when(tag.getIngredientTypes()).thenReturn(Collections.<JointIngredientTag>emptyList());
+
+        presenter.onDeleteClicked(1, tag);
+
+        //Same as testRemoveItem, only confirmation dialog is not shown
+        verify(tag).getId();
+        verify(model).getById(anyLong());
+        verify(tag).getIngredientTypes();
+        verify(commands).delete(tag);
+        verify(view).showUndoMessage(anyInt());
+        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(cursor).getCount();
+        verify(commandResponse).getResponse();
+        verify(commandResponse).undoAvailability();
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result, tag);
     }
 
     @Test
@@ -245,7 +280,7 @@ public class TagsDaoAdapterTest {
         final String tagName = "Tag name";
         final int position = 230;
 
-        when(view.showEditTextDialog(anyInt())).thenReturn(Observable.just(tagName));
+        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(cursor.getCount()).thenReturn(500);
         when(result.getNewItemPositionInCursor()).thenReturn(position);
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
@@ -255,7 +290,7 @@ public class TagsDaoAdapterTest {
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt());
+        verify(view).showEditTextDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
         verify(view).showUndoMessage(anyInt());
         verify(view).scrollToPosition(position);
@@ -272,6 +307,28 @@ public class TagsDaoAdapterTest {
 
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result);
+    }
 
+    @Test
+    public void testEditTag() throws Exception {
+        Tag tag = Mockito.mock(Tag.class);
+        when(tag.getName()).thenReturn("Tag name");
+        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just("New name"));
+        when(model.updateRefresh(tag)).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(500);
+        when(model.findInCursor(cursor, tag)).thenReturn(1);
+
+        presenter.onEditClicked(1, tag);
+
+        verify(tag).getName();
+        verify(view).showEditTextDialog(anyInt(), eq("Tag name"));
+        verify(tag).setName("New name");
+        verify(model).updateRefresh(tag);
+        verify(model).findInCursor(cursor, tag);
+        verify(cursor).getCount();
+        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result, tag);
     }
 }

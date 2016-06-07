@@ -70,8 +70,12 @@
     <string name="tags_new_tag_hint">Category name</string>
     <string name="tags_search_title">Search categories</string>
     <string name="tags_remove_dialog_title">Remove category</string>
-    <string name="tags_remove_information">Do you really want to remove this category?</string>
+    <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
+    <string name="tags_undo_delete_message">Category removed</string>
+    <string name="tags_undo">Undo</string>
+    <string name="tags_undo_add_message">New category added</string>
+    <string name="tags_edit_tag_dialog">Edit category</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_current_unit">Current unit:</string>
@@ -85,8 +89,7 @@
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
 
     <string name="meal_details_title">Meal details</string>
-    <string name="tags_undo_delete_message">Category deleted</string>
-    <string name="tags_undo">Undo</string>
-    <string name="tags_undo_add_message">New category added</string>
+    <string name="tags_remove_description">Remove category</string>
+    <string name="tags_edit_description">Edit category name</string>
 
 </resources>
