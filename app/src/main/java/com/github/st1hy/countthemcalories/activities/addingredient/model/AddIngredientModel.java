@@ -31,7 +31,6 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -182,9 +181,13 @@ public class AddIngredientModel extends WithPictureModel {
         return imageUri;
     }
 
+    /**
+     * @return observable ingredient that was added or updated in database OR {@link IngredientTypeCreateException}
+     * if not data is in incorrect state to be saved
+     */
     @NonNull
-    public Observable<List<IngredientTypeCreateError>> saveIntoDatabase() {
-        List<IngredientTypeCreateError> errorList = canCreateIngredient();
+    public Observable<IngredientTemplate> saveIntoDatabase() {
+        List<IngredientTypeCreateException.ErrorType> errorList = canCreateIngredient();
         if (errorList.isEmpty()) {
             if (source != null) {
                 return updateExistingInDatabase();
@@ -192,20 +195,19 @@ public class AddIngredientModel extends WithPictureModel {
                 return insertNewIntoDatabase();
             }
         } else {
-            return Observable.just(errorList);
+            return Observable.error(new IngredientTypeCreateException(errorList));
         }
     }
 
     @NonNull
-    private Observable<List<IngredientTypeCreateError>> insertNewIntoDatabase() {
+    private Observable<IngredientTemplate> insertNewIntoDatabase() {
         IngredientTemplate template = new IngredientTemplate();
         setIntoTemplate(template);
-        return databaseModel.addNew(template, tagsModel.getTagIds())
-                .map(intoNoError());
+        return databaseModel.addNew(template, tagsModel.getTagIds());
     }
 
     @NonNull
-    private Observable<List<IngredientTypeCreateError>> updateExistingInDatabase() {
+    private Observable<IngredientTemplate> updateExistingInDatabase() {
         return databaseModel.unParcel(source)
                 .map(new Func1<IngredientTemplate, IngredientTemplate>() {
                     @Override
@@ -213,12 +215,12 @@ public class AddIngredientModel extends WithPictureModel {
                         setIntoTemplate(template);
                         return template;
                     }
-                }).flatMap(new Func1<IngredientTemplate, Observable<Void>>() {
+                }).flatMap(new Func1<IngredientTemplate, Observable<IngredientTemplate>>() {
                     @Override
-                    public Observable<Void> call(IngredientTemplate ingredientTemplate) {
+                    public Observable<IngredientTemplate> call(IngredientTemplate ingredientTemplate) {
                         return databaseModel.update(ingredientTemplate, tagsModel.getTagIds());
                     }
-                }).map(intoNoError());
+                });
     }
 
     private void setIntoTemplate(@NonNull IngredientTemplate template) {
@@ -241,15 +243,15 @@ public class AddIngredientModel extends WithPictureModel {
     }
 
     @NonNull
-    List<IngredientTypeCreateError> canCreateIngredient() {
+    List<IngredientTypeCreateException.ErrorType> canCreateIngredient() {
         return canCreateIngredient(name, energyValue);
     }
 
-    public List<IngredientTypeCreateError> canCreateIngredient(@NonNull String name, @NonNull String value) {
-        List<IngredientTypeCreateError> errors = new ArrayList<>(4);
-        if (isEmpty(name)) errors.add(IngredientTypeCreateError.NO_NAME);
-        if (isEmpty(value)) errors.add(IngredientTypeCreateError.NO_VALUE);
-        else if (!isValueGreaterThanZero(value)) errors.add(IngredientTypeCreateError.ZERO_VALUE);
+    public List<IngredientTypeCreateException.ErrorType> canCreateIngredient(@NonNull String name, @NonNull String value) {
+        List<IngredientTypeCreateException.ErrorType> errors = new ArrayList<>(4);
+        if (isEmpty(name)) errors.add(IngredientTypeCreateException.ErrorType.NO_NAME);
+        if (isEmpty(value)) errors.add(IngredientTypeCreateException.ErrorType.NO_VALUE);
+        else if (!isValueGreaterThanZero(value)) errors.add(IngredientTypeCreateException.ErrorType.ZERO_VALUE);
         return errors;
     }
 
@@ -259,16 +261,6 @@ public class AddIngredientModel extends WithPictureModel {
 
     boolean isValueGreaterThanZero(@NonNull String value) {
         return getEnergyUnit(value).getValue().compareTo(BigDecimal.ZERO) > 0;
-    }
-
-    @NonNull
-    private Func1<Void, List<IngredientTypeCreateError>> intoNoError() {
-        return new Func1<Void, List<IngredientTypeCreateError>>() {
-            @Override
-            public List<IngredientTypeCreateError> call(Void aVoid) {
-                return Collections.emptyList();
-            }
-        };
     }
 
     @NonNull
@@ -305,23 +297,6 @@ public class AddIngredientModel extends WithPictureModel {
         };
     }
 
-    public enum IngredientTypeCreateError {
-        NO_NAME(R.string.add_ingredient_name_error_empty),
-        NO_VALUE(R.string.add_ingredient_energy_density_error_empty),
-        ZERO_VALUE(R.string.add_ingredient_energy_density_error_zero);
-
-        private final int errorResId;
-
-        IngredientTypeCreateError(@StringRes int errorResId) {
-            this.errorResId = errorResId;
-        }
-
-        @StringRes
-        public int getErrorResId() {
-            return errorResId;
-        }
-
-    }
 
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";
@@ -379,6 +354,37 @@ public class AddIngredientModel extends WithPictureModel {
             dest.writeString(energyValue);
             dest.writeString(amountType.toString());
             dest.writeParcelable(imageUri, flags);
+        }
+    }
+
+    public static class IngredientTypeCreateException extends IllegalStateException {
+        private final List<ErrorType> errors;
+
+        public IngredientTypeCreateException(@NonNull List<ErrorType> errors) {
+            this.errors = errors;
+        }
+
+        @NonNull
+        public List<ErrorType> getErrors() {
+            return errors;
+        }
+
+        public enum ErrorType {
+            NO_NAME(R.string.add_ingredient_name_error_empty),
+            NO_VALUE(R.string.add_ingredient_energy_density_error_empty),
+            ZERO_VALUE(R.string.add_ingredient_energy_density_error_zero);
+
+            private final int errorResId;
+
+            ErrorType(@StringRes int errorResId) {
+                this.errorResId = errorResId;
+            }
+
+            @StringRes
+            public int getErrorResId() {
+                return errorResId;
+            }
+
         }
     }
 }

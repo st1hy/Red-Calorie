@@ -12,12 +12,14 @@ import android.support.test.espresso.core.deps.guava.collect.Lists;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -27,6 +29,7 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
+import com.github.st1hy.countthemcalories.testutils.TestError;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -54,12 +57,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -169,17 +171,20 @@ public class AddIngredientModelRoboTest {
         model.name = "";
         model.energyValue = "0";
 
-        final AtomicReference<List<IngredientTypeCreateError>> errorsRef = new AtomicReference<>();
-        model.saveIntoDatabase().subscribe(new Action1<List<IngredientTypeCreateError>>() {
+        final AtomicReference<List<ErrorType>> errorsRef = new AtomicReference<>();
+        model.saveIntoDatabase().subscribe(new SimpleSubscriber<IngredientTemplate>() {
+
             @Override
-            public void call(List<IngredientTypeCreateError> errors) {
-                errorsRef.set(errors);
+            public void onError(Throwable e) {
+                if (e instanceof IngredientTypeCreateException) {
+                    errorsRef.set(((IngredientTypeCreateException) e).getErrors());
+                } else
+                    throw new TestError(e);
             }
         });
-
         verifyZeroInteractions(typesModel, tagsModel, settingsModel);
-        assertThat(errorsRef.get(), hasItems(IngredientTypeCreateError.ZERO_VALUE,
-                IngredientTypeCreateError.NO_NAME));
+        assertThat(errorsRef.get(), hasItems(ZERO_VALUE,
+                NO_NAME));
     }
 
     @Test
@@ -357,7 +362,7 @@ public class AddIngredientModelRoboTest {
         when(tagsModel.getTagIds()).thenReturn(tagIds);
         when(typesModel.update(any(IngredientTemplate.class), anyCollection())).thenReturn(Observable.just(null));
 
-        List<IngredientTypeCreateError> errors = model.saveIntoDatabase().toBlocking().single();
+        model.saveIntoDatabase().toBlocking().single();
 
         verify(typesModel).update(argThat(new TypeSafeMatcher<IngredientTemplate>() {
             @Override
@@ -376,8 +381,6 @@ public class AddIngredientModelRoboTest {
                 description.appendText("has updated fields");
             }
         }), argThat(contains(tagIds))); // new tags
-
-        assertThat(errors, Matchers.<IngredientTypeCreateError>empty());
     }
 
     @NonNull

@@ -3,15 +3,18 @@ package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TestError;
 import com.google.common.base.Optional;
 
@@ -20,24 +23,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Collections;
-import java.util.List;
 
 import rx.Observable;
+import rx.plugins.TestRxPlugins;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RxMockitoJUnitRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddIngredientPresenterImpTest {
     final String testUnit = "test unit";
     final String testName = "test name";
@@ -56,6 +63,8 @@ public class AddIngredientPresenterImpTest {
 
     @Before
     public void setUp() {
+        TestRxPlugins.registerImmediateMainThreadHook();
+        MockitoAnnotations.initMocks(this);
         presenter = new AddIngredientPresenterImp(view, permissionsHelper, model);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
@@ -71,26 +80,25 @@ public class AddIngredientPresenterImpTest {
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>empty());
         when(view.getValueObservable()).thenReturn(Observable.<CharSequence>empty());
         when(model.canCreateIngredient(anyString(), anyString()))
-                .thenReturn(Collections.<IngredientTypeCreateError>emptyList());
+                .thenReturn(Collections.<ErrorType>emptyList());
     }
 
     @Test
     public void testSave() {
-        List<IngredientTypeCreateError> errors = Collections.emptyList();
-        when(model.saveIntoDatabase()).thenReturn(Observable.just(errors));
+        when(model.saveIntoDatabase()).thenReturn(Observable.just(new IngredientTemplate(1L)));
         presenter.onClickedOnAction(R.id.action_save);
 
         verify(model).saveIntoDatabase();
         verify(view).showNameError(Optional.<Integer>absent());
         verify(view).showValueError(Optional.<Integer>absent());
-        verify(view).setResultAndFinish();
+        verify(view).setResultAndFinish(argThat(hasExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, 1L)));
 
         verifyNoMoreInteractions(view, model, permissionsHelper, testUri);
     }
 
     @Test
     public void testSaveError() throws Exception {
-        when(model.saveIntoDatabase()).thenReturn(Observable.<List<IngredientTypeCreateError>>error(new TestError()));
+        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(new TestError()));
         presenter.onClickedOnAction(R.id.action_save);
 
         verify(model).saveIntoDatabase();
@@ -147,7 +155,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just(""));
         when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just("2.55"));
         when(model.canCreateIngredient(anyString(), anyString()))
-                .thenReturn(Collections.singletonList(NO_NAME));
+                .thenReturn(Collections.singletonList(ErrorType.NO_NAME));
 
         presenter.onStart();
         verifyStart();
@@ -155,7 +163,7 @@ public class AddIngredientPresenterImpTest {
         verify(model).setName("");
         verify(model).setEnergyValue("2.55");
         verify(model).canCreateIngredient("", "2.55");
-        verify(view).showNameError(eq(Optional.of(NO_NAME.getErrorResId())));
+        verify(view).showNameError(eq(Optional.of(ErrorType.NO_NAME.getErrorResId())));
         verify(view).showValueError(eq(Optional.<Integer>absent()));
         verify(view).requestFocusToName();
         verifyNoMoreInteractions(view, model, permissionsHelper, testUri);
@@ -166,7 +174,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>just("Name"));
         when(view.getValueObservable()).thenReturn(Observable.<CharSequence>just(""));
         when(model.canCreateIngredient(anyString(), anyString()))
-                .thenReturn(Collections.singletonList(NO_VALUE));
+                .thenReturn(Collections.singletonList(ErrorType.NO_VALUE));
 
         presenter.onStart();
         verifyStart();
@@ -175,7 +183,7 @@ public class AddIngredientPresenterImpTest {
         verify(model).setEnergyValue("");
         verify(model).canCreateIngredient("Name", "");
         verify(view).showNameError(eq(Optional.<Integer>absent()));
-        verify(view).showValueError(eq(Optional.of(NO_VALUE.getErrorResId())));
+        verify(view).showValueError(eq(Optional.of(ErrorType.NO_VALUE.getErrorResId())));
         verify(view).requestFocusToValue();
         verifyNoMoreInteractions(view, model, permissionsHelper, testUri);
     }

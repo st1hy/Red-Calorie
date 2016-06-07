@@ -129,7 +129,8 @@ public class AddMealModel extends WithPictureModel {
         Meal meal = new Meal();
         if (mealId != -1L) meal.setId(mealId);
         meal.setName(getName());
-        meal.setCreationDate(DateTime.now());
+        if (meal.getCreationDate() == null)
+            meal.setCreationDate(DateTime.now());
         meal.setImageUri(getImageUri());
         return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
     }

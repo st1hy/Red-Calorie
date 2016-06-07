@@ -1,17 +1,22 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,9 +28,9 @@ import rx.functions.Action1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_NAME;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.NO_VALUE;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
@@ -116,35 +121,41 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @NonNull
-    private Subscriber<List<IngredientTypeCreateError>> onAddedIngredientToDatabase() {
-        return new Subscriber<List<IngredientTypeCreateError>>() {
+    private Subscriber<IngredientTemplate> onAddedIngredientToDatabase() {
+        return new Subscriber<IngredientTemplate>() {
 
             @Override
             public void onCompleted() {
             }
 
             @Override
-            public void onError(Throwable e) {
-                Timber.e(e, "Error adding new ingredient type to database");
+            public void onError(Throwable error) {
+                if (error instanceof IngredientTypeCreateException) {
+                    List<ErrorType> errors = ((IngredientTypeCreateException) error).getErrors();
+                    onCreateIngredientResult(errors);
+                } else {
+                    Timber.e(error, "Error adding new ingredient type to database");
+                }
             }
 
             @Override
-            public void onNext(List<IngredientTypeCreateError> errors) {
-                onCreateIngredientResult(errors);
-                if (errors.isEmpty())
-                    view.setResultAndFinish();
+            public void onNext(IngredientTemplate template) {
+                onCreateIngredientResult(Collections.<ErrorType>emptyList());
+                Intent intent = new Intent();
+                intent.putExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, template.getId());
+                view.setResultAndFinish(intent);
             }
         };
     }
 
-    private void onCreateIngredientResult(@NonNull List<IngredientTypeCreateError> errors) {
+    private void onCreateIngredientResult(@NonNull List<ErrorType> errors) {
         showErrorMessage(errors);
         if (!errors.isEmpty()) {
             requestFocusToField(errors.get(0));
         }
     }
 
-    private void showErrorMessage(@NonNull List<IngredientTypeCreateError> errors) {
+    private void showErrorMessage(@NonNull List<ErrorType> errors) {
         view.showNameError(searchListFor(errors, NO_NAME));
         if (errors.contains(NO_VALUE)) {
             view.showValueError(Optional.of(NO_VALUE.getErrorResId()));
@@ -153,7 +164,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         }
     }
 
-    private void requestFocusToField(@NonNull IngredientTypeCreateError firstError) {
+    private void requestFocusToField(@NonNull ErrorType firstError) {
         switch (firstError) {
             case NO_NAME:
                 view.requestFocusToName();
@@ -166,8 +177,8 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @NonNull
-    private Optional<Integer> searchListFor(@NonNull List<IngredientTypeCreateError> errors,
-                                            @NonNull IngredientTypeCreateError error) {
+    private Optional<Integer> searchListFor(@NonNull List<ErrorType> errors,
+                                            @NonNull ErrorType error) {
         return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
     }
 

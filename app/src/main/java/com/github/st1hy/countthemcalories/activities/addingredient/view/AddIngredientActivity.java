@@ -41,6 +41,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     public static final String ACTION_EDIT = "edit ingredient";
     public static final String EXTRA_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
     public static final String EXTRA_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
+    public static final String RESULT_INGREDIENT_ID_LONG = "ingredient result id";
 
     private static final int REQUEST_PICK_TAG = 0x2010;
     AddIngredientComponent component;
@@ -132,8 +133,8 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    public void setResultAndFinish() {
-        setResult(RESULT_OK);
+    public void setResultAndFinish(@NonNull Intent intent) {
+        setResult(RESULT_OK, intent);
         finish();
     }
 

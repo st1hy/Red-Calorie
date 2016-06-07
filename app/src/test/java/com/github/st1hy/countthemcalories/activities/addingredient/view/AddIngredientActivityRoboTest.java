@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
@@ -46,6 +45,8 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
@@ -210,7 +211,7 @@ public class AddIngredientActivityRoboTest {
         activity.energyDensityValue.setText("12");
 
         assertThat(activity.name.getError().toString(), equalTo(activity.getString(
-                AddIngredientModel.IngredientTypeCreateError.NO_NAME.getErrorResId()
+                NO_NAME.getErrorResId()
         )));
         assertTrue(activity.name.hasFocus());
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
@@ -224,7 +225,7 @@ public class AddIngredientActivityRoboTest {
         activity.energyDensityValue.setText("0000");
 
         assertThat(activity.energyDensityValue.getError().toString(), equalTo(activity.getString(
-                AddIngredientModel.IngredientTypeCreateError.ZERO_VALUE.getErrorResId()
+                ZERO_VALUE.getErrorResId()
         )));
         assertTrue(activity.energyDensityValue.hasFocus());
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
