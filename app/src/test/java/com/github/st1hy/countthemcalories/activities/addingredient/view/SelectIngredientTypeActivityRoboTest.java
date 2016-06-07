@@ -16,7 +16,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
-public class SelectIngredientErrorTypeActivityRoboTest {
+public class SelectIngredientTypeActivityRoboTest {
 
     SelectIngredientTypeActivity activity;
 
