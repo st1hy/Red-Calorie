@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -23,9 +22,8 @@ import com.github.st1hy.countthemcalories.activities.tags.inject.TagsComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsModule;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.rx.RxSnackbar;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
@@ -39,7 +37,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class TagsActivity extends DrawerActivity implements TagsView {
+public class TagsActivity extends UndoDrawerActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
     public static final String EXTRA_EXCLUDE_TAG_IDS = "exclude tag id";
     public static final String EXTRA_TAG_ID = "extra tag id";
@@ -62,8 +60,6 @@ public class TagsActivity extends DrawerActivity implements TagsView {
     CoordinatorLayout root;
 
     SearchView searchView;
-
-    Snackbar undo = null;
 
     @NonNull
     protected TagsComponent getComponent() {
@@ -92,29 +88,6 @@ public class TagsActivity extends DrawerActivity implements TagsView {
         return Observable.merge(RxView.clicks(fab), RxView.clicks(notTagsButton));
     }
 
-    @NonNull
-    @Override
-    public Observable<Void> showUndoMessage(@StringRes int undoMessageResId) {
-        RxSnackbar rxSnackbar = RxSnackbar.make(root, undoMessageResId, Snackbar.LENGTH_LONG);
-        Observable<Void> observable = rxSnackbar.action(R.string.tags_undo);
-        undo = rxSnackbar.getSnackbar();
-        undo.setCallback(new Snackbar.Callback() {
-            @Override
-            public void onDismissed(Snackbar snackbar, int event) {
-                undo = null;
-            }
-        });
-        rxSnackbar.show();
-        return observable;
-    }
-
-    @Override
-    public void hideUndoMessage() {
-        if (undo != null) {
-            undo.dismiss();
-            undo = null;
-        }
-    }
 
     @NonNull
     @Override
@@ -212,5 +185,11 @@ public class TagsActivity extends DrawerActivity implements TagsView {
                 rxAlertDialog.getDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
             }
         };
+    }
+
+    @NonNull
+    @Override
+    protected View getUndoRoot() {
+        return root;
     }
 }

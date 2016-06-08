@@ -172,6 +172,29 @@ public class IngredientActivityTest {
                 .check(doesNotExist());
         ingredientTemplates = session.getIngredientTemplateDao().loadAll();
         assertThat(ingredientTemplates, hasSize(1));
+
+    }
+
+    @Test
+    public void testUndo() throws Exception {
+        main.launchActivity(null);
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(swipeRight());
+        onView(allOf(withId(R.id.ingredients_item_delete), isDisplayed()))
+                .perform(click());
+
+        onView(withText(exampleIngredients[0].getName()))
+                .check(doesNotExist());
+        List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();
+        assertThat(ingredientTemplates, hasSize(2));
+
+        onView(withText(R.string.undo)).perform(click());
+        onView(withText(exampleIngredients[1].getName()))
+                .check(matches(isDisplayed()));
+
+        ingredientTemplates = session.getIngredientTemplateDao().loadAll();
+        assertThat(ingredientTemplates, hasSize(3));
+
     }
 
     @Test

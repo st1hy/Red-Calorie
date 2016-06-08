@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.model.commands;
+package com.github.st1hy.countthemcalories.core.command;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;

@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -32,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class IngredientsActivity extends DrawerActivity implements IngredientsView {
+public class IngredientsActivity extends UndoDrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
     public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcel";
 
@@ -51,6 +52,8 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     View noIngredientsButton;
     @BindView(R.id.ingredients_content)
     RecyclerView recyclerView;
+    @BindView(R.id.ingredients_root)
+    CoordinatorLayout root;
 
     SearchView searchView;
 
@@ -156,5 +159,11 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @NonNull
+    @Override
+    protected View getUndoRoot() {
+        return root;
     }
 }

@@ -3,7 +3,9 @@ package com.github.st1hy.countthemcalories.activities.ingredients.model;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -28,5 +30,10 @@ public class IngredientsModel {
     @NonNull
     public String getReadableEnergyDensity(@NonNull EnergyDensity energyDensity) {
         return physicalQuantitiesModel.convertAndFormat(energyDensity);
+    }
+
+    @StringRes
+    public int getUndoDeleteMessage() {
+        return R.string.ingredients_undo_remove;
     }
 }

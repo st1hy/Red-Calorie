@@ -21,6 +21,7 @@
     <string name="overview_meal_remove_description">Remove this meal</string>
     <string name="overview_meal_edit_description">Edit meal</string>
     <string name="overview_meal_photo_description">Photography of a meal</string>
+    <string name="meal_details_title">Meal details</string>
 
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
@@ -50,6 +51,7 @@
     <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_message">This ingredient is used somewhere in a meal. Removing this ingredient will change all meals that contains it.\nIs this what you want?</string>
+    <string name="ingredients_undo_remove">Ingredient removed</string>
 
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
@@ -73,9 +75,11 @@
     <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
     <string name="tags_undo_delete_message">Category removed</string>
-    <string name="tags_undo">Undo</string>
+    <string name="undo">Undo</string>
     <string name="tags_undo_add_message">New category added</string>
     <string name="tags_edit_tag_dialog">Edit category</string>
+    <string name="tags_remove_description">Remove category</string>
+    <string name="tags_edit_description">Edit category name</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_current_unit">Current unit:</string>
@@ -88,8 +92,5 @@
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
 
-    <string name="meal_details_title">Meal details</string>
-    <string name="tags_remove_description">Remove category</string>
-    <string name="tags_edit_description">Edit category name</string>
 
 </resources>

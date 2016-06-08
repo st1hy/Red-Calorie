@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseMo
 import com.github.st1hy.countthemcalories.core.command.AbstractCommandResponse;
 import com.github.st1hy.countthemcalories.core.command.Command;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 

@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.application.inject;
 import android.app.Application;
 import android.content.Context;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
@@ -31,7 +31,7 @@ public interface ApplicationComponent {
 
     RxTagsDatabaseModel getTagsModel();
 
-    IngredientTypesDatabaseModel getIngredientTypesModel();
+    RxIngredientsDatabaseModel getIngredientTypesModel();
 
     MealDatabaseModel getMealsModel();
 

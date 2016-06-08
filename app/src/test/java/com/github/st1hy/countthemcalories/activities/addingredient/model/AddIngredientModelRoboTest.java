@@ -16,7 +16,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -94,7 +94,7 @@ public class AddIngredientModelRoboTest {
     @Mock
     IngredientTagsModel tagsModel;
     @Mock
-    IngredientTypesDatabaseModel typesModel;
+    RxIngredientsDatabaseModel typesModel;
     @Mock
     SettingsModel settingsModel;
     private final Resources resources = RuntimeEnvironment.application.getResources();

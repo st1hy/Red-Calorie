@@ -20,6 +20,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -31,10 +32,10 @@ import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 
-public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
+public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
     private final Lazy<IngredientTemplateDao> dao;
 
-    public IngredientTypesDatabaseModel(@NonNull Lazy<DaoSession> session) {
+    public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
         this.dao = DoubleCheckLazy.create(new Provider<IngredientTemplateDao>() {
 
@@ -151,7 +152,13 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
 
     @Override
     protected void performRemove(@NonNull IngredientTemplate data) {
+        performRemoveRaw(data);
+    }
+
+    @NonNull
+    public RemovalEffect performRemoveRaw(@NonNull IngredientTemplate data) {
         List<Ingredient> childIngredients = data.getChildIngredients();
+        List<Meal> removedMeals = new LinkedList<>();
         List<JointIngredientTag> tags = data.getTags();
         data.delete();
         for (Ingredient ingredient : childIngredients) {
@@ -160,12 +167,16 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
             List<Ingredient> ingredients = meal.getIngredients();
             ingredient.delete();
             ingredients.remove(ingredient);
-            if (ingredients.isEmpty()) meal.delete();
+            if (ingredients.isEmpty()) {
+                meal.delete();
+                removedMeals.add(meal);
+            }
         }
         for (JointIngredientTag join : tags) {
             join.delete();
         }
         session().clear();
+        return new RemovalEffect(data, childIngredients, tags, removedMeals);
     }
 
     @Override
@@ -211,4 +222,5 @@ public class IngredientTypesDatabaseModel extends RxDatabaseModel<IngredientTemp
             }
         };
     }
+
 }

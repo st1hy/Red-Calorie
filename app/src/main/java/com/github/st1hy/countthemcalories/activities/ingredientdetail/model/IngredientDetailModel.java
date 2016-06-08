@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -34,7 +34,7 @@ import static com.github.st1hy.countthemcalories.activities.ingredientdetail.vie
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class IngredientDetailModel {
-    final IngredientTypesDatabaseModel ingredientTypesModel;
+    final RxIngredientsDatabaseModel ingredientTypesModel;
     final ParcelableProxy parcelableProxy;
     final Resources resources;
 
@@ -43,7 +43,7 @@ public class IngredientDetailModel {
     private final Observable<Ingredient> ingredientObservable;
 
     @Inject
-    public IngredientDetailModel(@NonNull IngredientTypesDatabaseModel ingredientTypesModel,
+    public IngredientDetailModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                  @NonNull Resources resources,
                                  @Nullable Intent intent,
                                  @Nullable Bundle savedState) {

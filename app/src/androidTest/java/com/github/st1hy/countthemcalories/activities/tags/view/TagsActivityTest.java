@@ -104,7 +104,7 @@ public class TagsActivityTest {
                 .perform(click());
         onView(withText(tagName)).check(doesNotExist());
 
-        onView(withText(R.string.tags_undo)).perform(click());
+        onView(withText(R.string.undo)).perform(click());
         onView(withText(tagName)).check(matches(isDisplayed()));
     }
 

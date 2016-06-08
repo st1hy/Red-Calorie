@@ -8,7 +8,7 @@ import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -63,7 +63,7 @@ public class IngredientDetailModelTest {
 
     final BigDecimal amount = new BigDecimal("32.5");
 
-    private IngredientTypesDatabaseModel ingredientTypesModel;
+    private RxIngredientsDatabaseModel ingredientTypesModel;
     private Resources resources;
     private IngredientDetailModel model;
 
@@ -72,7 +72,7 @@ public class IngredientDetailModelTest {
         Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
         resources = RuntimeEnvironment.application.getResources();
-        ingredientTypesModel = Mockito.mock(IngredientTypesDatabaseModel.class);
+        ingredientTypesModel = Mockito.mock(RxIngredientsDatabaseModel.class);
         when(ingredientTypesModel.unParcel(any(IngredientTypeParcel.class)))
                 .thenReturn(Observable.just(example));
         when(ingredientTypesModel.getById(example.getId()))

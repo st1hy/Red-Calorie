@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -31,14 +31,14 @@ import timber.log.Timber;
 public class MealIngredientsListModel {
 
     final MealDatabaseModel databaseModel;
-    final IngredientTypesDatabaseModel ingredientTypesModel;
+    final RxIngredientsDatabaseModel ingredientTypesModel;
 
     final ArrayList<Ingredient> ingredients;
     final ParcelableProxy parcelableProxy;
 
     final Observable<Integer> loadingObservable;
 
-    public MealIngredientsListModel(@NonNull IngredientTypesDatabaseModel ingredientTypesModel,
+    public MealIngredientsListModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                     @NonNull MealDatabaseModel databaseModel,
                                     @Nullable Intent intent,
                                     @Nullable Bundle savedState) {

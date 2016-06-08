@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.shadows.ShadowSnackbar;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
@@ -35,6 +36,8 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
+
+import java.util.List;
 
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
@@ -52,7 +55,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName,
+        shadows = {ShadowSnackbar.class})
 public class IngredientsActivityRoboTest {
 
     public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
@@ -186,10 +190,12 @@ public class IngredientsActivityRoboTest {
         assertThat(title.getText().toString(), equalTo(exampleIngredients[1].getName()));
 
         activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
-        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(1));
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
-        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
-        Assert.assertThat(title.getText().toString(), equalTo(exampleIngredients[2].getName()));
+        List<IngredientTemplate> templates = session.getIngredientTemplateDao().loadAll();
+        assertThat(templates, hasSize(1));
+        assertThat(templates.get(0).getName(), equalTo(exampleIngredients[2].getName()));
+//        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+//        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+//        Assert.assertThat(title.getText().toString(), equalTo(exampleIngredients[2].getName()));
     }
 
     @Test
@@ -221,5 +227,16 @@ public class IngredientsActivityRoboTest {
                 .getWhenReady().getOrNull();
         assertNotNull(template);
         assertThat(template.getName(), equalTo(exampleIngredients[0].getName()));
+    }
+
+
+    @Test
+    public void testUndoRemove() throws Exception {
+        setupActivity();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        testDeleteWithDialog();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        ShadowSnackbar.getLatest().performAction();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
     }
 }

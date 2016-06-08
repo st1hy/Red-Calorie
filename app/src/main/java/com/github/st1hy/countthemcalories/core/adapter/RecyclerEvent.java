@@ -28,4 +28,9 @@ public class RecyclerEvent {
     public enum Type {
         ADDED, REMOVED
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " type: " + type + ", position: " + position;
+    }
 }

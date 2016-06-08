@@ -5,19 +5,25 @@ import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
+import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -51,7 +57,8 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
 
     final IngredientsView view;
     final IngredientsModel model;
-    final IngredientTypesDatabaseModel databaseModel;
+    final RxIngredientsDatabaseModel databaseModel;
+    final IngredientsDatabaseCommands commands;
     final Picasso picasso;
 
     final Queue<Long> addedItems = new LinkedList<>();
@@ -59,12 +66,14 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
                                  @NonNull IngredientsModel model,
-                                 @NonNull IngredientTypesDatabaseModel databaseModel,
+                                 @NonNull RxIngredientsDatabaseModel databaseModel,
+                                 @NonNull IngredientsDatabaseCommands commands,
                                  @NonNull Picasso picasso) {
         super(databaseModel);
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
+        this.commands = commands;
         this.picasso = picasso;
     }
 
@@ -113,17 +122,18 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     }
 
     void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
-        picasso.cancelRequest(holder.getImage());
+        ImageView imageView = holder.getImage();
+        picasso.cancelRequest(imageView);
         Uri imageUri = ingredient.getImageUri();
         if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
             RxPicasso.Builder.with(picasso, imageUri)
                     .centerCrop()
                     .fit()
-                    .into(holder.getImage());
+                    .into(imageView);
         } else {
             @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
                     R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
-            holder.getImage().setImageResource(imageRes);
+            imageView.setImageResource(imageRes);
         }
     }
 
@@ -169,7 +179,9 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         databaseModel.getById(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(showConfirmationIfUsed())
-                .flatMap(deleteItem())
+                .flatMap(deleteIngredient())
+                .doOnNext(showUndoRemoval())
+                .map(Functions.<Cursor>intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onItemRemoved(position));
     }
@@ -178,6 +190,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
         view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
     }
+
 
     @NonNull
     @Override
@@ -195,16 +208,6 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
                 else
                     return view.showUsedIngredientRemoveConfirmationDialog()
                             .map(Functions.into(ingredientTemplate));
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<IngredientTemplate, Observable<Cursor>> deleteItem() {
-        return new Func1<IngredientTemplate, Observable<Cursor>>() {
-            @Override
-            public Observable<Cursor> call(IngredientTemplate ingredientTemplate) {
-                return databaseModel.removeAndRefresh(ingredientTemplate);
             }
         };
     }
@@ -262,4 +265,67 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
             }
         };
     }
+
+    @NonNull
+    private Func1<IngredientTemplate, Observable<CommandResponse<Cursor, InsertResult>>> deleteIngredient() {
+        return new Func1<IngredientTemplate, Observable<CommandResponse<Cursor, InsertResult>>>() {
+            @Override
+            public Observable<CommandResponse<Cursor, InsertResult>> call(IngredientTemplate ingredientTemplate) {
+                return commands.delete(ingredientTemplate);
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<CommandResponse<Cursor, InsertResult>> showUndoRemoval() {
+        return new Action1<CommandResponse<Cursor, InsertResult>>() {
+            @Override
+            public void call(final CommandResponse<Cursor, InsertResult> deleteResponse) {
+                addSubscription(deleteResponse.undoAvailability()
+                        .compose(onUndoAvailable(deleteResponse, model.getUndoDeleteMessage()))
+                        .subscribe(onIngredientAdded())
+                );
+            }
+        };
+    }
+
+    @NonNull
+    private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
+            @NonNull final CommandResponse<Response, UndoResponse> response,
+            @StringRes final int undoMessage) {
+        return new UndoTranformer<>(response, showUndoMessage(undoMessage));
+    }
+
+    @NonNull
+    Func1<Boolean, Observable<Void>> showUndoMessage(@StringRes final int undoMessage) {
+        return new Func1<Boolean, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(Boolean isAvailable) {
+                if (isAvailable)
+                    return view.showUndoMessage(undoMessage);
+                else {
+                    view.hideUndoMessage();
+                    return Observable.empty();
+                }
+            }
+        };
+    }
+
+    @NonNull
+    SimpleSubscriber<InsertResult> onIngredientAdded() {
+        return new SimpleSubscriber<InsertResult>() {
+            @Override
+            public void onNext(InsertResult result) {
+                int newItemPosition = result.getNewItemPositionInCursor();
+                onCursorUpdate(result.getCursor());
+                if (newItemPosition != -1) {
+                    notifyItemInsertedRx(newItemPosition);
+                    view.scrollToPosition(newItemPosition);
+                } else {
+                    notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
 }

@@ -41,7 +41,6 @@ public class TagParcel extends DaoParcel<Tag> {
                         public Tag call() throws Exception {
                             Tag tag = super.call();
                             tag.getIngredientTypes();
-                            //TODO check if how deep to load
                             return tag;
                         }
                     };

@@ -4,12 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.core.baseview.DialogView;
+import com.github.st1hy.countthemcalories.core.command.view.UndoView;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 
 import rx.Observable;
 
-public interface TagsView extends DialogView, DrawerView {
+public interface TagsView extends DialogView, DrawerView, UndoView {
     /**
      * @return observable emitting new tag name to add
      */
@@ -31,8 +32,4 @@ public interface TagsView extends DialogView, DrawerView {
     @NonNull
     Observable<Void> getOnAddTagClickedObservable();
 
-    @NonNull
-    Observable<Void> showUndoMessage(@StringRes int undoMessageResId);
-
-    void hideUndoMessage();
 }

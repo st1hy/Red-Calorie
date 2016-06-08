@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
@@ -67,7 +67,7 @@ public class AddMealActivityModule {
 
     @Provides
     @PerActivity
-    public MealIngredientsListModel provideListModel(IngredientTypesDatabaseModel model,
+    public MealIngredientsListModel provideListModel(RxIngredientsDatabaseModel model,
                                                      MealDatabaseModel databaseModel,
                                                      @Nullable Intent intent,
                                                      @Nullable Bundle savedState) {

@@ -12,7 +12,7 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientTypesDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -41,7 +41,7 @@ import rx.functions.Func1;
 public class AddIngredientModel extends WithPictureModel {
     final SettingsModel settingsModel;
     final IngredientTagsModel tagsModel;
-    final IngredientTypesDatabaseModel databaseModel;
+    final RxIngredientsDatabaseModel databaseModel;
     final Resources resources;
     final Intent intent;
     final ParcelableProxy parcelableProxy;
@@ -60,7 +60,7 @@ public class AddIngredientModel extends WithPictureModel {
     @Inject
     public AddIngredientModel(@NonNull SettingsModel settingsModel,
                               @NonNull IngredientTagsModel tagsModel,
-                              @NonNull IngredientTypesDatabaseModel databaseModel,
+                              @NonNull RxIngredientsDatabaseModel databaseModel,
                               @NonNull Resources resources,
                               @Nullable Bundle savedState,
                               @Nullable Intent intent) {
