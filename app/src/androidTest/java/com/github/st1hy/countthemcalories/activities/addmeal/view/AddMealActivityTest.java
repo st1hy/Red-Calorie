@@ -40,6 +40,7 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -95,6 +96,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testCanShowErrorOnSave() {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         onView(withHint(R.string.add_meal_name_hint))
                 .check(matches(hasErrorText(getTargetContext().getString(R.string.add_meal_name_empty_error))));
@@ -105,6 +107,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testSetMealName() {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         onView(withHint(R.string.add_meal_name_hint)).check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("My meal"))
                 .check(matches(withText("My meal")));
@@ -112,6 +115,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testSelectImageFromGallery() {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
             @Override
@@ -152,6 +156,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testSelectImageFromCamera() {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         @DrawableRes final int testDrawableId = android.R.drawable.ic_input_add;
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
@@ -177,6 +182,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testSelectImageFromCameraUserCanceled() {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
@@ -216,17 +222,21 @@ public class AddMealActivityTest {
 
     @Test
     public void testAddIngredientFab() throws Exception {
-        onView(withId(R.id.add_meal_fab_add_ingredient)).check(matches(isDisplayed()))
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
+        onView(withId(R.id.add_meal_fab_add_ingredient))
                 .perform(click());
-        intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
-                hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        testAddIngredient();
     }
 
     @Test
     public void testAddIngredientButton() throws Exception {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
                 .perform(click());
+        testAddIngredient();
+    }
+
+    private void testAddIngredient() {
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
@@ -274,6 +284,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testAddIngredientWithIncorrectValue() throws Exception {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),

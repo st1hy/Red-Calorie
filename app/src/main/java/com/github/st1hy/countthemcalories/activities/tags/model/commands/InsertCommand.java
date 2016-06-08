@@ -68,7 +68,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
     class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
 
         public InsertResponse(@NonNull InsertResult result) {
-            super(result, true);
+            super(result, false);
         }
         @NonNull
         @Override

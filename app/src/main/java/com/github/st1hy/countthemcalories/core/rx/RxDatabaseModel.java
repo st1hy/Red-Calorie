@@ -29,10 +29,17 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
      * @return position of the item in cursor or -1 if item could not be found inside the cursor
      */
     public int findInCursor(@NonNull Cursor cursor, T data) {
-        int idColumn = cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
         long daoId = getKey(data);
+        return findInCursor(cursor, daoId);
+    }
+
+    /**
+     * @return position of the item in cursor or -1 if item could not be found inside the cursor
+     */
+    public int findInCursor(@NonNull Cursor cursor, long itemId) {
+        int idColumn = cursor.getColumnIndexOrThrow(getKeyProperty().columnName);
         while (cursor.moveToNext()) {
-            if (daoId == cursor.getLong(idColumn)) {
+            if (itemId == cursor.getLong(idColumn)) {
                 return cursor.getPosition();
             }
         }

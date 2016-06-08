@@ -87,6 +87,7 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
                         Timber.v("Db cursor query ended");
                         onCursorUpdate(cursor);
                         notifyDataSetChanged();
+                        onSearchFinished();
                     }
                 }));
     }
@@ -100,6 +101,9 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
     protected void onCursorUpdate(@NonNull Cursor cursor) {
         closeCursor(false);
         RxDaoSearchAdapter.this.cursor = cursor;
+    }
+
+    protected void onSearchFinished() {
     }
 
     @NonNull

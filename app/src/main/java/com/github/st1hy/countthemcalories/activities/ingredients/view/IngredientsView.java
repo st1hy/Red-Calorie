@@ -25,4 +25,6 @@ public interface IngredientsView extends DrawerView {
     Observable<Void> showUsedIngredientRemoveConfirmationDialog();
 
     void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel);
+
+    void scrollToPosition(int position);
 }

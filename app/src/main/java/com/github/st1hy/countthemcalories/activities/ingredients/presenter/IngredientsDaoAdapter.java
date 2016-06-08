@@ -20,12 +20,18 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.rx.Schedulers;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -47,6 +53,8 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     final IngredientsModel model;
     final IngredientTypesDatabaseModel databaseModel;
     final Picasso picasso;
+
+    final Queue<Long> addedItems = new LinkedList<>();
 
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
@@ -208,6 +216,49 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
             public void call(Cursor cursor) {
                 onCursorUpdate(cursor);
                 notifyItemRemovedRx(position);
+            }
+        };
+    }
+
+    public void onIngredientAdded(long addedIngredientId) {
+        addedItems.offer(addedIngredientId);
+    }
+
+    @Override
+    protected void onSearchFinished() {
+        super.onSearchFinished();
+        final Long newItemId = addedItems.poll();
+        if (newItemId != null) {
+            addSubscription(Observable.fromCallable(findInCursor(newItemId))
+                    .subscribeOn(Schedulers.computation())
+                    .filter(findSuccessful())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SimpleSubscriber<Integer>() {
+                        @Override
+                        public void onNext(Integer integer) {
+                            //Add maybe some sort of animation to highlight new item
+                            view.scrollToPosition(integer);
+                        }
+                    }));
+        }
+    }
+
+    @NonNull
+    private Callable<Integer> findInCursor(final long newItemId) {
+        return new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return databaseModel.findInCursor(getCursor(), newItemId);
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Integer, Boolean> findSuccessful() {
+        return new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer != -1;
             }
         };
     }

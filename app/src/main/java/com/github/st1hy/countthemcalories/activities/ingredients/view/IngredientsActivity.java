@@ -38,6 +38,7 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
 
     public static final int REQUEST_SELECT_TYPE = 0x127;
     public static final int REQUEST_EDIT = 0x128;
+    public static final int REQUEST_ADD_INGREDIENT = 0x129;
 
     @Inject
     IngredientsPresenter presenter;
@@ -89,7 +90,7 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     public void openNewIngredientScreen(@NonNull String action) {
         Intent intent = new Intent(this, AddIngredientActivity.class);
         intent.setAction(action);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ADD_INGREDIENT);
     }
 
     @Override
@@ -139,9 +140,21 @@ public class IngredientsActivity extends DrawerActivity implements IngredientsVi
     }
 
     @Override
+    public void scrollToPosition(int position) {
+        recyclerView.scrollToPosition(position);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SELECT_TYPE) {
-            presenter.onSelectIngredientTypeResult(resultCode);
-        } super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_SELECT_TYPE:
+                presenter.onSelectIngredientTypeResult(resultCode);
+                break;
+            case REQUEST_ADD_INGREDIENT:
+                presenter.onIngredientAdded(resultCode, data);
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

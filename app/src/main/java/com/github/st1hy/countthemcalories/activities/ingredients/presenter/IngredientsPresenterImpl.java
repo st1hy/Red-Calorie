@@ -1,7 +1,10 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
@@ -57,6 +60,15 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
             case SelectIngredientTypeActivity.RESULT_MEAL:
                 view.openNewIngredientScreen(AddIngredientActivity.ACTION_CREATE_MEAL);
                 break;
+        }
+    }
+
+    @Override
+    public void onIngredientAdded(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            long addedIngredientId = data.getLongExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, -1L);
+            if (addedIngredientId != -1L)
+                daoAdapter.onIngredientAdded(addedIngredientId);
         }
     }
 
