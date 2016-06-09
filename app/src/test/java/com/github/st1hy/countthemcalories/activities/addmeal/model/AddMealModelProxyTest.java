@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class AddMealModelProxyTest {
 
     private MealIngredientsListModel listModel;
     private Resources resources;
-    private MealDatabaseModel databaseModel;
+    private RxMealsDatabaseModel databaseModel;
     private AddMealModel model;
 
 
@@ -37,7 +37,7 @@ public class AddMealModelProxyTest {
     public void setUp() throws Exception {
         listModel = Mockito.mock(MealIngredientsListModel.class);
         resources = RuntimeEnvironment.application.getResources();
-        databaseModel = Mockito.mock(MealDatabaseModel.class);
+        databaseModel = Mockito.mock(RxMealsDatabaseModel.class);
         model = new AddMealModel(listModel, databaseModel, resources, null, null);
 
         model.setName(testName);

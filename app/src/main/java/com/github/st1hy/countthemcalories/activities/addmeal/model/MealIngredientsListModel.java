@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -30,7 +30,7 @@ import timber.log.Timber;
 
 public class MealIngredientsListModel {
 
-    final MealDatabaseModel databaseModel;
+    final RxMealsDatabaseModel databaseModel;
     final RxIngredientsDatabaseModel ingredientTypesModel;
 
     final ArrayList<Ingredient> ingredients;
@@ -39,7 +39,7 @@ public class MealIngredientsListModel {
     final Observable<Integer> loadingObservable;
 
     public MealIngredientsListModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
-                                    @NonNull MealDatabaseModel databaseModel,
+                                    @NonNull RxMealsDatabaseModel databaseModel,
                                     @Nullable Intent intent,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;

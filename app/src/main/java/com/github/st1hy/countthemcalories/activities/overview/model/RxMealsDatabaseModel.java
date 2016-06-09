@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -27,12 +28,12 @@ import de.greenrobot.dao.query.CursorQuery;
 import de.greenrobot.dao.query.Query;
 import rx.Observable;
 
-public class MealDatabaseModel extends RxDatabaseModel<Meal> {
+public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     private final Lazy<MealDao> mealDaoLazy;
     private Query<Meal> filteredByDateSortedByDate;
 
-    public MealDatabaseModel(@NonNull Lazy<DaoSession> session) {
+    public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
         mealDaoLazy = DoubleCheckLazy.create(new Provider<MealDao>() {
             @Override
@@ -66,26 +67,32 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                performInsert(meal);
-                IngredientDao ingredientDao = session().getIngredientDao();
-                List<Ingredient> mealIngredients = meal.getIngredients();
-                for (Ingredient mealIngredient : mealIngredients) {
-                    if (!ingredients.contains(mealIngredient)) {
-                        IngredientTemplate ingredientType = mealIngredient.getIngredientType();
-                        List<Ingredient> childIngredients = ingredientType.getChildIngredients();
-                        mealIngredient.delete();
-                        childIngredients.remove(mealIngredient);
-                    }
-                }
-                for (Ingredient ingredient : ingredients) {
-                    ingredient.setPartOfMeal(meal);
-                    ingredientDao.insertOrReplace(ingredient);
-                }
-                meal.resetIngredients();
-                meal.getIngredients();
+                performInsertOrUpdate(meal, ingredients);
                 return null;
             }
         };
+    }
+
+    @NonNull
+    public Meal performInsertOrUpdate(@NonNull Meal meal, @NonNull Collection<Ingredient> ingredients) {
+        Meal result = performInsert(meal);
+        IngredientDao ingredientDao = session().getIngredientDao();
+        List<Ingredient> mealIngredients = meal.getIngredients();
+        for (Ingredient mealIngredient : mealIngredients) {
+            if (!ingredients.contains(mealIngredient)) {
+                IngredientTemplate ingredientType = mealIngredient.getIngredientType();
+                List<Ingredient> childIngredients = ingredientType.getChildIngredients();
+                mealIngredient.delete();
+                childIngredients.remove(mealIngredient);
+            }
+        }
+        for (Ingredient ingredient : ingredients) {
+            ingredient.setPartOfMeal(meal);
+            ingredientDao.insertOrReplace(ingredient);
+        }
+        meal.resetIngredients();
+        meal.getIngredients();
+        return result;
     }
 
     @NonNull
@@ -132,11 +139,17 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
 
     @Override
     protected void performRemove(@NonNull Meal data) {
+        performRemoveRaw(data);
+    }
+
+    @NonNull
+    public Pair<Meal, List<Ingredient>> performRemoveRaw(@NonNull Meal data) {
         List<Ingredient> ingredients = data.getIngredients();
         data.delete();
         for (Ingredient ingredient: ingredients) {
             ingredient.delete();
         }
+        return new Pair<>(data, ingredients);
     }
 
     @Override

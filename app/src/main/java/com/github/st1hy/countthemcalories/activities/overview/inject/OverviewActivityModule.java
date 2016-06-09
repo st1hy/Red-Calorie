@@ -3,7 +3,9 @@ package com.github.st1hy.countthemcalories.activities.overview.inject;
 import android.content.res.Resources;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealsViewModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.commands.MealsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.MealsAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenterImp;
@@ -34,9 +36,10 @@ public class OverviewActivityModule {
 
     @PerActivity
     @Provides
-    public MealsAdapter provideAdapter(OverviewView view, MealDatabaseModel databaseModel,
-                                       Picasso picasso, PhysicalQuantitiesModel quantityModel) {
-        return new MealsAdapter(view, databaseModel, picasso, quantityModel);
+    public MealsAdapter provideAdapter(OverviewView view, RxMealsDatabaseModel databaseModel,
+                                       Picasso picasso, PhysicalQuantitiesModel quantityModel,
+                                       MealsDatabaseCommands commands, MealsViewModel viewModel) {
+        return new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
     }
 
     @PerActivity

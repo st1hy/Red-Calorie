@@ -7,7 +7,7 @@ import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
@@ -49,19 +49,19 @@ import static org.mockito.Mockito.when;
 public class MealDetailModelTest {
     public static final Meal example = new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now());
 
-    private MealDatabaseModel mealDatabaseModel;
+    private RxMealsDatabaseModel rxMealsDatabaseModel;
     private MealDetailModel model;
 
     @Before
     public void setUp() throws Exception {
         Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
-        mealDatabaseModel = Mockito.mock(MealDatabaseModel.class);
-        when(mealDatabaseModel.unParcel(any(MealParcel.class)))
+        rxMealsDatabaseModel = Mockito.mock(RxMealsDatabaseModel.class);
+        when(rxMealsDatabaseModel.unParcel(any(MealParcel.class)))
                 .thenReturn(Observable.just(example));
         Intent intent = new Intent();
         intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, new MealParcel(example));
-        model = new MealDetailModel(mealDatabaseModel, intent, null);
+        model = new MealDetailModel(rxMealsDatabaseModel, intent, null);
         assertThat(model.isDataValid(), equalTo(true));
     }
 
@@ -87,7 +87,7 @@ public class MealDetailModelTest {
     @Test
     public void testInvalidIntent() throws Exception {
         Timber.uprootAll(); //Don't print expected error
-        model = new MealDetailModel(mealDatabaseModel, null, null);
+        model = new MealDetailModel(rxMealsDatabaseModel, null, null);
         assertThat(model.isDataValid(), equalTo(false));
         final AtomicReference<List<Meal>> list = new AtomicReference<>();
         model.getMealObservable().toList().subscribe(new Action1<List<Meal>>() {
@@ -105,7 +105,7 @@ public class MealDetailModelTest {
 
         model.onSaveState(bundle);
 
-        MealDetailModel restoredModel = new MealDetailModel(mealDatabaseModel, null, bundle);
+        MealDetailModel restoredModel = new MealDetailModel(rxMealsDatabaseModel, null, bundle);
         checkRestoredModel(restoredModel);
     }
 
@@ -118,7 +118,7 @@ public class MealDetailModelTest {
         Bundle bundle = new Bundle();
         bundle.putParcelable(MealDetailModel.ParcelableProxy.STATE_MODEL, fromParcel);
 
-        MealDetailModel restoredModel = new MealDetailModel(mealDatabaseModel, null, bundle);
+        MealDetailModel restoredModel = new MealDetailModel(rxMealsDatabaseModel, null, bundle);
         checkRestoredModel(restoredModel);
         parcel.recycle();
     }
@@ -150,7 +150,7 @@ public class MealDetailModelTest {
         parcel.setDataPosition(0);
         MealParcel fromParcel = MealParcel.CREATOR.createFromParcel(parcel);
         parcel.recycle();
-        when(mealDatabaseModel.unParcel(fromParcel)).thenReturn(Observable.<Meal>error(new TestError()));
+        when(rxMealsDatabaseModel.unParcel(fromParcel)).thenReturn(Observable.<Meal>error(new TestError()));
         final AtomicReference<Throwable> error = new AtomicReference<>();
         model.loadFromParcel(fromParcel).subscribe(new SimpleSubscriber<Meal>() {
             @Override
@@ -179,9 +179,9 @@ public class MealDetailModelTest {
         Intent intent = new Intent();
         intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, fromParcel);
 
-        model = new MealDetailModel(mealDatabaseModel, intent, null);
+        model = new MealDetailModel(rxMealsDatabaseModel, intent, null);
         assertThat(model.isDataValid(), equalTo(true));
-        verify(mealDatabaseModel).unParcel(fromParcel);
+        verify(rxMealsDatabaseModel).unParcel(fromParcel);
         testGetMealObservable();
     }
 }

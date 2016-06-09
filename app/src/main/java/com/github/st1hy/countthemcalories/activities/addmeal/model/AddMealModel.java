@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -27,7 +27,7 @@ import rx.functions.Action1;
 public class AddMealModel extends WithPictureModel {
     final MealIngredientsListModel ingredientsListModel;
     final ParcelableProxy parcelableProxy;
-    final MealDatabaseModel databaseModel;
+    final RxMealsDatabaseModel databaseModel;
     final Resources resources;
 
     long mealId;
@@ -37,7 +37,7 @@ public class AddMealModel extends WithPictureModel {
 
     @Inject
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
-                        @NonNull MealDatabaseModel databaseModel,
+                        @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Resources resources,
                         @Nullable Intent intent,
                         @Nullable Bundle savedState) {

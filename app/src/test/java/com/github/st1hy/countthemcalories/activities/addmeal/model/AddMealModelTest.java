@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class AddMealModelTest {
     @Mock
     private Resources resources;
     @Mock
-    private MealDatabaseModel databaseModel;
+    private RxMealsDatabaseModel databaseModel;
     private AddMealModel model;
 
     @Before

@@ -3,21 +3,29 @@ package com.github.st1hy.countthemcalories.activities.overview.presenter;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealsViewModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.commands.MealsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.MealItemHolder;
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -34,7 +42,6 @@ import java.util.Random;
 
 import dagger.internal.Preconditions;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -42,23 +49,32 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> implements MealItemHolder.Callback {
-    private static final int mealItemLayout = R.layout.overview_item_scrolling;
-    private static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
+    static final int mealItemLayout = R.layout.overview_item_scrolling;
+    static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
 
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
-    private final MealDatabaseModel model;
-    private final Picasso picasso;
-    private final PhysicalQuantitiesModel quantityModel;
-    private final OverviewView view;
+    final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    private List<Meal> list = Collections.emptyList();
+    final RxMealsDatabaseModel databaseModel;
+    final Picasso picasso;
+    final PhysicalQuantitiesModel quantityModel;
+    final OverviewView view;
+    final MealsDatabaseCommands commands;
+    final MealsViewModel viewModel;
 
-    public MealsAdapter(OverviewView view, @NonNull MealDatabaseModel databaseModel, @NonNull Picasso picasso,
-                        @NonNull PhysicalQuantitiesModel quantityModel) {
+    List<Meal> list = Collections.emptyList();
+
+    public MealsAdapter(@NonNull OverviewView view,
+                        @NonNull RxMealsDatabaseModel databaseModel,
+                        @NonNull Picasso picasso,
+                        @NonNull PhysicalQuantitiesModel quantityModel,
+                        @NonNull MealsDatabaseCommands commands,
+                        @NonNull MealsViewModel viewModel) {
         this.view = view;
-        this.model = databaseModel;
+        this.commands = commands;
+        this.databaseModel = databaseModel;
         this.picasso = picasso;
         this.quantityModel = quantityModel;
+        this.viewModel = viewModel;
     }
 
     public void onStart() {
@@ -156,7 +172,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         DateTime now = DateTime.now();
         DateTime from = now.withTime(0, 0, 0, 0);
         DateTime to = now.withTime(23, 59, 59, 999);
-        subscriptions.add(model.getAllFilteredSortedDate(from, to)
+        subscriptions.add(databaseModel.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnUpdatedDataSet()));
     }
@@ -168,10 +184,10 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     private void onBindMealItemHolder(@NonNull MealItemHolder holder, int position) {
         final Meal meal = list.get(position);
         holder.setName(meal.getName());
-        onBindIngredients(holder, meal.getIngredients());
-        onBindImage(meal, holder);
         holder.setMeal(meal);
         holder.setDate(DateTimeFormat.shortTime().print(meal.getCreationDate()));
+        onBindIngredients(holder, meal.getIngredients());
+        onBindImage(meal, holder);
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {
@@ -200,15 +216,16 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
-        picasso.cancelRequest(holder.getImage());
+        ImageView imageView = holder.getImage();
+        picasso.cancelRequest(imageView);
         Uri imageUri = meal.getImageUri();
         if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
             RxPicasso.Builder.with(picasso, imageUri)
                     .centerCrop()
                     .fit()
-                    .into(holder.getImage());
+                    .into(imageView);
         } else {
-            holder.getImage().setImageResource(R.drawable.ic_fork_and_knife_wide);
+            imageView.setImageResource(R.drawable.ic_fork_and_knife_wide);
         }
     }
 
@@ -217,7 +234,8 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         List<Meal> meals = this.list;
         for (int i = 0; i < meals.size(); i++) {
             Meal meal = meals.get(i);
-            if (meal.getId() != null && meal.getId() == mealId) {
+            Long id = meal.getId();
+            if (id != null && id == mealId) {
                 return Pair.create(i, meal);
             }
         }
@@ -225,7 +243,9 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     private void deleteMeal(@NonNull Meal meal, int position) {
-        subscriptions.add(model.remove(meal)
+        subscriptions.add(commands.delete(meal)
+                .doOnNext(showUndoRemoval(position))
+                .map(Functions.<Void>intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onMealDeleted(position)));
     }
@@ -236,16 +256,14 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
             @Override
             public void call(Void aVoid) {
                 list.remove(mealPos);
+                onNewDataSet(list);
                 notifyItemRemoved(mealPos);
-                showTotal();
-                setEmptyListVisibility();
             }
         };
     }
 
     private void onNewDataSet(@NonNull List<Meal> meals) {
         this.list = meals;
-        notifyDataSetChanged();
         showTotal();
         setEmptyListVisibility();
     }
@@ -253,7 +271,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     private void setEmptyListVisibility() {
         Visibility emptyList, emptyListVariation;
         if (list.size() == 0) {
-            if (new Random().nextInt(100) == 0) {
+            if (showEmptyVariation()) {
                 emptyList = Visibility.GONE;
                 emptyListVariation = Visibility.VISIBLE;
             } else {
@@ -266,6 +284,10 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         }
         view.setEmptyListVisibility(emptyList);
         view.setEmptyListVariationVisibility(emptyListVariation);
+    }
+
+    protected boolean showEmptyVariation() {
+        return new Random().nextInt(100) == 0;
     }
 
     private void showTotal() {
@@ -314,20 +336,60 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         };
     }
 
-    private class OnUpdatedDataSet extends Subscriber<List<Meal>> {
 
-        @Override
-        public void onCompleted() {
-        }
+    @NonNull
+    private Action1<CommandResponse<Void, Meal>> showUndoRemoval(final int position) {
+        return new Action1<CommandResponse<Void, Meal>>() {
+            @Override
+            public void call(final CommandResponse<Void, Meal> deleteResponse) {
+                subscriptions.add(deleteResponse.undoAvailability()
+                        .compose(onUndoAvailable(deleteResponse, viewModel.getUndoRemoveMealMessage()))
+                        .subscribe(onMealAdded(position))
+                );
+            }
+        };
+    }
 
-        @Override
-        public void onError(Throwable e) {
-            Timber.e(e, "Meal ingredients failed!");
-        }
+    @NonNull
+    private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
+            @NonNull final CommandResponse<Response, UndoResponse> response,
+            @StringRes final int undoMessage) {
+        return new UndoTranformer<>(response, showUndoMessage(undoMessage));
+    }
+
+    @NonNull
+    Func1<Boolean, Observable<Void>> showUndoMessage(@StringRes final int undoMessage) {
+        return new Func1<Boolean, Observable<Void>>() {
+            @Override
+            public Observable<Void> call(Boolean isAvailable) {
+                if (isAvailable)
+                    return view.showUndoMessage(undoMessage);
+                else {
+                    view.hideUndoMessage();
+                    return Observable.empty();
+                }
+            }
+        };
+    }
+
+    @NonNull
+    SimpleSubscriber<Meal> onMealAdded(final int position) {
+        return new SimpleSubscriber<Meal>() {
+            @Override
+            public void onNext(Meal meal) {
+                list.add(position, meal);
+                onNewDataSet(list);
+                notifyItemInserted(position);
+            }
+        };
+    }
+
+    private class OnUpdatedDataSet extends SimpleSubscriber<List<Meal>> {
 
         @Override
         public void onNext(List<Meal> meals) {
             onNewDataSet(meals);
+            notifyDataSetChanged();
         }
 
     }

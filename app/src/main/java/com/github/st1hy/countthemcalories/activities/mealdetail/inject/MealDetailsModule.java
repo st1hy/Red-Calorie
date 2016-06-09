@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealDe
 import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealIngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailView;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
@@ -44,7 +44,7 @@ public class MealDetailsModule {
 
     @Provides
     @PerActivity
-    public MealDetailModel provideModel(@NonNull MealDatabaseModel databaseModel,
+    public MealDetailModel provideModel(@NonNull RxMealsDatabaseModel databaseModel,
                                         @Nullable Intent intent,
                                         @Nullable Bundle savedState) {
         return new MealDetailModel(databaseModel, intent, savedState);

@@ -247,14 +247,22 @@ public class OverviewActivityTest {
 
     @Test
     public void testDeleteSwipe() throws Exception {
-        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(allOf(withId(R.id.overview_item_content),
+                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
                 .check(matches(isDisplayed()))
                 .perform(swipeRight());
-
         onView(allOf(withId(R.id.overview_item_delete), isDisplayed())).perform(click());
-
-
-        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(allOf(withId(R.id.overview_item_content),
+                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
                 .check(doesNotExist());
+    }
+
+    @Test
+    public void testDeleteUndo() throws Exception {
+        testDeleteSwipe();
+        onView(withText(R.string.undo)).perform(click());
+        onView(allOf(withId(R.id.overview_item_content),
+                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+                .check(matches(isDisplayed()));
     }
 }

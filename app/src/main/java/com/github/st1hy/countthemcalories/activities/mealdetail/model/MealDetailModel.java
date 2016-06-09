@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 
@@ -20,7 +20,7 @@ import timber.log.Timber;
 
 public class MealDetailModel {
 
-    final MealDatabaseModel databaseModel;
+    final RxMealsDatabaseModel databaseModel;
     final ParcelableProxy parcelableProxy;
 
     final boolean isDataValid;
@@ -28,7 +28,7 @@ public class MealDetailModel {
     final MealParcel mealParcel;
     final Observable<Meal> mealObservable;
 
-    public MealDetailModel(@NonNull MealDatabaseModel databaseModel,
+    public MealDetailModel(@NonNull RxMealsDatabaseModel databaseModel,
                            @Nullable Intent intent,
                            @Nullable Bundle savedState) {
         this.databaseModel = databaseModel;

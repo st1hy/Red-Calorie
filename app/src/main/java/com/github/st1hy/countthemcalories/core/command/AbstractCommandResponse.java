@@ -12,7 +12,7 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
     private final UndoAvailability undoAvailability;
     private Observable<Boolean> undoAvailabilityObserver;
 
-    public AbstractCommandResponse(@NonNull Response response, boolean isUndoAvailable) {
+    public AbstractCommandResponse(Response response, boolean isUndoAvailable) {
         this.response = response;
         undoAvailability = new UndoAvailability(isUndoAvailable);
     }

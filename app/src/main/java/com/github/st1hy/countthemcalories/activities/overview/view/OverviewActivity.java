@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.overview.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +21,7 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewAct
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.MealsAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
@@ -31,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class OverviewActivity extends DrawerActivity implements OverviewView {
+public class OverviewActivity extends UndoDrawerActivity implements OverviewView {
     public static final int REQUEST_MEAL_DETAIL = 0x300;
 
     @Inject
@@ -57,6 +58,8 @@ public class OverviewActivity extends DrawerActivity implements OverviewView {
     View emptyListVariation;
     @BindView(R.id.overview_button_dismiss_empty_variation)
     View dismissVariation;
+    @BindView(R.id.overview_root)
+    CoordinatorLayout root;
 
     OverviewActivityComponent component;
 
@@ -142,5 +145,11 @@ public class OverviewActivity extends DrawerActivity implements OverviewView {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!presenter.onActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @NonNull
+    @Override
+    protected View getUndoRoot() {
+        return root;
     }
 }

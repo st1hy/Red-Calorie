@@ -25,6 +25,7 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.github.st1hy.countthemcalories.shadows.ShadowSnackbar;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
@@ -55,7 +56,8 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName,
+        shadows = {ShadowSnackbar.class})
 public class OverviewActivityRoboTest {
     public static final Meal[] exampleMeals = new Meal[]{
             new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now()),
@@ -185,5 +187,13 @@ public class OverviewActivityRoboTest {
         result.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, exampleMeals[0].getId());
         shadowOf(activity).receiveResult(intent, MealDetailActivity.RESULT_DELETE, result);
         Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(2));
+    }
+
+    @Test
+    public void testUndoRemoveMeal() throws Exception {
+        testRemoveMeal();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        ShadowSnackbar.getLatest().performAction();
+        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 }

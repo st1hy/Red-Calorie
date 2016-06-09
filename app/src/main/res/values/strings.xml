@@ -12,6 +12,8 @@
     <string name="nav_categories">@string/tags_title</string>
     <string name="nav_settings">@string/action_settings</string>
 
+    <string name="undo">Undo</string>
+
     <string name="overview_toolbar_title">Today:</string>
     <string name="overview_no_meals_text_variation">Are you sure you haven\'t eaten today? Prolonged malnutrition may result in:\n- being very slim\n- poor mood\n- sickness and/or death</string>
     <string name="overview_no_meals_answer_ok">OK, add meal</string>
@@ -21,6 +23,8 @@
     <string name="overview_meal_remove_description">Remove this meal</string>
     <string name="overview_meal_edit_description">Edit meal</string>
     <string name="overview_meal_photo_description">Photography of a meal</string>
+    <string name="overview_meal_removed_undo_message">Meal removed</string>
+
     <string name="meal_details_title">Meal details</string>
 
     <string name="add_meal_title">Add new meal</string>
@@ -75,7 +79,6 @@
     <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
     <string name="tags_undo_delete_message">Category removed</string>
-    <string name="undo">Undo</string>
     <string name="tags_undo_add_message">New category added</string>
     <string name="tags_edit_tag_dialog">Edit category</string>
     <string name="tags_remove_description">Remove category</string>
@@ -91,6 +94,5 @@
     <string name="select_ingredient_type_title">Select ingredient type</string>
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
-
 
 </resources>
