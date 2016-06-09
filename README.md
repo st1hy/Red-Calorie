@@ -4,8 +4,11 @@ Android app for keeping your calories in check.
 
 +Here will be description of another Android app excersice.
 
-## Current state: 0.5 alpha
-* added editting ingredients, meals and new slick swiping on items.
+## Current state: 0.6 alpha
+* Added undo function for deletion of items. Its a mix of functional programming (rx) and command pattern 
+* Tags have the same swipe to delete/edit as rest of main screens
+* Various bug fixes.
+* More tests
 
 ## General project goal:
 * TDD from the beggining via esspresso / mockito / roboelectic
@@ -23,3 +26,4 @@ Android app for keeping your calories in check.
 * Sharing prefences, ingredients and meals between users; cloud based (?)
 * Graphs, moving averages, weight loss tracker, all based on the honesty of the user.
 * Past exploits of the dieting User: The Game (achivements, highscore, share on facebook). Wait, what?
+
