@@ -7,6 +7,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
@@ -67,6 +68,15 @@ public class MealDatabaseModel extends RxDatabaseModel<Meal> {
             public Void call() throws Exception {
                 performInsert(meal);
                 IngredientDao ingredientDao = session().getIngredientDao();
+                List<Ingredient> mealIngredients = meal.getIngredients();
+                for (Ingredient mealIngredient : mealIngredients) {
+                    if (!ingredients.contains(mealIngredient)) {
+                        IngredientTemplate ingredientType = mealIngredient.getIngredientType();
+                        List<Ingredient> childIngredients = ingredientType.getChildIngredients();
+                        mealIngredient.delete();
+                        childIngredients.remove(mealIngredient);
+                    }
+                }
                 for (Ingredient ingredient : ingredients) {
                     ingredient.setPartOfMeal(meal);
                     ingredientDao.insertOrReplace(ingredient);

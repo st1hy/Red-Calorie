@@ -58,7 +58,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     private void onIngredientModelReady() {
         Uri imageUri = model.getImageUri();
-        if (imageUri != Uri.EMPTY) onImageReceived(imageUri);
+        if (!imageUri.equals(Uri.EMPTY)) onImageReceived(imageUri);
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());
         view.setSelectedUnitName(model.getEnergyDensityUnit());
