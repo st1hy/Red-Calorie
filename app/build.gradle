@@ -83,7 +83,7 @@ dependencies {
     final mockitoVersion = rootProject.ext.mockitoVersion
     final espressoVersion = '2.2.2'
     final hamcrestVersion = '2.0.0.0'
-    final picassoVersion = '2.5.2'
+    final picassoVersion = '2.5.3-SNAPSHOT'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
