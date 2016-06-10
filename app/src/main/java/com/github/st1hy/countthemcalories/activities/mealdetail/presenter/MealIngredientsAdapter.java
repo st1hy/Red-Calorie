@@ -63,11 +63,11 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
         EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientType);
         EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);
         AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        BigDecimal databaseAmount = ingredient.getAmount();
-        holder.setEnergy(quantitiesModel.formatEnergyCount(databaseAmount, amountUnit, energyDensity));
+        BigDecimal amount = quantitiesModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        holder.setEnergy(quantitiesModel.formatEnergyCount(amount, amountUnit, energyDensity));
 
-        final BigDecimal amount = quantitiesModel.convertAmountFromDatabase(databaseAmount, amountUnit);
-        holder.setAmount(quantitiesModel.format(amount, amountUnit));
+        BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
+        holder.setAmount(quantitiesModel.format(displayedAmount, amountUnit));
     }
 
     @NonNull

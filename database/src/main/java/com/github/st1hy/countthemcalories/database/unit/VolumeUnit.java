@@ -22,6 +22,13 @@ public enum VolumeUnit implements AmountUnit {
         public AmountUnit getBaseUnit() {
             return ML;
         }
+    },
+    FL_OZ(3, BigDecimal.valueOf(295735295625L, 10), R.string.unit_fl_oz) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return FL_OZ;
+        }
     };
 
     private final int id;
@@ -62,6 +69,7 @@ public enum VolumeUnit implements AmountUnit {
         switch (id) {
             case 1: return ML;
             case 2: return ML100;
+            case 3: return FL_OZ;
         }
         return null;
     }

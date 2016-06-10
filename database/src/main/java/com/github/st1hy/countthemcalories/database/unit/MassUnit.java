@@ -22,6 +22,13 @@ public enum MassUnit implements AmountUnit {
         public AmountUnit getBaseUnit() {
             return G;
         }
+    },
+    OZ(3, BigDecimal.valueOf(28349523125L, 9), R.string.unit_oz) {
+        @NonNull
+        @Override
+        public AmountUnit getBaseUnit() {
+            return OZ;
+        }
     };
 
     private final int id;
@@ -62,6 +69,7 @@ public enum MassUnit implements AmountUnit {
         switch (id) {
             case 1: return G;
             case 2: return G100;
+            case 3: return OZ;
         }
         return null;
     }

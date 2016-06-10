@@ -51,7 +51,7 @@ public class SettingsActivityRoboTest {
         activity.massHolder.root.performClick();
         ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowDialog, notNullValue());
-        CharSequence[] sequences = new CharSequence[] {"100 g", "g"};
+        CharSequence[] sequences = new CharSequence[] {"100 g", "g", "oz"};
         assertThat(shadowDialog.getItems(), arrayContainingInAnyOrder(sequences));
         shadowDialog.clickOnItem(MassUnit.G.ordinal());
         assertThat(activity.massHolder.unit.getText().toString(), equalTo("g"));
@@ -63,7 +63,7 @@ public class SettingsActivityRoboTest {
         activity.volumeHolder.root.performClick();
         ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowDialog, notNullValue());
-        CharSequence[] sequences = new CharSequence[] {"ml", "100 ml"};
+        CharSequence[] sequences = new CharSequence[] {"ml", "100 ml", "fl oz"};
         assertThat(shadowDialog.getItems(), arrayContainingInAnyOrder(sequences));
         shadowDialog.clickOnItem(VolumeUnit.ML.ordinal());
         assertThat(activity.volumeHolder.unit.getText().toString(), equalTo("ml"));

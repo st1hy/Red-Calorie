@@ -135,7 +135,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         holder.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
         final BigDecimal amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
-        holder.setAmount(quantityModel.format(amount, amountUnit));
+        BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
+        holder.setAmount(quantityModel.format(displayedAmount, amountUnit));
         holder.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
         onBindImage(type, holder);
     }

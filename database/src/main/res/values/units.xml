@@ -4,6 +4,8 @@
     <string name="unit_milliliter">ml</string>
     <string name="unit_100_gram">100 g</string>
     <string name="unit_100_milliliter">100 ml</string>
+    <string name="unit_oz">oz</string>
+    <string name="unit_fl_oz">fl oz</string>
 
     <string name="unit_kcal">kcal</string>
     <string name="unit_kj">kJ</string>

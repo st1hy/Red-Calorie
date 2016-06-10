@@ -32,11 +32,17 @@ public class EnergyDensityUtils {
         }
     }
 
+    /**
+     * Default unis as stored in database, do not change.
+     */
     @NonNull
     public static EnergyUnit getDefaultEnergyUnit() {
         return EnergyUnit.KJ;
     }
 
+    /**
+     * Defaults as stored in database, do not change.
+     */
     @NonNull
     public static AmountUnit getDefaultAmountUnit(@NonNull AmountUnitType amountType) {
         switch (amountType) {
