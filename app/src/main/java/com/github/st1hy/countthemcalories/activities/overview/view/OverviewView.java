@@ -21,10 +21,6 @@ public interface OverviewView extends DrawerView, UndoView {
 
     void setEmptyListVisibility(@NonNull Visibility visibility);
 
-    void setEmptyListVariationVisibility(@NonNull Visibility visibility);
-
-    Observable<Void> getDismissEmptyListVariationObservable();
-
     void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView);
 
     void openEditMealScreen(@NonNull MealParcel mealParcel);

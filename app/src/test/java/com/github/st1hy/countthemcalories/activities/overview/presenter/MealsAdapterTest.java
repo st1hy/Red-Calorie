@@ -85,7 +85,7 @@ public class MealsAdapterTest {
     @Mock
     MealsViewModel viewModel;
 
-    TestAdapter adapter;
+    MealsAdapter adapter;
 
     @Before
     public void setUp() throws Exception {
@@ -97,7 +97,7 @@ public class MealsAdapterTest {
             }
         });
         MockitoAnnotations.initMocks(this);
-        adapter = new TestAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        adapter = new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
 
         Func1<?, BigDecimal> anyDecimal = Functions.into(BigDecimal.TEN);
         when(quantityModel.mapToEnergy()).thenReturn((Func1<Ingredient, BigDecimal>) anyDecimal);
@@ -105,32 +105,6 @@ public class MealsAdapterTest {
         when(quantityModel.sumAll()).thenReturn((Func1<BigDecimal, BigDecimal>) anyDecimal);
         Func1<?, String> anyString = Functions.into("energy");
         when(quantityModel.energyAsString()).thenReturn((Func1<BigDecimal, String>) anyString);
-    }
-
-    static class TestAdapter extends MealsAdapter {
-        boolean showEmptyVariation = false;
-
-        public TestAdapter(@NonNull OverviewView view,
-                           @NonNull RxMealsDatabaseModel databaseModel,
-                           @NonNull Picasso picasso,
-                           @NonNull PhysicalQuantitiesModel quantityModel,
-                           @NonNull MealsDatabaseCommands commands,
-                           @NonNull MealsViewModel viewModel) {
-            super(view, databaseModel, picasso, quantityModel, commands, viewModel);
-        }
-
-        /**
-         * Random behavior disabled for testing.
-         */
-        @Override
-        protected boolean showEmptyVariation() {
-            return showEmptyVariation;
-        }
-
-        boolean superEmptyVariation() {
-            return super.showEmptyVariation();
-        }
-
     }
 
     @After
@@ -148,7 +122,6 @@ public class MealsAdapterTest {
         verify(databaseModel).getAllFilteredSortedDate(any(DateTime.class), any(DateTime.class));
         onVerifyShowTotal();
         verify(view).setEmptyListVisibility(Visibility.VISIBLE);
-        verify(view).setEmptyListVariationVisibility(Visibility.GONE);
 
         verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
     }
@@ -173,21 +146,6 @@ public class MealsAdapterTest {
         onVerifyShowTotal(1);
     }
 
-    @Test
-    public void testEmptyStartMessageVariation() throws Exception {
-        adapter.showEmptyVariation = true;
-        List<Meal> meals = prepareEmptyStart();
-
-        adapter.onStart();
-
-        assertThat(adapter.list, equalTo(meals));
-        verify(databaseModel).getAllFilteredSortedDate(any(DateTime.class), any(DateTime.class));
-        onVerifyShowTotal();
-        verify(view).setEmptyListVisibility(Visibility.GONE);
-        verify(view).setEmptyListVariationVisibility(Visibility.VISIBLE);
-
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
-    }
 
     @Test
     public void testOnStop() throws Exception {
@@ -351,7 +309,6 @@ public class MealsAdapterTest {
         verify(meal).getIngredients();
         onVerifyShowTotal();
         verify(view).setEmptyListVisibility(Visibility.GONE);
-        verify(view).setEmptyListVariationVisibility(Visibility.GONE);
     }
 
     @Test
@@ -418,13 +375,6 @@ public class MealsAdapterTest {
     }
 
     @Test
-    public void testShowEmptyVariation() throws Exception {
-        //No idea how or if I should test this
-        //If it doesn't crash its ok? For the coverage
-        adapter.superEmptyVariation();
-    }
-
-    @Test
     public void testUndoDelete() throws Exception {
         PrepareDelete prepareDelete = new PrepareDelete().invoke();
         Meal meal = prepareDelete.getMeal();
@@ -452,7 +402,6 @@ public class MealsAdapterTest {
         verify(meal, times(3)).getIngredients();
         onVerifyShowTotal(2);
         verify(view, times(2)).setEmptyListVisibility(Visibility.GONE);
-        verify(view, times(2)).setEmptyListVariationVisibility(Visibility.GONE);
 
         verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
                 meal, response, undoResponse);

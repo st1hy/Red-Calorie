@@ -15,11 +15,7 @@
     <string name="undo">Undo</string>
 
     <string name="overview_toolbar_title">Today:</string>
-    <string name="overview_no_meals_text_variation">Are you sure you haven\'t eaten today? Prolonged malnutrition may result in:\n- being very slim\n- poor mood\n- sickness and/or death</string>
-    <string name="overview_no_meals_answer_ok">OK, add meal</string>
-    <string name="overview_no_meals_answer_hide">Soon</string>
-    <string name="overview_empty_meals">Nothing eaten today?</string>
-    <string name="overview_add_new_meal">Add new meal</string>
+    <string name="overview_empty_meals">You haven\'t eaten anything today yet.</string>
     <string name="overview_meal_remove_description">Remove this meal</string>
     <string name="overview_meal_edit_description">Edit meal</string>
     <string name="overview_meal_photo_description">Photography of a meal</string>
@@ -49,7 +45,7 @@
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_sort_title">Sort ingredients</string>
-    <string name="ingredients_no_ingredients_yet">No ingredients to display\nAdd new ingredient?</string>
+    <string name="ingredients_no_ingredients_yet">You haven\'t added any ingredients yet.</string>
     <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
     <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
@@ -76,7 +72,7 @@
     <string name="tags_search_title">Search categories</string>
     <string name="tags_remove_dialog_title">Remove category</string>
     <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
-    <string name="tags_no_tags_yet">No categories to display\nAdd new category?</string>
+    <string name="tags_no_tags_yet">You haven\'t added any categories yet.</string>
     <string name="tags_undo_delete_message">Category removed</string>
     <string name="tags_undo_add_message">New category added</string>
     <string name="tags_edit_tag_dialog">Edit category</string>

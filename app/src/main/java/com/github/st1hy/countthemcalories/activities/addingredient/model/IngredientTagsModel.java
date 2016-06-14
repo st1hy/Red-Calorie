@@ -51,8 +51,10 @@ public class IngredientTagsModel {
         this.tags.addAll(tags);
     }
 
-    public void remove(@NonNull Tag tag) {
+    public int remove(@NonNull Tag tag) {
+        int index = tags.indexOf(tag);
         tags.remove(tag);
+        return index;
     }
 
     @NonNull

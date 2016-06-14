@@ -92,14 +92,14 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     }
 
     public void onNewTagAdded(long tagId, @NonNull String tagName) {
-        model.addTag(tagId, tagName);
-        notifyDataSetChanged();
+        int position = model.addTag(tagId, tagName);
+        notifyItemInserted(position);
     }
 
     @Override
     public void onItemClicked(@NonNull Tag tag) {
-        model.remove(tag);
-        notifyDataSetChanged();
+        int position = model.remove(tag);
+        notifyItemRemoved(position);
     }
 
     public void onSaveState(@NonNull Bundle outState) {

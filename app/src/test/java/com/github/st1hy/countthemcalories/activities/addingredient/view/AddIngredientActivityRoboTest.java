@@ -149,7 +149,7 @@ public class AddIngredientActivityRoboTest {
         assertThat(textView.getText().toString(), equalTo(tag.getName()));
 
         tagView.findViewById(R.id.add_ingredient_category_remove).performClick();
-        assertThat(activity.tagsRecycler.getChildCount(), equalTo(1));
+        assertThat(activity.tagsPresenter.getItemCount(), equalTo(1));
     }
 
     private Tag addTag(int position) {

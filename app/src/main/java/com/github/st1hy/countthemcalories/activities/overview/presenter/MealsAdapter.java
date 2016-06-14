@@ -38,7 +38,6 @@ import org.joda.time.format.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import dagger.internal.Preconditions;
 import rx.Observable;
@@ -269,25 +268,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     private void setEmptyListVisibility() {
-        Visibility emptyList, emptyListVariation;
-        if (list.size() == 0) {
-            if (showEmptyVariation()) {
-                emptyList = Visibility.GONE;
-                emptyListVariation = Visibility.VISIBLE;
-            } else {
-                emptyList = Visibility.VISIBLE;
-                emptyListVariation = Visibility.GONE;
-            }
-        } else {
-            emptyList = Visibility.GONE;
-            emptyListVariation = Visibility.GONE;
-        }
-        view.setEmptyListVisibility(emptyList);
-        view.setEmptyListVariationVisibility(emptyListVariation);
-    }
-
-    protected boolean showEmptyVariation() {
-        return new Random().nextInt(100) == 0;
+        view.setEmptyListVisibility(list.size() == 0 ? Visibility.VISIBLE : Visibility.GONE);
     }
 
     private void showTotal() {

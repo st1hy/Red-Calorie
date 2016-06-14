@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/ingredients_app_bar">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ingredients_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/ingredients_item">
-    </android.support.v7.widget.RecyclerView>
+        tools:listitem="@layout/ingredients_item" />
 
-    <TextView
-        android:id="@+id/ingredients_no_ingredients_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+    <FrameLayout
+        android:id="@+id/ingredients_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:padding="24dp"
-        android:text="@string/ingredients_no_ingredients_yet"
-        android:visibility="gone"
-        />
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_empty_background"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/text_background_dark_rounded"
+            android:fontFamily="sans-serif-medium"
+            android:padding="16dp"
+            android:text="@string/ingredients_no_ingredients_yet"
+            android:textAllCaps="false"
+            android:textColor="?android:textColorPrimaryInverse"
+            android:textSize="15sp" />
+    </FrameLayout>
 </FrameLayout>

@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.presenter;
 
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,42 +32,23 @@ public class OverviewPresenterTest {
     @Test
     public void testStart() throws Exception {
         when(view.getOpenMealScreenObservable()).thenReturn(Observable.<Void>empty());
-        when(view.getDismissEmptyListVariationObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
         verify(adapter).onStart();
         verify(view).getOpenMealScreenObservable();
-        verify(view).getDismissEmptyListVariationObservable();
     }
 
     @Test
     public void testAddMeal() throws Exception {
         when(view.getOpenMealScreenObservable()).thenReturn(Observable.<Void>just(null));
-        when(view.getDismissEmptyListVariationObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
         verify(adapter).onStart();
         verify(view).getOpenMealScreenObservable();
-        verify(view).getDismissEmptyListVariationObservable();
 
         verify(view).openAddMealScreen();
-    }
-
-    @Test
-    public void testDissmissEmptyVariation() throws Exception {
-        when(view.getDismissEmptyListVariationObservable()).thenReturn(Observable.<Void>just(null));
-        when(view.getOpenMealScreenObservable()).thenReturn(Observable.<Void>empty());
-
-        presenter.onStart();
-
-        verify(adapter).onStart();
-        verify(view).getOpenMealScreenObservable();
-        verify(view).getDismissEmptyListVariationObservable();
-
-        verify(view).setEmptyListVisibility(Visibility.VISIBLE);
-        verify(view).setEmptyListVariationVisibility(Visibility.GONE);
     }
 
     @Test

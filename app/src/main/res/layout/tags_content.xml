@@ -4,23 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/tags_app_bar"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/tags_app_bar">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tags_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/tags_item">
-    </android.support.v7.widget.RecyclerView>
-    <TextView
-        android:id="@+id/tags_no_tags_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        tools:listitem="@layout/tags_item"/>
+
+    <FrameLayout
+        android:id="@+id/tags_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:padding="24dp"
-        android:text="@string/tags_no_tags_yet"
-        android:visibility="gone"
-        />
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_empty_background"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/text_background_dark_rounded"
+            android:fontFamily="sans-serif-medium"
+            android:padding="16dp"
+            android:text="@string/tags_no_tags_yet"
+            android:textAllCaps="false"
+            android:textColor="?android:textColorPrimaryInverse"
+            android:textSize="15sp" />
+    </FrameLayout>
 </FrameLayout>

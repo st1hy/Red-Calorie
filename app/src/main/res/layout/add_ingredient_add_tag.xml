@@ -8,4 +8,4 @@
     android:contentDescription="@string/add_ingredient_add_category"
     android:padding="12dp"
     android:src="@drawable/ic_add_24px"
-    android:tint="@android:color/darker_gray" />
+    android:tint="@color/colorAccent" />

@@ -54,8 +54,8 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     RecyclerView recyclerView;
     @BindView(R.id.tags_add_new)
     FloatingActionButton fab;
-    @BindView(R.id.tags_no_tags_button)
-    View notTagsButton;
+    @BindView(R.id.tags_empty)
+    View emptyTags;
     @BindView(R.id.tags_root)
     CoordinatorLayout root;
 
@@ -85,7 +85,7 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     @NonNull
     @Override
     public Observable<Void> getOnAddTagClickedObservable() {
-        return Observable.merge(RxView.clicks(fab), RxView.clicks(notTagsButton));
+        return RxView.clicks(fab);
     }
 
 
@@ -125,7 +125,7 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     @Override
     public void setNoTagsButtonVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
-        notTagsButton.setVisibility(visibility.getVisibility());
+        emptyTags.setVisibility(visibility.getVisibility());
     }
 
     @Override

@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -42,10 +41,6 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
 
     @BindView(R.id.overview_fab)
     FloatingActionButton fab;
-    @BindView(R.id.overview_button_add_new_meal)
-    Button addMealButton;
-    @BindView(R.id.overview_button_add_new_meal2)
-    Button addMealButton2;
 
     @BindView(R.id.overview_recycler_view)
     RecyclerView recyclerView;
@@ -54,10 +49,6 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
     TextView totalEnergy;
     @BindView(R.id.overview_empty)
     View emptyList;
-    @BindView(R.id.overview_empty_variation)
-    View emptyListVariation;
-    @BindView(R.id.overview_button_dismiss_empty_variation)
-    View dismissVariation;
     @BindView(R.id.overview_root)
     CoordinatorLayout root;
 
@@ -99,7 +90,7 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
     @NonNull
     @Override
     public Observable<Void> getOpenMealScreenObservable() {
-        return Observable.merge(RxView.clicks(fab), RxView.clicks(addMealButton), RxView.clicks(addMealButton2));
+        return RxView.clicks(fab);
     }
 
     @Override
@@ -111,17 +102,6 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
     public void setEmptyListVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
         emptyList.setVisibility(visibility.getVisibility());
-    }
-
-    @Override
-    public void setEmptyListVariationVisibility(@NonNull Visibility visibility) {
-        //noinspection WrongConstant
-        emptyListVariation.setVisibility(visibility.getVisibility());
-    }
-
-    @Override
-    public Observable<Void> getDismissEmptyListVariationObservable() {
-        return RxView.clicks(dismissVariation);
     }
 
     @Override

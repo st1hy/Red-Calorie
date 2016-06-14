@@ -48,8 +48,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
 
     @BindView(R.id.ingredients_fab)
     FloatingActionButton fab;
-    @BindView(R.id.ingredients_no_ingredients_button)
-    View noIngredientsButton;
+    @BindView(R.id.ingredients_empty)
+    View emptyIngredients;
     @BindView(R.id.ingredients_content)
     RecyclerView recyclerView;
     @BindView(R.id.ingredients_root)
@@ -99,13 +99,13 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void setNoIngredientButtonVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
-        noIngredientsButton.setVisibility(visibility.getVisibility());
+        emptyIngredients.setVisibility(visibility.getVisibility());
     }
 
     @NonNull
     @Override
     public Observable<Void> getOnAddIngredientClickedObservable() {
-        return Observable.merge(RxView.clicks(fab), RxView.clicks(noIngredientsButton));
+        return RxView.clicks(fab);
     }
 
     @Override
