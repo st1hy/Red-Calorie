@@ -118,6 +118,7 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.tags_menu, menu);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE); //Fills toolbar
         adapter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }

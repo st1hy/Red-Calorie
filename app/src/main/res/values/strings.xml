@@ -44,7 +44,6 @@
 
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
-    <string name="ingredients_sort_title">Sort ingredients</string>
     <string name="ingredients_no_ingredients_yet">You haven\'t added any ingredients yet.</string>
     <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
     <string name="ingredient_item_delete_ingredient">Delete ingredient</string>

@@ -2,11 +2,9 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
@@ -70,15 +68,6 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
             if (addedIngredientId != -1L)
                 daoAdapter.onIngredientAdded(addedIngredientId);
         }
-    }
-
-    @Override
-    public boolean onClickedOnAction(@IdRes int actionItemId) {
-        if (actionItemId == R.id.action_sorting) {
-            //TODO implement sorting
-            return true;
-        }
-        return super.onClickedOnAction(actionItemId);
     }
 
     void onAddIngredientClicked(@NonNull Observable<Void> observable) {

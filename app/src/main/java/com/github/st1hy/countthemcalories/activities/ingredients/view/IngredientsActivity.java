@@ -85,6 +85,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         getMenuInflater().inflate(R.menu.ingredient_menu, menu);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE); //Fills toolbar
         adapter.onSearch(RxSearchView.queryTextChanges(searchView));
         return true;
     }

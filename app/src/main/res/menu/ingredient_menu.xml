@@ -7,9 +7,4 @@
         app:showAsAction="always"
         tools:icon="@android:drawable/ic_menu_search"
         app:actionViewClass="android.widget.SearchView" />
-    <item
-        android:id="@+id/action_sorting"
-        android:title="@string/ingredients_sort_title"
-        android:icon="@drawable/ic_sort_48px"
-        app:showAsAction="ifRoom" />
 </menu>
