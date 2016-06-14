@@ -187,7 +187,7 @@ public class AddIngredientActivityTest {
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.add_ingredient_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()));
 
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
     }

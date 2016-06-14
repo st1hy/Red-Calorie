@@ -247,7 +247,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("42.6 g")).check(matches(isDisplayed()));
@@ -264,7 +264,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("12.06"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("12.06 g")).check(matches(isDisplayed()));
@@ -278,7 +278,7 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
     }
 
@@ -303,7 +303,7 @@ public class AddMealActivityTest {
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(withText(R.string.add_meal_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("1 g")).check(matches(isDisplayed()));
