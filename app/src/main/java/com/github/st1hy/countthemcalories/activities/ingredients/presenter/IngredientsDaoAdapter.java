@@ -138,9 +138,11 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     }
 
     @Override
-    protected void onCursorUpdate(@NonNull Cursor cursor) {
-        super.onCursorUpdate(cursor);
-        view.setNoIngredientButtonVisibility(Visibility.of(cursor.getCount() == 0));
+    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
+        super.onCursorUpdate(query, cursor);
+        view.setNoIngredientsMessage(query.trim().isEmpty() ? model.getNoIngredientsMessage() :
+                model.getSearchEmptyMessage());
+        view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 
     @Override
@@ -217,7 +219,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         return new Action1<Cursor>() {
             @Override
             public void call(Cursor cursor) {
-                onCursorUpdate(cursor);
+                onCursorUpdate(lastQuery, cursor);
                 notifyItemRemovedRx(position);
             }
         };
@@ -317,7 +319,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
             @Override
             public void onNext(InsertResult result) {
                 int newItemPosition = result.getNewItemPositionInCursor();
-                onCursorUpdate(result.getCursor());
+                onCursorUpdate(lastQuery, result.getCursor());
                 if (newItemPosition != -1) {
                     notifyItemInsertedRx(newItemPosition);
                     view.scrollToPosition(newItemPosition);

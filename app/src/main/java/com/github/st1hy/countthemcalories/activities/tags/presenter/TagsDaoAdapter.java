@@ -156,7 +156,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
         return new SimpleSubscriber<InsertResult>() {
             @Override
             public void onNext(InsertResult result) {
-                onCursorUpdate(result.getCursor());
+                onCursorUpdate(lastQuery, result.getCursor());
                 int newPosition = result.getNewItemPositionInCursor();
                 if (newPosition != -1) {
                     notifyItemRemovedRx(position);
@@ -237,7 +237,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
         return new SimpleSubscriber<Cursor>() {
             @Override
             public void onNext(Cursor cursor) {
-                onCursorUpdate(cursor);
+                onCursorUpdate(lastQuery, cursor);
                 if (position != -1) {
                     notifyItemRemovedRx(position);
                 } else {
@@ -275,9 +275,11 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
     }
 
     @Override
-    protected void onCursorUpdate(@NonNull Cursor cursor) {
-        super.onCursorUpdate(cursor);
-        view.setNoTagsButtonVisibility(Visibility.of(cursor.getCount() == 0));
+    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
+        super.onCursorUpdate(query, cursor);
+        view.setNoTagsMessage(query.trim().isEmpty() ? viewModel.getNoTagsMessage() :
+                viewModel.getSearchResultEmptyMessage());
+        view.setNoTagsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 
     void onAddTagClicked(@NonNull Observable<Void> clicks) {
@@ -326,7 +328,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> imple
             @Override
             public void onNext(InsertResult result) {
                 int newItemPosition = result.getNewItemPositionInCursor();
-                onCursorUpdate(result.getCursor());
+                onCursorUpdate(lastQuery, result.getCursor());
                 if (newItemPosition != -1) {
                     notifyItemInsertedRx(newItemPosition);
                     view.scrollToPosition(newItemPosition);

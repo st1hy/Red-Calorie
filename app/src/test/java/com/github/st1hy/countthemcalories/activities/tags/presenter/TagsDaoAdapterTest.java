@@ -9,11 +9,11 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.activities.tags.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -36,11 +36,14 @@ import rx.plugins.TestRxPlugins;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -131,11 +134,13 @@ public class TagsDaoAdapterTest {
         verify(view).showUndoMessage(message);
         verify(view).scrollToPosition(position);
         verify(cursor).getCount();
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(view).setNoTagsVisibility(Visibility.GONE);
         verify(commandResponse, times(2)).getResponse();
         verify(commandResponse).undoAvailability();
         verify(result).getCursor();
         verify(result, times(2)).getNewItemPositionInCursor();
+        verify(viewModel).getNoTagsMessage();
+        verify(view).setNoTagsMessage(anyInt());
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result);
     }
@@ -210,10 +215,12 @@ public class TagsDaoAdapterTest {
         verify(view).showRemoveTagDialog();
         verify(commands).delete(tag);
         verify(view).showUndoMessage(anyInt());
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(view).setNoTagsVisibility(Visibility.GONE);
         verify(cursor).getCount();
         verify(commandResponse).getResponse();
         verify(commandResponse).undoAvailability();
+        verify(viewModel).getNoTagsMessage();
+        verify(view).setNoTagsMessage(anyInt());
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result, tag);
     }
@@ -237,10 +244,12 @@ public class TagsDaoAdapterTest {
         verify(tag).getIngredientTypes();
         verify(commands).delete(tag);
         verify(view).showUndoMessage(anyInt());
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(view).setNoTagsVisibility(Visibility.GONE);
         verify(cursor).getCount();
         verify(commandResponse).getResponse();
         verify(commandResponse).undoAvailability();
+        verify(viewModel).getNoTagsMessage();
+        verify(view).setNoTagsMessage(anyInt());
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result, tag);
     }
@@ -262,15 +271,20 @@ public class TagsDaoAdapterTest {
     @Test
     public void testOnSearch() throws Exception {
         when(cursor.getCount()).thenReturn(0);
-        when(model.getAllFiltered("test", Collections.<Long>emptyList())).thenReturn(Observable.just(cursor));
+        when(model.getAllFiltered(argThat(anyOf(equalTo("test"), equalTo("t"))),
+                eq(Collections.<Long>emptyList())))
+                .thenReturn(Observable.just(cursor));
 
         presenter.onSearch(Observable.<CharSequence>just("t", "te", "tes", "test"));
 
         verify(activityModel, times(2)).getExcludedTagIds();
         verify(model).getAllFiltered("t", Collections.<Long>emptyList());
         verify(model).getAllFiltered("test", Collections.<Long>emptyList());
-        verify(view).setNoTagsButtonVisibility(Visibility.VISIBLE);
-        verify(cursor).getCount();
+        verify(view, times(2)).setNoTagsVisibility(Visibility.VISIBLE);
+        verify(cursor, times(2)).getCount();
+        verify(cursor).close();
+        verify(viewModel, times(2)).getSearchResultEmptyMessage();
+        verify(view, times(2)).setNoTagsMessage(anyInt());
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result);
     }
@@ -295,11 +309,13 @@ public class TagsDaoAdapterTest {
         verify(view).showUndoMessage(anyInt());
         verify(view).scrollToPosition(position);
         verify(cursor, times(2)).getCount();
-        verify(view, times(2)).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(view, times(2)).setNoTagsVisibility(Visibility.GONE);
         verify(commandResponse, times(2)).getResponse();
         verify(commandResponse).undoAvailability();
         verify(result).getCursor();
         verify(result, times(2)).getNewItemPositionInCursor();
+        verify(viewModel, times(2)).getNoTagsMessage();
+        verify(view, times(2)).setNoTagsMessage(anyInt());
 
         verify(commandResponse).undo();
         verify(cursor).close();
@@ -326,7 +342,9 @@ public class TagsDaoAdapterTest {
         verify(model).updateRefresh(tag);
         verify(model).findInCursor(cursor, tag);
         verify(cursor).getCount();
-        verify(view).setNoTagsButtonVisibility(Visibility.GONE);
+        verify(view).setNoTagsVisibility(Visibility.GONE);
+        verify(viewModel).getNoTagsMessage();
+        verify(view).setNoTagsMessage(anyInt());
 
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result, tag);

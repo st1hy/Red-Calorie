@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 
@@ -35,6 +36,7 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
     public RxDaoSearchAdapter(@NonNull SearchableDatabase db) {
         this.db = db;
     }
+    protected String lastQuery = "";
 
     @Override
     @CallSuper
@@ -81,11 +83,12 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
                 })
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<Cursor>() {
+                .subscribe(new SimpleSubscriber<Pair<String, Cursor>>() {
                     @Override
-                    public void onNext(Cursor cursor) {
+                    public void onNext(Pair<String, Cursor> result) {
                         Timber.v("Db cursor query ended");
-                        onCursorUpdate(cursor);
+                        lastQuery = result.first;
+                        onCursorUpdate(result.first, result.second);
                         notifyDataSetChanged();
                         onSearchFinished();
                     }
@@ -98,7 +101,7 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
     }
 
     @CallSuper
-    protected void onCursorUpdate(@NonNull Cursor cursor) {
+    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
         closeCursor(false);
         RxDaoSearchAdapter.this.cursor = cursor;
     }
@@ -107,11 +110,23 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
     }
 
     @NonNull
-    private Func1<? super CharSequence, ? extends Observable<Cursor>> queryDatabaseFiltered() {
-        return new Func1<CharSequence, Observable<Cursor>>() {
+    private Func1<? super CharSequence, ? extends Observable<Pair<String, Cursor>>> queryDatabaseFiltered() {
+        return new Func1<CharSequence, Observable<Pair<String, Cursor>>>() {
             @Override
-            public Observable<Cursor> call(CharSequence text) {
-                return getAllWithFilter(text.toString());
+            public Observable<Pair<String, Cursor>> call(CharSequence text) {
+                final String query = text.toString();
+                Observable<Cursor> cursor = getAllWithFilter(query);
+                return cursor.map(withQuery(query));
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Cursor, Pair<String, Cursor>> withQuery(final String query) {
+        return new Func1<Cursor, Pair<String, Cursor>>() {
+            @Override
+            public Pair<String, Cursor> call(Cursor cursor) {
+                return Pair.create(query, cursor);
             }
         };
     }

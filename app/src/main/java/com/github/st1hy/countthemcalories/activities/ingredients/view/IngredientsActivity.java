@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
@@ -50,6 +52,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     FloatingActionButton fab;
     @BindView(R.id.ingredients_empty)
     View emptyIngredients;
+    @BindView(R.id.ingredients_empty_message)
+    TextView emptyIngredientsText;
     @BindView(R.id.ingredients_content)
     RecyclerView recyclerView;
     @BindView(R.id.ingredients_root)
@@ -98,7 +102,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void setNoIngredientButtonVisibility(@NonNull Visibility visibility) {
+    public void setNoIngredientsVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
         emptyIngredients.setVisibility(visibility.getVisibility());
     }
@@ -146,6 +150,11 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void scrollToPosition(int position) {
         recyclerView.scrollToPosition(position);
+    }
+
+    @Override
+    public void setNoIngredientsMessage(@StringRes int noIngredientTextResId) {
+        emptyIngredientsText.setText(noIngredientTextResId);
     }
 
     @Override

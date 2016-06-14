@@ -45,6 +45,7 @@
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
     <string name="ingredients_no_ingredients_yet">You haven\'t added any ingredients yet.</string>
+    <string name="ingredients_search_result_empty">No matching ingredients found.</string>
     <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
     <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
@@ -72,6 +73,7 @@
     <string name="tags_remove_dialog_title">Remove category</string>
     <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">You haven\'t added any categories yet.</string>
+    <string name="tags_search_result_empty">No matching tags found.</string>
     <string name="tags_undo_delete_message">Category removed</string>
     <string name="tags_undo_add_message">New category added</string>
     <string name="tags_edit_tag_dialog">Edit category</string>

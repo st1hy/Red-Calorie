@@ -30,6 +30,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/ingredients_empty_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

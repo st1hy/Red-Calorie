@@ -283,7 +283,9 @@ public class IngredientsDaoAdapterTest {
         verify(view).showUndoMessage(anyInt());
         verify(deleteResponse).getResponse();
         verify(cursor).getCount();
-        verify(view).setNoIngredientButtonVisibility(Visibility.GONE);
+        verify(view).setNoIngredientsVisibility(Visibility.GONE);
+        verify(model).getNoIngredientsMessage();
+        verify(view).setNoIngredientsMessage(anyInt());
     }
 
     @Test
@@ -297,6 +299,8 @@ public class IngredientsDaoAdapterTest {
 
         verifyDelete(ingredient);
         verify(view).showUsedIngredientRemoveConfirmationDialog();
+        verify(model).getNoIngredientsMessage();
+        verify(view).setNoIngredientsMessage(anyInt());
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient,
                 deleteResponse, insertResponse, insertResult);
@@ -326,7 +330,9 @@ public class IngredientsDaoAdapterTest {
         verify(insertResult).getCursor();
         verify(view).scrollToPosition(10);
         verify(cursor, times(2)).getCount();
-        verify(view, times(2)).setNoIngredientButtonVisibility(Visibility.GONE);
+        verify(view, times(2)).setNoIngredientsVisibility(Visibility.GONE);
+        verify(model, times(2)).getNoIngredientsMessage();
+        verify(view, times(2)).setNoIngredientsMessage(anyInt());
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient,
                 deleteResponse, insertResponse, insertResult);
@@ -434,7 +440,9 @@ public class IngredientsDaoAdapterTest {
         verify(insertResult).getNewItemPositionInCursor();
         verify(insertResult).getCursor();
         verify(cursor).getCount();
-        verify(view).setNoIngredientButtonVisibility(Visibility.VISIBLE);
+        verify(view).setNoIngredientsVisibility(Visibility.VISIBLE);
+        verify(model).getNoIngredientsMessage();
+        verify(view).setNoIngredientsMessage(anyInt());
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
     }

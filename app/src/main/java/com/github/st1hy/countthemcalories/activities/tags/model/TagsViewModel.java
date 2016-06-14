@@ -31,4 +31,14 @@ public class TagsViewModel {
     public int getEditTagDialogTitle() {
         return R.string.tags_edit_tag_dialog;
     }
+
+    @StringRes
+    public int getNoTagsMessage() {
+        return R.string.tags_no_tags_yet;
+    }
+
+    @StringRes
+    public int getSearchResultEmptyMessage() {
+        return R.string.tags_search_result_empty;
+    }
 }

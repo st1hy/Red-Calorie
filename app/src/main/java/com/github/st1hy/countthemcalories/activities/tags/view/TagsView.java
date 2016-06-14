@@ -17,7 +17,7 @@ public interface TagsView extends DialogView, DrawerView, UndoView {
     @NonNull
     Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText);
 
-    void setNoTagsButtonVisibility(@NonNull  Visibility visibility);
+    void setNoTagsVisibility(@NonNull  Visibility visibility);
 
     /**
      * @return observable emitting onNext when user clicks ok to remove
@@ -32,4 +32,5 @@ public interface TagsView extends DialogView, DrawerView, UndoView {
     @NonNull
     Observable<Void> getOnAddTagClickedObservable();
 
+    void setNoTagsMessage(@StringRes int messageResId);
 }

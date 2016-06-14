@@ -36,4 +36,14 @@ public class IngredientsModel {
     public int getUndoDeleteMessage() {
         return R.string.ingredients_undo_remove;
     }
+
+    @StringRes
+    public int getNoIngredientsMessage() {
+        return R.string.ingredients_no_ingredients_yet;
+    }
+
+    @StringRes
+    public int getSearchEmptyMessage() {
+        return R.string.ingredients_search_result_empty;
+    }
 }

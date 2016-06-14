@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsComponent;
@@ -56,6 +57,8 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     FloatingActionButton fab;
     @BindView(R.id.tags_empty)
     View emptyTags;
+    @BindView(R.id.tags_empty_message)
+    TextView emptyTagsMessage;
     @BindView(R.id.tags_root)
     CoordinatorLayout root;
 
@@ -88,6 +91,10 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
         return RxView.clicks(fab);
     }
 
+    @Override
+    public void setNoTagsMessage(@StringRes int messageResId) {
+        emptyTagsMessage.setText(messageResId);
+    }
 
     @NonNull
     @Override
@@ -124,7 +131,7 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     }
 
     @Override
-    public void setNoTagsButtonVisibility(@NonNull Visibility visibility) {
+    public void setNoTagsVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
         emptyTags.setVisibility(visibility.getVisibility());
     }

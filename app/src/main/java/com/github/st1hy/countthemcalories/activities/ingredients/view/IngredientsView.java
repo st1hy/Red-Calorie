@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.view;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.core.command.view.UndoView;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
@@ -13,7 +14,7 @@ public interface IngredientsView extends DrawerView, UndoView {
 
     void openNewIngredientScreen(@NonNull String action);
 
-    void setNoIngredientButtonVisibility(@NonNull Visibility visibility);
+    void setNoIngredientsVisibility(@NonNull Visibility visibility);
 
     @NonNull
     Observable<Void> getOnAddIngredientClickedObservable();
@@ -32,4 +33,5 @@ public interface IngredientsView extends DrawerView, UndoView {
 
     void scrollToPosition(int position);
 
+    void setNoIngredientsMessage(@StringRes int noIngredientTextResId);
 }
