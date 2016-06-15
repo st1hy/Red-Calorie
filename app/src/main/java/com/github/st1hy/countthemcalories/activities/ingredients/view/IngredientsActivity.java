@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -22,18 +23,25 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.searchview.IngredientsSearchView;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.searchview.Query;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxSearchView;
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.tokenautocomplete.TokenCompleteTextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class IngredientsActivity extends UndoDrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
@@ -58,6 +66,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     RecyclerView recyclerView;
     @BindView(R.id.ingredients_root)
     CoordinatorLayout root;
+    @BindView(R.id.ingredients_search_view)
+    IngredientsSearchView search;
 
     SearchView searchView;
 
@@ -74,6 +84,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         return component;
     }
 
+    CompositeSubscription subscriptions = new CompositeSubscription();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.ingredients_activity);
@@ -81,7 +93,43 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         getComponent().inject(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        Query[] queries = new Query[]{
+                new Query("Marshall Weir"),
+                new Query("Margaret Smith"),
+                new Query("Max Jordan"),
+                new Query("Meg Peterson"),
+                new Query("Amanda Johnson"),
+                new Query("Terry Anderson")
+        };
+        search.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, queries));
+        search.setTokenListener(new TokenCompleteTextView.TokenListener<Query>() {
+            @Override
+            public void onTokenAdded(Query token) {
+                Timber.d("Query added: %s", token);
+            }
+
+            @Override
+            public void onTokenRemoved(Query token) {
+                Timber.d("Query removed: %s", token);
+            }
+        });
+        subscriptions.add(RxTextView.textChanges(search).subscribe(new Action1<CharSequence>() {
+            @Override
+            public void call(CharSequence charSequence) {
+                Timber.d("Total query: %s", charSequence);
+            }
+        }));
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        subscriptions.clear();
+        search.setTokenListener(null);
+        search.setAdapter(null);
+        search = null;
     }
 
     @Override

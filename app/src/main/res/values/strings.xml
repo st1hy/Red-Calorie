@@ -47,10 +47,11 @@
     <string name="ingredients_no_ingredients_yet">You haven\'t added any ingredients yet.</string>
     <string name="ingredients_search_result_empty">No matching ingredients found.</string>
     <string name="ingredients_item_edit_ingredient">Edit ingredient</string>
-    <string name="ingredient_item_delete_ingredient">Delete ingredient</string>
+    <string name="ingredients_item_delete_ingredient">Delete ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_title">Remove ingredient</string>
     <string name="ingredients_remove_ingredient_dialog_message">This ingredient is used somewhere in a meal. Removing this ingredient will change all meals that contains it.\nIs this what you want?</string>
     <string name="ingredients_undo_remove">Ingredient removed</string>
+    <string name="ingredients_search_tag_remove_desc">Remove category from search</string>
 
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
