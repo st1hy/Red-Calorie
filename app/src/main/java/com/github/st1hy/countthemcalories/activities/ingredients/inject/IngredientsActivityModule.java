@@ -2,10 +2,12 @@ package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
@@ -14,6 +16,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchBarModel;
+import com.github.st1hy.countthemcalories.core.tokensearch.presenter.SearchBarPresenter;
+import com.github.st1hy.countthemcalories.core.tokensearch.view.SearchBarHolder;
 import com.squareup.picasso.Picasso;
 
 import dagger.Module;
@@ -22,9 +27,11 @@ import dagger.Provides;
 @Module
 public class IngredientsActivityModule {
     private final IngredientsActivity activity;
+    private final Bundle savedState;
 
-    public IngredientsActivityModule(@NonNull IngredientsActivity activity) {
+    public IngredientsActivityModule(@NonNull IngredientsActivity activity, @Nullable Bundle savedState) {
         this.activity = activity;
+        this.savedState = savedState;
     }
 
     @Provides
@@ -66,4 +73,23 @@ public class IngredientsActivityModule {
     public Resources provideResources() {
         return activity.getResources();
     }
+
+    @Provides
+    @PerActivity
+    public SearchBarPresenter provideSearchBar(SearchBarHolder viewHolder, SearchBarModel model) {
+        return new SearchBarPresenter(viewHolder, model);
+    }
+
+    @Provides
+    @PerActivity
+    public SearchBarHolder provideSearchViewHolder() {
+        return new SearchBarHolder(activity);
+    }
+
+    @Provides
+    @PerActivity
+    public SearchBarModel provideSearchBarModel() {
+        return new SearchBarModel(savedState);
+    }
+
 }

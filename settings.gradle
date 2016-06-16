@@ -1,1 +1,2 @@
-include ':app', ':database', ':database-generator'
+include ':app', ':database', ':database-generator', ':tokenautocomplete'
+project(':tokenautocomplete').projectDir = new File("/home/spark/dev/sources/TokenAutoComplete/library/")

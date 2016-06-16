@@ -32,7 +32,7 @@ public class IngredientsPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new IngredientsPresenterImpl(view, daoAdapter);
+        presenter = new IngredientsPresenterImpl(view, daoAdapter, searchBar);
     }
 
     @Test

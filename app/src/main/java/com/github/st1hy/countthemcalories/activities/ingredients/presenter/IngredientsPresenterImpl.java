@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -10,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIn
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
+import com.github.st1hy.countthemcalories.core.tokensearch.presenter.SearchBarPresenter;
 
 import javax.inject.Inject;
 
@@ -21,13 +23,17 @@ import rx.subscriptions.CompositeSubscription;
 public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements IngredientsPresenter {
     final IngredientsView view;
     final IngredientsDaoAdapter daoAdapter;
+    final SearchBarPresenter searchBar;
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public IngredientsPresenterImpl(@NonNull IngredientsView view, @NonNull IngredientsDaoAdapter daoAdapter) {
+    public IngredientsPresenterImpl(@NonNull IngredientsView view,
+                                    @NonNull IngredientsDaoAdapter daoAdapter,
+                                    @NonNull SearchBarPresenter searchBar) {
         super(view);
         this.view = view;
         this.daoAdapter = daoAdapter;
+        this.searchBar = searchBar;
     }
 
     @Override
@@ -35,12 +41,14 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
         super.onStart();
         daoAdapter.onStart();
         onAddIngredientClicked(view.getOnAddIngredientClickedObservable());
+        searchBar.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         daoAdapter.onStop();
+        searchBar.onStop();
         subscriptions.clear();
     }
 
@@ -68,6 +76,11 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
             if (addedIngredientId != -1L)
                 daoAdapter.onIngredientAdded(addedIngredientId);
         }
+    }
+
+    @Override
+    public void onSaveState(@NonNull Bundle savedState) {
+        searchBar.onSaveInstanceState(savedState);
     }
 
     void onAddIngredientClicked(@NonNull Observable<Void> observable) {
