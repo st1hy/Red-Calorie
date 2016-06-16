@@ -1,8 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
@@ -13,5 +11,4 @@ public interface IngredientsPresenter extends DrawerPresenter {
 
     void onIngredientAdded(int resultCode, @Nullable Intent data);
 
-    void onSaveState(@NonNull Bundle savedState);
 }

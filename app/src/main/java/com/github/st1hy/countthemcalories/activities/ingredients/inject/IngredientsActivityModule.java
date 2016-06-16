@@ -16,9 +16,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchBarModel;
-import com.github.st1hy.countthemcalories.core.tokensearch.presenter.SearchBarPresenter;
-import com.github.st1hy.countthemcalories.core.tokensearch.view.SearchBarHolder;
 import com.squareup.picasso.Picasso;
 
 import dagger.Module;
@@ -74,22 +71,22 @@ public class IngredientsActivityModule {
         return activity.getResources();
     }
 
-    @Provides
-    @PerActivity
-    public SearchBarPresenter provideSearchBar(SearchBarHolder viewHolder, SearchBarModel model) {
-        return new SearchBarPresenter(viewHolder, model);
-    }
-
-    @Provides
-    @PerActivity
-    public SearchBarHolder provideSearchViewHolder() {
-        return new SearchBarHolder(activity);
-    }
-
-    @Provides
-    @PerActivity
-    public SearchBarModel provideSearchBarModel() {
-        return new SearchBarModel(savedState);
-    }
+//    @Provides
+//    @PerActivity
+//    public SearchBarPresenter provideSearchBar(SearchBarHolder viewHolder, SearchBarModel model) {
+//        return new SearchBarPresenter(viewHolder, model);
+//    }
+//
+//    @Provides
+//    @PerActivity
+//    public SearchBarHolder provideSearchViewHolder(SearchBarModel model) {
+//        return new SearchBarHolder(activity, model);
+//    }
+//
+//    @Provides
+//    @PerActivity
+//    public SearchBarModel provideSearchBarModel() {
+//        return new SearchBarModel(savedState);
+//    }
 
 }

@@ -6,20 +6,21 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import javax.inject.Inject;
-
 public class SearchBarModel {
 
     boolean isExpanded = false;
     final ParcelableProxy parcelableProxy;
 
-    @Inject
     public SearchBarModel(@Nullable Bundle savedState) {
+        ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.SAVE_STATE);
-        } else {
-            parcelableProxy = new ParcelableProxy();
+            if (parcelableProxy != null) {
+                isExpanded = parcelableProxy.isExpanded;
+            }
         }
+        if (parcelableProxy == null) parcelableProxy = new ParcelableProxy();
+        this.parcelableProxy = parcelableProxy;
     }
 
     public boolean isExpanded() {
@@ -55,8 +56,7 @@ public class SearchBarModel {
             return 0;
         }
 
-        public static final Parcelable.Creator<ParcelableProxy> CREATOR
-                = new Parcelable.Creator<ParcelableProxy>() {
+        public static final Parcelable.Creator<ParcelableProxy> CREATOR = new Parcelable.Creator<ParcelableProxy>() {
             public ParcelableProxy createFromParcel(Parcel in) {
                 ParcelableProxy proxy = new ParcelableProxy();
                 proxy.isExpanded = in.readInt() > 0;

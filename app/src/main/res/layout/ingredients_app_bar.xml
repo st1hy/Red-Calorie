@@ -21,11 +21,24 @@
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
-            <include layout="@layout/ingredients_search_bar"
-                android:id="@+id/ingredients_search_bar"
-                android:layout_width="wrap_content"
+            <!--<FrameLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="end">-->
+                <!--<include layout="@layout/token_search_view"-->
+                    <!--android:layout_gravity="end"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_width="wrap_content"/>-->
+            <!--</FrameLayout>-->
+            <com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchView
+                android:id="@+id/ingredients_search_view"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"/>
+            <!--<include layout="@layout/token_search_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="end"/>-->
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 

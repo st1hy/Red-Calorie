@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchBarModel;
+import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.view.SearchBarHolder;
 
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class SearchBarPresenter {
 
@@ -30,6 +32,8 @@ public class SearchBarPresenter {
         } else {
             viewHolder.collapse();
         }
+        subscriptions.add(viewHolder.searchResults()
+                .subscribe(onSearchResults()));
     }
 
     public void onStop() {
@@ -45,8 +49,12 @@ public class SearchBarPresenter {
         return new SimpleSubscriber<Void>() {
             @Override
             public void onNext(Void aVoid) {
-                model.setExpanded(false);
-                viewHolder.collapse();
+                if (viewHolder.hasText()) {
+                    viewHolder.clearText();
+                } else {
+                    model.setExpanded(false);
+                    viewHolder.collapse();
+                }
             }
         };
     }
@@ -58,6 +66,17 @@ public class SearchBarPresenter {
             public void onNext(Void aVoid) {
                 model.setExpanded(true);
                 viewHolder.expand();
+            }
+        };
+    }
+
+    @NonNull
+    private SimpleSubscriber<SearchResult> onSearchResults() {
+        return new SimpleSubscriber<SearchResult>() {
+            @Override
+            public void onNext(SearchResult searchResult) {
+                super.onNext(searchResult);
+                Timber.d("%s, %s", searchResult.getQuery(), searchResult.getTokens());
             }
         };
     }

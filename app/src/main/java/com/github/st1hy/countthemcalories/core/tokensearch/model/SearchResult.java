@@ -5,19 +5,19 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 public class SearchResult {
-    final String ingredientName;
-    final List<String> tags;
+    final String query;
+    final List<String> tokens;
 
-    public SearchResult(@NonNull String ingredientName, @NonNull List<String> tags) {
-        this.ingredientName = ingredientName;
-        this.tags = tags;
+    public SearchResult(@NonNull String query, @NonNull List<String> tokens) {
+        this.query = query;
+        this.tokens = tokens;
     }
 
-    public String getIngredientName() {
-        return ingredientName;
+    public String getQuery() {
+        return query;
     }
 
-    public List<String> getTags() {
-        return tags;
+    public List<String> getTokens() {
+        return tokens;
     }
 }

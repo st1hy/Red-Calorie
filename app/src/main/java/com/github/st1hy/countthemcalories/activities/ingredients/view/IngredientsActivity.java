@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Ingre
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -53,6 +54,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     TextView emptyIngredientsText;
     @BindView(R.id.ingredients_content)
     RecyclerView recyclerView;
+    @BindView(R.id.ingredients_search_view)
+    TokenSearchView searchView;
 
     @BindView(R.id.ingredients_root)
     CoordinatorLayout root;
@@ -78,12 +81,6 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        presenter.onSaveState(outState);
     }
 
     @Override

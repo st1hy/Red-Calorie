@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.core.tokensearch.model;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.tokensearch.view.SearchChanged;
-import com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchView;
+import com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchTextView;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
 public class RxTokenSearchView implements Observable.OnSubscribe<SearchResult> {
-    final TokenSearchView searchView;
+    final TokenSearchTextView searchView;
 
-    private RxTokenSearchView(@NonNull TokenSearchView searchView) {
+    private RxTokenSearchView(@NonNull TokenSearchTextView searchView) {
         this.searchView = searchView;
     }
 
@@ -37,7 +37,7 @@ public class RxTokenSearchView implements Observable.OnSubscribe<SearchResult> {
     }
 
     @NonNull
-    public static Observable<SearchResult> create(@NonNull final TokenSearchView searchView) {
+    public static Observable<SearchResult> create(@NonNull final TokenSearchTextView searchView) {
         return Observable.create(new RxTokenSearchView(searchView));
     }
 

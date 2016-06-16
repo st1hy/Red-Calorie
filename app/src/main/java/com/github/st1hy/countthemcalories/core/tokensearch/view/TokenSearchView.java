@@ -1,31 +1,39 @@
 package com.github.st1hy.countthemcalories.core.tokensearch.view;
 
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import com.github.st1hy.countthemcalories.R;
-import com.tokenautocomplete.TokenCompleteTextView;
+import com.github.st1hy.countthemcalories.core.tokensearch.model.RxTokenSearchView;
+import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchResult;
 
-import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import rx.Observable;
 
-public class TokenSearchView extends TokenCompleteTextView<String> {
+public class TokenSearchView extends FrameLayout {
 
-    public static final String SAVE_TOKEN_COMPLETE = "TokenCompleteTextView";
-    public static final String SAVE_CURRENT_COMPLETION_TEXT = "currentCompletionText";
-    private TextWatcher textWatcher;
-    private SearchChanged searchChanged = null;
-    private TokenListener<String> childListener;
+    @BindView(R.id.token_search_root)
+    ViewGroup root;
+    @BindView(R.id.token_search_text_view)
+    TokenSearchTextView searchView;
+    @BindView(R.id.token_search_expand)
+    View expand;
+    @BindView(R.id.token_search_collapse)
+    View collapse;
+
+    boolean isExpanded = false;
 
     public TokenSearchView(Context context) {
         super(context);
@@ -37,116 +45,151 @@ public class TokenSearchView extends TokenCompleteTextView<String> {
         init();
     }
 
-    public TokenSearchView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public TokenSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    @TargetApi(21)
+    public TokenSearchView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
     private void init() {
-        allowCollapse(true);
-        performBestGuess(false);
-        setTokenClickStyle(TokenClickStyle.Delete);
-        setDeletionStyle(TokenDeleteStyle.PartialCompletion);
-        super.setTokenListener(new TokenListener<String>() {
-            @Override
-            public void onTokenAdded(String token) {
-                if (childListener != null) childListener.onTokenAdded(token);
-                notifyChanged();
-            }
-
-            @Override
-            public void onTokenRemoved(String token) {
-                if (childListener != null) childListener.onTokenRemoved(token);
-                notifyChanged();
-            }
-
-        });
+        addView(inflateView(LayoutInflater.from(getContext())));
+        ButterKnife.bind(this);
+        setupState();
     }
 
-    public void setSearchChanged(@Nullable SearchChanged searchChanged) {
-        this.searchChanged = searchChanged;
+    protected View inflateView(@NonNull LayoutInflater inflater) {
+        return inflater.inflate(R.layout.token_search_view, this, false);
     }
 
+
+    public void expand() {
+        isExpanded = true;
+        expand.setVisibility(View.GONE);
+        collapse.setVisibility(View.VISIBLE);
+        searchView.setVisibility(View.VISIBLE);
+        setupWidth();
+        searchView.requestFocusFromTouch();
+        InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(searchView, 0);
+    }
+
+    @OnClick(R.id.token_search_collapse)
+    public void collapse() {
+        isExpanded = false;
+        expand.setVisibility(View.VISIBLE);
+        collapse.setVisibility(View.GONE);
+        searchView.setVisibility(View.GONE);
+        setupWidth();
+        InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+    }
+
+    @OnClick(R.id.token_search_expand)
+    public void onExpandClicked() {
+        if (hasText()) {
+            clearText();
+        } else {
+            collapse();
+        }
+    }
+
+    public void setQuery(String query, boolean submit) {
+        clearText();
+        searchView.append(query);
+    }
+
+    public void clearText() {
+        searchView.clear();
+        searchView.getText().clear();
+    }
+
+    @NonNull
+    public Observable<SearchResult> searchResults() {
+        return RxTokenSearchView.create(searchView);
+    }
+
+    private void setupWidth() {
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (layoutParams == null) {
+            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    getViewTreeObserver().removeOnPreDrawListener(this);
+                    setupWidth();
+                    return true;
+                }
+            });
+        } else {
+            layoutParams.width = isExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
+            setLayoutParams(layoutParams);
+            layoutParams = root.getLayoutParams();
+            layoutParams.width = isExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
+            root.setLayoutParams(layoutParams);
+            invalidate();
+        }
+    }
+
+    public boolean hasText() {
+        return !searchView.getText().toString().isEmpty();
+    }
 
     @Override
-    protected void addListeners() {
-        super.addListeners();
-        removeTextChangedListener(getTextWatcher());
-        addTextChangedListener(getTextWatcher());
+    protected Parcelable onSaveInstanceState() {
+        return new SavedState(super.onSaveInstanceState(), this);
     }
 
     @Override
-    protected void removeListeners() {
-        super.removeListeners();
-        removeTextChangedListener(getTextWatcher());
-    }
-
-    @Override
-    protected View getViewForObject(String query) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        ViewGroup parent = (ViewGroup) TokenSearchView.this.getParent();
-        LinearLayout view = (LinearLayout) inflater.inflate(R.layout.token_chip, parent, false);
-        TextView name = (TextView) view.findViewById(R.id.chip_name);
-        name.setText(query);
-        return view;
-    }
-
-    @Override
-    protected String defaultObject(String completionText) {
-        return completionText;
-    }
-
-
-    @Override
-    public Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SAVE_TOKEN_COMPLETE, super.onSaveInstanceState());
-        bundle.putString(SAVE_CURRENT_COMPLETION_TEXT, currentCompletionText());
-        return bundle;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (!(state instanceof Bundle)) {
-            super.onRestoreInstanceState(state);
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        if (!(state instanceof SavedState)) {
             return;
         }
-        Bundle bundle = (Bundle) state;
-        super.onRestoreInstanceState(bundle.getParcelable(SAVE_TOKEN_COMPLETE));
-        append(bundle.getString(SAVE_CURRENT_COMPLETION_TEXT));
+        SavedState savedState = (SavedState) state;
+        isExpanded = savedState.isExpanded;
+        setupState();
     }
 
-    private TextWatcher getTextWatcher() {
-        if (textWatcher == null) {
-            textWatcher = new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
+    protected void setupState() {
+        if (isExpanded) expand();
+        else collapse();
+    }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    notifyChanged();
-                }
+    private static class SavedState extends BaseSavedState {
+        private boolean isExpanded;
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            };
+        public SavedState(Parcel source) {
+            super(source);
+            isExpanded = source.readInt() > 0;
         }
-        return textWatcher;
-    }
 
-    @Override
-    public void setTokenListener(TokenListener<String> l) {
-        childListener = l;
-    }
-
-    private void notifyChanged() {
-        String text = currentCompletionText();
-        List<String> objects = getObjects();
-        if (searchChanged != null) {
-            searchChanged.onSearching(text, objects);
+        public SavedState(Parcelable superState, TokenSearchView view) {
+            super(superState);
+            isExpanded = view.isExpanded;
         }
-    }
 
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeInt(isExpanded ? 1 : 0);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 }
