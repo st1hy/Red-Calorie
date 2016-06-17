@@ -182,26 +182,37 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @NonNull
-    private Observable<SearchResult> createObservable(@NonNull Searchable searchable) {
+    private Observable<SearchResult> createObservable(@NonNull final Searchable searchable) {
         Observable<SearchResult> sequenceObservable = RxSearchable.create(searchable)
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<SearchResult>() {
+                    @Override
+                    public void call(SearchResult searchResult) {
+                        Timber.d("Raw search: %s", searchResult);
+                    }
+                });
         if (debounceTime > 0) {
             sequenceObservable = sequenceObservable.share();
             sequenceObservable = sequenceObservable
-                    .limit(1)
+                    // During restart tags are re-added in onRestoreSavedState which leads to
+                    // 2 searches: immediate with wrong query and correct one after delay+250ms
+                    // if delay is smaller than 100ms this will remove wrong search and speed it up
+                    // to delay+100ms
+                    .debounce(100, TimeUnit.MILLISECONDS).limit(1)
                     .concatWith(
                             sequenceObservable
-                                    .skip(1)
                                     .debounce(debounceTime, TimeUnit.MILLISECONDS)
                     );
         }
-        sequenceObservable = sequenceObservable.distinctUntilChanged()
+        sequenceObservable = sequenceObservable
+                .distinctUntilChanged()
                 .replay(1)
                 .autoConnect();
         return sequenceObservable;
     }
 
-    private Subscription searchIngredients(Observable<SearchResult> sequenceObservable) {
+    @NonNull
+    private Subscription searchIngredients(@NonNull Observable<SearchResult> sequenceObservable) {
         return sequenceObservable
                 .doOnNext(new Action1<SearchResult>() {
                     @Override
@@ -260,7 +271,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     protected void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
         onCursorUpdate(cursor);
         boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
-        view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getSearchEmptyMessage() : model.getNoIngredientsMessage());
+        view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
         view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 

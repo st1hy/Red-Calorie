@@ -34,6 +34,7 @@ import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import de.greenrobot.dao.query.Join;
 import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.dao.query.WhereCondition;
 import rx.Observable;
 
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
@@ -260,23 +261,31 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         };
     }
 
-
+    @SuppressWarnings("unchecked")
     @NonNull
     private CursorQuery filteredByQuery(@NonNull final String partOfName,
                                         @NonNull final Collection<String> tags) {
         cacheLastQuery(partOfName, tags);
-
         QueryBuilder<IngredientTemplate> builder = dao().queryBuilder();
-        if (!partOfName.isEmpty()) builder.where(IngredientTemplateDao.Properties.Name.like("%" + partOfName + "%"));
+
+
+        if (!partOfName.isEmpty())
+            builder.where(IngredientTemplateDao.Properties.Name.like("%" + partOfName + "%"));
         if (!tags.isEmpty()) {
             Join jTags = builder.join(JointIngredientTag.class, JointIngredientTagDao.Properties.IngredientTypeId);
             Join tagsJoin = builder.join(jTags, JointIngredientTagDao.Properties.TagId, Tag.class, TagDao.Properties.Id);
             tagsJoin.where(TagDao.Properties.Name.in(tags));
+            // GreenDao don't support GROUP BY, so we hack.
+            // We want only ingredients that have all the tags not just any of them, so we group them
+            // and select only those having exactly as much rows as our tags, this works because
+            // each row in group have unique tag from our list
+            // Added here instead of in builder, because greenDao reorders WHERE clauses.
+            // FIXME May break at update.
+            tagsJoin.where(new WhereCondition.StringCondition("1 GROUP BY T.\"_id\" HAVING COUNT(T.\"_id\")=" + tags.size()));
             builder.distinct();
         }
-        return builder
-                .orderAsc(IngredientTemplateDao.Properties.Name)
-                .buildCursor();
+        builder.orderAsc(IngredientTemplateDao.Properties.Name);
+        return builder.buildCursor();
     }
 
     @Override

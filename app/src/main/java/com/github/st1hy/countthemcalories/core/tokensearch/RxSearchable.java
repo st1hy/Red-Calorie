@@ -2,6 +2,8 @@ package com.github.st1hy.countthemcalories.core.tokensearch;
 
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
 import rx.Observable;
@@ -36,7 +38,7 @@ public class RxSearchable implements Observable.OnSubscribe<SearchResult> {
 
     @NonNull
     private static SearchResult newResults(@NonNull String query, @NonNull List<String> tokens) {
-        return new SearchResult(query, tokens);
+        return new SearchResult(query, ImmutableList.copyOf(tokens));
     }
 
     @NonNull

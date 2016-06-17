@@ -3,7 +3,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -67,11 +66,11 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     IngredientsActivityComponent component;
 
     @NonNull
-    protected IngredientsActivityComponent getComponent(@Nullable Bundle savedState) {
+    protected IngredientsActivityComponent getComponent() {
         if (component == null) {
             component = DaggerIngredientsActivityComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .ingredientsActivityModule(new IngredientsActivityModule(this, savedState))
+                    .ingredientsActivityModule(new IngredientsActivityModule(this))
                     .build();
         }
         return component;
@@ -81,7 +80,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.ingredients_activity);
         ButterKnife.bind(this);
-        getComponent(savedInstanceState).inject(this);
+        getComponent().inject(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         searchView.setSuggestionsAdapter(suggestionsAdapter);

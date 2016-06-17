@@ -2,9 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
@@ -26,11 +24,9 @@ import dagger.Provides;
 @Module
 public class IngredientsActivityModule {
     private final IngredientsActivity activity;
-    private final Bundle savedState;
 
-    public IngredientsActivityModule(@NonNull IngredientsActivity activity, @Nullable Bundle savedState) {
+    public IngredientsActivityModule(@NonNull IngredientsActivity activity) {
         this.activity = activity;
-        this.savedState = savedState;
     }
 
     @Provides
