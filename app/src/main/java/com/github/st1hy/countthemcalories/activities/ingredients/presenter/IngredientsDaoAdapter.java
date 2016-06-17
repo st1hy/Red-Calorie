@@ -12,43 +12,49 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
+import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
-import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
+import com.github.st1hy.countthemcalories.core.tokensearch.Searchable;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHolder, IngredientTemplate>
+public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
         implements IngredientItemViewHolder.Callback {
+    public static int debounceTime = 250;
+
     static final int bottomSpaceItem = 1;
     @LayoutRes
     static final int item_layout = R.layout.ingredients_item_scrolling;
@@ -60,21 +66,37 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
     final RxIngredientsDatabaseModel databaseModel;
     final IngredientsDatabaseCommands commands;
     final Picasso picasso;
+    final SearchSuggestionsAdapter suggestionsAdapter;
 
     final Queue<Long> addedItems = new LinkedList<>();
 
-    @Inject
+    SearchResult lastQuery = new SearchResult("", Collections.<String>emptyList());
+
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
                                  @NonNull IngredientsModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
-                                 @NonNull Picasso picasso) {
-        super(databaseModel);
+                                 @NonNull Picasso picasso,
+                                 @NonNull SearchSuggestionsAdapter suggestionsAdapter) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.picasso = picasso;
+        this.suggestionsAdapter = suggestionsAdapter;
+    }
+
+    public void onStart() {
+        super.onStart();
+        Observable<SearchResult> searching = createObservable(view.getSearchable());
+        addSubscription(searchIngredients(searching));
+        suggestionsAdapter.onStart(searching);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        suggestionsAdapter.onStop();
     }
 
     @Override
@@ -103,46 +125,6 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         if (holder instanceof IngredientItemViewHolder) {
             onBindToIngredientHolder((IngredientItemViewHolder) holder, position);
         }
-    }
-
-    private void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
-        Cursor cursor = getCursor();
-        if (cursor != null) {
-            cursor.moveToPosition(position);
-            IngredientTemplate ingredient = holder.getReusableIngredient();
-            databaseModel.performReadEntity(cursor, ingredient);
-            holder.setPosition(position);
-            holder.setName(ingredient.getName());
-            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
-            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
-            onBindImage(ingredient, holder);
-        } else {
-            Timber.w("Cursor closed duding binding views.");
-        }
-    }
-
-    void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
-        ImageView imageView = holder.getImage();
-        picasso.cancelRequest(imageView);
-        Uri imageUri = ingredient.getImageUri();
-        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
-            RxPicasso.Builder.with(picasso, imageUri)
-                    .centerCrop()
-                    .fit()
-                    .into(imageView);
-        } else {
-            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
-                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
-            imageView.setImageResource(imageRes);
-        }
-    }
-
-    @Override
-    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
-        super.onCursorUpdate(query, cursor);
-        view.setNoIngredientsMessage(query.trim().isEmpty() ? model.getNoIngredientsMessage() :
-                model.getSearchEmptyMessage());
-        view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 
     @Override
@@ -193,11 +175,93 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
     }
 
-
     @NonNull
     @Override
     public Observable<RecyclerEvent> getEvents() {
         return getEventSubject();
+    }
+
+    @NonNull
+    private Observable<SearchResult> createObservable(@NonNull Searchable searchable) {
+        Observable<SearchResult> sequenceObservable = RxSearchable.create(searchable)
+                .subscribeOn(AndroidSchedulers.mainThread());
+        if (debounceTime > 0) {
+            sequenceObservable = sequenceObservable.share();
+            sequenceObservable = sequenceObservable
+                    .limit(1)
+                    .concatWith(
+                            sequenceObservable
+                                    .skip(1)
+                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
+                    );
+        }
+        sequenceObservable = sequenceObservable.distinctUntilChanged()
+                .replay(1)
+                .autoConnect();
+        return sequenceObservable;
+    }
+
+    private Subscription searchIngredients(Observable<SearchResult> sequenceObservable) {
+        return sequenceObservable
+                .doOnNext(new Action1<SearchResult>() {
+                    @Override
+                    public void call(SearchResult text) {
+                        Timber.v("Search: %s", text);
+                    }
+                })
+                .flatMap(queryDatabaseFiltered())
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable e) {
+                        Timber.e(e, "Search exploded");
+                    }
+                })
+                .retry(128)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SimpleSubscriber<QueryFinished>() {
+                    @Override
+                    public void onNext(QueryFinished queryFinished) {
+                        Timber.v("Db cursor query ended");
+                        onCursorUpdate(queryFinished.getCursor(), queryFinished.getSearchingFor());
+                        notifyDataSetChanged();
+                        onSearchFinished();
+                    }
+                });
+    }
+
+    @NonNull
+    private Func1<SearchResult, Observable<QueryFinished>> queryDatabaseFiltered() {
+        return new Func1<SearchResult, Observable<QueryFinished>>() {
+            @Override
+            public Observable<QueryFinished> call(SearchResult searchResult) {
+                Observable<Cursor> cursor = getAllWithFilter(searchResult);
+                return cursor.map(withSearchResult(searchResult));
+            }
+        };
+    }
+
+
+    @NonNull
+    protected Observable<Cursor> getAllWithFilter(@NonNull SearchResult searchResult) {
+        return databaseModel.getAllFilteredBy(searchResult.getQuery(), searchResult.getTokens());
+    }
+
+
+    @NonNull
+    private Func1<Cursor, QueryFinished> withSearchResult(@NonNull final SearchResult searchResult) {
+        return new Func1<Cursor, QueryFinished>() {
+            @Override
+            public QueryFinished call(Cursor cursor) {
+                return new QueryFinished(cursor, searchResult);
+            }
+        };
+    }
+
+    protected void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+        onCursorUpdate(cursor);
+        boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
+        view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getSearchEmptyMessage() : model.getNoIngredientsMessage());
+        view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 
     @NonNull
@@ -219,7 +283,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         return new Action1<Cursor>() {
             @Override
             public void call(Cursor cursor) {
-                onCursorUpdate(lastQuery, cursor);
+                onCursorUpdate(cursor, lastQuery);
                 notifyItemRemovedRx(position);
             }
         };
@@ -229,9 +293,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
         addedItems.offer(addedIngredientId);
     }
 
-    @Override
     protected void onSearchFinished() {
-        super.onSearchFinished();
         final Long newItemId = addedItems.poll();
         if (newItemId != null) {
             addSubscription(Observable.fromCallable(findInCursor(newItemId))
@@ -319,7 +381,7 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
             @Override
             public void onNext(InsertResult result) {
                 int newItemPosition = result.getNewItemPositionInCursor();
-                onCursorUpdate(lastQuery, result.getCursor());
+                onCursorUpdate(result.getCursor(), lastQuery);
                 if (newItemPosition != -1) {
                     notifyItemInsertedRx(newItemPosition);
                     view.scrollToPosition(newItemPosition);
@@ -328,6 +390,58 @@ public class IngredientsDaoAdapter extends RxDaoSearchAdapter<IngredientViewHold
                 }
             }
         };
+    }
+
+    void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            IngredientTemplate ingredient = holder.getReusableIngredient();
+            databaseModel.performReadEntity(cursor, ingredient);
+            holder.setPosition(position);
+            holder.setName(ingredient.getName());
+            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
+            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
+            onBindImage(ingredient, holder);
+        } else {
+            Timber.w("Cursor closed duding binding views.");
+        }
+    }
+
+    void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
+        ImageView imageView = holder.getImage();
+        picasso.cancelRequest(imageView);
+        Uri imageUri = ingredient.getImageUri();
+        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
+            RxPicasso.Builder.with(picasso, imageUri)
+                    .centerCrop()
+                    .fit()
+                    .into(imageView);
+        } else {
+            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
+            imageView.setImageResource(imageRes);
+        }
+    }
+
+    static class QueryFinished {
+        final Cursor cursor;
+        final SearchResult searchingFor;
+
+        public QueryFinished(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+            this.cursor = cursor;
+            this.searchingFor = searchingFor;
+        }
+
+        @NonNull
+        public Cursor getCursor() {
+            return cursor;
+        }
+
+        @NonNull
+        public SearchResult getSearchingFor() {
+            return searchingFor;
+        }
     }
 
 }

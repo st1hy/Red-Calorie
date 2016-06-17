@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import com.github.st1hy.countthemcalories.core.command.view.UndoView;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.Searchable;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 
 import rx.Observable;
@@ -34,4 +35,7 @@ public interface IngredientsView extends DrawerView, UndoView {
     void scrollToPosition(int position);
 
     void setNoIngredientsMessage(@StringRes int noIngredientTextResId);
+
+    @NonNull
+    Searchable getSearchable();
 }

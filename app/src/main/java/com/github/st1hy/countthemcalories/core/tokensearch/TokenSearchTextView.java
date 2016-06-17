@@ -1,9 +1,10 @@
-package com.github.st1hy.countthemcalories.core.tokensearch.view;
+package com.github.st1hy.countthemcalories.core.tokensearch;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,12 +20,12 @@ import com.tokenautocomplete.TokenCompleteTextView;
 
 import java.util.List;
 
-public class TokenSearchTextView extends TokenCompleteTextView<String> {
+public class TokenSearchTextView extends TokenCompleteTextView<String> implements Searchable {
 
     public static final String SAVE_TOKEN_COMPLETE = "TokenCompleteTextView";
     public static final String SAVE_CURRENT_COMPLETION_TEXT = "currentCompletionText";
     private TextWatcher textWatcher;
-    private SearchChanged searchChanged = null;
+    private OnSearchChanged onSearchChanged = null;
     private TokenListener<String> childListener;
 
     public TokenSearchTextView(Context context) {
@@ -47,6 +48,8 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> {
         performBestGuess(false);
         setTokenClickStyle(TokenClickStyle.Delete);
         setDeletionStyle(TokenDeleteStyle.PartialCompletion);
+        setThreshold(1);
+        setTokenLimit(10);
         super.setTokenListener(new TokenListener<String>() {
             @Override
             public void onTokenAdded(String token) {
@@ -63,10 +66,22 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> {
         });
     }
 
-    public void setSearchChanged(@Nullable SearchChanged searchChanged) {
-        this.searchChanged = searchChanged;
+    @Override
+    public void setOnSearchChanged(@Nullable OnSearchChanged onSearchChanged) {
+        this.onSearchChanged = onSearchChanged;
     }
 
+    @NonNull
+    @Override
+    public String getQuery() {
+        return currentCompletionText();
+    }
+
+    @NonNull
+    @Override
+    public List<String> getTokens() {
+        return getObjects();
+    }
 
     @Override
     protected void addListeners() {
@@ -144,8 +159,8 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> {
     private void notifyChanged() {
         String text = currentCompletionText();
         List<String> objects = getObjects();
-        if (searchChanged != null) {
-            searchChanged.onSearching(text, objects);
+        if (onSearchChanged != null) {
+            onSearchChanged.onSearching(text, objects);
         }
     }
 

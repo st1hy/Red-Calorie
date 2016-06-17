@@ -1,36 +1,29 @@
-package com.github.st1hy.countthemcalories.core.tokensearch.view;
+package com.github.st1hy.countthemcalories.core.tokensearch;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Filterable;
 import android.widget.FrameLayout;
+import android.widget.ListAdapter;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.tokensearch.model.RxTokenSearchView;
-import com.github.st1hy.countthemcalories.core.tokensearch.model.SearchResult;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import rx.Observable;
+import java.util.List;
 
-public class TokenSearchView extends FrameLayout {
+public class TokenSearchView extends FrameLayout implements Searchable {
 
-    @BindView(R.id.token_search_root)
-    ViewGroup root;
-    @BindView(R.id.token_search_text_view)
     TokenSearchTextView searchView;
-    @BindView(R.id.token_search_expand)
     View expand;
-    @BindView(R.id.token_search_collapse)
     View collapse;
 
     boolean isExpanded = false;
@@ -58,7 +51,21 @@ public class TokenSearchView extends FrameLayout {
 
     private void init() {
         addView(inflateView(LayoutInflater.from(getContext())));
-        ButterKnife.bind(this);
+        expand = findViewById(R.id.token_search_expand);
+        collapse = findViewById(R.id.token_search_collapse);
+        searchView = (TokenSearchTextView) findViewById(R.id.token_search_text_view);
+        expand.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onExpandClicked();
+            }
+        });
+        collapse.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCollapseClicked();
+            }
+        });
         setupState();
     }
 
@@ -66,19 +73,18 @@ public class TokenSearchView extends FrameLayout {
         return inflater.inflate(R.layout.token_search_view, this, false);
     }
 
-
-    public void expand() {
+    public void expand(boolean requestFocus) {
         isExpanded = true;
         expand.setVisibility(View.GONE);
         collapse.setVisibility(View.VISIBLE);
         searchView.setVisibility(View.VISIBLE);
         setupWidth();
-        searchView.requestFocusFromTouch();
+        if (requestFocus) searchView.requestFocus();
         InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(searchView, 0);
     }
 
-    @OnClick(R.id.token_search_collapse)
+
     public void collapse() {
         isExpanded = false;
         expand.setVisibility(View.VISIBLE);
@@ -89,8 +95,11 @@ public class TokenSearchView extends FrameLayout {
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
 
-    @OnClick(R.id.token_search_expand)
-    public void onExpandClicked() {
+    protected void onExpandClicked() {
+        expand(true);
+    }
+
+    protected void onCollapseClicked() {
         if (hasText()) {
             clearText();
         } else {
@@ -108,9 +117,25 @@ public class TokenSearchView extends FrameLayout {
         searchView.getText().clear();
     }
 
+    @Override
+    public void setOnSearchChanged(@Nullable OnSearchChanged onSearchChanged) {
+        searchView.setOnSearchChanged(onSearchChanged);
+    }
+
     @NonNull
-    public Observable<SearchResult> searchResults() {
-        return RxTokenSearchView.create(searchView);
+    @Override
+    public String getQuery() {
+        return searchView.getQuery();
+    }
+
+    @NonNull
+    @Override
+    public List<String> getTokens() {
+        return searchView.getTokens();
+    }
+
+    public <T extends ListAdapter & Filterable> void setSuggestionsAdapter(@Nullable T adapter) {
+        searchView.setAdapter(adapter);
     }
 
     private void setupWidth() {
@@ -127,9 +152,6 @@ public class TokenSearchView extends FrameLayout {
         } else {
             layoutParams.width = isExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
             setLayoutParams(layoutParams);
-            layoutParams = root.getLayoutParams();
-            layoutParams.width = isExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
-            root.setLayoutParams(layoutParams);
             invalidate();
         }
     }
@@ -145,17 +167,14 @@ public class TokenSearchView extends FrameLayout {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
-        if (!(state instanceof SavedState)) {
-            return;
-        }
         SavedState savedState = (SavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
         isExpanded = savedState.isExpanded;
         setupState();
     }
 
     protected void setupState() {
-        if (isExpanded) expand();
+        if (isExpanded) expand(false);
         else collapse();
     }
 

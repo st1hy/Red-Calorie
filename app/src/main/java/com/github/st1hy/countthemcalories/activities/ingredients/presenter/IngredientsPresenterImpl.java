@@ -45,6 +45,7 @@ public class IngredientsPresenterImpl extends AbstractDrawerPresenter implements
         subscriptions.clear();
     }
 
+
     @Override
     protected DrawerMenuItem currentItem() {
         return DrawerMenuItem.INGREDIENTS;

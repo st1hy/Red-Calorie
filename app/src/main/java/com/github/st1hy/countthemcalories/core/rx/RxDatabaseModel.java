@@ -62,11 +62,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     }
 
     @NonNull
-    public Observable<Cursor> removeAndRefresh(@NonNull T data) {
-        return fromDatabaseTask(removeAndRefreshCall(data));
-    }
-
-    @NonNull
     public Observable<Void> remove(@NonNull T data) {
         return fromDatabaseTask(removeCall(data));
     }
@@ -136,17 +131,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     @NonNull
     private Callable<Cursor> filtered(@NonNull final String partOfName) {
         return query(getQueryOf(partOfName));
-    }
-
-    @NonNull
-    private Callable<Cursor> removeAndRefreshCall(@NonNull final T data) {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                performRemove(data);
-                return refresh().call();
-            }
-        };
     }
 
     @NonNull

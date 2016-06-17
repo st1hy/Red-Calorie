@@ -111,7 +111,7 @@ public class IngredientsDaoAdapterTest {
                                          @NonNull RxIngredientsDatabaseModel databaseModel,
                                          @NonNull IngredientsDatabaseCommands commands,
                                          @NonNull Picasso picasso) {
-            super(view, model, databaseModel, commands, picasso);
+            super(view, model, databaseModel, commands, picasso, suggestionsAdapter);
         }
 
         @Override

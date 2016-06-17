@@ -38,7 +38,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder, Tag> implements OnTagInteraction {
+public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction {
 
     static final int bottomSpaceItem = 1;
     static final int item_layout = R.layout.tags_item_scrolling;

@@ -19,7 +19,9 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -30,10 +32,13 @@ import dagger.Lazy;
 import dagger.internal.DoubleCheckLazy;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
+import de.greenrobot.dao.query.Join;
+import de.greenrobot.dao.query.QueryBuilder;
 import rx.Observable;
 
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
     private final Lazy<IngredientTemplateDao> dao;
+    private Collection<String> lastTagsFilter = Collections.emptyList();
 
     public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
@@ -46,9 +51,41 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         });
     }
 
+    public Observable<Cursor> getAllFilteredBy(@NonNull String name, @NonNull List<String> tags) {
+        return fromDatabaseTask(filteredBy(name, tags));
+    }
+
+    @NonNull
+    private Callable<Cursor> filteredBy(String name, List<String> tags) {
+        if (tags.isEmpty()) return query(getQueryOf(name));
+        else return query(filteredByCall(name, tags));
+    }
+
+    @NonNull
+    @Override
+    protected Callable<CursorQuery> lastQuery() {
+        if (lastTagsFilter.isEmpty()) {
+            return super.lastQuery();
+        } else {
+            return filteredByCall(lastFilter, lastTagsFilter);
+        }
+    }
+
+
+    @NonNull
+    private Callable<CursorQuery> filteredByCall(@NonNull final String partOfName, @NonNull final Collection<String> tags) {
+        return new Callable<CursorQuery>() {
+            @Override
+            public CursorQuery call() throws Exception {
+                return filteredByQuery(partOfName, tags);
+            }
+        };
+    }
+
+
     @NonNull
     public Observable<IngredientTemplate> update(@NonNull final IngredientTemplate ingredientTemplate,
-                                   @NonNull final Collection<Long> tagIds) {
+                                                 @NonNull final Collection<Long> tagIds) {
         return fromDatabaseTask(updateCall(ingredientTemplate, tagIds));
     }
 
@@ -89,7 +126,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
     @NonNull
     public Observable<IngredientTemplate> addNew(@NonNull final IngredientTemplate data,
-                                   @NonNull final Collection<Long> tagIds) {
+                                                 @NonNull final Collection<Long> tagIds) {
         return fromDatabaseTask(insertNewCall(data, tagIds));
     }
 
@@ -121,7 +158,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
     @NonNull
     private Callable<IngredientTemplate> insertNewCall(@NonNull final IngredientTemplate data,
-                                         @NonNull final Collection<Long> tagIds) {
+                                                       @NonNull final Collection<Long> tagIds) {
         return new Callable<IngredientTemplate>() {
             @Override
             public IngredientTemplate call() throws Exception {
@@ -221,6 +258,38 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                 return jTag.getTagId();
             }
         };
+    }
+
+
+    @NonNull
+    private CursorQuery filteredByQuery(@NonNull final String partOfName,
+                                        @NonNull final Collection<String> tags) {
+        cacheLastQuery(partOfName, tags);
+
+        QueryBuilder<IngredientTemplate> builder = dao().queryBuilder();
+        if (!partOfName.isEmpty()) builder.where(IngredientTemplateDao.Properties.Name.like("%" + partOfName + "%"));
+        if (!tags.isEmpty()) {
+            Join jTags = builder.join(JointIngredientTag.class, JointIngredientTagDao.Properties.IngredientTypeId);
+            Join tagsJoin = builder.join(jTags, JointIngredientTagDao.Properties.TagId, Tag.class, TagDao.Properties.Id);
+            tagsJoin.where(TagDao.Properties.Name.in(tags));
+            builder.distinct();
+        }
+        return builder
+                .orderAsc(IngredientTemplateDao.Properties.Name)
+                .buildCursor();
+    }
+
+    @Override
+    protected void cacheLastQuery(@NonNull String partOfName) {
+        super.cacheLastQuery(partOfName);
+        lastTagsFilter = Collections.emptyList();
+    }
+
+    protected void cacheLastQuery(@NonNull final String partOfName,
+                                  @NonNull final Collection<String> tags) {
+        cacheLastQuery(partOfName);
+        lastTagsFilter = tags.isEmpty() ? Collections.<String>emptyList()
+                : new ArrayList<>(tags);
     }
 
 }

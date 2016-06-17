@@ -11,44 +11,30 @@ import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> extends RecyclerView.Adapter<T>
+public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<T>
         implements DaoRecyclerAdapter {
 
     public static int debounceTime = 250;
     final SearchableDatabase db;
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
-    //Lazy
-    private Subject<RecyclerEvent, RecyclerEvent> changeEvents;
-
-    Cursor cursor;
     Observable<CharSequence> onSearchObservable;
+
+    protected String lastQuery = "";
 
     public RxDaoSearchAdapter(@NonNull SearchableDatabase db) {
         this.db = db;
     }
-    protected String lastQuery = "";
 
     @Override
     @CallSuper
     public void onStart() {
+        super.onStart();
         if (onSearchObservable != null) onSearch(onSearchObservable);
-    }
-
-    @Override
-    @CallSuper
-    public void onStop() {
-        subscriptions.clear();
-        closeCursor(true);
     }
 
     @Override
@@ -95,15 +81,9 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
                 }));
     }
 
-    @Override
-    public int getItemCount() {
-        return getDaoItemCount();
-    }
-
     @CallSuper
     protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
-        closeCursor(false);
-        RxDaoSearchAdapter.this.cursor = cursor;
+        super.onCursorUpdate(cursor);
     }
 
     protected void onSearchFinished() {
@@ -136,50 +116,4 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder, R> e
         return db.getAllFiltered(filter);
     }
 
-    private void closeCursor(boolean notify) {
-        Cursor cursor = this.cursor;
-        this.cursor = null;
-        if (cursor != null) {
-            if (notify) notifyDataSetChanged();
-            cursor.close();
-        }
-    }
-
-    protected final int getDaoItemCount() {
-        Cursor cursor = getCursor();
-        return cursor != null ? cursor.getCount() : 0;
-    }
-
-    protected Cursor getCursor() {
-        return cursor;
-    }
-
-    @CallSuper
-    protected void addSubscription(@NonNull Subscription subscription) {
-        subscriptions.add(subscription);
-    }
-
-    @NonNull
-    protected Subject<RecyclerEvent, RecyclerEvent> getEventSubject() {
-        if (changeEvents == null) {
-            changeEvents = PublishSubject.<RecyclerEvent>create().toSerialized();
-        }
-        return changeEvents;
-    }
-
-    /**
-     * Same as {@link #notifyItemRemoved(int)} but also notifies event subject
-     */
-    protected void notifyItemRemovedRx(int position) {
-        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
-        notifyItemRemoved(position);
-    }
-
-    /**
-     * Same as {@link #notifyItemInserted(int)} but also notifies event subject
-     */
-    protected void notifyItemInsertedRx(int position) {
-        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.ADDED, position));
-        notifyItemInserted(position);
-    }
 }

@@ -71,7 +71,7 @@ public class RxDaoSearchAdapterTest {
         }
     }
 
-    public static class TestAdapter extends RxDaoSearchAdapter<TestViewHolder, Void> {
+    public static class TestAdapter extends RxDaoSearchAdapter<TestViewHolder> {
 
         public TestAdapter(@NonNull RxDatabaseModel<Void> databaseModel) {
             super(databaseModel);

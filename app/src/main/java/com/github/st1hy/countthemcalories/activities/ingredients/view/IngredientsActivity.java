@@ -20,10 +20,12 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchView;
+import com.github.st1hy.countthemcalories.core.tokensearch.Searchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -45,6 +47,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     IngredientsPresenter presenter;
     @Inject
     IngredientsDaoAdapter adapter;
+    @Inject
+    SearchSuggestionsAdapter suggestionsAdapter;
 
     @BindView(R.id.ingredients_fab)
     FloatingActionButton fab;
@@ -80,6 +84,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         getComponent(savedInstanceState).inject(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        searchView.setSuggestionsAdapter(suggestionsAdapter);
         super.onCreate(savedInstanceState);
     }
 
@@ -144,6 +149,12 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void setNoIngredientsMessage(@StringRes int noIngredientTextResId) {
         emptyIngredientsText.setText(noIngredientTextResId);
+    }
+
+    @NonNull
+    @Override
+    public Searchable getSearchable() {
+        return searchView;
     }
 
     @Override

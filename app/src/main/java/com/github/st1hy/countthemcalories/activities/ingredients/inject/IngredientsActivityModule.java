@@ -12,8 +12,10 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenterImpl;
+import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
+import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.squareup.picasso.Picasso;
@@ -49,8 +51,9 @@ public class IngredientsActivityModule {
                                                      IngredientsModel model,
                                                      RxIngredientsDatabaseModel databaseModel,
                                                      IngredientsDatabaseCommands commands,
-                                                     Picasso picasso) {
-        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso);
+                                                     Picasso picasso,
+                                                     SearchSuggestionsAdapter suggestionsAdapter) {
+        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso, suggestionsAdapter);
     }
 
     @Provides
@@ -71,22 +74,10 @@ public class IngredientsActivityModule {
         return activity.getResources();
     }
 
-//    @Provides
-//    @PerActivity
-//    public SearchBarPresenter provideSearchBar(SearchBarHolder viewHolder, SearchBarModel model) {
-//        return new SearchBarPresenter(viewHolder, model);
-//    }
-//
-//    @Provides
-//    @PerActivity
-//    public SearchBarHolder provideSearchViewHolder(SearchBarModel model) {
-//        return new SearchBarHolder(activity, model);
-//    }
-//
-//    @Provides
-//    @PerActivity
-//    public SearchBarModel provideSearchBarModel() {
-//        return new SearchBarModel(savedState);
-//    }
 
+    @Provides
+    @PerActivity
+    public SearchSuggestionsAdapter provideSuggestionsAdapter(RxTagsDatabaseModel databaseModel) {
+        return new SearchSuggestionsAdapter(activity, databaseModel);
+    }
 }

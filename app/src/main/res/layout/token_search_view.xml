@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/token_search_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:background="@color/colorPrimary"
@@ -10,7 +9,7 @@
     android:layout_gravity="end"
     android:orientation="horizontal">
 
-    <com.github.st1hy.countthemcalories.core.tokensearch.view.TokenSearchTextView
+    <com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView
         android:id="@+id/token_search_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
