@@ -127,7 +127,7 @@ public class TagsActivityTest {
     @Test
     public void testExcludeTags() throws Exception {
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
-        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[]{exampleTags[0].getId()});
+        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{exampleTags[0].getName()});
         main.launchActivity(intent);
         onView(withText(exampleTags[0].getName())).check(doesNotExist());
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));

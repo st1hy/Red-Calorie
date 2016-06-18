@@ -40,7 +40,7 @@ import rx.functions.Func1;
 
 public class TagsActivity extends UndoDrawerActivity implements TagsView {
     public static final String ACTION_PICK_TAG = "pick tag";
-    public static final String EXTRA_EXCLUDE_TAG_IDS = "exclude tag id";
+    public static final String EXTRA_EXCLUDE_TAG_STRING_ARRAY = "exclude tag id";
     public static final String EXTRA_TAG_ID = "extra tag id";
     public static final String EXTRA_TAG_NAME = "extra tag name";
 

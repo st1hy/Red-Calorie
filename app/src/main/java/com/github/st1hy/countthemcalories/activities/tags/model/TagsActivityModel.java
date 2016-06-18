@@ -6,10 +6,9 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,15 +25,11 @@ public class TagsActivityModel {
     }
 
     @NonNull
-    public Collection<Long> getExcludedTagIds() {
+    public Collection<String> getExcludedTagIds() {
         if (intent != null) {
-            long[] excludedIds = intent.getLongArrayExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS);
-            if (excludedIds != null) {
-                List<Long> idsList = new ArrayList<>(excludedIds.length);
-                for (long l : excludedIds) {
-                    idsList.add(l);
-                }
-                return idsList;
+            String[] tags = intent.getStringArrayExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY);
+            if (tags != null) {
+                return Arrays.asList(tags);
             }
         }
         return Collections.emptyList();

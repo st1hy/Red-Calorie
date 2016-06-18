@@ -81,7 +81,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         holder.addNewObservable().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.openSelectTagScreen(model.getTagIds());
+                view.openSelectTagScreen(model.getTagNames());
             }
         });
     }

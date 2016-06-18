@@ -61,7 +61,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
     }
 
     @NonNull
-    private Subscription makeSuggestions(@NonNull Observable<SearchResult> sequenceObservable) {
+    private Subscription makeSuggestions(@NonNull final Observable<SearchResult> sequenceObservable) {
         return sequenceObservable
                 .doOnNext(new Action1<SearchResult>() {
                     @Override
@@ -72,7 +72,9 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
                 .flatMap(new Func1<SearchResult, Observable<Cursor>>() {
                     @Override
                     public Observable<Cursor> call(SearchResult searchResult) {
-                        return databaseModel.getAllFiltered(searchResult.getQuery());
+                        if (searchResult.getQuery().trim().length() > 0)
+                            return databaseModel.getAllFiltered(searchResult.getQuery(), searchResult.getTokens());
+                        else return Observable.just(null);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

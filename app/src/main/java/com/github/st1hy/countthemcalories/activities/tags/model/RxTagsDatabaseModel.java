@@ -30,7 +30,7 @@ import rx.Observable;
 
 public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     private final Lazy<TagDao> dao;
-    private List<Long> lastExcluded = Collections.emptyList();
+    private List<String> lastExcluded = Collections.emptyList();
 
     public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
         super(lazySession);
@@ -65,8 +65,8 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     public Observable<Cursor> getAllFiltered(@NonNull String partOfName,
-                                             @NonNull Collection<Long> excludedIds) {
-        return fromDatabaseTask(filteredExclude(partOfName, excludedIds));
+                                             @NonNull Collection<String> excludedTags) {
+        return fromDatabaseTask(filteredExclude(partOfName, excludedTags));
     }
 
     @NonNull
@@ -141,9 +141,9 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     private Callable<Cursor> filteredExclude(@NonNull final String partOfName,
-                                             @NonNull final Collection<Long> excludedIds) {
-        if (excludedIds.isEmpty()) return query(getQueryOf(partOfName));
-        else return query(filteredExcludeQueryCall(partOfName, excludedIds));
+                                             @NonNull final Collection<String> excludedTags) {
+        if (excludedTags.isEmpty()) return query(getQueryOf(partOfName));
+        else return query(filteredExcludeQueryCall(partOfName, excludedTags));
     }
 
     @NonNull
@@ -157,21 +157,21 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     }
 
     @NonNull
-    private Callable<CursorQuery> filteredExcludeQueryCall(@NonNull final String partOfName, @NonNull final Collection<Long> excludedIds) {
+    private Callable<CursorQuery> filteredExcludeQueryCall(@NonNull final String partOfName, @NonNull final Collection<String> excludedTags) {
         return new Callable<CursorQuery>() {
             @Override
             public CursorQuery call() throws Exception {
-                return filteredExcludeSortedQuery(partOfName, excludedIds);
+                return filteredExcludeSortedQuery(partOfName, excludedTags);
             }
         };
     }
 
     @NonNull
     private CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
-                                                   @NonNull final Collection<Long> excludedIds) {
-        cacheLastQuery(partOfName, excludedIds);
+                                                   @NonNull final Collection<String> excludedTags) {
+        cacheLastQuery(partOfName, excludedTags);
         QueryBuilder<Tag> builder = dao().queryBuilder();
-        final WhereCondition notInList = TagDao.Properties.Id.notIn(excludedIds);
+        final WhereCondition notInList = TagDao.Properties.Name.notIn(excludedTags);
         if (!partOfName.isEmpty()) {
             builder = builder.where(TagDao.Properties.Name.like("%" + partOfName + "%"), notInList);
         } else {
@@ -189,9 +189,9 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     }
 
     protected void cacheLastQuery(@NonNull final String partOfName,
-                                  @NonNull final Collection<Long> excludedIds) {
+                                  @NonNull final Collection<String> excludedTags) {
         cacheLastQuery(partOfName);
-        lastExcluded = excludedIds.isEmpty() ? Collections.<Long>emptyList()
-                : new ArrayList<>(excludedIds);
+        lastExcluded = excludedTags.isEmpty() ? Collections.<String>emptyList()
+                : new ArrayList<>(excludedTags);
     }
 }

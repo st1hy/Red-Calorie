@@ -197,7 +197,7 @@ public class AddIngredientActivityTest {
         testAddTag();
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(click());
-        intended(hasExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[]{exampleTags[1].getId()}));
+        intended(hasExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{exampleTags[1].getName()}));
 
     }
 }

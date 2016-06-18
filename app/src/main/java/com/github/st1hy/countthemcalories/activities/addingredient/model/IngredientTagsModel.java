@@ -58,8 +58,8 @@ public class IngredientTagsModel {
     }
 
     @NonNull
-    public Collection<Long> getTagIds() {
-        return Collections2.transform(tags, tagsToLongs());
+    public Collection<String> getTagNames() {
+        return Collections2.transform(tags, tagToName());
     }
 
     public void onSaveState(@NonNull Bundle outState) {
@@ -67,9 +67,24 @@ public class IngredientTagsModel {
     }
 
     @NonNull
-    static Function<Tag, Long> tagsToLongs() {
-        return new Function<Tag, Long>() {
+    static Function<Tag, String> tagToName() {
+        return new Function<Tag, String>() {
             @Nullable
+            @Override
+            public String apply(Tag input) {
+                return input.getName();
+            }
+        };
+    }
+
+    @NonNull
+    public Collection<Long> getTagIds() {
+        return Collections2.transform(tags, tagToId());
+    }
+
+    @NonNull
+    static Function<Tag, Long> tagToId() {
+        return new Function<Tag, Long>() {
             @Override
             public Long apply(Tag input) {
                 return input.getId();

@@ -154,17 +154,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    public void openSelectTagScreen(@NonNull Collection<Long> tagIds) {
+    public void openSelectTagScreen(@NonNull Collection<String> tagNames) {
         Intent intent = new Intent(this, TagsActivity.class);
         intent.setAction(TagsActivity.ACTION_PICK_TAG);
-        if (!tagIds.isEmpty()) {
-            long[] ids = new long[tagIds.size()];
-            int i = 0;
-            for (Long id : tagIds) {
-             ids[i] = id;
-                i++;
-            }
-            intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, ids);
+        if (!tagNames.isEmpty()) {
+            String[] tags = tagNames.toArray(new String[tagNames.size()]);
+            intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
         }
         startActivityForResult(intent, REQUEST_PICK_TAG);
     }

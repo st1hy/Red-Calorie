@@ -38,7 +38,7 @@ public class TagsActivityRoboTest2 {
         TagsActivityRoboTest.addExampleTags(OverviewActivityRoboTest.prepareDatabase());
 
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
-        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_IDS, new long[]{TagsActivityRoboTest.exampleTags[0].getId()});
+        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{TagsActivityRoboTest.exampleTags[0].getName()});
         activity = Robolectric.buildActivity(TagsActivity.class)
                 .withIntent(intent)
                 .setup()

@@ -268,7 +268,6 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         cacheLastQuery(partOfName, tags);
         QueryBuilder<IngredientTemplate> builder = dao().queryBuilder();
 
-
         if (!partOfName.isEmpty())
             builder.where(IngredientTemplateDao.Properties.Name.like("%" + partOfName + "%"));
         if (!tags.isEmpty()) {

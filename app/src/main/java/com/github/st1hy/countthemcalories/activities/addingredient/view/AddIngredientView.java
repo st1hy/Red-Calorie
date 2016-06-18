@@ -20,9 +20,9 @@ public interface AddIngredientView extends WithPictureView {
     void setEnergyDensityValue(@NonNull String energyValue);
 
     /**
-     * @param tagIds add to excluded
+     * @param tagNames add to excluded
      */
-    void openSelectTagScreen(@NonNull Collection<Long> tagIds);
+    void openSelectTagScreen(@NonNull Collection<String> tagNames);
 
     @NonNull
     Observable<CharSequence> getNameObservable();

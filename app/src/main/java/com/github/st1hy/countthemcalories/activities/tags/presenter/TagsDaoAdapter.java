@@ -270,8 +270,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @NonNull
     @Override
     protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
-        Collection<Long> excludedIds = activityModel.getExcludedTagIds();
-        return databaseModel.getAllFiltered(filter, excludedIds);
+        Collection<String> excludedTags = activityModel.getExcludedTagIds();
+        return databaseModel.getAllFiltered(filter, excludedTags);
     }
 
     @Override
