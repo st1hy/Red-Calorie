@@ -38,4 +38,6 @@ public interface IngredientsView extends DrawerView, UndoView {
 
     @NonNull
     Searchable getSearchable();
+
+    void expandSearchBar();
 }

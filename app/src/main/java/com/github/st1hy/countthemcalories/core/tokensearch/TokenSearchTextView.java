@@ -84,6 +84,14 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
     }
 
     @Override
+    public void setTokens(@NonNull List<String> tokens) {
+        clear();
+        for (String token : tokens) {
+            addObject(token);
+        }
+    }
+
+    @Override
     protected void addListeners() {
         super.addListeners();
         removeTextChangedListener(getTextWatcher());

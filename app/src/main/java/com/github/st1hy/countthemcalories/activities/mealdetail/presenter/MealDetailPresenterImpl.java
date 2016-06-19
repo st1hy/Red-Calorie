@@ -100,6 +100,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
             subscriptions.add(RxPicasso.Builder.with(picasso, imageUri)
                     .centerCrop()
                     .fit()
+                    .noFade()
                     .into(view.getImageView())
                     .asObservable()
                     .subscribe());

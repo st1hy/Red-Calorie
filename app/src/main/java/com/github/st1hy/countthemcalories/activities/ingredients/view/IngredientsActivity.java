@@ -37,6 +37,7 @@ import rx.Observable;
 public class IngredientsActivity extends UndoDrawerActivity implements IngredientsView {
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
     public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcel";
+    public static final String EXTRA_TAG_FILTER_STRING= "extra filter by tag string";
 
     public static final int REQUEST_SELECT_TYPE = 0x127;
     public static final int REQUEST_EDIT = 0x128;
@@ -154,6 +155,11 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public Searchable getSearchable() {
         return searchView;
+    }
+
+    @Override
+    public void expandSearchBar() {
+        searchView.expand(false);
     }
 
     @Override

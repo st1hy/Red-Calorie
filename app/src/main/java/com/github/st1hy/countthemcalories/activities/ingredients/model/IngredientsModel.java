@@ -9,14 +9,12 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-
-import javax.inject.Inject;
+import com.google.common.base.Optional;
 
 public class IngredientsModel {
     private final Intent intent;
     final PhysicalQuantitiesModel physicalQuantitiesModel;
 
-    @Inject
     public IngredientsModel(@Nullable Intent intent,
                             @NonNull PhysicalQuantitiesModel physicalQuantitiesModel) {
         this.intent = intent;
@@ -45,5 +43,17 @@ public class IngredientsModel {
     @StringRes
     public int getSearchEmptyMessage() {
         return R.string.ingredients_search_result_empty;
+    }
+
+    @NonNull
+    public Optional<String> getOptionalFilterByTag() {
+        if (intent != null) {
+            String tag = intent.getStringExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING);
+            if (tag != null) {
+                intent.removeExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING);
+                return Optional.of(tag);
+            }
+        }
+        return Optional.absent();
     }
 }

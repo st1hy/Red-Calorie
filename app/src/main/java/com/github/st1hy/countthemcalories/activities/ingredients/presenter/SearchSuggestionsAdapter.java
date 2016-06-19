@@ -6,11 +6,16 @@ import android.support.annotation.NonNull;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
 
+import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.adapter.ForwardingAdapter;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.google.common.base.Optional;
+
+import java.util.Collections;
 
 import rx.Observable;
 import rx.Subscription;
@@ -25,10 +30,15 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
     static final String COLUMN = TagDao.Properties.Name.columnName;
 
     final RxTagsDatabaseModel databaseModel;
+    final IngredientsModel model;
+    final IngredientsView view;
+
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
     public SearchSuggestionsAdapter(@NonNull Context context,
-                                    @NonNull RxTagsDatabaseModel databaseModel) {
+                                    @NonNull RxTagsDatabaseModel databaseModel,
+                                    @NonNull IngredientsModel model,
+                                    @NonNull IngredientsView view) {
         super(new SimpleCursorAdapter(context,
                 android.R.layout.simple_list_item_1,
                 null,
@@ -36,11 +46,17 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
                 new int[]{android.R.id.text1},
                 0));
         this.databaseModel = databaseModel;
+        this.model = model;
+        this.view = view;
     }
 
     public void onStart(@NonNull Observable<SearchResult> observable) {
         subscriptions.add(makeSuggestions(observable));
-
+        Optional<String> optionalFilterByTag = model.getOptionalFilterByTag();
+        if (optionalFilterByTag.isPresent()) {
+            view.getSearchable().setTokens(Collections.singletonList(optionalFilterByTag.get()));
+            view.expandSearchBar();
+        }
     }
 
     public void onStop() {

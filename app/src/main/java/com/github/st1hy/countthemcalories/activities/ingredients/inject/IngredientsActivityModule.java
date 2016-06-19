@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
@@ -73,7 +74,16 @@ public class IngredientsActivityModule {
 
     @Provides
     @PerActivity
-    public SearchSuggestionsAdapter provideSuggestionsAdapter(RxTagsDatabaseModel databaseModel) {
-        return new SearchSuggestionsAdapter(activity, databaseModel);
+    public SearchSuggestionsAdapter provideSuggestionsAdapter(RxTagsDatabaseModel databaseModel,
+                                                              IngredientsModel model,
+                                                              IngredientsView view) {
+        return new SearchSuggestionsAdapter(activity, databaseModel, model, view);
+    }
+
+    @PerActivity
+    @Provides
+    public IngredientsModel provideIngredientsModel(Intent intent,
+                                                    PhysicalQuantitiesModel quantitiesModel) {
+        return new IngredientsModel(intent, quantitiesModel);
     }
 }

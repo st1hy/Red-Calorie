@@ -84,7 +84,6 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         imm.showSoftInput(searchView, 0);
     }
 
-
     public void collapse() {
         isExpanded = false;
         expand.setVisibility(View.VISIBLE);
@@ -132,6 +131,11 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     @Override
     public List<String> getTokens() {
         return searchView.getTokens();
+    }
+
+    @Override
+    public void setTokens(@NonNull List<String> tokens) {
+        searchView.setTokens(tokens);
     }
 
     public <T extends ListAdapter & Filterable> void setSuggestionsAdapter(@Nullable T adapter) {

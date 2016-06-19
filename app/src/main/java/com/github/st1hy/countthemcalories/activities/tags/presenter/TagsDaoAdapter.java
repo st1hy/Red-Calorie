@@ -136,7 +136,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         if (activityModel.isInSelectMode()) {
             view.setResultAndReturn(tag.getId(), tag.getName());
         } else {
-            //TODO Open ingredients and filter by tag
+            view.openIngredientsFilteredBy(tag.getName());
         }
     }
 

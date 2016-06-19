@@ -18,6 +18,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsModule;
@@ -94,6 +95,13 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     @Override
     public void setNoTagsMessage(@StringRes int messageResId) {
         emptyTagsMessage.setText(messageResId);
+    }
+
+    @Override
+    public void openIngredientsFilteredBy(@NonNull String tagName) {
+        Intent intent = new Intent(this, IngredientsActivity.class);
+        intent.putExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING, tagName);
+        startActivity(intent);
     }
 
     @NonNull

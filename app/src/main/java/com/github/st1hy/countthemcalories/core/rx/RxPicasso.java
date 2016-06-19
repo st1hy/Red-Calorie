@@ -102,6 +102,11 @@ public class RxPicasso implements Callback {
             return this;
         }
 
+        public Builder noFade() {
+            requestCreator.noFade();
+            return this;
+        }
+
         public RxPicasso into(@NonNull ImageView imageView) {
             rxPicasso.imageView = imageView;
             Hook.onStarted();

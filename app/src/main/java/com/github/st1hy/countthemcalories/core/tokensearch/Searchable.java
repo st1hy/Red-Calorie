@@ -14,4 +14,6 @@ public interface Searchable {
 
     @NonNull
     List<String> getTokens();
+
+    void setTokens(@NonNull List<String> tokens);
 }

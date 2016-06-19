@@ -47,4 +47,8 @@
         <item name="android:windowExitTransition">@transition/auto</item>
         <!--@android:transition/move-->
     </style>
+
+    <style name="AppTheme.NoActionBar.Ingredients">
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+    </style>
 </resources>
