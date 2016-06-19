@@ -16,6 +16,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
@@ -113,6 +114,7 @@ public class AddIngredientActivityTest {
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()));
         onView(withText(R.string.add_ingredient_image_select_title))
@@ -132,6 +134,7 @@ public class AddIngredientActivityTest {
         intending(galleryIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_gallery))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -154,6 +157,7 @@ public class AddIngredientActivityTest {
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -170,6 +174,7 @@ public class AddIngredientActivityTest {
         intending(cameraIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());

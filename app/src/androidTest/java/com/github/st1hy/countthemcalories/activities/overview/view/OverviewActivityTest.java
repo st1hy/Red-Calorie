@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.overview.view;
 import android.content.ComponentName;
 import android.net.Uri;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
@@ -132,7 +133,8 @@ public class OverviewActivityTest {
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailsActivity.class)));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withHint(R.string.add_meal_ingredient_amount_hint)).perform(click())
-                .perform(typeTextIntoFocusedView("200"));
+                .perform(typeTextIntoFocusedView("200"))
+                .perform(ViewActions.closeSoftKeyboard());
         onView(withId(R.id.add_meal_ingredient_accept)).perform(click());
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(ViewMatchers.withId(R.id.overview_fab)).check(matches(isDisplayed()));

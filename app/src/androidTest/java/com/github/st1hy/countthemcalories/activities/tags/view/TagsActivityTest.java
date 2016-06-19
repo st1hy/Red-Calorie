@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.action.ViewActions;
@@ -10,6 +11,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -30,11 +33,15 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -140,17 +147,32 @@ public class TagsActivityTest {
         final String tagName = exampleTags[1].getName();
         onView(withChild(withText(tagName))).perform(swipeLeft());
         onView(allOf(withId(R.id.tags_item_edit), isDisplayed())).perform(click());
-        onView(withText(tagName)).perform(click());
         onView(withText(R.string.tags_edit_tag_dialog)).check(matches(isDisplayed()));
         onView(withHint(R.string.tags_new_tag_hint)).check(matches(isDisplayed()))
                 .perform(click())
                 .perform(clearText())
-                .perform(typeTextIntoFocusedView("Edited tag"));
+                .perform(typeTextIntoFocusedView("Edited tag"))
+                .perform(closeSoftKeyboard());
         onView(withText(android.R.string.cancel)).check(matches(isDisplayed()));
         onView(withText(android.R.string.ok)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.tags_edit_tag_dialog)).check(doesNotExist());
         onView(withText(tagName)).check(doesNotExist());
         onView(withText("Edited tag")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testOpenTaggedIngredients() throws Exception {
+        main.launchActivity(null);
+        final String tagName = exampleTags[1].getName();
+        onView(withChild(withText(tagName))).perform(click());
+        intended(allOf(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)),
+                hasExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING, tagName)));
+
+        onView(withId(R.id.ingredients_search_view)).check(matches(isDisplayed()));
+        onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(doesNotExist());
+        onView(withText(IngredientActivityTest.exampleIngredients[1].getName())).check(matches(isDisplayed()));
+        onView(withText(IngredientActivityTest.exampleIngredients[2].getName())).check(doesNotExist());
+
     }
 }

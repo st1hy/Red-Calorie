@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
@@ -128,6 +129,7 @@ public class AddMealActivityTest {
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()));
         onView(withText(R.string.add_meal_image_select_title))
@@ -147,6 +149,7 @@ public class AddMealActivityTest {
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_gallery))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -170,6 +173,7 @@ public class AddMealActivityTest {
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -187,6 +191,7 @@ public class AddMealActivityTest {
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -201,24 +206,6 @@ public class AddMealActivityTest {
                 .path(String.valueOf(resID))
                 .build();
     }
-
-// UiAutomator require minSdk 18 tools:overrideLibrary="android.support.test.uiautomator.v18" is ignored and other solution would mess up with flavors and are ugly
-// for now, enable permission in pre-test script:
-// adb shell pm grant com.github.st1hy.countthemcalories android.permission.READ_EXTERNAL_STORAGE
-//
-//    private static void allowPermissionsIfNeeded() {
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            UiDevice device = UiDevice.getInstance(getInstrumentation());
-//            UiObject allowPermissions = device.findObject(new UiSelector().text("Allow"));
-//            if (allowPermissions.exists()) {
-//                try {
-//                    allowPermissions.click();
-//                } catch (UiObjectNotFoundException e) {
-//                    Timber.e(e, "There is no permissions dialog to interact with ");
-//                }
-//            }
-//        }
-//    }
 
     @Test
     public void testAddIngredientFab() throws Exception {
