@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -42,6 +43,7 @@ import org.robolectric.annotation.Config;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Observable;
@@ -85,6 +87,9 @@ public class IngredientsDaoAdapterTest {
     IngredientsDatabaseCommands commands;
     @Mock
     Cursor cursor;
+    @Mock
+    SearchSuggestionsAdapter suggestionsAdapter;
+
     IngredientsDaoAdapter adapter;
 
     @Mock
@@ -97,7 +102,8 @@ public class IngredientsDaoAdapterTest {
     public void setup() {
         TestRxPlugins.registerImmediateMainThreadHook();
         MockitoAnnotations.initMocks(this);
-        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso);
+        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso,
+                suggestionsAdapter);
 
         when(deleteResponse.undoAvailability()).thenReturn(Observable.just(true));
         when(deleteResponse.undo()).thenReturn(Observable.just(insertResponse));
@@ -110,7 +116,8 @@ public class IngredientsDaoAdapterTest {
                                          @NonNull IngredientsModel model,
                                          @NonNull RxIngredientsDatabaseModel databaseModel,
                                          @NonNull IngredientsDatabaseCommands commands,
-                                         @NonNull Picasso picasso) {
+                                         @NonNull Picasso picasso,
+                                         @NonNull SearchSuggestionsAdapter suggestionsAdapter) {
             super(view, model, databaseModel, commands, picasso, suggestionsAdapter);
         }
 
@@ -127,9 +134,23 @@ public class IngredientsDaoAdapterTest {
 
     @Test
     public void testStart() throws Exception {
+        final String query = "query";
+        final List<String> tokens = Collections.singletonList("token");
+        when(view.getSearchObservable()).thenReturn(Observable.just(new SearchResult(query, tokens)));
+        when(daoModel.getAllFilteredBy(query, tokens)).thenReturn(Observable.just(cursor));
+        when(cursor.getCount()).thenReturn(0);
+
         adapter.onStart();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verify(view).getSearchObservable();
+        verify(suggestionsAdapter).onStart(any(Observable.class));
+        verify(daoModel).getAllFilteredBy(query, tokens);
+        verify(model).getSearchEmptyMessage();
+        verify(view).setNoIngredientsMessage(anyInt());
+        verify(view).setNoIngredientsVisibility(Visibility.VISIBLE);
+        verify(cursor).getCount();
+
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -141,7 +162,7 @@ public class IngredientsDaoAdapterTest {
 
         verify(cursor, times(2)).getCount();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -152,7 +173,7 @@ public class IngredientsDaoAdapterTest {
         assertThat(adapter.onCreateViewHolder(viewGroup, IngredientsDaoAdapter.item_empty_space_layout),
                 instanceOf(EmptySpaceViewHolder.class));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -189,8 +210,8 @@ public class IngredientsDaoAdapterTest {
         verify(ingredient).getImageUri();
         verify(picasso).load(uri);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, holder, imageView,
-                ingredient);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                holder, imageView, ingredient);
     }
 
     @Test
@@ -209,8 +230,8 @@ public class IngredientsDaoAdapterTest {
         verify(ingredient).getAmountType();
         verify(imageView).setImageResource(R.drawable.ic_fork_and_knife_wide);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, holder, imageView,
-                ingredient);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                holder, imageView, ingredient);
     }
 
     @Test
@@ -221,7 +242,7 @@ public class IngredientsDaoAdapterTest {
 
         verify(cursor).getCount();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -232,7 +253,8 @@ public class IngredientsDaoAdapterTest {
 
         verify(holder).onAttached();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, holder);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                holder);
     }
 
     @Test
@@ -247,7 +269,8 @@ public class IngredientsDaoAdapterTest {
         verify(picasso).cancelRequest(imageView);
         verify(holder).onDetached();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, holder, imageView);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                holder, imageView);
     }
 
     @Test
@@ -258,8 +281,8 @@ public class IngredientsDaoAdapterTest {
 
         verifyDelete(ingredient);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient,
-                deleteResponse, insertResponse, insertResult);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                ingredient, deleteResponse, insertResponse, insertResult);
     }
 
     @NonNull
@@ -302,8 +325,8 @@ public class IngredientsDaoAdapterTest {
         verify(model).getNoIngredientsMessage();
         verify(view).setNoIngredientsMessage(anyInt());
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient,
-                deleteResponse, insertResponse, insertResult);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                ingredient, deleteResponse, insertResponse, insertResult);
     }
 
     @Test
@@ -334,15 +357,15 @@ public class IngredientsDaoAdapterTest {
         verify(model, times(2)).getNoIngredientsMessage();
         verify(view, times(2)).setNoIngredientsMessage(anyInt());
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient,
-                deleteResponse, insertResponse, insertResult);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                ingredient, deleteResponse, insertResponse, insertResult);
     }
 
 
     @Test
     public void testScrollToNewItemWhenSearchFinishes() throws Exception {
         adapter.onIngredientAdded(10L);
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
         Schedulers.registerHook(new Schedulers.HookImp() {
             @Override
             public Scheduler computation() {
@@ -357,7 +380,7 @@ public class IngredientsDaoAdapterTest {
         verify(daoModel).findInCursor(cursor, 10L);
         verify(view).scrollToPosition(500);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
         Schedulers.reset();
     }
 
@@ -373,7 +396,8 @@ public class IngredientsDaoAdapterTest {
         verify(ingredient).getId();
         verify(view).setResultAndReturn(argThat(hasIngredient(ingredient)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                ingredient);
     }
 
     @NonNull
@@ -400,7 +424,8 @@ public class IngredientsDaoAdapterTest {
         verify(ingredient).getId();
         verify(view).openEditIngredientScreen(eq(10L), argThat(hasIngredient(ingredient)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, ingredient);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter,
+                ingredient);
     }
 
     @Test
@@ -418,7 +443,7 @@ public class IngredientsDaoAdapterTest {
 
         assertThat(event.get(), allOf(hasPosition(1), hasType(type)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -427,7 +452,7 @@ public class IngredientsDaoAdapterTest {
 
         verify(view).hideUndoMessage();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 
     @Test
@@ -444,6 +469,6 @@ public class IngredientsDaoAdapterTest {
         verify(model).getNoIngredientsMessage();
         verify(view).setNoIngredientsMessage(anyInt());
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, suggestionsAdapter);
     }
 }

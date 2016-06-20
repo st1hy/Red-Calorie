@@ -272,14 +272,14 @@ public class TagsDaoAdapterTest {
     public void testOnSearch() throws Exception {
         when(cursor.getCount()).thenReturn(0);
         when(model.getAllFiltered(argThat(anyOf(equalTo("test"), equalTo("t"))),
-                eq(Collections.<Long>emptyList())))
+                eq(Collections.<String>emptyList())))
                 .thenReturn(Observable.just(cursor));
 
         presenter.onSearch(Observable.<CharSequence>just("t", "te", "tes", "test"));
 
         verify(activityModel, times(2)).getExcludedTagIds();
-        verify(model).getAllFiltered("t", Collections.<Long>emptyList());
-        verify(model).getAllFiltered("test", Collections.<Long>emptyList());
+        verify(model).getAllFiltered("t", Collections.<String>emptyList());
+        verify(model).getAllFiltered("test", Collections.<String>emptyList());
         verify(view, times(2)).setNoTagsVisibility(Visibility.VISIBLE);
         verify(cursor, times(2)).getCount();
         verify(cursor).close();
@@ -348,5 +348,18 @@ public class TagsDaoAdapterTest {
 
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result, tag);
+    }
+
+    @Test
+    public void testOpenIngredientsFilteredByTag() throws Exception {
+        when(activityModel.isInSelectMode()).thenReturn(false);
+        final Tag tag = new Tag(0x231L, "Name");
+
+        presenter.onTagClicked(1, tag);
+
+        verify(activityModel).isInSelectMode();
+        verify(view).openIngredientsFilteredBy(tag.getName());
+        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+                undoResponse, result);
     }
 }

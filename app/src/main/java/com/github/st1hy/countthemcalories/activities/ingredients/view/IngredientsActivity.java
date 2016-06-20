@@ -23,10 +23,13 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Searc
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.tokensearch.Searchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.jakewharton.rxbinding.view.RxView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -151,15 +154,20 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         emptyIngredientsText.setText(noIngredientTextResId);
     }
 
-    @NonNull
-    @Override
-    public Searchable getSearchable() {
-        return searchView;
-    }
-
     @Override
     public void expandSearchBar() {
         searchView.expand(false);
+    }
+
+    @NonNull
+    @Override
+    public Observable<SearchResult> getSearchObservable() {
+        return RxSearchable.create(searchView);
+    }
+
+    @Override
+    public void setSearchQuery(@NonNull String query, @NonNull List<String> tokens) {
+        searchView.setQuery(query, tokens);
     }
 
     @Override

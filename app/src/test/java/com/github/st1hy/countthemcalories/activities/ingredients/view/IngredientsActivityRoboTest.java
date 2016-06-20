@@ -11,8 +11,8 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -82,7 +82,7 @@ public class IngredientsActivityRoboTest {
     @Before
     public void setup() {
         Timber.plant(TimberUtils.ABOVE_WARN);
-        TagsDaoAdapter.debounceTime = 0;
+        IngredientsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         session = OverviewActivityRoboTest.prepareDatabase();
         addExampleIngredientsTagsAndJoin(session);
@@ -113,7 +113,7 @@ public class IngredientsActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uprootAll();
         TestRxPlugins.reset();
-        TagsDaoAdapter.debounceTime = 250;
+        IngredientsDaoAdapter.debounceTime = 250;
     }
 
     @Test
@@ -151,7 +151,7 @@ public class IngredientsActivityRoboTest {
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
 
         activity.searchView.performClick();
-        activity.searchView.setQuery("Ingredient 2", true);
+        activity.searchView.setQuery("Ingredient 2");
 
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }

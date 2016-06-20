@@ -1,9 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.tags.view;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
@@ -20,8 +23,12 @@ import org.robolectric.annotation.Config;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
@@ -36,9 +43,15 @@ public class TagsActivityRoboTest2 {
         TagsDaoAdapter.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         TagsActivityRoboTest.addExampleTags(OverviewActivityRoboTest.prepareDatabase());
+    }
 
+    private Intent getPickTagIntentWithExclude() {
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
         intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{TagsActivityRoboTest.exampleTags[0].getName()});
+        return intent;
+    }
+
+    private void setupActivity(Intent intent) {
         activity = Robolectric.buildActivity(TagsActivity.class)
                 .withIntent(intent)
                 .setup()
@@ -55,6 +68,18 @@ public class TagsActivityRoboTest2 {
 
     @Test
     public void testExcludeTags() throws Exception {
+        setupActivity(getPickTagIntentWithExclude());
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+    }
+
+    @Test
+    public void testOpenIngredientsFilteredByTag() throws Exception {
+        setupActivity(null);
+        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
+
+        assertThat(shadowOf(activity).getNextStartedActivity(), allOf(
+                hasComponent(new ComponentName(activity, IngredientsActivity.class)),
+                hasExtraWithKey(IngredientsActivity.EXTRA_TAG_FILTER_STRING)));
+
     }
 }

@@ -69,7 +69,7 @@ public class AddMealActivityRoboTest {
     @Test
     public void testSaveButtonAction() throws Exception {
         ShadowActivity shadowActivity = shadowOf(activity);
-        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
         activity.name.setText("Name");
         addIngredient();
         handleNewIngredient();
@@ -82,7 +82,7 @@ public class AddMealActivityRoboTest {
     @Test
     public void testSaveErrors() throws Exception {
         ShadowActivity shadowActivity = shadowOf(activity);
-        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
         shadowActivity.clickMenuItem(R.id.action_save);
         assertThat(shadowActivity.isFinishing(), equalTo(false));
         assertThat(activity.name.getError(), notNullValue());

@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -14,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.presenter.Add
 import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.core.baseview.TestPermissionHelper;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
@@ -101,7 +103,7 @@ public class AddIngredientActivityRoboTest {
         activity.energyDensityValue.setText("300.6");
 
         ShadowActivity shadowActivity = shadowOf(activity);
-        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
         shadowActivity.clickMenuItem(R.id.action_save);
 
         assertTrue(shadowActivity.isFinishing());
@@ -114,6 +116,7 @@ public class AddIngredientActivityRoboTest {
     @Test
     public void testImageButton() throws Exception {
         activity.ingredientImage.performClick();
+        TestPermissionHelper.grantPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         assertThat(shadowAlertDialog.getTitle().toString(), equalTo(activity.getString(R.string.add_ingredient_image_select_title)));
@@ -182,7 +185,7 @@ public class AddIngredientActivityRoboTest {
         Tag tag1 = addTag(1);
 
         ShadowActivity shadowActivity = shadowOf(activity);
-        shadowActivity.onCreateOptionsMenu(new RoboMenu());
+        shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
         shadowActivity.clickMenuItem(R.id.action_save);
 
         assertTrue(shadowActivity.isFinishing());

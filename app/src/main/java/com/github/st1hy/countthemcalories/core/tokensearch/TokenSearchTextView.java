@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.tokenautocomplete.TokenCompleteTextViewNext;
 
+import java.util.Collection;
 import java.util.List;
 
 public class TokenSearchTextView extends TokenCompleteTextViewNext<String> implements Searchable {
@@ -84,18 +85,16 @@ public class TokenSearchTextView extends TokenCompleteTextViewNext<String> imple
     }
 
     @Override
-    public void setTokens(@NonNull List<String> tokens) {
-        clear();
-        for (String token : tokens) {
-            addObject(token);
-        }
-    }
-
-    @Override
     protected void addListeners() {
         super.addListeners();
         removeTextChangedListener(getTextWatcher());
         addTextChangedListener(getTextWatcher());
+    }
+
+    public void addAll(Collection<String>tokens) {
+        for (String token : tokens) {
+            addObject(token);
+        }
     }
 
     @Override

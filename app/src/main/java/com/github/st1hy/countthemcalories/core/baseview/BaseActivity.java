@@ -18,7 +18,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import rx.Observable;
 
 public abstract class BaseActivity extends AppCompatActivity implements PermissionSubject, DialogView {
-    private final SparseArray<PermissionActor> pendingPermissionRequests = new SparseArray<>(4);
+    final SparseArray<PermissionActor> pendingPermissionRequests = new SparseArray<>(4);
 
     protected final ApplicationComponent getAppComponent() {
         return ((CaloriesCounterApplication) getApplication()).getComponent();

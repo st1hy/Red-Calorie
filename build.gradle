@@ -20,15 +20,15 @@ ext {
     compileSdkVersion = 23
     buildToolsVersion = '24.0.0'
 
-    supportLibraryVersion = '24.0.0'
-    daggerVersion = '2.2'
+    supportLibraryVersion = '23.4.0'
+    daggerVersion = '2.5'
 
-    rxJavaVersion = '1.1.5'
+    rxJavaVersion = '1.1.6'
     rxAndroidVersion = '1.2.0'
     timberVersion = '4.1.2'
     greenDaoVersion = '2.2.0'
 
-    robolectricVersion = '3.0'
+    robolectricVersion = '3.1'
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
 }

@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.core.drawer.view;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,8 +22,10 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import rx.plugins.TestRxPlugins;
+
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +41,7 @@ public class DrawerActivityRoboTest {
     @Before
     public void setUp() throws Exception {
         activity = Robolectric.setupActivity(OverviewActivity.class);
+        TestRxPlugins.registerImmediateMainThreadHook();
         assertThat(activity, notNullValue());
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.presenter, notNullValue());
@@ -64,21 +68,21 @@ public class DrawerActivityRoboTest {
     public void testOpenCategories() throws Exception {
         activity.navigationView.getMenu().performIdentifierAction(R.id.nav_tags, 0);
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, TagsActivity.class)));
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, TagsActivity.class)));
     }
 
     @Test
     public void testOpenIngredients() throws Exception {
         activity.navigationView.getMenu().performIdentifierAction(R.id.nav_ingredients, 0);
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, IngredientsActivity.class)));
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, IngredientsActivity.class)));
     }
 
     @Test
     public void testOpenSettings() throws Exception {
         activity.navigationView.getMenu().performIdentifierAction(R.id.nav_settings, 0);
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, SettingsActivity.class)));
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, SettingsActivity.class)));
     }
 
     @Test
@@ -86,7 +90,7 @@ public class DrawerActivityRoboTest {
         DrawerActivity activity = Robolectric.setupActivity(IngredientsActivity.class);
         activity.navigationView.getMenu().performIdentifierAction(R.id.nav_overview, 0);
         Intent resultIntent = shadowOf(activity).peekNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, OverviewActivity.class)));
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, OverviewActivity.class)));
     }
 
     @Test

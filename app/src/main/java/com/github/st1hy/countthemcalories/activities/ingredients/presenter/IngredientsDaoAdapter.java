@@ -29,9 +29,7 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.core.tokensearch.Searchable;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
@@ -88,7 +86,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
 
     public void onStart() {
         super.onStart();
-        Observable<SearchResult> searching = createObservable(view.getSearchable());
+        Observable<SearchResult> searching = createObservable();
         addSubscription(searchIngredients(searching));
         suggestionsAdapter.onStart(searching);
     }
@@ -182,8 +180,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @NonNull
-    private Observable<SearchResult> createObservable(@NonNull final Searchable searchable) {
-        Observable<SearchResult> sequenceObservable = RxSearchable.create(searchable)
+    private Observable<SearchResult> createObservable() {
+        Observable<SearchResult> sequenceObservable = view.getSearchObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<SearchResult>() {
                     @Override

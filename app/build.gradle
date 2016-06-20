@@ -101,7 +101,6 @@ dependencies {
     compile "com.jakewharton:butterknife:$butterknifeVersion"
     apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
-//    compile 'org.lucasr.twowayview:twowayview:0.1.4' //customize recycler layout
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
@@ -128,9 +127,13 @@ dependencies {
     androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
     androidTestCompile "junit:junit:$jUnitVersion"
     androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+    androidTestCompile'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
 
-    testCompile "org.robolectric:robolectric:$robolectricVersion"
+    testCompile("org.robolectric:robolectric:$robolectricVersion") {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.hamcrest:hamcrest-junit:$hamcrestVersion"

@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 
 import com.github.st1hy.countthemcalories.R;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TokenSearchView extends FrameLayout implements Searchable {
@@ -106,9 +107,8 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         }
     }
 
-    public void setQuery(String query, boolean submit) {
-        clearText();
-        searchView.append(query);
+    public void setQuery(String query) {
+        setQuery(query, Collections.<String>emptyList());
     }
 
     public void clearText() {
@@ -131,11 +131,6 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     @Override
     public List<String> getTokens() {
         return searchView.getTokens();
-    }
-
-    @Override
-    public void setTokens(@NonNull List<String> tokens) {
-        searchView.setTokens(tokens);
     }
 
     public <T extends ListAdapter & Filterable> void setSuggestionsAdapter(@Nullable T adapter) {
@@ -180,6 +175,12 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     protected void setupState() {
         if (isExpanded) expand(false);
         else collapse();
+    }
+
+    public void setQuery(String query, List<String> tokens) {
+        clearText();
+        searchView.addAll(tokens);
+        searchView.append(query);
     }
 
     private static class SavedState extends BaseSavedState {

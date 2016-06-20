@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Provider;
 
 import dagger.Lazy;
-import dagger.internal.DoubleCheckLazy;
+import dagger.internal.DoubleCheck;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.query.CursorQuery;
 import de.greenrobot.dao.query.Query;
@@ -35,7 +35,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
-        mealDaoLazy = DoubleCheckLazy.create(new Provider<MealDao>() {
+        mealDaoLazy = DoubleCheck.lazy(new Provider<MealDao>() {
             @Override
             public MealDao get() {
                 return session().getMealDao();

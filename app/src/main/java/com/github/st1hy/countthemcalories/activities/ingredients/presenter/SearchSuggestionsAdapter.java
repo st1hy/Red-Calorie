@@ -54,7 +54,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
         subscriptions.add(makeSuggestions(observable));
         Optional<String> optionalFilterByTag = model.getOptionalFilterByTag();
         if (optionalFilterByTag.isPresent()) {
-            view.getSearchable().setTokens(Collections.singletonList(optionalFilterByTag.get()));
+            view.setSearchQuery("", Collections.singletonList(optionalFilterByTag.get()));
             view.expandSearchBar();
         }
     }

@@ -68,7 +68,7 @@ public class IngredientActivityTest {
             new IngredientTemplate(3L, "Ingredient 23", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
                     getOrZero("7.04")), // kJ / ml in database
     };
-    public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[] {
+    public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[]{
             new JointIngredientTag(1L, exampleTags[0].getId(), exampleIngredients[0].getId()),
             new JointIngredientTag(2L, exampleTags[0].getId(), exampleIngredients[1].getId()),
             new JointIngredientTag(3L, exampleTags[1].getId(), exampleIngredients[1].getId()),
@@ -135,6 +135,7 @@ public class IngredientActivityTest {
     @Test
     public void testSearchUsingCategory() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withId(R.id.ingredients_search_view))
@@ -193,7 +194,8 @@ public class IngredientActivityTest {
         assertThat(ingredientTemplates, hasSize(2));
 
         onView(withText(exampleIngredients[1].getName()))
-                .perform(swipeRight());
+                .perform(swipeRight())
+                .perform(loopMainThreadForAtLeast(400));
         onView(allOf(withId(R.id.ingredients_item_delete), isDisplayed()))
                 .perform(click());
 

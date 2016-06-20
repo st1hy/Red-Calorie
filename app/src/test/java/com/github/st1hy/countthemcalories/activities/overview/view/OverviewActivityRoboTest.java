@@ -135,7 +135,7 @@ public class OverviewActivityRoboTest {
         Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
         activity.fab.performClick();
         Intent resultIntent = shadowOf(activity).getNextStartedActivity();
-        assertThat(resultIntent, equalTo(new Intent(activity, AddMealActivity.class)));
+        assertThat(resultIntent, hasComponent(new ComponentName(activity, AddMealActivity.class)));
         session.getMealDao().insertInTx(additionalMeal);
         session.getIngredientDao().insertInTx(additionalIngredient);
         activity.presenter.onStop();
@@ -147,7 +147,7 @@ public class OverviewActivityRoboTest {
 
     @Test
     public void testOpenSettings() throws Exception {
-        shadowOf(activity).onCreateOptionsMenu(new RoboMenu());
+        shadowOf(activity).onCreateOptionsMenu(new RoboMenu(activity));
         assertTrue(shadowOf(activity).clickMenuItem(R.id.action_settings));
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, SettingsActivity.class)));
