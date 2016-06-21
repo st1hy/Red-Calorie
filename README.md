@@ -2,16 +2,19 @@
 # Count-Them-Calories
 Android app for keeping your calories in check.
 
-+Here will be description of another Android app excersice.
-
-## Current state: 0.6 alpha
+## Current state: 0.7.1 alpha
+* Fixed support for pre-Lollipop devices
+### 0.7 alpha
+* Added searching by product category.
+* More material design
+### 0.6 alpha
 * Added undo function for deletion of items. Its a mix of functional programming (rx) and command pattern 
 * Tags have the same swipe to delete/edit as rest of main screens
 * Various bug fixes.
 * More tests
 
 ## General project goal:
-* TDD from the beggining via esspresso / mockito / roboelectic
+* TDD from the beginning via espresso / mockito / robolectic
 * dagger2 + rxJava + MVP based
 
 ## Planed functionality for 1.0
@@ -23,7 +26,7 @@ Android app for keeping your calories in check.
 ## Future functionality (aka. wishlist)
 * Foremost it would be nice to have online database of products.
 * Diet planner (how much calories per each day is left)
-* Sharing prefences, ingredients and meals between users; cloud based (?)
+* Sharing preferences, ingredients and meals between users; cloud based (?)
 * Graphs, moving averages, weight loss tracker, all based on the honesty of the user.
-* Past exploits of the dieting User: The Game (achivements, highscore, share on facebook). Wait, what?
+* Past exploits of the dieting User: The Game (achievement, highscore, share on facebook). Wait, what?
 
