@@ -110,6 +110,7 @@ public class IngredientActivityTest {
     @Test
     public void testDisplaysIngredients() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         for (IngredientTemplate ingr : exampleIngredients) {
             onView(withText(ingr.getName())).check(matches(isDisplayed()));
         }
@@ -118,6 +119,7 @@ public class IngredientActivityTest {
     @Test
     public void testSearch() throws InterruptedException {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withId(R.id.ingredients_search_view))
@@ -160,6 +162,7 @@ public class IngredientActivityTest {
     @Test
     public void testAddIngredient() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withId(R.id.ingredients_fab)).check(matches(isDisplayed()))
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), SelectIngredientTypeActivity.class)));
@@ -182,6 +185,7 @@ public class IngredientActivityTest {
     @Test
     public void testDelete() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName()))
                 .perform(swipeRight())
                 .perform(loopMainThreadForAtLeast(400));
@@ -209,6 +213,7 @@ public class IngredientActivityTest {
     @Test
     public void testUndo() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName()))
                 .perform(swipeRight())
                 .perform(loopMainThreadForAtLeast(400));
@@ -233,6 +238,7 @@ public class IngredientActivityTest {
     public void testDeleteWithMeal() throws Exception {
         OverviewActivityTest.addExampleMealsIngredientsTags(session);
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName()))
                 .perform(swipeRight())
                 .perform(loopMainThreadForAtLeast(400));
@@ -251,6 +257,7 @@ public class IngredientActivityTest {
     @Test
     public void testEditIngredient() throws Exception {
         main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName()))
                 .perform(swipeLeft())
                 .perform(loopMainThreadForAtLeast(400));
