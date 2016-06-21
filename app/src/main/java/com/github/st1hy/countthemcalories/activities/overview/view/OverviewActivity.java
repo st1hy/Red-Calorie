@@ -70,12 +70,13 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.overview_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
+        onBind();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        super.onCreate(savedInstanceState);
         setTitle("");
     }
 

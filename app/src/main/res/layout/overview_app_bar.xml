@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overview_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:id="@+id/overview_root"
     tools:context=".activities.overview.view.OverviewActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -15,34 +14,35 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:text="@string/overview_toolbar_title"/>
-                <android.support.v4.widget.Space
-                    android:layout_width="8dp"
-                    android:layout_height="match_parent" />
-                <TextView
-                    android:id="@+id/overview_total_energy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textIsSelectable="false"
-                    tools:text="2500 kcal"/>
+            <TextView
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_toolbar_title" />
 
-            </android.support.v7.widget.Toolbar>
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/overview_total_energy"
+                style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false"
+                tools:text="2500 kcal" />
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/overview_content"/>
+    <include layout="@layout/overview_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/overview_fab"
@@ -51,6 +51,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorBackground"
-        app:srcCompat="@drawable/ic_add_48px_no_padding"  />
+        app:srcCompat="@drawable/ic_add_48px_no_padding" />
 
 </android.support.design.widget.CoordinatorLayout>

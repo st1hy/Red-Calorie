@@ -78,12 +78,13 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.tags_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        super.onCreate(savedInstanceState);
+        onBind();
     }
 
     @NonNull

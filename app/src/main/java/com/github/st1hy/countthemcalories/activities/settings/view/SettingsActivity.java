@@ -37,10 +37,11 @@ public class SettingsActivity extends DrawerActivity implements SettingsView {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
-        super.onCreate(savedInstanceState);
+        onBind();
     }
 
     @NonNull

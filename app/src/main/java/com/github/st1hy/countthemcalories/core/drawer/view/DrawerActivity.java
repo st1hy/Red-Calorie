@@ -1,10 +1,9 @@
 package com.github.st1hy.countthemcalories.core.drawer.view;
 
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.view.GravityCompat;
@@ -38,9 +37,8 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
 
     ActionBarDrawerToggle drawerToggle;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    @CallSuper
+    protected void onBind() {
         setSupportActionBar(toolbar);
         drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);

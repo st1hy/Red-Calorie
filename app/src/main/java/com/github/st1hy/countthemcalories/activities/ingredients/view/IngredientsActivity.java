@@ -82,13 +82,14 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredients_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         searchView.setSuggestionsAdapter(suggestionsAdapter);
-        super.onCreate(savedInstanceState);
+        onBind();
     }
 
     @Override
