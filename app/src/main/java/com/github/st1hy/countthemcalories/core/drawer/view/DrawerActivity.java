@@ -41,7 +41,6 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        navigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(toolbar);
         drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);

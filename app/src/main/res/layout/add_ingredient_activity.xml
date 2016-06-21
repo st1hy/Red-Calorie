@@ -10,8 +10,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/add_ingredient_collapsing_toolbar"
@@ -21,14 +21,14 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/add_ingredient_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:contentDescription="@string/add_meal_photo_description"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_add_a_photo_24px"
+                app:srcCompat="@drawable/ic_add_a_photo_24px"
                 app:layout_collapseMode="parallax" />
 
             <View

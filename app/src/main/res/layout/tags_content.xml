@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/ActivityContent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/tags_app_bar">
 
@@ -22,11 +23,11 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_empty_background"
+            app:srcCompat="@drawable/ic_empty_background"
             tools:ignore="ContentDescription" />
 
         <TextView

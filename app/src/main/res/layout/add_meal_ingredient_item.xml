@@ -30,14 +30,14 @@
             app:cardBackgroundColor="@android:color/transparent"
             app:cardUseCompatPadding="true">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/add_meal_ingredient_image"
                 android:transitionName="ingredient-shared-view-image"
                 android:layout_width="@dimen/list_item_image_size"
                 android:layout_height="@dimen/list_item_image_size"
                 android:contentDescription="@string/add_meal_ingredient_photo_description"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_fork_and_knife_wide" />
+                app:srcCompat="@drawable/ic_fork_and_knife_wide" />
         </android.support.v7.widget.CardView>
 
         <LinearLayout

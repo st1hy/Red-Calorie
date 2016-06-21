@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/select_ingredient_type_drink"
             android:layout_width="@dimen/select_ingredient_option_size"
             android:layout_height="@dimen/select_ingredient_option_size"
@@ -26,7 +26,7 @@
             android:background="@drawable/tags_separator"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/select_ingredient_type_meal"
             android:layout_width="@dimen/select_ingredient_option_size"
             android:layout_height="@dimen/select_ingredient_option_size"

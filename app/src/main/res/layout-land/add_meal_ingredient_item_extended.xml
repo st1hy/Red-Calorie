@@ -42,7 +42,7 @@
                     android:layout_height="@dimen/list_item_image_size"
                     android:contentDescription="@string/add_meal_ingredient_photo_description"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_fork_and_knife_wide" />
+                    app:srcCompat="@drawable/ic_fork_and_knife_wide" />
             </android.support.v7.widget.CardView>
 
             <android.support.v4.widget.Space
@@ -136,7 +136,7 @@
                 android:layout_gravity="end"
                 android:layout_weight="1"
                 android:contentDescription="@string/add_meal_ingredient_remove_description"
-                android:src="@drawable/ic_delete_24px" />
+                app:srcCompat="@drawable/ic_delete_24px" />
 
             <ImageButton
                 android:id="@+id/add_meal_ingredient_accept"
@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/add_meal_ingredient_accept_description"
-                android:src="@drawable/ic_done_24px" />
+                app:srcCompat="@drawable/ic_done_24px" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

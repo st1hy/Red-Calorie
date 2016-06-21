@@ -22,7 +22,7 @@
             app:contentScrim="?attr/colorPrimary"
             android:fitsSystemWindows="true">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/add_meal_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -30,7 +30,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerInside"
                 android:contentDescription="@string/add_meal_photo_description"
-                android:src="@drawable/ic_add_a_photo_24px" />
+                app:srcCompat="@drawable/ic_add_a_photo_24px" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sheet_text_scrim_height_top"
@@ -64,7 +64,7 @@
         app:layout_anchor="@id/add_meal_app_bar"
         app:layout_anchorGravity="bottom|right|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_48px_no_padding"
+        app:srcCompat="@drawable/ic_add_48px_no_padding"
         android:tint="@color/colorBackground" />
 
 </android.support.design.widget.CoordinatorLayout>

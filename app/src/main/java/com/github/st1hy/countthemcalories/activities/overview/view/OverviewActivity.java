@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -49,6 +50,8 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
     TextView totalEnergy;
     @BindView(R.id.overview_empty)
     View emptyList;
+    @BindView(R.id.overview_empty_background)
+    ImageView emptyBackground;
     @BindView(R.id.overview_root)
     CoordinatorLayout root;
 

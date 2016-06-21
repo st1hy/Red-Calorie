@@ -183,7 +183,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         searchView.append(query);
     }
 
-    private static class SavedState extends BaseSavedState {
+    public static class SavedState extends BaseSavedState {
         private boolean isExpanded;
 
         public SavedState(Parcel source) {
