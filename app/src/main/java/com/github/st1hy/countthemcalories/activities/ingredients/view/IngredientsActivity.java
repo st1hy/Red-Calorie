@@ -86,10 +86,15 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         setContentView(R.layout.ingredients_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
+        onBind();
+    }
+
+    @Override
+    protected void onBind() {
+        super.onBind();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         searchView.setSuggestionsAdapter(suggestionsAdapter);
-        onBind();
     }
 
     @Override

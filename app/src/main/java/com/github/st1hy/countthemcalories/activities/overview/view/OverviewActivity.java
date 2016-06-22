@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -57,6 +58,9 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
 
     OverviewActivityComponent component;
 
+    ActionBarDrawerToggle drawerToggle;
+
+
     @NonNull
     protected OverviewActivityComponent getComponent() {
         if (component == null) {
@@ -75,15 +79,33 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
         ButterKnife.bind(this);
         getComponent().inject(this);
         onBind();
+    }
+
+    @Override
+    protected void onBind() {
+        super.onBind();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setTitle("");
+        drawerToggle = createToggle();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerToggle(drawerToggle);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterDrawerToggle(drawerToggle);
     }
 
     @Override
@@ -136,4 +158,6 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
     protected View getUndoRoot() {
         return root;
     }
+
+
 }

@@ -25,6 +25,13 @@ import butterknife.BindView;
 
 public abstract class DrawerActivity extends BaseActivity implements DrawerView, OnNavigationItemSelectedListener {
 
+    final View.OnClickListener onNavigationUpPressed =  new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onBackPressed();
+        }
+    };
+
     @Inject
     DrawerPresenter presenter;
 
@@ -35,32 +42,21 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    ActionBarDrawerToggle drawerToggle;
-
     @CallSuper
     protected void onBind() {
         setSupportActionBar(toolbar);
-        drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void showNavigationAsUp() {
+        toolbar.setNavigationOnClickListener(onNavigationUpPressed);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        drawer.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
         presenter.onStart();
     }
 
@@ -68,6 +64,14 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
     protected void onStop() {
         super.onStop();
         presenter.onStop();
+    }
+
+    protected void registerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {
+        drawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+    }
+
+    protected void unregisterDrawerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {
         drawer.removeDrawerListener(drawerToggle);
     }
 
@@ -112,5 +116,11 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
     @Override
     public void setMenuItemSelection(@IdRes int menuId, @NonNull Selection selected) {
         navigationView.getMenu().findItem(menuId).setChecked(selected.is());
+    }
+
+    @NonNull
+    protected ActionBarDrawerToggle createToggle() {
+        return new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     }
 }

@@ -81,9 +81,14 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
         setContentView(R.layout.tags_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
+        onBind();
+    }
+
+    @Override
+    protected void onBind() {
+        super.onBind();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        onBind();
         searchView.getSearchTextView().setSplitChar(new char[]{0xAD});
     }
 

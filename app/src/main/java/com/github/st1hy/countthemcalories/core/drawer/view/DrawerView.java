@@ -20,4 +20,5 @@ public interface DrawerView extends BaseView {
     void openDrawerActivity(@NonNull DrawerMenuItem item);
 
     void showNavigationAsUp();
+
 }

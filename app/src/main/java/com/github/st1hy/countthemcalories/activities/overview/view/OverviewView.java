@@ -24,4 +24,5 @@ public interface OverviewView extends DrawerView, UndoView {
     void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView);
 
     void openEditMealScreen(@NonNull MealParcel mealParcel);
+
 }

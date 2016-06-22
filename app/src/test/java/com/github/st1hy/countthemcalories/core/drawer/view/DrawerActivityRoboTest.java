@@ -45,7 +45,6 @@ public class DrawerActivityRoboTest {
         assertThat(activity, notNullValue());
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.presenter, notNullValue());
-        assertThat(activity.drawerToggle, notNullValue());
     }
 
     @Test

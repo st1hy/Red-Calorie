@@ -45,7 +45,9 @@ public abstract class AbstractDrawerPresenter implements DrawerPresenter {
     @CallSuper
     public void onStart() {
         view.setMenuItemSelection(currentItem().getMenuItemId(), SELECTED);
-        if (currentItem() != OVERVIEW) view.showNavigationAsUp();
+        if (currentItem() != OVERVIEW) {
+            view.showNavigationAsUp();
+        }
     }
 
     @Override
