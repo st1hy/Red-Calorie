@@ -31,8 +31,7 @@
     <string name="add_meal_image_select_from_camera">Make a picture</string>
     <string name="add_meal_image_select_title">Select picture for your meal</string>
     <string name="add_meal_image_gallery_picker">Select Image source</string>
-    <string name="add_meal_button_add_ingredient">Add ingredient</string>
-    <string name="add_meal_no_ingredients_yet">No ingredients yet</string>
+    <string name="add_meal_button_add_ingredient">@string/add_ingredient_title</string>
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
@@ -74,7 +73,7 @@
     <string name="tags_remove_dialog_title">Remove category</string>
     <string name="tags_remove_information">This category is not empty. Do you really want to remove this category?</string>
     <string name="tags_no_tags_yet">You haven\'t added any categories yet.</string>
-    <string name="tags_search_result_empty">No matching tags found.</string>
+    <string name="tags_search_result_empty">No matching categories found.</string>
     <string name="tags_undo_delete_message">Category removed</string>
     <string name="tags_undo_add_message">New category added</string>
     <string name="tags_edit_tag_dialog">Edit category</string>
