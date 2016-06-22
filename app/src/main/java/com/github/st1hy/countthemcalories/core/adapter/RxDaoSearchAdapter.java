@@ -22,8 +22,6 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
     public static int debounceTime = 250;
     final SearchableDatabase db;
 
-    Observable<CharSequence> onSearchObservable;
-
     protected String lastQuery = "";
 
     public RxDaoSearchAdapter(@NonNull SearchableDatabase db) {
@@ -32,15 +30,7 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
 
     @Override
     @CallSuper
-    public void onStart() {
-        super.onStart();
-        if (onSearchObservable != null) onSearch(onSearchObservable);
-    }
-
-    @Override
-    @CallSuper
     public void onSearch(@NonNull Observable<CharSequence> observable) {
-        onSearchObservable = observable;
         Observable<CharSequence> sequenceObservable = observable
                 .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {

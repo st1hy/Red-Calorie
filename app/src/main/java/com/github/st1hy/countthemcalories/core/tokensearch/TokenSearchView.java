@@ -51,6 +51,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     }
 
     private void init() {
+        if (isInEditMode()) return;
         addView(inflateView(LayoutInflater.from(getContext())));
         expand = findViewById(R.id.token_search_expand);
         collapse = findViewById(R.id.token_search_collapse);
@@ -181,6 +182,11 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         clearText();
         searchView.addAll(tokens);
         searchView.append(query);
+    }
+
+    @NonNull
+    public TokenSearchTextView getSearchTextView() {
+        return searchView;
     }
 
     public static class SavedState extends BaseSavedState {

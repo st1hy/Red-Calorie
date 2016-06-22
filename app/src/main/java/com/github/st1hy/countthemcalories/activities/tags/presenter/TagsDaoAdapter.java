@@ -68,6 +68,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     public void onStart() {
         super.onStart();
         onAddTagClicked(view.getOnAddTagClickedObservable());
+        onSearch(view.getQueryObservable());
     }
 
     @Override

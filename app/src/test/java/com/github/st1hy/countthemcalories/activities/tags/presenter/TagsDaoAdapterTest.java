@@ -105,10 +105,12 @@ public class TagsDaoAdapterTest {
     public void testOnStart() throws Exception {
         when(cursor.getCount()).thenReturn(2);
         when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getQueryObservable()).thenReturn(Observable.<CharSequence>empty());
 
         presenter.onStart();
 
         verify(view).getOnAddTagClickedObservable();
+        verify(view).getQueryObservable();
         verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
                 undoResponse, result);
     }

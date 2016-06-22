@@ -35,4 +35,7 @@ public interface TagsView extends DialogView, DrawerView, UndoView {
     void setNoTagsMessage(@StringRes int messageResId);
 
     void openIngredientsFilteredBy(@NonNull String tagName);
+
+    @NonNull
+    Observable<CharSequence> getQueryObservable();
 }

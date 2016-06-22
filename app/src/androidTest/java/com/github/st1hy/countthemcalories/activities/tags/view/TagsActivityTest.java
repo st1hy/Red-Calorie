@@ -8,7 +8,6 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
-import android.widget.SearchView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
@@ -21,7 +20,6 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +42,6 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -121,7 +118,8 @@ public class TagsActivityTest {
         onView(withText(exampleTags[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
-        onView(withClassName(Matchers.equalTo(SearchView.class.getName())))
+        onView(withId(R.id.tags_search_view)).perform(click());
+        onView(withHint(R.string.search_hint))
                 .check(matches(isDisplayed()))
                 .perform(click())
                 .perform(typeTextIntoFocusedView("Tag"))

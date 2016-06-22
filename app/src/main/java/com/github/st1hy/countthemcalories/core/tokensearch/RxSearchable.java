@@ -9,8 +9,12 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
+import rx.functions.Func1;
 
 public class RxSearchable implements Observable.OnSubscribe<SearchResult> {
+
+    private static Func1<SearchResult, CharSequence> INTO_QUERY;
+
     final Searchable searchable;
 
     private RxSearchable(@NonNull Searchable searchable) {
@@ -46,4 +50,17 @@ public class RxSearchable implements Observable.OnSubscribe<SearchResult> {
         return Observable.create(new RxSearchable(searchView));
     }
 
+
+    @NonNull
+    public static Func1<SearchResult, CharSequence> intoQuery() {
+        if (INTO_QUERY == null) {
+            INTO_QUERY = new Func1<SearchResult, CharSequence>() {
+                @Override
+                public CharSequence call(SearchResult searchResult) {
+                    return searchResult.getQuery();
+                }
+            };
+        }
+        return INTO_QUERY;
+    }
 }

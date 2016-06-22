@@ -10,11 +10,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -27,8 +25,9 @@ import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsPresente
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxSearchView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -62,8 +61,8 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
     TextView emptyTagsMessage;
     @BindView(R.id.tags_root)
     CoordinatorLayout root;
-
-    SearchView searchView;
+    @BindView(R.id.tags_search_view)
+    TokenSearchView searchView;
 
     @NonNull
     protected TagsComponent getComponent() {
@@ -85,6 +84,7 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         onBind();
+        searchView.getSearchTextView().setSplitChar(new char[]{0xAD});
     }
 
     @NonNull
@@ -103,6 +103,12 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
         Intent intent = new Intent(this, IngredientsActivity.class);
         intent.putExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING, tagName);
         startActivity(intent);
+    }
+
+    @NonNull
+    @Override
+    public Observable<CharSequence> getQueryObservable() {
+        return RxSearchable.create(searchView).map(RxSearchable.intoQuery());
     }
 
     @NonNull
@@ -128,15 +134,6 @@ public class TagsActivity extends UndoDrawerActivity implements TagsView {
                         return text.getText().toString();
                     }
                 });
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.tags_menu, menu);
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE); //Fills toolbar
-        adapter.onSearch(RxSearchView.queryTextChanges(searchView));
-        return true;
     }
 
     @Override

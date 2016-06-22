@@ -156,7 +156,7 @@ public class TagsActivityRoboTest {
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
 
         activity.searchView.performClick();
-        activity.searchView.setQuery("Tag", true);
+        activity.searchView.setQuery("Tag");
 
         assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
