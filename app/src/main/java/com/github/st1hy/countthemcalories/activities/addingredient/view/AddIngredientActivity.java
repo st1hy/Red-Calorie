@@ -38,9 +38,6 @@ import timber.log.Timber;
 public class AddIngredientActivity extends WithPictureActivity implements AddIngredientView {
     public static final String ACTION_CREATE_MEAL = "add meal ingredient";
     public static final String ACTION_CREATE_DRINK = "add drink ingredient";
-    public static final String ACTION_EDIT = "edit ingredient";
-    public static final String EXTRA_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
-    public static final String EXTRA_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
     public static final String RESULT_INGREDIENT_ID_LONG = "ingredient result id";
 
     private static final int REQUEST_PICK_TAG = 0x2010;

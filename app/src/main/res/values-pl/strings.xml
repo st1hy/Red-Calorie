@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Count Them Calories DEV</string>
-    <string name="action_settings">Ustawienia</string>
     <string name="add_ingredient_add_category">Dodaj kategorię</string>
     <string name="add_ingredient_energy_density_error_empty">Musisz podać ilość!</string>
     <string name="add_ingredient_energy_density_error_zero">Ilość musi być większa od zera!</string>
@@ -10,7 +9,6 @@
     <string name="add_ingredient_name_error_empty">Nazwa produktu nie może być pusta!</string>
     <string name="add_ingredient_name_hint">Nazwa</string>
     <string name="add_ingredient_remove_category">Usuń kategorię</string>
-    <string name="add_ingredient_save_action">Zapisz</string>
     <string name="add_ingredient_title">Dodaj składnik</string>
     <string name="add_meal_image_gallery_picker">Wybierz źródło</string>
     <string name="add_meal_image_select_from_camera">Zrób nowe zdjęcie</string>
@@ -37,7 +35,6 @@
     <string name="ingredients_title">Składniki</string>
     <string name="ingredients_undo_remove">Składnik został usunięty</string>
     <string name="meal_details_title">Detale posiłku</string>
-    <string name="nav_ingredients">Składniki</string>
     <string name="nav_overview">Przegląd</string>
     <string name="navigation_drawer_close">Zamnkij panel do nawigacji</string>
     <string name="navigation_drawer_open">Otwórz panel do nawigacji</string>

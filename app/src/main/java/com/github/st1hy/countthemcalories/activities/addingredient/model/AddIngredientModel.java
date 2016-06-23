@@ -12,6 +12,7 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
@@ -86,8 +87,8 @@ public class AddIngredientModel extends WithPictureModel {
             parcelableProxy = new ParcelableProxy();
             source = null;
             if (intent != null) {
-                if (AddIngredientActivity.ACTION_EDIT.equals(intent.getAction())) {
-                    source = intent.getParcelableExtra(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL);
+                if (EditIngredientActivity.ACTION_EDIT.equals(intent.getAction())) {
+                    source = intent.getParcelableExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL);
                 }
             }
             if (source != null) {
@@ -189,7 +190,7 @@ public class AddIngredientModel extends WithPictureModel {
     public Observable<IngredientTemplate> saveIntoDatabase() {
         List<IngredientTypeCreateException.ErrorType> errorList = canCreateIngredient();
         if (errorList.isEmpty()) {
-            if (source != null) {
+            if (isEditing()) {
                 return updateExistingInDatabase();
             } else {
                 return insertNewIntoDatabase();
@@ -297,6 +298,9 @@ public class AddIngredientModel extends WithPictureModel {
         };
     }
 
+    public boolean isEditing() {
+        return source != null;
+    }
 
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";

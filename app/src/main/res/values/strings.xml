@@ -4,13 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_title_subtext">You should really count them, you know?</string>
-
-    <string name="action_settings">Settings</string>
-
+    
     <string name="nav_overview">Overview</string>
-    <string name="nav_ingredients">Ingredients</string>
-    <string name="nav_categories">@string/tags_title</string>
-    <string name="nav_settings">@string/action_settings</string>
 
     <string name="undo">Undo</string>
 
@@ -31,13 +26,10 @@
     <string name="add_meal_image_select_from_camera">Make a picture</string>
     <string name="add_meal_image_select_title">Select picture for your meal</string>
     <string name="add_meal_image_gallery_picker">Select Image source</string>
-    <string name="add_meal_button_add_ingredient">@string/add_ingredient_title</string>
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
     <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
-    <string name="add_meal_amount_error_empty">@string/add_ingredient_energy_density_error_empty</string>
-    <string name="add_meal_amount_error_zero">@string/add_ingredient_energy_density_error_zero</string>
     <string name="add_meal_name_empty_error">Name cannot be empty</string>
     <string name="add_meal_ingredients_empty_error">You must add at least one ingredient</string>
 
@@ -54,14 +46,10 @@
 
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
-    <string name="add_ingredient_save_action">Save</string>
     <string name="add_ingredient_remove_category">Remove category</string>
-    <string name="add_ingredient_categories_name">@string/tags_title</string>
     <string name="add_ingredient_add_category">Add category</string>
     <string name="add_ingredient_energy_density_hint">Amount of calories</string>
     <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
-    <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
-    <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
     <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
     <string name="add_ingredient_energy_density_error_empty">Amount has be specified!</string>
     <string name="add_ingredient_energy_density_error_zero">Amount must be greater than zero!</string>

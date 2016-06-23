@@ -43,7 +43,6 @@ import rx.Observable;
 public class AddMealActivity extends WithPictureActivity implements AddMealView {
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
     public static final int REQUEST_EDIT_INGREDIENT = 0x3904;
-    public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
 
     @Inject
     AddMealPresenter presenter;

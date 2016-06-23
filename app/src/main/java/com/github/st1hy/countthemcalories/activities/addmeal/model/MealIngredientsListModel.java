@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -61,7 +61,7 @@ public class MealIngredientsListModel {
             ingredients = new ArrayList<>(5);
             Observable<Integer> observable = null;
             if (intent != null) {
-                MealParcel parcel = intent.getParcelableExtra(AddMealActivity.EXTRA_MEAL_PARCEL);
+                MealParcel parcel = intent.getParcelableExtra(EditMealActivity.EXTRA_MEAL_PARCEL);
                 if (parcel != null) {
                     observable = loadItems(parcel);
                 }

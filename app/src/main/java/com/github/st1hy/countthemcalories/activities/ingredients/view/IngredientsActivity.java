@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
@@ -143,10 +144,10 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
 
     @Override
     public void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel) {
-        Intent intent = new Intent(this, AddIngredientActivity.class);
-        intent.setAction(AddIngredientActivity.ACTION_EDIT);
-        intent.putExtra(AddIngredientActivity.EXTRA_EDIT_REQUEST_ID_LONG, requestID);
-        intent.putExtra(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, ingredientParcel);
+        Intent intent = new Intent(this, EditIngredientActivity.class);
+        intent.setAction(EditIngredientActivity.ACTION_EDIT);
+        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_REQUEST_ID_LONG, requestID);
+        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, ingredientParcel);
         startActivityForResult(intent, REQUEST_EDIT);
     }
 

@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
@@ -127,9 +128,9 @@ public class AddIngredientModelRoboTest {
         doReturn(jTags).when(example).getTags();
 
         Intent intent = new Intent();
-        intent.setAction(AddIngredientActivity.ACTION_EDIT);
+        intent.setAction(EditIngredientActivity.ACTION_EDIT);
         IngredientTypeParcel parcel = new IngredientTypeParcel(example);
-        intent.putExtra(AddIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, parcel);
+        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, parcel);
         when(typesModel.unParcel(argThat(hasIngredientId(example)))).thenReturn(Observable.just(example));
         model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
 
@@ -293,7 +294,7 @@ public class AddIngredientModelRoboTest {
         assertThat(model.getUnitTypeFrom(null), equalTo(AmountUnitType.MASS));
         Intent intent = new Intent();
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(AddIngredientActivity.ACTION_EDIT);
+        intent.setAction(EditIngredientActivity.ACTION_EDIT);
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
         intent.setAction(AddIngredientActivity.ACTION_CREATE_MEAL);
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));

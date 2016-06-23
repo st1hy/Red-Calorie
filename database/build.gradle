@@ -20,6 +20,11 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
 dependencies {
     final supportLibraryVersion = rootProject.ext.supportLibraryVersion
     final daggerVersion = rootProject.ext.daggerVersion

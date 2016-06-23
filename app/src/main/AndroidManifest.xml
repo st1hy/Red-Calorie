@@ -32,9 +32,18 @@
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name=".activities.addmeal.view.EditMealActivity"
+            android:label="@string/edit_meal_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".activities.addingredient.view.AddIngredientActivity"
             android:label="@string/add_ingredient_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:name=".activities.addingredient.view.EditIngredientActivity"
+            android:label="@string/edit_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity

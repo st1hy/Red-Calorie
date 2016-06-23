@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.inject.DaggerOverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponent;
@@ -110,7 +111,8 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
 
     @Override
     public void openAddMealScreen() {
-        startActivity(new Intent(this, AddMealActivity.class));
+        Intent intent = new Intent(this, AddMealActivity.class);
+        startActivity(intent);
     }
 
     @NonNull
@@ -142,8 +144,8 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewView
 
     @Override
     public void openEditMealScreen(@NonNull MealParcel mealParcel) {
-        Intent intent = new Intent(this, AddMealActivity.class);
-        intent.putExtra(AddMealActivity.EXTRA_MEAL_PARCEL, mealParcel);
+        Intent intent = new Intent(this, EditMealActivity.class);
+        intent.putExtra(EditMealActivity.EXTRA_MEAL_PARCEL, mealParcel);
         startActivity(intent);
     }
 

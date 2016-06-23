@@ -9,6 +9,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
@@ -263,7 +264,7 @@ public class IngredientActivityTest {
                 .perform(loopMainThreadForAtLeast(400));
         onView(allOf(withId(R.id.ingredients_item_edit), isDisplayed()))
                 .perform(click());
-        intended(hasComponent(new ComponentName(getTargetContext(), AddIngredientActivity.class)));
+        intended(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)));
 
     }
 }

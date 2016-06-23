@@ -11,6 +11,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
@@ -235,7 +236,7 @@ public class OverviewActivityTest {
     }
 
     private void checkEditActivity() {
-        intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
+        intended(hasComponent(new ComponentName(getTargetContext(), EditMealActivity.class)));
 
         onView(withText(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()))
