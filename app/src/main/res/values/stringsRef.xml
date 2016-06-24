@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="action_settings">@string/settings_title</string>
+    <string name="action_settings" translatable="false">@string/settings_title</string>
 
-    <string name="nav_ingredients">@string/ingredients_title</string>
-    <string name="nav_categories">@string/tags_title</string>
-    <string name="nav_settings">@string/action_settings</string>
-    <string name="nav_contribute">@string/contribute_title</string>
+    <string name="nav_ingredients" translatable="false">@string/ingredients_title</string>
+    <string name="nav_categories" translatable="false">@string/tags_title</string>
+    <string name="nav_settings" translatable="false">@string/action_settings</string>
+    <string name="nav_contribute" translatable="false">@string/contribute_title</string>
 
-    <string name="add_meal_button_add_ingredient">@string/add_ingredient_title</string>
-    <string name="add_meal_amount_error_empty">@string/add_ingredient_energy_density_error_empty</string>
-    <string name="add_meal_amount_error_zero">@string/add_ingredient_energy_density_error_zero</string>
+    <string name="add_meal_button_add_ingredient" translatable="false">@string/add_ingredient_title</string>
+    <string name="add_meal_amount_error_empty" translatable="false">@string/add_ingredient_energy_density_error_empty</string>
+    <string name="add_meal_amount_error_zero" translatable="false">@string/add_ingredient_energy_density_error_zero</string>
 
-    <string name="add_ingredient_categories_name">@string/tags_title</string>
-    <string name="add_ingredient_image_select_from_gallery">@string/add_meal_image_select_from_gallery</string>
-    <string name="add_ingredient_image_select_from_camera">@string/add_meal_image_select_from_camera</string>
-    <string name="add_ingredient_save_action">@string/add_meal_save_action</string>
-    <string name="edit_ingredient_title">@string/ingredients_item_edit_ingredient</string>
-    <string name="edit_meal_title">@string/overview_meal_edit_description</string>
+    <string name="add_ingredient_categories_name" translatable="false">@string/tags_title</string>
+    <string name="add_ingredient_image_select_from_gallery" translatable="false">@string/add_meal_image_select_from_gallery</string>
+    <string name="add_ingredient_image_select_from_camera" translatable="false">@string/add_meal_image_select_from_camera</string>
+    <string name="add_ingredient_save_action" translatable="false">@string/add_meal_save_action</string>
+    <string name="edit_ingredient_title" translatable="false">@string/ingredients_item_edit_ingredient</string>
+    <string name="edit_meal_title" translatable="false">@string/overview_meal_edit_description</string>
 
 </resources>
