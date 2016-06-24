@@ -5,6 +5,7 @@
     <string name="nav_ingredients">@string/ingredients_title</string>
     <string name="nav_categories">@string/tags_title</string>
     <string name="nav_settings">@string/action_settings</string>
+    <string name="nav_contribute">@string/contribute_title</string>
 
     <string name="add_meal_button_add_ingredient">@string/add_ingredient_title</string>
     <string name="add_meal_amount_error_empty">@string/add_ingredient_energy_density_error_empty</string>
