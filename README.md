@@ -1,5 +1,5 @@
 ![Count Them Calories logo](web_ctc_logo.png)
-# Count-Them-Calories
+# Count Them Calories
 Android app for keeping your calories in check.
 
 ## Going for release
@@ -11,14 +11,18 @@ Application is available on [Google Play](https://play.google.com/store/apps/det
 ## Current state: 1.0.2
 * Fixed app name translation
 * Fixed image size on tablets
+
 ### 1.0
 * Added contribute page
 * Bug fixes
+
 ### 0.7.1 alpha
 * Fixed support for pre-Lollipop devices
+
 ### 0.7 alpha
 * Added searching by product category.
 * More material design
+
 ### 0.6 alpha
 * Added undo function for deletion of items. Its a mix of functional programming (rx) and command pattern 
 * Tags have the same swipe to delete/edit as rest of main screens
