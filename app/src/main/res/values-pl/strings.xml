@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Count Them Calories DEV</string>
+    <string name="app_name">Count Them Calories</string>
     <string name="add_ingredient_add_category">Dodaj kategorię</string>
     <string name="add_ingredient_energy_density_error_empty">Musisz podać ilość!</string>
     <string name="add_ingredient_energy_density_error_zero">Ilość musi być większa od zera!</string>

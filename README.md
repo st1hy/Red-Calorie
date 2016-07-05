@@ -2,13 +2,16 @@
 # Count-Them-Calories
 Android app for keeping your calories in check.
 
-## Going for 1.0 release
+## Going for release
 All the planned basic functionality that I've planned for 1.0 is complete. There is definitely sill room for improvement, but after some thought and consideration I decided that the time has come to release this to the public audience.
 All feedback/critique is welcome and appreciated.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state: 1.0 beta
+## Current state: 1.0.2
+* Fixed app name translation
+* Fixed image size on tablets
+### 1.0
 * Added contribute page
 * Bug fixes
 ### 0.7.1 alpha
