@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.core.rx;
 import rx.Scheduler;
 
 public class Schedulers {
-    public static final Hook DEFAULT = new HookImp();
+    private static final Hook DEFAULT = new HookImp();
     private static Hook hook = DEFAULT;
 
     public static Scheduler io() {

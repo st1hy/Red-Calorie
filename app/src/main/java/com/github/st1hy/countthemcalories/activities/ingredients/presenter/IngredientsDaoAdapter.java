@@ -190,8 +190,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                     }
                 });
         if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable.share();
             sequenceObservable = sequenceObservable
+                    .share()
                     // During restart tags are re-added in onRestoreSavedState which leads to
                     // 2 searches: immediate with wrong query and correct one after delay+250ms
                     // if delay is smaller than 100ms this will remove wrong search and speed it up

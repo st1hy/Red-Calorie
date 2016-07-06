@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActiv
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +42,15 @@ public class DrawerActivityRoboTest {
     @Before
     public void setUp() throws Exception {
         activity = Robolectric.setupActivity(OverviewActivity.class);
-        TestRxPlugins.registerImmediateMainThreadHook();
+        TestRxPlugins.registerImmediateHookIO();
         assertThat(activity, notNullValue());
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.presenter, notNullValue());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        TestRxPlugins.reset();
     }
 
     @Test
