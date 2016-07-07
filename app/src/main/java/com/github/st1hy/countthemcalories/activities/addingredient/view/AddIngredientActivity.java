@@ -60,6 +60,10 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     TextView energyDensityUnit;
     @BindView(R.id.add_ingredient_categories_recycler)
     RecyclerView tagsRecycler;
+    @BindView(R.id.add_ingredient_image_overlay_top)
+    View imageOverlayTop;
+    @BindView(R.id.add_ingredient_image_overlay_bottom)
+    View imageOverlayBottom;
 
     @NonNull
     protected AddIngredientComponent getComponent(@Nullable Bundle savedInstanceState) {
@@ -221,5 +225,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     protected ImageView getImageView() {
         return ingredientImage;
+    }
+
+    @Override
+    protected void onImageShown() {
+        super.onImageShown();
+        imageOverlayBottom.setVisibility(View.VISIBLE);
+        imageOverlayTop.setVisibility(View.VISIBLE);
     }
 }

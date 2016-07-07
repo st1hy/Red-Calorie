@@ -65,10 +65,15 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     FloatingActionButton addIngredientFab;
     @BindView(R.id.add_meal_total_calories)
     TextView totalCalories;
+    @BindView(R.id.add_meal_image_overlay_top)
+    View imageOverlayTop;
+    @BindView(R.id.add_meal_image_overlay_bottom)
+    View imageOverlayBottom;
 
     AddMealActivityComponent component;
 
-    @Nullable Snackbar ingredientsError;
+    @Nullable
+    Snackbar ingredientsError;
 
     @NonNull
     protected AddMealActivityComponent getComponent(@Nullable Bundle savedInstanceState) {
@@ -232,5 +237,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
                 this.ingredientsError.dismiss();
             }
         }
+    }
+
+    @Override
+    protected void onImageShown() {
+        super.onImageShown();
+        imageOverlayBottom.setVisibility(View.VISIBLE);
+        imageOverlayTop.setVisibility(View.VISIBLE);
     }
 }

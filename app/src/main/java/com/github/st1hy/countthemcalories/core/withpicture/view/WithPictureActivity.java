@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
@@ -68,10 +70,17 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
     @Override
     public Observable<RxPicasso.PicassoEvent> showImage(@NonNull Uri uri) {
         return RxPicasso.Builder.with(picasso, uri)
-                        .centerCrop()
-                        .fit()
-                        .into(getImageView())
-                        .asObservable();
+                .centerCrop()
+                .fit()
+                .into(getImageView())
+                .asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<RxPicasso.PicassoEvent>() {
+                    @Override
+                    public void call(RxPicasso.PicassoEvent event) {
+                        onImageShown();
+                    }
+                });
     }
 
     @Override
@@ -80,4 +89,7 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
         presenter.onStop();
     }
 
+    protected void onImageShown() {
+
+    }
 }
