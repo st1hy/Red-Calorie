@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealActivityRoboTest {
     private AddMealActivity activity;
 
@@ -118,7 +118,6 @@ public class AddMealActivityRoboTest {
     }
 
 
-
     private void addIngredient() {
         activity.addIngredientFab.performClick();
 
@@ -144,7 +143,7 @@ public class AddMealActivityRoboTest {
         Intent intent = new Intent();
         IngredientTypeParcel typeParcel = new IngredientTypeParcel(exampleIngredients[0]);
         Parcel parcel = Parcel.obtain();
-        typeParcel.writeToParcel(parcel,0);
+        typeParcel.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         IngredientTypeParcel fromParcel = IngredientTypeParcel.CREATOR.createFromParcel(parcel);
         parcel.recycle();

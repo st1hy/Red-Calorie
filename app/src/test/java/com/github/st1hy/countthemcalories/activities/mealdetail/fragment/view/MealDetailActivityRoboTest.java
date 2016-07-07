@@ -1,12 +1,12 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.view;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.espresso.intent.matcher.IntentMatchers;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -22,7 +22,6 @@ import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowActivity;
 
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
@@ -38,7 +37,7 @@ public class MealDetailActivityRoboTest {
     private final Meal meal = OverviewActivityRoboTest.exampleMeals[0];
 
     MealDetailActivity activity;
-
+    MealDetailFragment fragment;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +45,6 @@ public class MealDetailActivityRoboTest {
         TestRxPlugins.registerImmediateHookIO();
         DaoSession session = OverviewActivityRoboTest.prepareDatabase();
         OverviewActivityRoboTest.addMealsIngredients(session);
-
     }
 
     @After
@@ -55,13 +53,10 @@ public class MealDetailActivityRoboTest {
         TestRxPlugins.reset();
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIncorrectIntent() throws Exception {
         Timber.uprootAll(); //Don't print expected error
         MealDetailActivity activity = Robolectric.setupActivity(MealDetailActivity.class);
-        ShadowActivity shadowActivity = shadowOf(activity);
-        assertThat(shadowActivity.isFinishing(), equalTo(true));
-        assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_CANCELED));
     }
 
 
@@ -70,6 +65,8 @@ public class MealDetailActivityRoboTest {
                 .withIntent(buildIntent())
                 .setup().get();
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
+        fragment = (MealDetailFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("meal_detail_content");
     }
 
     private Intent buildIntent() {
@@ -81,23 +78,23 @@ public class MealDetailActivityRoboTest {
     @Test
     public void testDisplaysValues() throws Exception {
         setupActivity();
-        assertThat(activity.name.getText().toString(), equalTo(meal.getName()));
-        assertThat(activity.energy.getText().toString(), equalTo("175.86 kcal")); //30 [g] * 20.5 [kJ/g]  + 20 [g] * 6.04 [kJ/g] converted to kcal / 100 g
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        assertThat(fragment.name.getText().toString(), equalTo(meal.getName()));
+        assertThat(fragment.energy.getText().toString(), equalTo("175.86 kcal")); //30 [g] * 20.5 [kJ/g]  + 20 [g] * 6.04 [kJ/g] converted to kcal / 100 g
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(2));
     }
 
     @Test
     public void testSaveState() throws Exception {
         setupActivity();
         Bundle bundle = new Bundle();
-        activity.onSaveInstanceState(bundle);
+        fragment.onSaveInstanceState(bundle);
         assertThat(bundle.isEmpty(), equalTo(false));
     }
 
     @Test
     public void testEdit() throws Exception {
         setupActivity();
-        activity.editButton.performClick();
+        fragment.editButton.performClick();
         assertThat(shadowOf(activity).isFinishing(), equalTo(true));
         assertThat(shadowOf(activity).getResultCode(), equalTo(MealDetailActivity.RESULT_EDIT));
         assertThat(shadowOf(activity).getResultIntent(), IntentMatchers.hasExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, meal.getId()));
@@ -106,7 +103,7 @@ public class MealDetailActivityRoboTest {
     @Test
     public void testRemove() throws Exception {
         setupActivity();
-        activity.removeButton.performClick();
+        fragment.removeButton.performClick();
         assertThat(shadowOf(activity).isFinishing(), equalTo(true));
         assertThat(shadowOf(activity).getResultCode(), equalTo(MealDetailActivity.RESULT_DELETE));
         assertThat(shadowOf(activity).getResultIntent(), IntentMatchers.hasExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, meal.getId()));
@@ -115,8 +112,8 @@ public class MealDetailActivityRoboTest {
     @Test
     public void testStop() throws Exception {
         setupActivity();
-        activity.presenter = Mockito.mock(MealDetailPresenter.class);
-        activity.onStop();
-        verify(activity.presenter).onStop();
+        fragment.presenter = Mockito.mock(MealDetailPresenter.class);
+        fragment.onStop();
+        verify(fragment.presenter).onStop();
     }
 }

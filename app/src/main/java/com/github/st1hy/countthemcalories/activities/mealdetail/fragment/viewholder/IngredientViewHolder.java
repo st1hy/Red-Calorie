@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.view.viewholder;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +11,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngredientViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.overview_extended_ingredient_item_name)
+    @BindView(R.id.meal_detail_ingredient_item_name)
     TextView name;
-    @BindView(R.id.overview_extended_ingredient_item_amount)
+    @BindView(R.id.meal_detail_ingredient_item_amount)
     TextView amount;
-    @BindView(R.id.overview_extended_ingredient_item_energy)
+    @BindView(R.id.meal_detail_ingredient_item_energy)
     TextView energy;
 
 

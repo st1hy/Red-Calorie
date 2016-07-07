@@ -1,15 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailView;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.squareup.picasso.Picasso;
@@ -46,14 +44,10 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     @Override
     public void onStart() {
-        if (!model.isDataValid()) {
-            view.finish();
-        } else {
-            subscriptions.add(model.getMealObservable().subscribe(onMealLoaded()));
-            subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
-            subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
-            adapter.onStart();
-        }
+        subscriptions.add(model.getMealObservable().subscribe(onMealLoaded()));
+        subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
+        subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
+        adapter.onStart();
     }
 
     @Override
@@ -114,9 +108,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                Intent intent = new Intent();
-                intent.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, model.getMeal().getId());
-                view.setResultAndFinish(MealDetailActivity.RESULT_EDIT, intent);
+                view.editMealWithId(model.getMeal().getId());
             }
         };
     }
@@ -126,9 +118,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                Intent intent = new Intent();
-                intent.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, model.getMeal().getId());
-                view.setResultAndFinish(MealDetailActivity.RESULT_DELETE, intent);
+                view.deleteMealWithId(model.getMeal().getId());
             }
         };
     }

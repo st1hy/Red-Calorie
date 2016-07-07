@@ -1,13 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.view;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
+
 import rx.Observable;
 
-public interface MealDetailView {
-    void finish();
+public interface MealDetailView extends MealDetailScreen {
 
     void setName(@NonNull String name);
 
@@ -21,7 +21,6 @@ public interface MealDetailView {
 
     void setEnergy(@NonNull String energy);
 
-    void setResultAndFinish(int resultCode, @NonNull Intent data);
-
     Observable<Void> getDeleteObservable();
+
 }

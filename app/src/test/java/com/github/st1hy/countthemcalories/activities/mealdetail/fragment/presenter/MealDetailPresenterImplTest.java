@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,9 +7,8 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailView;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
@@ -30,13 +29,10 @@ import java.util.Collections;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -71,7 +67,6 @@ public class MealDetailPresenterImplTest {
 
     @Test
     public void testOnStart() throws Exception {
-        when(model.isDataValid()).thenReturn(true);
         when(view.getDeleteObservable()).thenReturn(Observable.<Void>empty());
         when(view.getEditObservable()).thenReturn(Observable.<Void>empty());
         when(model.getMealObservable()).thenReturn(Observable.<Meal>empty());
@@ -84,7 +79,6 @@ public class MealDetailPresenterImplTest {
 
     @Test
     public void testMealBinding() throws Exception {
-        when(model.isDataValid()).thenReturn(true);
         when(view.getDeleteObservable()).thenReturn(Observable.<Void>empty());
         when(view.getEditObservable()).thenReturn(Observable.<Void>empty());
         Meal meal = mock(Meal.class);
@@ -115,23 +109,10 @@ public class MealDetailPresenterImplTest {
     }
 
     private void verifyOnStartValid() {
-        verify(model).isDataValid();
         verify(model).getMealObservable();
         verify(view).getDeleteObservable();
         verify(view).getEditObservable();
         verify(adapter).onStart();
-    }
-
-    @Test
-    public void testOnStartDataInvalid() throws Exception {
-        when(model.isDataValid()).thenReturn(false);
-
-        presenter.onStart();
-
-        verify(model).isDataValid();
-        verify(view).finish();
-
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter);
     }
 
     @Test
@@ -158,7 +139,6 @@ public class MealDetailPresenterImplTest {
 
     @Test
     public void testEdit() throws Exception {
-        when(model.isDataValid()).thenReturn(true);
         when(view.getEditObservable()).thenReturn(Observable.<Void>just(null));
         when(view.getDeleteObservable()).thenReturn(Observable.<Void>empty());
         when(model.getMealObservable()).thenReturn(Observable.<Meal>empty());
@@ -170,8 +150,7 @@ public class MealDetailPresenterImplTest {
         verifyOnStartValid();
         verify(model).getMeal();
         verify(meal).getId();
-        verify(view).setResultAndFinish(eq(MealDetailActivity.RESULT_EDIT),
-                argThat(hasExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, 2016L)));
+        verify(view).editMealWithId(2016L);
 
         verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, meal);
 
@@ -179,7 +158,6 @@ public class MealDetailPresenterImplTest {
 
     @Test
     public void testRemove() throws Exception {
-        when(model.isDataValid()).thenReturn(true);
         when(view.getDeleteObservable()).thenReturn(Observable.<Void>just(null));
         when(view.getEditObservable()).thenReturn(Observable.<Void>empty());
         when(model.getMealObservable()).thenReturn(Observable.<Meal>empty());
@@ -191,8 +169,7 @@ public class MealDetailPresenterImplTest {
         verifyOnStartValid();
         verify(model).getMeal();
         verify(meal).getId();
-        verify(view).setResultAndFinish(eq(MealDetailActivity.RESULT_DELETE),
-                argThat(hasExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, 2016L)));
+        verify(view).deleteMealWithId(2016L);
 
         verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, meal);
     }

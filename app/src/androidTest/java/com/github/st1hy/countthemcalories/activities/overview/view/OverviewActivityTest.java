@@ -220,7 +220,7 @@ public class OverviewActivityTest {
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), MealDetailActivity.class)));
         onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()));
-        onView(withId(R.id.overview_extended_edit)).perform(click());
+        onView(withId(R.id.meal_detail_edit)).perform(click());
         checkEditActivity();
     }
 

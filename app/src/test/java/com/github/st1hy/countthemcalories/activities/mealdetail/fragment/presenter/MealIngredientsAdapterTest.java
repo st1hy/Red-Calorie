@@ -1,12 +1,12 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;

@@ -1,16 +1,15 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.model;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.google.common.base.Preconditions;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -23,13 +22,12 @@ public class MealDetailModel {
     final RxMealsDatabaseModel databaseModel;
     final ParcelableProxy parcelableProxy;
 
-    final boolean isDataValid;
     Meal meal;
     final MealParcel mealParcel;
     final Observable<Meal> mealObservable;
 
     public MealDetailModel(@NonNull RxMealsDatabaseModel databaseModel,
-                           @Nullable Intent intent,
+                           @Nullable MealParcel mealSource,
                            @Nullable Bundle savedState) {
         this.databaseModel = databaseModel;
         ParcelableProxy parcelableProxy = null;
@@ -38,7 +36,6 @@ public class MealDetailModel {
         }
         if (parcelableProxy != null) {
             mealParcel = parcelableProxy.mealParcel;
-            isDataValid = true;
             meal = mealParcel.getWhenReady().getOrNull();
             if (meal == null) {
                 mealObservable = loadFromParcel(mealParcel);
@@ -47,19 +44,13 @@ public class MealDetailModel {
             }
         } else {
             parcelableProxy = new ParcelableProxy();
-            mealParcel = getValidMealParcel(intent);
-            isDataValid = mealParcel != null;
-            if (isDataValid) {
-                meal = mealParcel.getWhenReady().getOrNull();
-                if (meal == null) {
-                    mealObservable = loadFromParcel(mealParcel);
-                } else {
-                    mealObservable = Observable.just(meal);
-                }
+            mealParcel = mealSource;
+            Preconditions.checkNotNull(mealParcel);
+            meal = mealParcel.getWhenReady().getOrNull();
+            if (meal == null) {
+                mealObservable = loadFromParcel(mealParcel);
             } else {
-                Timber.e("Incorrect starting intent: %s", intent);
-                meal = null;
-                mealObservable = Observable.empty();
+                mealObservable = Observable.just(meal);
             }
         }
         this.parcelableProxy = parcelableProxy;
@@ -70,10 +61,6 @@ public class MealDetailModel {
      */
     public Meal getMeal() {
         return meal;
-    }
-
-    public boolean isDataValid() {
-        return isDataValid;
     }
 
     @NonNull
@@ -96,11 +83,6 @@ public class MealDetailModel {
                 }).replay().autoConnect().share();
         observable.subscribe(new MealLoader());
         return observable;
-    }
-
-    private MealParcel getValidMealParcel(@Nullable Intent intent) {
-        if (intent == null) return null;
-        return intent.getParcelableExtra(MealDetailActivity.EXTRA_MEAL_PARCEL);
     }
 
     static class ParcelableProxy implements Parcelable {

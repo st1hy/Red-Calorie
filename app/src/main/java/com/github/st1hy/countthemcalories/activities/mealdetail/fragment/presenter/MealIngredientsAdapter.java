@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.presenter;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.model.MealDetailModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -50,7 +50,7 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.overview_extended_ingredient_item, parent, false);
+                .inflate(R.layout.meal_detail_ingredient_item, parent, false);
         return new IngredientViewHolder(view);
     }
 

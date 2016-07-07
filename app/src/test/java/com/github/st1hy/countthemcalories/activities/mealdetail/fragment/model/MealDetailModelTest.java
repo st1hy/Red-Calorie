@@ -1,12 +1,10 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.model;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
@@ -59,10 +57,7 @@ public class MealDetailModelTest {
         rxMealsDatabaseModel = Mockito.mock(RxMealsDatabaseModel.class);
         when(rxMealsDatabaseModel.unParcel(any(MealParcel.class)))
                 .thenReturn(Observable.just(example));
-        Intent intent = new Intent();
-        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, new MealParcel(example));
-        model = new MealDetailModel(rxMealsDatabaseModel, intent, null);
-        assertThat(model.isDataValid(), equalTo(true));
+        model = new MealDetailModel(rxMealsDatabaseModel, new MealParcel(example), null);
     }
 
     @After
@@ -84,19 +79,10 @@ public class MealDetailModelTest {
         assertThat(meal, equalTo(example));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testInvalidIntent() throws Exception {
         Timber.uprootAll(); //Don't print expected error
         model = new MealDetailModel(rxMealsDatabaseModel, null, null);
-        assertThat(model.isDataValid(), equalTo(false));
-        final AtomicReference<List<Meal>> list = new AtomicReference<>();
-        model.getMealObservable().toList().subscribe(new Action1<List<Meal>>() {
-            @Override
-            public void call(List<Meal> meals) {
-                list.set(meals);
-            }
-        });
-        assertThat(list.get(), hasSize(0));
     }
 
     @Test
@@ -124,7 +110,6 @@ public class MealDetailModelTest {
     }
 
     private void checkRestoredModel(MealDetailModel restoredModel) {
-        assertThat(restoredModel.isDataValid(), equalTo(true));
         Meal meal = restoredModel.getMeal();
         assertThat(meal, equalTo(example));
 
@@ -176,11 +161,7 @@ public class MealDetailModelTest {
         MealParcel fromParcel = MealParcel.CREATOR.createFromParcel(parcel);
         parcel.recycle();
 
-        Intent intent = new Intent();
-        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, fromParcel);
-
-        model = new MealDetailModel(rxMealsDatabaseModel, intent, null);
-        assertThat(model.isDataValid(), equalTo(true));
+        model = new MealDetailModel(rxMealsDatabaseModel, fromParcel, null);
         verify(rxMealsDatabaseModel).unParcel(fromParcel);
         testGetMealObservable();
     }
