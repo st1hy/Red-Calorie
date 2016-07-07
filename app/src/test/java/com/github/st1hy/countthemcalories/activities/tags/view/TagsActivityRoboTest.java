@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;

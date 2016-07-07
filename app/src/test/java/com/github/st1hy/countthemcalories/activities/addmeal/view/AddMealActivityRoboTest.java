@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPr
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;

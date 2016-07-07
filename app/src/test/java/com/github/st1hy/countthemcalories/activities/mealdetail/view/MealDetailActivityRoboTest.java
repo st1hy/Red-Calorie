@@ -7,7 +7,7 @@ import android.support.test.espresso.intent.matcher.IntentMatchers;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealDetailPresenter;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;

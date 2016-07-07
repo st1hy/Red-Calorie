@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.view;
+package com.github.st1hy.countthemcalories.activities.overview.fragment.view;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivit
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
@@ -29,6 +30,7 @@ import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.shadows.ShadowSnackbar;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
+import com.google.common.base.Preconditions;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -75,6 +77,7 @@ public class OverviewActivityRoboTest {
 
 
     private OverviewActivity activity;
+    private OverviewFragment fragment;
     private DaoSession session;
 
     @Before
@@ -87,6 +90,8 @@ public class OverviewActivityRoboTest {
         addMealsIngredients(session);
 
         activity = Robolectric.setupActivity(OverviewActivity.class);
+        fragment = (OverviewFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("overview_content_fragment");
     }
 
     public static DaoSession prepareDatabase() {
@@ -124,25 +129,25 @@ public class OverviewActivityRoboTest {
 
     @Test
     public void testDisplaysMeals() throws Exception {
-        assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        TextView name1 = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_name);
+        assertThat(fragment.recyclerView.getChildCount(), equalTo(3));
+        TextView name1 = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.overview_item_name);
         assertThat(name1.getText().toString(), equalTo(exampleMeals[0].getName()));
-        TextView name2 = (TextView) activity.recyclerView.getChildAt(1).findViewById(R.id.overview_item_name);
+        TextView name2 = (TextView) fragment.recyclerView.getChildAt(1).findViewById(R.id.overview_item_name);
         assertThat(name2.getText().toString(), equalTo(exampleMeals[1].getName()));
     }
 
     @Test
     public void testAddMeal() {
-        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        activity.fab.performClick();
+        Assert.assertThat(fragment.recyclerView.getChildCount(), equalTo(3));
+        Preconditions.checkNotNull(activity.findViewById(R.id.overview_fab)).performClick();
         Intent resultIntent = shadowOf(activity).getNextStartedActivity();
         assertThat(resultIntent, hasComponent(new ComponentName(activity, AddMealActivity.class)));
         session.getMealDao().insertInTx(additionalMeal);
         session.getIngredientDao().insertInTx(additionalIngredient);
-        activity.presenter.onStop();
-        activity.presenter.onStart();
-        assertThat(activity.recyclerView.getChildCount(), equalTo(4));
-        TextView name3 = (TextView) activity.recyclerView.getChildAt(2).findViewById(R.id.overview_item_name);
+        fragment.presenter.onStop();
+        fragment.presenter.onStart();
+        assertThat(fragment.recyclerView.getChildCount(), equalTo(4));
+        TextView name3 = (TextView) fragment.recyclerView.getChildAt(2).findViewById(R.id.overview_item_name);
         assertThat(name3.getText().toString(), equalTo(additionalMeal.getName()));
     }
 
@@ -156,8 +161,8 @@ public class OverviewActivityRoboTest {
 
     @Test
     public void testEditMeal() throws Exception {
-        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
+        Assert.assertThat(fragment.recyclerView.getChildCount(), equalTo(3));
+        View item = fragment.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
         item.performClick();
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
@@ -176,8 +181,8 @@ public class OverviewActivityRoboTest {
 
     @Test
     public void testRemoveMeal() throws Exception {
-        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(3));
-        View item = activity.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
+        Assert.assertThat(fragment.recyclerView.getChildCount(), equalTo(3));
+        View item = fragment.recyclerView.getChildAt(0).findViewById(R.id.overview_item_content);
         item.performClick();
         Intent intent = shadowOf(activity).getNextStartedActivity();
         assertNotNull(intent);
@@ -187,14 +192,14 @@ public class OverviewActivityRoboTest {
         Intent result = new Intent();
         result.putExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, exampleMeals[0].getId());
         shadowOf(activity).receiveResult(intent, MealDetailActivity.RESULT_DELETE, result);
-        Assert.assertThat(activity.recyclerView.getChildCount(), equalTo(2));
+        Assert.assertThat(fragment.recyclerView.getChildCount(), equalTo(2));
     }
 
     @Test
     public void testUndoRemoveMeal() throws Exception {
         testRemoveMeal();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(2));
         ShadowSnackbar.getLatest().performAction();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 }

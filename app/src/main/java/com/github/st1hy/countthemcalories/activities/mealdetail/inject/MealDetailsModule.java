@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealDe
 import com.github.st1hy.countthemcalories.activities.mealdetail.presenter.MealIngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailView;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;

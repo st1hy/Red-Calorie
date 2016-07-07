@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;

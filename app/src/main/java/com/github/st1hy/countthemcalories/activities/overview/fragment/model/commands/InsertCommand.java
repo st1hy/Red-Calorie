@@ -1,8 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.overview.model.commands;
+package com.github.st1hy.countthemcalories.activities.overview.fragment.model.commands;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.command.AbstractCommandResponse;
 import com.github.st1hy.countthemcalories.core.command.Command;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;

@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 
 import org.junit.Before;
 import org.junit.Test;

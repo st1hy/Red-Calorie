@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -13,13 +13,13 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealsViewModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.commands.MealsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
-import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.AbstractMealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.EmptyMealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.view.viewholder.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.MealsViewModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.commands.MealsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.AbstractMealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;

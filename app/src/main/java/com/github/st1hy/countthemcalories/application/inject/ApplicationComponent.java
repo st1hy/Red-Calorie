@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;

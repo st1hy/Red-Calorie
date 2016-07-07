@@ -1,6 +1,6 @@
-package com.github.st1hy.countthemcalories.activities.overview.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
 
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
 
 import org.junit.Before;
 import org.junit.Test;

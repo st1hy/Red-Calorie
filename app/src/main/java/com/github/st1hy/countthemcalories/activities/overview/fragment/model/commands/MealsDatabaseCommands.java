@@ -1,11 +1,9 @@
-package com.github.st1hy.countthemcalories.activities.overview.model.commands;
+package com.github.st1hy.countthemcalories.activities.overview.fragment.model.commands;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.UndoInvalidator;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
