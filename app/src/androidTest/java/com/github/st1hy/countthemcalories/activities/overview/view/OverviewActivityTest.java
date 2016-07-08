@@ -12,6 +12,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
+import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
@@ -190,6 +191,21 @@ public class OverviewActivityTest {
                 .perform(navigateTo(R.id.nav_settings));
         onView(withId(R.id.settings_content)).check(matches(isDisplayed()));
         intended(hasComponent(new ComponentName(getTargetContext(), SettingsActivity.class)));
+        pressBack();
+        onView(withId(R.id.nav_view))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)));
+    }
+
+
+    @Test
+    public void testNavigateToContribute() {
+        openDrawerMenu();
+        onView(withId(R.id.nav_view))
+                .check(matches(isDisplayed()))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)))
+                .perform(navigateTo(R.id.nav_contribute));
+        onView(withId(R.id.contribute_link)).check(matches(isDisplayed()));
+        intended(hasComponent(new ComponentName(getTargetContext(), ContributeActivity.class)));
         pressBack();
         onView(withId(R.id.nav_view))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)));
