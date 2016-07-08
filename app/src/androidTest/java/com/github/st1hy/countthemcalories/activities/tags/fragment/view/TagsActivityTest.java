@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;

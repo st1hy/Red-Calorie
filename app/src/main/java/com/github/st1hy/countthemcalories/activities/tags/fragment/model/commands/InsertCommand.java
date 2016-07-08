@@ -1,9 +1,9 @@
-package com.github.st1hy.countthemcalories.activities.tags.model.commands;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.command.AbstractCommandResponse;
 import com.github.st1hy.countthemcalories.core.command.Command;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;

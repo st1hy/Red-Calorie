@@ -28,7 +28,13 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/tags_content" />
+    <FrameLayout
+        android:id="@+id/tags_content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ActivityContent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/tags_add_new"

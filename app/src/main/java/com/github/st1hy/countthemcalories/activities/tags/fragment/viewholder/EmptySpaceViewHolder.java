@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
 
 import android.view.View;
 

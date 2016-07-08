@@ -8,7 +8,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.adapter.ForwardingAdapter;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;

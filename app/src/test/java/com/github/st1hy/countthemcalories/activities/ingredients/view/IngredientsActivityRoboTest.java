@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
@@ -46,7 +46,7 @@ import timber.log.Timber;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
-import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityRoboTest.exampleTags;
+import static com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityRoboTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Ingre
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.squareup.picasso.Picasso;

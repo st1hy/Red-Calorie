@@ -12,7 +12,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -50,7 +50,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
-import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
+import static com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasSize;

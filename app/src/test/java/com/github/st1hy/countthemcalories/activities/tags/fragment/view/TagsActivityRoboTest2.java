@@ -1,14 +1,14 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
@@ -32,10 +32,10 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
-@LargeTest
 public class TagsActivityRoboTest2 {
 
     private TagsActivity activity;
+    private TagsFragment fragment;
 
     @Before
     public void setup() throws Exception {
@@ -56,6 +56,8 @@ public class TagsActivityRoboTest2 {
                 .withIntent(intent)
                 .setup()
                 .get();
+        fragment = (TagsFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("tags content");
     }
 
     @After
@@ -65,17 +67,16 @@ public class TagsActivityRoboTest2 {
         TagsDaoAdapter.debounceTime = 250;
     }
 
-
     @Test
     public void testExcludeTags() throws Exception {
         setupActivity(getPickTagIntentWithExclude());
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testOpenIngredientsFilteredByTag() throws Exception {
         setupActivity(null);
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
 
         assertThat(shadowOf(activity).getNextStartedActivity(), allOf(
                 hasComponent(new ComponentName(activity, IngredientsActivity.class)),

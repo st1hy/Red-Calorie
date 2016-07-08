@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.model;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.model;
 
 import android.support.annotation.StringRes;
 

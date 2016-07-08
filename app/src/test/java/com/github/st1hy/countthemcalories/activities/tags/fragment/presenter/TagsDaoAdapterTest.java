@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.presenter;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
 
 
 import android.database.Cursor;
@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.commands.TagsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -59,7 +59,7 @@ public class TagsDaoAdapterTest {
     @Mock
     private RxTagsDatabaseModel model;
     @Mock
-    private TagsActivityModel activityModel;
+    private TagsFragmentModel fragmentModel;
     @Mock
     private Cursor cursor;
     @Mock
@@ -78,7 +78,7 @@ public class TagsDaoAdapterTest {
     public void setUp() {
         TestRxPlugins.registerImmediateMainThreadHook();
         MockitoAnnotations.initMocks(this);
-        presenter = new TestTagsPresenter(view, model, activityModel, viewModel, commands);
+        presenter = new TestTagsPresenter(view, model, fragmentModel, viewModel, commands);
 
         when(commandResponse.undoAvailability()).thenReturn(Observable.just(true));
         when(commandResponse.undo()).thenReturn(Observable.just(undoResponse));
@@ -89,7 +89,7 @@ public class TagsDaoAdapterTest {
     class TestTagsPresenter extends TagsDaoAdapter {
         public TestTagsPresenter(@NonNull TagsView view,
                                  @NonNull RxTagsDatabaseModel model,
-                                 @NonNull TagsActivityModel activityModel,
+                                 @NonNull TagsFragmentModel activityModel,
                                  @NonNull TagsViewModel viewModel,
                                  @NonNull TagsDatabaseCommands commands) {
             super(view, model, activityModel, viewModel, commands);
@@ -104,14 +104,14 @@ public class TagsDaoAdapterTest {
     @Test
     public void testOnStart() throws Exception {
         when(cursor.getCount()).thenReturn(2);
-        when(view.getOnAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getAddTagClickedObservable()).thenReturn(Observable.<Void>empty());
         when(view.getQueryObservable()).thenReturn(Observable.<CharSequence>empty());
 
         presenter.onStart();
 
-        verify(view).getOnAddTagClickedObservable();
+        verify(view).getAddTagClickedObservable();
         verify(view).getQueryObservable();
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -143,7 +143,7 @@ public class TagsDaoAdapterTest {
         verify(result, times(2)).getNewItemPositionInCursor();
         verify(viewModel).getNoTagsMessage();
         verify(view).setNoTagsMessage(anyInt());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -166,7 +166,7 @@ public class TagsDaoAdapterTest {
         verify(view, times(2)).showEditTextDialog(anyInt(), anyString());
         verify(commands, times(2)).insert(any(Tag.class));
 
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -179,7 +179,7 @@ public class TagsDaoAdapterTest {
 
         verify(cursor, times(2)).getCount();
 
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -195,7 +195,7 @@ public class TagsDaoAdapterTest {
         verify(cursor).moveToPosition(0);
         verify(model).performReadEntity(cursor, tag);
         verify(mockViewHolder).bind(anyInt(), eq(tag));
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -223,7 +223,7 @@ public class TagsDaoAdapterTest {
         verify(commandResponse).undoAvailability();
         verify(viewModel).getNoTagsMessage();
         verify(view).setNoTagsMessage(anyInt());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result, tag);
     }
 
@@ -252,20 +252,20 @@ public class TagsDaoAdapterTest {
         verify(commandResponse).undoAvailability();
         verify(viewModel).getNoTagsMessage();
         verify(view).setNoTagsMessage(anyInt());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result, tag);
     }
 
     @Test
     public void testOnItemClicked() throws Exception {
-        when(activityModel.isInSelectMode()).thenReturn(true);
+        when(fragmentModel.isInSelectMode()).thenReturn(true);
         final Tag tag = new Tag(0x231L, "Name");
 
         presenter.onTagClicked(1, tag);
 
-        verify(activityModel).isInSelectMode();
-        verify(view).setResultAndReturn(tag.getId(), tag.getName());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verify(fragmentModel).isInSelectMode();
+        verify(view).onTagSelected(tag.getId(), tag.getName());
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -279,7 +279,7 @@ public class TagsDaoAdapterTest {
 
         presenter.onSearch(Observable.<CharSequence>just("t", "te", "tes", "test"));
 
-        verify(activityModel, times(2)).getExcludedTagIds();
+        verify(fragmentModel, times(2)).getExcludedTagIds();
         verify(model).getAllFiltered("t", Collections.<String>emptyList());
         verify(model).getAllFiltered("test", Collections.<String>emptyList());
         verify(view, times(2)).setNoTagsVisibility(Visibility.VISIBLE);
@@ -287,7 +287,7 @@ public class TagsDaoAdapterTest {
         verify(cursor).close();
         verify(viewModel, times(2)).getSearchResultEmptyMessage();
         verify(view, times(2)).setNoTagsMessage(anyInt());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -323,7 +323,7 @@ public class TagsDaoAdapterTest {
         verify(cursor).close();
         verify(undoResponse).getResponse();
 
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 
@@ -348,20 +348,20 @@ public class TagsDaoAdapterTest {
         verify(viewModel).getNoTagsMessage();
         verify(view).setNoTagsMessage(anyInt());
 
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result, tag);
     }
 
     @Test
     public void testOpenIngredientsFilteredByTag() throws Exception {
-        when(activityModel.isInSelectMode()).thenReturn(false);
+        when(fragmentModel.isInSelectMode()).thenReturn(false);
         final Tag tag = new Tag(0x231L, "Name");
 
         presenter.onTagClicked(1, tag);
 
-        verify(activityModel).isInSelectMode();
+        verify(fragmentModel).isInSelectMode();
         verify(view).openIngredientsFilteredBy(tag.getName());
-        verifyNoMoreInteractions(model, view, cursor, activityModel, commands, commandResponse,
+        verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
                 undoResponse, result);
     }
 }

@@ -1,9 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -12,7 +11,9 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
@@ -34,6 +35,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -47,7 +49,6 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName,
         shadows = {ShadowSnackbar.class})
-@LargeTest
 public class TagsActivityRoboTest {
     public static final Tag[] exampleTags = new Tag[]{
             new Tag(1L, "Tag 1"),
@@ -56,6 +57,7 @@ public class TagsActivityRoboTest {
     };
 
     private TagsActivity activity;
+    private TagsFragment fragment;
 
     @Before
     public void setup() throws Exception {
@@ -68,6 +70,8 @@ public class TagsActivityRoboTest {
                 .withIntent(intent)
                 .setup()
                 .get();
+        fragment = (TagsFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("tags content");
     }
 
     public static void addExampleTags(@NonNull DaoSession session) {
@@ -86,46 +90,38 @@ public class TagsActivityRoboTest {
     }
 
     @Test
-    public void testActivityStart() {
-        assertThat(activity, notNullValue());
-        assertThat(activity.presenter, notNullValue());
-        assertThat(activity.getComponent(), notNullValue());
-        assertThat(activity.component, notNullValue());
-    }
-
-    @Test
     public void testAddNewItem() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
         fillAddNewItemDialog();
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
 
     @Test
     public void testAddNewItemFinishWithEnter() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
         fillAddNewItemDialog();
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
         ediText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
 
     @Test
     public void testAddNewItemFinishWitImeDone() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
         fillAddNewItemDialog();
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         EditText ediText = (EditText) shadowAlertDialog.getView().findViewById(R.id.tags_dialog_name);
         ediText.onEditorAction(EditorInfo.IME_ACTION_DONE);
         assertFalse(ShadowAlertDialog.getLatestAlertDialog().isShowing());
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
 
     private void fillAddNewItemDialog() throws Exception {
-        activity.fab.performClick();
+        checkNotNull(activity.findViewById(R.id.tags_add_new)).performClick();
         final String testName = "test name";
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
@@ -136,15 +132,15 @@ public class TagsActivityRoboTest {
 
     @Test
     public void testRemoveItem() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_delete).performClick();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.tags_item_delete).performClick();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testSelectTag() throws Exception {
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.tag_item_button).performClick();
         assertTrue(shadowOf(activity).isFinishing());
         Intent resultIntent = shadowOf(activity).getResultIntent();
         assertThat(resultIntent, CoreMatchers.notNullValue());
@@ -153,27 +149,29 @@ public class TagsActivityRoboTest {
 
     @Test
     public void testSearch() throws Exception {
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
 
-        activity.searchView.performClick();
-        activity.searchView.setQuery("Tag");
+        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.tags_search_view);
+        checkNotNull(searchView);
+        searchView.performClick();
+        searchView.setQuery("Tag");
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testUndoRemove() throws Exception {
         testRemoveItem();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowSnackbar.getLatest().performAction();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
     }
 
     @Test
     public void testEditTag() throws Exception {
-        TextView name = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
+        TextView name = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
         assertThat(name.getText().toString(), equalTo(exampleTags[2].getName()));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_edit).performClick();
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.tags_item_edit).performClick();
 
         AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertNotNull(latestAlertDialog);
@@ -182,7 +180,7 @@ public class TagsActivityRoboTest {
         edit.setText("A new name");
         latestAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
 
-        name = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
+        name = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.tags_item_name);
         assertThat(name.getText().toString(), equalTo("A new name"));
     }
 }

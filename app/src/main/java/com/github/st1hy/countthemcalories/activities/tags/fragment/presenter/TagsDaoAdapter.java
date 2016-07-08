@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.presenter;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -8,19 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsActivityModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.TagsViewModel;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.activities.tags.model.commands.TagsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.EmptySpaceViewHolder;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.OnTagInteraction;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagItemViewHolder;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.viewholder.TagViewHolder;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.EmptySpaceViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -46,20 +46,20 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     final TagsView view;
     final RxTagsDatabaseModel databaseModel;
-    final TagsActivityModel activityModel;
+    final TagsFragmentModel fragmentModel;
     final TagsViewModel viewModel;
     final TagsDatabaseCommands commands;
 
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
                           @NonNull RxTagsDatabaseModel databaseModel,
-                          @NonNull TagsActivityModel activityModel,
+                          @NonNull TagsFragmentModel fragmentModel,
                           @NonNull TagsViewModel viewModel,
                           @NonNull TagsDatabaseCommands commands) {
         super(databaseModel);
         this.view = view;
         this.databaseModel = databaseModel;
-        this.activityModel = activityModel;
+        this.fragmentModel = fragmentModel;
         this.viewModel = viewModel;
         this.commands = commands;
     }
@@ -67,7 +67,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onStart() {
         super.onStart();
-        onAddTagClicked(view.getOnAddTagClickedObservable());
+        onAddTagClicked(view.getAddTagClickedObservable());
         onSearch(view.getQueryObservable());
     }
 
@@ -134,8 +134,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public void onTagClicked(int position, @NonNull Tag tag) {
-        if (activityModel.isInSelectMode()) {
-            view.setResultAndReturn(tag.getId(), tag.getName());
+        if (fragmentModel.isInSelectMode()) {
+            view.onTagSelected(tag.getId(), tag.getName());
         } else {
             view.openIngredientsFilteredBy(tag.getName());
         }
@@ -271,7 +271,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @NonNull
     @Override
     protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
-        Collection<String> excludedTags = activityModel.getExcludedTagIds();
+        Collection<String> excludedTags = fragmentModel.getExcludedTagIds();
         return databaseModel.getAllFiltered(filter, excludedTags);
     }
 
