@@ -1,11 +1,10 @@
-package com.github.st1hy.countthemcalories.activities.settings.presenter;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.presenter;
 
+import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SelectUnitViewHolder;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsView;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
-import com.github.st1hy.countthemcalories.activities.settings.view.SelectUnitViewHolder;
-import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
-import com.github.st1hy.countthemcalories.core.state.Selection;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
@@ -19,13 +18,11 @@ import org.mockito.Mock;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem.SETTINGS;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -117,8 +114,6 @@ public class SettingsPresenterImplTest {
         when(activeHolder.clickObservable()).thenReturn(Observable.<Void>empty());
         when(view.getVolumeHolder()).thenReturn(activeHolder);
         presenter.onStart();
-        verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
-        verify(view).showNavigationAsUp();
         verify(view).getEnergyHolder();
         verify(view).getMassHolder();
         verify(view).getVolumeHolder();
@@ -137,8 +132,6 @@ public class SettingsPresenterImplTest {
         when(view.getVolumeHolder()).thenReturn(activeHolder);
         when(activeHolder.clickObservable()).thenReturn(Observable.<Void>empty());
         presenter.onStart();
-        verify(view).setMenuItemSelection(eq(SETTINGS.getMenuItemId()), eq(Selection.SELECTED));
-        verify(view).showNavigationAsUp();
         verify(view).getEnergyHolder();
         verify(view).getMassHolder();
         verify(view).getVolumeHolder();

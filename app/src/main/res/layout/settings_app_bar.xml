@@ -21,6 +21,13 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/settings_content"/>
+    <fragment
+        android:id="@+id/settings_content"
+        android:tag="settings_content_fragment"
+        class="com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout="@layout/settings_content"/>
 
 </android.support.design.widget.CoordinatorLayout>

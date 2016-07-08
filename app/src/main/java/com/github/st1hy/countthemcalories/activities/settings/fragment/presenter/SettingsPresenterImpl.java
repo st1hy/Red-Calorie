@@ -1,15 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.settings.presenter;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SelectUnitViewHolder;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsView;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
-import com.github.st1hy.countthemcalories.activities.settings.view.SettingsView;
-import com.github.st1hy.countthemcalories.activities.settings.view.SelectUnitViewHolder;
-import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.presenter.AbstractDrawerPresenter;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 
 import javax.inject.Inject;
@@ -20,7 +18,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
-public class SettingsPresenterImpl extends AbstractDrawerPresenter implements SettingsPresenter {
+public class SettingsPresenterImpl implements SettingsPresenter {
     final SettingsView view;
     final SettingsModel model;
 
@@ -29,14 +27,12 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
     @Inject
     public SettingsPresenterImpl(@NonNull SettingsView view,
                                  @NonNull SettingsModel model) {
-        super(view);
         this.view = view;
         this.model = model;
     }
 
     @Override
     public void onStart() {
-        super.onStart();
         subscriptions.add(model.toObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onUnitChanged()));
@@ -45,7 +41,6 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
 
     @Override
     public void onStop() {
-        super.onStop();
         subscriptions.clear();
     }
 
@@ -58,11 +53,6 @@ public class SettingsPresenterImpl extends AbstractDrawerPresenter implements Se
             viewHolder.setTitle(setting.getTitleRes());
             viewHolder.setUnit(model.getUnitName(setting.getUnitFrom(model)));
         }
-    }
-
-    @Override
-    protected DrawerMenuItem currentItem() {
-        return DrawerMenuItem.SETTINGS;
     }
 
     @NonNull

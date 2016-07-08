@@ -7,33 +7,13 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
-import com.github.st1hy.countthemcalories.activities.settings.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.ButterKnife;
 
-public class SettingsActivity extends DrawerActivity implements SettingsView {
+public class SettingsActivity extends DrawerActivity {
+
     SettingsActivityComponent component;
-
-    @Inject SettingsPresenter presenter;
-
-    @Inject @Named("energy") SelectUnitViewHolder energyHolder;
-    @Inject @Named("mass") SelectUnitViewHolder massHolder;
-    @Inject @Named("volume") SelectUnitViewHolder volumeHolder;
-
-    @NonNull
-    protected SettingsActivityComponent getComponent() {
-        if (component == null) {
-            component = DaggerSettingsActivityComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .settingsActivityModule(new SettingsActivityModule(this))
-                    .build();
-        }
-        return component;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,17 +25,13 @@ public class SettingsActivity extends DrawerActivity implements SettingsView {
     }
 
     @NonNull
-    public SelectUnitViewHolder getEnergyHolder() {
-        return energyHolder;
+    private SettingsActivityComponent getComponent() {
+        if (component == null) {
+            component = DaggerSettingsActivityComponent.builder()
+                    .settingsActivityModule(new SettingsActivityModule(this))
+                    .build();
+        }
+        return component;
     }
 
-    @NonNull
-    public SelectUnitViewHolder getMassHolder() {
-        return massHolder;
-    }
-
-    @NonNull
-    public SelectUnitViewHolder getVolumeHolder() {
-        return volumeHolder;
-    }
 }

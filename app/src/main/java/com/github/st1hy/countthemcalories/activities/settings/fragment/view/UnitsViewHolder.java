@@ -1,6 +1,5 @@
-package com.github.st1hy.countthemcalories.activities.settings.view;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.view;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -18,8 +17,8 @@ public class UnitsViewHolder {
     @BindView(R.id.settings_unit_volume)
     View volume;
 
-    public UnitsViewHolder(@NonNull Activity activity) {
-        ButterKnife.bind(this, activity);
+    public UnitsViewHolder(@NonNull View root) {
+        ButterKnife.bind(this, root);
     }
 
     @NonNull

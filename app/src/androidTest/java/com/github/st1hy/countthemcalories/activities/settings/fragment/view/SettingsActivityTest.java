@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.settings.view;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.view;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
@@ -6,6 +6,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 

@@ -1,7 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.settings.view;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.view;
 
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
@@ -27,45 +28,48 @@ import static org.robolectric.Shadows.shadowOf;
 public class SettingsActivityRoboTest {
 
     private SettingsActivity activity;
+    private SettingsFragment fragment;
 
     @Before
     public void setup() {
         activity = Robolectric.setupActivity(SettingsActivity.class);
+        fragment = (SettingsFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("settings_content_fragment");
     }
 
     @Test
     public void testChangeEnergySetting() throws Exception {
-        assertThat(activity.energyHolder.unit.getText().toString(), equalTo("kcal"));
-        activity.energyHolder.root.performClick();
+        assertThat(fragment.energyHolder.unit.getText().toString(), equalTo("kcal"));
+        fragment.energyHolder.root.performClick();
         ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowDialog, notNullValue());
         CharSequence[] sequences = new CharSequence[] {"kcal", "kJ"};
         assertThat(shadowDialog.getItems(), arrayContainingInAnyOrder(sequences));
         shadowDialog.clickOnItem(EnergyUnit.KJ.ordinal());
-        assertThat(activity.energyHolder.unit.getText().toString(), equalTo("kJ"));
+        assertThat(fragment.energyHolder.unit.getText().toString(), equalTo("kJ"));
     }
 
     @Test
     public void testChangeMassSetting() throws Exception {
-        assertThat(activity.massHolder.unit.getText().toString(), equalTo("100 g"));
-        activity.massHolder.root.performClick();
+        assertThat(fragment.massHolder.unit.getText().toString(), equalTo("100 g"));
+        fragment.massHolder.root.performClick();
         ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowDialog, notNullValue());
         CharSequence[] sequences = new CharSequence[] {"100 g", "g", "oz"};
         assertThat(shadowDialog.getItems(), arrayContainingInAnyOrder(sequences));
         shadowDialog.clickOnItem(MassUnit.G.ordinal());
-        assertThat(activity.massHolder.unit.getText().toString(), equalTo("g"));
+        assertThat(fragment.massHolder.unit.getText().toString(), equalTo("g"));
     }
 
     @Test
     public void testChangeVolumeSetting() throws Exception {
-        assertThat(activity.volumeHolder.unit.getText().toString(), equalTo("100 ml"));
-        activity.volumeHolder.root.performClick();
+        assertThat(fragment.volumeHolder.unit.getText().toString(), equalTo("100 ml"));
+        fragment.volumeHolder.root.performClick();
         ShadowAlertDialog shadowDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowDialog, notNullValue());
         CharSequence[] sequences = new CharSequence[] {"ml", "100 ml", "fl oz"};
         assertThat(shadowDialog.getItems(), arrayContainingInAnyOrder(sequences));
         shadowDialog.clickOnItem(VolumeUnit.ML.ordinal());
-        assertThat(activity.volumeHolder.unit.getText().toString(), equalTo("ml"));
+        assertThat(fragment.volumeHolder.unit.getText().toString(), equalTo("ml"));
     }
 }
