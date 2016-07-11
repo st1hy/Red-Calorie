@@ -2,10 +2,12 @@ package com.github.st1hy.countthemcalories.activities.mealdetail.inject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,10 +22,19 @@ public class MealDetailActivityModel {
     }
 
     @Provides
-    @PerActivity
-    public MealDetailFragment provideDetailFragment(Bundle bundle) {
-        MealDetailFragment fragment = new MealDetailFragment();
-        fragment.setArguments(bundle);
+    public MealDetailFragment provideDetailFragment(Bundle arguments, FragmentManager fragmentManager) {
+        final String tag = "meal detail content";
+
+        MealDetailFragment fragment = (MealDetailFragment) fragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new MealDetailFragment();
+            fragment.setArguments(arguments);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.meal_detail_root, fragment, tag)
+                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
+                    .commit();
+        }
         return fragment;
     }
 
@@ -38,5 +49,10 @@ public class MealDetailActivityModel {
     @Provides
     public Intent provideIntent() {
         return activity.getIntent();
+    }
+
+    @Provides
+    public FragmentManager provideFragmentsManager() {
+        return activity.getSupportFragmentManager();
     }
 }

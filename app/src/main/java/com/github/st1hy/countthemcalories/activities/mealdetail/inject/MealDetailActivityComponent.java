@@ -10,4 +10,5 @@ import dagger.Component;
 public interface MealDetailActivityComponent {
 
     void inject(MealDetailActivity activity);
+
 }

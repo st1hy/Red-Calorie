@@ -14,11 +14,10 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -296,9 +295,9 @@ public class AddIngredientModelRoboTest {
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
         intent.setAction(EditIngredientActivity.ACTION_EDIT);
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(AddIngredientActivity.ACTION_CREATE_MEAL);
+        intent.setAction(AddIngredientType.MEAL.getAction());
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(AddIngredientActivity.ACTION_CREATE_DRINK);
+        intent.setAction(AddIngredientType.DRINK.getAction());
         assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.VOLUME));;
         verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
     }

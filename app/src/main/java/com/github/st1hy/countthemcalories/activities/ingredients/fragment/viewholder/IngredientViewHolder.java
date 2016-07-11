@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

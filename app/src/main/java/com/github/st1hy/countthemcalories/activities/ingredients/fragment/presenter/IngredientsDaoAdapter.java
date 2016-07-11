@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.IngredientsModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.EmptySpaceViewHolder;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientItemViewHolder;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.viewholder.IngredientViewHolder;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsView;
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -51,7 +50,6 @@ import timber.log.Timber;
 
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
         implements IngredientItemViewHolder.Callback {
-    public static int debounceTime = 250;
 
     static final int bottomSpaceItem = 1;
     @LayoutRes
@@ -60,41 +58,31 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
     final IngredientsView view;
-    final IngredientsModel model;
+    final IngredientsFragmentModel model;
     final RxIngredientsDatabaseModel databaseModel;
     final IngredientsDatabaseCommands commands;
     final Picasso picasso;
-    final SearchSuggestionsAdapter suggestionsAdapter;
 
     final Queue<Long> addedItems = new LinkedList<>();
 
     SearchResult lastQuery = new SearchResult("", Collections.<String>emptyList());
 
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
-                                 @NonNull IngredientsModel model,
+                                 @NonNull IngredientsFragmentModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
-                                 @NonNull Picasso picasso,
-                                 @NonNull SearchSuggestionsAdapter suggestionsAdapter) {
+                                 @NonNull Picasso picasso) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.picasso = picasso;
-        this.suggestionsAdapter = suggestionsAdapter;
-    }
-
-    public void onStart() {
-        super.onStart();
-        Observable<SearchResult> searching = createObservable();
-        addSubscription(searchIngredients(searching));
-        suggestionsAdapter.onStart(searching);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        suggestionsAdapter.onStop();
+    public void onStart() {
+        super.onStart();
+        addSubscription(searchIngredients(view.getSearchObservable()));
     }
 
     @Override
@@ -152,7 +140,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @Override
     public void onIngredientClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
         if (model.isInSelectMode()) {
-            view.setResultAndReturn(new IngredientTypeParcel(ingredientTemplate));
+            view.onIngredientSelected(new IngredientTypeParcel(ingredientTemplate));
         }
     }
 
@@ -177,36 +165,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @Override
     public Observable<RecyclerEvent> getEvents() {
         return getEventSubject();
-    }
-
-    @NonNull
-    private Observable<SearchResult> createObservable() {
-        Observable<SearchResult> sequenceObservable = view.getSearchObservable()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SearchResult>() {
-                    @Override
-                    public void call(SearchResult searchResult) {
-                        Timber.d("Raw search: %s", searchResult);
-                    }
-                });
-        if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable
-                    .share()
-                    // During restart tags are re-added in onRestoreSavedState which leads to
-                    // 2 searches: immediate with wrong query and correct one after delay+250ms
-                    // if delay is smaller than 100ms this will remove wrong search and speed it up
-                    // to delay+100ms
-                    .debounce(100, TimeUnit.MILLISECONDS).limit(1)
-                    .concatWith(
-                            sequenceObservable
-                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
-                    );
-        }
-        sequenceObservable = sequenceObservable
-                .distinctUntilChanged()
-                .replay(1)
-                .autoConnect();
-        return sequenceObservable;
     }
 
     @NonNull

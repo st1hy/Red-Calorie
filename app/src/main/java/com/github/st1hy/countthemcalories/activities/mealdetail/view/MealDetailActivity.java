@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
@@ -42,12 +41,6 @@ public class MealDetailActivity extends BaseActivity implements MealDetailScreen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meal_detail_activity);
         getComponent().inject(this);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.meal_detail_root, content, "meal_detail_content")
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-        }
     }
 
     @Override

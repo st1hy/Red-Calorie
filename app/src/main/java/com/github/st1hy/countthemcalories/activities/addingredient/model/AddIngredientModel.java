@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
@@ -114,13 +113,10 @@ public class AddIngredientModel extends WithPictureModel {
     AmountUnitType getUnitTypeFrom(@Nullable Intent intent) {
         if (intent != null) {
             String action = intent.getAction();
-            if (action != null) {
-                switch (action) {
-                    case AddIngredientActivity.ACTION_CREATE_DRINK:
-                        return AmountUnitType.VOLUME;
-                    case AddIngredientActivity.ACTION_CREATE_MEAL:
-                        return AmountUnitType.MASS;
-                }
+            if (AddIngredientType.DRINK.getAction().equals(action)) {
+                return AmountUnitType.VOLUME;
+            } else if (AddIngredientType.MEAL.getAction().equals(action)) {
+                return AmountUnitType.MASS;
             }
         }
         return AmountUnitType.MASS;

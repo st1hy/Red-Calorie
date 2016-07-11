@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.view;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.view;
 
 import android.content.ComponentName;
 import android.net.Uri;
@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;

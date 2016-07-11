@@ -2,9 +2,10 @@ package com.github.st1hy.countthemcalories.activities.settings.inject;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsDrawerPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
@@ -23,7 +24,7 @@ public class SettingsActivityModule {
     @PerActivity
     @Provides
     public DrawerPresenter provideDrawerPresenter(DrawerView drawerView) {
-        return new SettingsDrawerPresenter(drawerView);
+        return new DrawerPresenterImpl(drawerView, DrawerMenuItem.SETTINGS);
     }
 
     @Provides

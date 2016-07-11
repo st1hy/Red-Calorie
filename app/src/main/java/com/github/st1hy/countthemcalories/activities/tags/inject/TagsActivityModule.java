@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
-import com.github.st1hy.countthemcalories.activities.tags.presenter.TagsDrawerPresenter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
@@ -25,20 +28,24 @@ public class TagsActivityModule {
 
     @Provides
     @PerActivity
-    public DrawerPresenter provideDrawerPresenter(DrawerView drawerView) {
-        return new TagsDrawerPresenter(drawerView);
+    public DrawerPresenter provideDrawerPresenter() {
+        return new DrawerPresenterImpl(activity, DrawerMenuItem.CATEGORIES);
     }
 
     @Provides
-    public DrawerView provideDrawerView() {
-        return activity;
-    }
+    public TagsFragment provideContent(Bundle arguments, FragmentManager fragmentManager) {
+        final String tag = "tags content";
 
-    @Provides
-    @PerActivity
-    public TagsFragment provideContent(Bundle arguments) {
-        TagsFragment fragment = new TagsFragment();
-        fragment.setArguments(arguments);
+        TagsFragment fragment = (TagsFragment) fragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new TagsFragment();
+            fragment.setArguments(arguments);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.tags_content_frame, fragment, tag)
+                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
+                    .commit();
+        }
         return fragment;
     }
 
@@ -69,5 +76,10 @@ public class TagsActivityModule {
     @Nullable
     public Intent provideIntent() {
         return activity.getIntent();
+    }
+
+    @Provides
+    FragmentManager provideFragmentManager() {
+        return activity.getSupportFragmentManager();
     }
 }

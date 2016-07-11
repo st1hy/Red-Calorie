@@ -20,5 +20,4 @@ public interface DrawerPresenter {
 
     void onStart();
 
-    void onStop();
 }

@@ -56,7 +56,7 @@ public class MealDetailActivityRoboTest {
     @Test(expected = NullPointerException.class)
     public void testIncorrectIntent() throws Exception {
         Timber.uprootAll(); //Don't print expected error
-        MealDetailActivity activity = Robolectric.setupActivity(MealDetailActivity.class);
+        Robolectric.setupActivity(MealDetailActivity.class);
     }
 
 
@@ -66,7 +66,7 @@ public class MealDetailActivityRoboTest {
                 .setup().get();
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
         fragment = (MealDetailFragment) activity.getSupportFragmentManager()
-                .findFragmentByTag("meal_detail_content");
+                .findFragmentByTag("meal detail content");
     }
 
     private Intent buildIntent() {

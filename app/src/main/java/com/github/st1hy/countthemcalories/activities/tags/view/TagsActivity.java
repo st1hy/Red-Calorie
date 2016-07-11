@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityModule;
@@ -17,6 +17,8 @@ import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.jakewharton.rxbinding.view.RxView;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +39,9 @@ public class TagsActivity extends UndoDrawerActivity implements TagsScreen {
     @BindView(R.id.tags_add_new)
     FloatingActionButton fab;
 
+    @Inject
+    TagsFragment fragment;
+
     @NonNull
     protected TagsActivityComponent getComponent() {
         if (component == null) {
@@ -52,12 +57,6 @@ public class TagsActivity extends UndoDrawerActivity implements TagsScreen {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tags_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.tags_content_frame, getComponent().getContent(), "tags content")
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-        }
         ButterKnife.bind(this);
         getComponent().inject(this);
         onBind();

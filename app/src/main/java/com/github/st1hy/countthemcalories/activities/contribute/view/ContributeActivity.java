@@ -16,7 +16,6 @@ public class ContributeActivity extends DrawerActivity implements ContributeView
 
     ContributeActivityComponent component;
 
-
     @NonNull
     protected ContributeActivityComponent getComponent() {
         if (component == null) {

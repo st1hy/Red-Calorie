@@ -1,30 +1,25 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.view;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
-import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -38,30 +33,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class IngredientsActivity extends UndoDrawerActivity implements IngredientsView {
+public class IngredientsActivity extends UndoDrawerActivity implements IngredientsScreen, SearchSuggestionsView {
+
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
     public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcel";
-    public static final String EXTRA_TAG_FILTER_STRING= "extra filter by tag string";
+    public static final String EXTRA_TAG_FILTER_STRING = "extra filter by tag string";
 
     public static final int REQUEST_SELECT_TYPE = 0x127;
     public static final int REQUEST_EDIT = 0x128;
     public static final int REQUEST_ADD_INGREDIENT = 0x129;
 
     @Inject
-    IngredientsPresenter presenter;
-    @Inject
-    IngredientsDaoAdapter adapter;
-    @Inject
     SearchSuggestionsAdapter suggestionsAdapter;
+    @Inject
+    IngredientsFragment content;
+    @Inject
+    Observable<SearchResult> searchResultObservable;
 
     @BindView(R.id.ingredients_fab)
     FloatingActionButton fab;
-    @BindView(R.id.ingredients_empty)
-    View emptyIngredients;
-    @BindView(R.id.ingredients_empty_message)
-    TextView emptyIngredientsText;
-    @BindView(R.id.ingredients_content)
-    RecyclerView recyclerView;
     @BindView(R.id.ingredients_search_view)
     TokenSearchView searchView;
 
@@ -93,22 +83,26 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     protected void onBind() {
         super.onBind();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
         searchView.setSuggestionsAdapter(suggestionsAdapter);
     }
 
     @Override
-    public void openNewIngredientScreen(@NonNull String action) {
-        Intent intent = new Intent(this, AddIngredientActivity.class);
-        intent.setAction(action);
-        startActivityForResult(intent, REQUEST_ADD_INGREDIENT);
+    protected void onStart() {
+        super.onStart();
+        suggestionsAdapter.onStart();
     }
 
     @Override
-    public void setNoIngredientsVisibility(@NonNull Visibility visibility) {
-        //noinspection WrongConstant
-        emptyIngredients.setVisibility(visibility.getVisibility());
+    protected void onStop() {
+        super.onStop();
+        suggestionsAdapter.onStop();
+    }
+
+    @Override
+    public void openNewIngredientScreen(@NonNull AddIngredientType type) {
+        Intent intent = new Intent(this, AddIngredientActivity.class);
+        intent.setAction(type.getAction());
+        startActivityForResult(intent, REQUEST_ADD_INGREDIENT);
     }
 
     @NonNull
@@ -118,7 +112,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void setResultAndReturn(@NonNull IngredientTypeParcel ingredientTypeParcel) {
+    public void onIngredientSelected(@NonNull IngredientTypeParcel ingredientTypeParcel) {
         Intent result = new Intent();
         result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, ingredientTypeParcel);
         setResult(RESULT_OK, result);
@@ -128,18 +122,6 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void selectIngredientType() {
         startActivityForResult(new Intent(this, SelectIngredientTypeActivity.class), REQUEST_SELECT_TYPE);
-    }
-
-    @NonNull
-    @Override
-    public Observable<Void> showUsedIngredientRemoveConfirmationDialog() {
-        return RxAlertDialog.Builder.with(this)
-                .title(R.string.ingredients_remove_ingredient_dialog_title)
-                .message(R.string.ingredients_remove_ingredient_dialog_message)
-                .positiveButton(android.R.string.yes)
-                .negativeButton(android.R.string.no)
-                .show()
-                .observePositiveClick();
     }
 
     @Override
@@ -152,16 +134,6 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void scrollToPosition(int position) {
-        recyclerView.scrollToPosition(position);
-    }
-
-    @Override
-    public void setNoIngredientsMessage(@StringRes int noIngredientTextResId) {
-        emptyIngredientsText.setText(noIngredientTextResId);
-    }
-
-    @Override
     public void expandSearchBar() {
         searchView.expand(false);
     }
@@ -169,7 +141,7 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @NonNull
     @Override
     public Observable<SearchResult> getSearchObservable() {
-        return RxSearchable.create(searchView);
+        return searchResultObservable;
     }
 
     @Override
@@ -181,13 +153,32 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_SELECT_TYPE:
-                presenter.onSelectIngredientTypeResult(resultCode);
+                onSelectIngredientTypeResult(resultCode);
                 break;
             case REQUEST_ADD_INGREDIENT:
-                presenter.onIngredientAdded(resultCode, data);
+                onIngredientAddedResult(resultCode, data);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    void onIngredientAddedResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            long addedIngredientId = data.getLongExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, -1L);
+            if (addedIngredientId != -1L)
+                content.onIngredientAdded(addedIngredientId);
+        }
+    }
+
+    void onSelectIngredientTypeResult(int resultCode) {
+        switch (resultCode) {
+            case SelectIngredientTypeActivity.RESULT_DRINK:
+                content.onSelectedNewIngredientType(AddIngredientType.DRINK);
+                break;
+            case SelectIngredientTypeActivity.RESULT_MEAL:
+                content.onSelectedNewIngredientType(AddIngredientType.MEAL);
+                break;
         }
     }
 
@@ -195,5 +186,10 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     protected View getUndoRoot() {
         return root;
+    }
+
+    @NonNull
+    public TokenSearchView getSearchView() {
+        return searchView;
     }
 }

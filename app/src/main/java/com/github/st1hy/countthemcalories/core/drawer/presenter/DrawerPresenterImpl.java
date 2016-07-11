@@ -13,11 +13,13 @@ import static com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuIte
 import static com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem.SETTINGS;
 import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
 
-public abstract class AbstractDrawerPresenter implements DrawerPresenter {
+public class DrawerPresenterImpl implements DrawerPresenter {
     private final DrawerView view;
+    private final DrawerMenuItem currentItem;
 
-    public AbstractDrawerPresenter(@NonNull DrawerView view) {
+    public DrawerPresenterImpl(@NonNull DrawerView view, @NonNull DrawerMenuItem currentItem) {
         this.view = view;
+        this.currentItem = currentItem;
     }
 
     @Override
@@ -52,12 +54,6 @@ public abstract class AbstractDrawerPresenter implements DrawerPresenter {
 
     @Override
     @CallSuper
-    public void onStop() {
-
-    }
-
-    @Override
-    @CallSuper
     public boolean onClickedOnAction(@IdRes int actionItemId) {
         if (actionItemId == R.id.action_settings) {
             view.openDrawerActivity(SETTINGS);
@@ -66,5 +62,8 @@ public abstract class AbstractDrawerPresenter implements DrawerPresenter {
         return false;
     }
 
-    protected abstract DrawerMenuItem currentItem();
+    @NonNull
+    protected DrawerMenuItem currentItem() {
+        return currentItem;
+    }
 }

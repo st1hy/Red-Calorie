@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.view;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.view;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,12 +9,15 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityRoboTest;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
@@ -25,6 +28,7 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.shadows.ShadowSnackbar;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
+import com.google.common.base.Preconditions;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -78,12 +82,13 @@ public class IngredientsActivityRoboTest {
 
 
     private IngredientsActivity activity;
+    private IngredientsFragment fragment;
     private DaoSession session;
 
     @Before
     public void setup() {
         Timber.plant(TimberUtils.ABOVE_WARN);
-        IngredientsDaoAdapter.debounceTime = 0;
+        IngredientsActivityModule.debounceTime = 0;
         TestRxPlugins.registerImmediateHookIO();
         session = OverviewActivityRoboTest.prepareDatabase();
         addExampleIngredientsTagsAndJoin(session);
@@ -91,6 +96,12 @@ public class IngredientsActivityRoboTest {
 
     private void setupActivity() {
         activity = Robolectric.setupActivity(IngredientsActivity.class);
+        setupFragment();
+    }
+
+    private void setupFragment() {
+        fragment = (IngredientsFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("ingredients content");
     }
 
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {
@@ -114,15 +125,15 @@ public class IngredientsActivityRoboTest {
     public void tearDown() throws Exception {
         Timber.uprootAll();
         TestRxPlugins.reset();
-        IngredientsDaoAdapter.debounceTime = 250;
+        IngredientsActivityModule.debounceTime = 250;
     }
 
     @Test
     public void testAddIngredient() throws Exception {
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.fab.performClick();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        Preconditions.checkNotNull(activity.findViewById(R.id.ingredients_fab)).performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent request = shadowActivity.getNextStartedActivity();
@@ -131,14 +142,14 @@ public class IngredientsActivityRoboTest {
         shadowActivity.receiveResult(request, SelectIngredientTypeActivity.RESULT_DRINK, null);
         request = shadowActivity.getNextStartedActivity();
         assertThat(request, hasComponent(new ComponentName(activity, AddIngredientActivity.class)));
-        assertThat(request, hasAction(AddIngredientActivity.ACTION_CREATE_DRINK));
+        assertThat(request, hasAction(AddIngredientType.DRINK.getAction()));
 
         addAdditionalIngredientToDatabase();
         shadowActivity.receiveResult(request, AddIngredientActivity.RESULT_OK, null);
-        activity.adapter.onStop();
-        activity.adapter.onStart();
+        fragment.adapter.onStop();
+        fragment.adapter.onStart();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(5));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(5));
     }
 
     private void addAdditionalIngredientToDatabase() {
@@ -149,12 +160,14 @@ public class IngredientsActivityRoboTest {
     @Test
     public void testSearch() throws Exception {
         setupActivity();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
 
-        activity.searchView.performClick();
-        activity.searchView.setQuery("Ingredient 2");
+        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
+        Preconditions.checkNotNull(searchView);
+        searchView.performClick();
+        searchView.setQuery("Ingredient 2");
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
@@ -162,8 +175,10 @@ public class IngredientsActivityRoboTest {
         activity = Robolectric.buildActivity(IngredientsActivity.class)
                 .withIntent(new Intent(IngredientsActivity.ACTION_SELECT_INGREDIENT))
                 .setup().get();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button).performClick();
+        setupFragment();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button)
+                .performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         assertThat(shadowActivity.isFinishing(), equalTo(true));
         assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
@@ -180,17 +195,17 @@ public class IngredientsActivityRoboTest {
         setupActivity();
 
         Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        TextView title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        TextView title = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
         assertThat(title.getText().toString(), equalTo(exampleIngredients[0].getName()));
 
-        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
         assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(2));
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
-        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        title = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
         assertThat(title.getText().toString(), equalTo(exampleIngredients[1].getName()));
 
-        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
         List<IngredientTemplate> templates = session.getIngredientTemplateDao().loadAll();
         assertThat(templates, hasSize(1));
         assertThat(templates.get(0).getName(), equalTo(exampleIngredients[2].getName()));
@@ -205,21 +220,21 @@ public class IngredientsActivityRoboTest {
         setupActivity();
 
         assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_delete).performClick();
         assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
         ShadowAlertDialog.getLatestAlertDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
         assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(2));
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 
     @Test
     public void testEdit() throws Exception {
         setupActivity();
 
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
-        activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_edit).performClick();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_edit).performClick();
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, EditIngredientActivity.class)));
         assertThat(nextStartedActivity, hasAction(EditIngredientActivity.ACTION_EDIT));
@@ -234,10 +249,10 @@ public class IngredientsActivityRoboTest {
     @Test
     public void testUndoRemove() throws Exception {
         setupActivity();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
         testDeleteWithDialog();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowSnackbar.getLatest().performAction();
-        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
     }
 }
