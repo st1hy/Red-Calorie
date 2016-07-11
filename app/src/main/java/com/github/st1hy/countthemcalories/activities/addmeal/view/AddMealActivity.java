@@ -24,7 +24,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActiv
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
@@ -194,11 +195,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, sharedElementName);
             startOptions = options.toBundle();
         }
-        Intent intent = new Intent(this, IngredientDetailsActivity.class);
-        intent.setAction(IngredientDetailsActivity.ACTION_EDIT_INGREDIENT);
-        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG, requestId);
-        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL, ingredientParcel);
-        intent.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        Intent intent = new Intent(this, IngredientDetailActivity.class);
+        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG, requestId);
+        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL, ingredientParcel);
+        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
         startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
     }
 

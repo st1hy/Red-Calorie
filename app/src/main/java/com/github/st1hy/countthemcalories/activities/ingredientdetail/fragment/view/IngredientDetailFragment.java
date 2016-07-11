@@ -1,13 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.DaggerIngredientDetailComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailsModule;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter.IngredientDetailPresenter;
-import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.DaggerIngredientDetailFragmentComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientDetailFragmentComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
+import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -32,12 +34,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class IngredientDetailsActivity extends BaseActivity implements IngredientDetailView {
-    public static final String ACTION_EDIT_INGREDIENT = "ingredient details edit action";
-    public static final String EXTRA_INGREDIENT_TEMPLATE_PARCEL = "ingredient details extra template parcel";
-    public static final String EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL = "ingredient details extra amount";
-    public static final String EXTRA_INGREDIENT_ID_LONG = "ingredient details extra id long";
-    public static final int RESULT_REMOVE = 0x200;
+public class IngredientDetailFragment extends BaseFragment implements IngredientDetailView {
+
+    IngredientDetailFragmentComponent component;
 
     @BindView(R.id.add_meal_ingredient_accept)
     ImageButton accept;
@@ -53,42 +52,45 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     TextView calorieCount;
     @BindView(R.id.add_meal_ingredient_image)
     ImageView image;
-    @BindView(R.id.add_meal_ingredient_unit) TextView unit;
-    @BindView(R.id.add_meal_ingredient_root)
-    CardView cardRoot;
-
-    IngredientDetailComponent component;
+    @BindView(R.id.add_meal_ingredient_unit)
+    TextView unit;
 
     @Inject
     IngredientDetailPresenter presenter;
+    @Inject
+    IngredientDetailScreen screen;
 
-    @NonNull
-    protected IngredientDetailComponent getComponent(@Nullable Bundle savedInstanceState) {
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.ingredient_detail_content, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
+        getComponent(savedInstanceState).inject(this);
+    }
+
+    protected IngredientDetailFragmentComponent getComponent(@Nullable Bundle savedState) {
         if (component == null) {
-            component = DaggerIngredientDetailComponent.builder()
+            component = DaggerIngredientDetailFragmentComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .ingredientDetailsModule(new IngredientDetailsModule(this, savedInstanceState))
+                    .ingredientsDetailFragmentModule(new IngredientsDetailFragmentModule(this, savedState))
                     .build();
         }
         return component;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_meal_ingredient_item_extended);
-        ButterKnife.bind(this);
-        getComponent(savedInstanceState).inject(this);
-    }
-
-    @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         presenter.onStart();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         presenter.onStop();
     }
@@ -114,7 +116,6 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
         Editable text = this.editAmount.getText();
         text.clear();
         text.append(readableAmount);
-//        this.editAmount.setText(readableAmount);
     }
 
     @Override
@@ -131,6 +132,13 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
     @Override
     public void setAmountError(@Nullable String errorResId) {
         editAmount.setError(errorResId);
+    }
+
+    @Override
+    public void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
     }
 
     @NonNull
@@ -156,23 +164,21 @@ public class IngredientDetailsActivity extends BaseActivity implements Ingredien
         return RxView.clicks(remove);
     }
 
-    @Override
-    public void setResultAndFinish(int resultCode, long ingredientId,
-                                   @NonNull IngredientTypeParcel parcel,
-                                   @NonNull BigDecimal amount) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
-        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, parcel);
-        intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
-        setResult(resultCode, intent);
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
-        ActivityCompat.finishAfterTransition(this);
-    }
-
     @NonNull
     @Override
     public String getCurrentAmount() {
         return editAmount.getText().toString();
+    }
+
+    @Override
+    public void commitEditedIngredientChanges(long ingredientId,
+                                              @NonNull IngredientTypeParcel parcel,
+                                              @NonNull BigDecimal amount) {
+        screen.commitEditedIngredientChanges(ingredientId, parcel, amount);
+    }
+
+    @Override
+    public void removeIngredient(long ingredientId) {
+        screen.removeIngredient(ingredientId);
     }
 }

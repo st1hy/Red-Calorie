@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
@@ -132,7 +132,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
-        intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailsActivity.class)));
+        intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailActivity.class)));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withHint(R.string.add_meal_ingredient_amount_hint)).perform(click())
                 .perform(typeTextIntoFocusedView("200"))

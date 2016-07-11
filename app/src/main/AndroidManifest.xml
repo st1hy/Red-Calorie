@@ -57,7 +57,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.ingredientdetail.view.IngredientDetailsActivity"
+            android:name=".activities.ingredientdetail.view.IngredientDetailActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.Dialog"
             />

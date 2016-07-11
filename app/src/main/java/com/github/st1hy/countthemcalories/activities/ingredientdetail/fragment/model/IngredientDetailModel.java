@@ -1,6 +1,5 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetail.model;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -17,10 +16,12 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -28,25 +29,23 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class IngredientDetailModel {
     final RxIngredientsDatabaseModel ingredientTypesModel;
     final ParcelableProxy parcelableProxy;
     final Resources resources;
 
-    final boolean isDataValid;
     private final Ingredient ingredient;
     private final Observable<Ingredient> ingredientObservable;
 
     @Inject
     public IngredientDetailModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                  @NonNull Resources resources,
-                                 @Nullable Intent intent,
-                                 @Nullable Bundle savedState) {
+                                 @NonNull @Named("arguments") Bundle arguments,
+                                 @Nullable @Named("savedState") Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
         this.resources = resources;
         ParcelableProxy parcelableProxy = null;
@@ -54,7 +53,6 @@ public class IngredientDetailModel {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
         }
         if (parcelableProxy != null) {
-            isDataValid = true;
             ingredient = parcelableProxy.ingredient;
             if (parcelableProxy.isReCreated) {
                 ingredientObservable = loadItem(ingredient);
@@ -63,20 +61,15 @@ public class IngredientDetailModel {
             }
         } else {
             parcelableProxy = new ParcelableProxy();
-            isDataValid = isIntentValid(intent);
-            if (isDataValid) {
-                IngredientTypeParcel typeParcel = intent.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
-                String valueAsString = intent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-                long id = intent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -1L);
-                ingredient = new Ingredient();
-                ingredient.setId(id);
-                ingredient.setAmount(new BigDecimal(valueAsString));
-                ingredientObservable = loadFromParcel(typeParcel);
-            } else {
-                Timber.e("Incorrect starting intent: %s", intent);
-                ingredient = null;
-                ingredientObservable = Observable.empty();
-            }
+            IngredientTypeParcel typeParcel = arguments.getParcelable(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
+            Preconditions.checkNotNull(typeParcel, "Missing ingredient!");
+            String valueAsString = arguments.getString(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
+            Preconditions.checkNotNull(valueAsString, "Missing amount!");
+            long id = arguments.getLong(EXTRA_INGREDIENT_ID_LONG, -1L);
+            ingredient = new Ingredient();
+            ingredient.setId(id);
+            ingredient.setAmount(new BigDecimal(valueAsString));
+            ingredientObservable = loadFromParcel(typeParcel);
         }
         this.parcelableProxy = parcelableProxy;
     }
@@ -87,10 +80,6 @@ public class IngredientDetailModel {
     @NonNull
     public Ingredient getIngredient() {
         return ingredient;
-    }
-
-    public boolean isDataValid() {
-        return isDataValid;
     }
 
     @NonNull
@@ -119,7 +108,7 @@ public class IngredientDetailModel {
     }
 
     private Observable<Ingredient> loadFromParcel(@NonNull IngredientTypeParcel typeParcel) {
-        Observable<Ingredient> observable =  ingredientTypesModel.unParcel(typeParcel)
+        Observable<Ingredient> observable = ingredientTypesModel.unParcel(typeParcel)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<IngredientTemplate, Ingredient>() {
                     @Override
@@ -130,15 +119,6 @@ public class IngredientDetailModel {
                 }).replay().autoConnect().share();
         observable.subscribe(new IngredientLoader());
         return observable;
-    }
-
-    private boolean isIntentValid(@Nullable Intent intent) {
-        if (intent == null || !ACTION_EDIT_INGREDIENT.equals(intent.getAction()))
-            return false;
-        IngredientTypeParcel typeParcel = intent.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
-        if (typeParcel == null) return false;
-        String valueAsString = intent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-        return valueAsString != null;
     }
 
     @Nullable
@@ -239,7 +219,6 @@ public class IngredientDetailModel {
     public static class IngredientLoader extends Subscriber<Ingredient> {
         @Override
         public void onCompleted() {
-
         }
 
         @Override
@@ -249,7 +228,6 @@ public class IngredientDetailModel {
 
         @Override
         public void onNext(Ingredient ingredient) {
-
         }
     }
 

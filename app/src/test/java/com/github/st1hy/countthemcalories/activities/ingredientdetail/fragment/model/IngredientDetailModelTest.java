@@ -1,6 +1,5 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetail.model;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,10 +39,9 @@ import rx.functions.Action1;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.model.IngredientDetailModel.ParcelableProxy.CREATOR;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.ACTION_EDIT_INGREDIENT;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.ParcelableProxy.CREATOR;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -77,12 +75,10 @@ public class IngredientDetailModelTest {
                 .thenReturn(Observable.just(example));
         when(ingredientTypesModel.getById(example.getId()))
                 .thenReturn(Observable.just(example));
-        Intent intent = new Intent();
-        intent.setAction(ACTION_EDIT_INGREDIENT);
-        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, new IngredientTypeParcel(example));
-        intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
-        model = new IngredientDetailModel(ingredientTypesModel, resources, intent, null);
-        assertThat(model.isDataValid(), equalTo(true));
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(EXTRA_INGREDIENT_TEMPLATE_PARCEL, new IngredientTypeParcel(example));
+        arguments.putString(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        model = new IngredientDetailModel(ingredientTypesModel, resources, arguments, null);
     }
 
     @After
@@ -107,19 +103,10 @@ public class IngredientDetailModelTest {
         assertThat(ingredient.getAmount(), equalTo(amount));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testInvalidIntent() throws Exception {
         Timber.uprootAll(); //Don't print expected error
-        model = new IngredientDetailModel(ingredientTypesModel, resources, null, null);
-        assertThat(model.isDataValid(), equalTo(false));
-        final AtomicReference<List<Ingredient>> list = new AtomicReference<>();
-        model.getIngredientObservable().toList().subscribe(new Action1<List<Ingredient>>() {
-            @Override
-            public void call(List<Ingredient> ingredients) {
-                list.set(ingredients);
-            }
-        });
-        assertThat(list.get(), hasSize(0));
+        model = new IngredientDetailModel(ingredientTypesModel, resources, new Bundle(), null);
     }
 
     @Test
@@ -147,7 +134,6 @@ public class IngredientDetailModelTest {
     }
 
     private void checkRestoredModel(IngredientDetailModel restoredModel) {
-        assertThat(restoredModel.isDataValid(), equalTo(true));
         Ingredient ingredient = restoredModel.getIngredient();
         assertThat(ingredient, notNullValue());
         assertThat(ingredient.getAmount().toPlainString(), equalTo(amount.toPlainString()));

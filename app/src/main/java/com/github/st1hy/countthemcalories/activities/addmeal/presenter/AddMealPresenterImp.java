@@ -27,14 +27,15 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class AddMealPresenterImp extends WithPicturePresenterImp implements AddMealPresenter {
     private final AddMealView view;
     private final AddMealModel model;
     private final IngredientsAdapter adapter;
+
     @Inject
     public AddMealPresenterImp(@NonNull AddMealView view,
                                @NonNull PermissionsHelper permissionsHelper,
@@ -104,7 +105,8 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
             }
             return true;
         } else if (requestCode == AddMealActivity.REQUEST_EDIT_INGREDIENT) {
-            if (!handleEditIngredientResponse(resultCode, data)) {
+            EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
+            if (!handleEditIngredientResponse(result, data)) {
                 Timber.w("Edit ingredient returned incomplete result: %d, intent: %s", resultCode, data);
             }
             return true;
@@ -127,16 +129,23 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     /**
      * @return false if data or result was in incorrect state
      */
-    private boolean handleEditIngredientResponse(int resultCode, @Nullable Intent data) {
-        EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
-        if (result != EditIngredientResult.UNKNOWN) {
-            if (data == null) return false;
-            long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
-            IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
-            String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-            if (requestId == -2L || parcel == null || stringExtra == null) return false;
-            BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
-            adapter.onIngredientEditFinished(requestId, parcel, amount, result);
+    private boolean handleEditIngredientResponse(@NonNull EditIngredientResult result, @Nullable Intent data) {
+        if (data == null) return false;
+        long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
+        if (requestId == -2L) return false;
+        switch (result) {
+            case REMOVE:
+                adapter.onIngredientRemoved(requestId);
+                break;
+            case EDIT:
+                IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
+                String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
+                if (parcel == null || stringExtra == null) return false;
+                BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
+                adapter.onIngredientEditFinished(requestId, parcel, amount);
+                break;
+            case UNKNOWN:
+                return false;
         }
         return true;
     }

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetail.presenter;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,10 +7,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.model.IngredientDetailModel;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.model.IngredientDetailModel.IngredientLoader;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.IngredientLoader;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -53,19 +52,14 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
     @Override
     public void onStart() {
-        if (!model.isDataValid()) {
-            view.finish();
-        } else {
-            subscriptions.add(model.getIngredientObservable()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new IngredientLoader() {
-                        @Override
-                        public void onNext(Ingredient ingredient) {
-                            super.onNext(ingredient);
-                            bindViews(ingredient);
-                        }
-                    }));
-        }
+        subscriptions.add(model.getIngredientObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new IngredientLoader() {
+                    @Override
+                    public void onNext(Ingredient ingredient) {
+                        bindViews(ingredient);
+                    }
+                }));
     }
 
     @Override
@@ -146,7 +140,8 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                finishWithResult(IngredientDetailsActivity.RESULT_REMOVE);
+                view.hideSoftKeyboard();
+                view.removeIngredient(model.getIngredient().getId());
             }
         };
     }
@@ -155,18 +150,15 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                finishWithResult(IngredientDetailsActivity.RESULT_OK);
+                view.hideSoftKeyboard();
+                Ingredient ingredient = model.getIngredient();
+                view.commitEditedIngredientChanges(ingredient.getId(),
+                        new IngredientTypeParcel(ingredient.getIngredientType()),
+                        ingredient.getAmount());
             }
         };
     }
 
-    private void finishWithResult(int resultCode) {
-        Ingredient ingredient = model.getIngredient();
-        view.setResultAndFinish(resultCode,
-                ingredient.getId(),
-                new IngredientTypeParcel(ingredient.getIngredientType()),
-                ingredient.getAmount());
-    }
 
     @NonNull
     private Func1<? super Void, Boolean> formCompleted() {

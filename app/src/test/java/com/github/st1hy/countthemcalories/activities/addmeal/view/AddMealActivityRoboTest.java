@@ -11,7 +11,8 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
@@ -154,11 +155,10 @@ public class AddMealActivityRoboTest {
     private void handleNewIngredient() {
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
-        assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientDetailsActivity.class)));
-        assertThat(requestIntent, hasAction(IngredientDetailsActivity.ACTION_EDIT_INGREDIENT));
-        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL));
-        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_ID_LONG));
-        assertThat(requestIntent, hasExtraWithKey(IngredientDetailsActivity.EXTRA_INGREDIENT_TEMPLATE_PARCEL));
+        assertThat(requestIntent, hasComponent(new ComponentName(activity, IngredientDetailActivity.class)));
+        assertThat(requestIntent, hasExtraWithKey(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL));
+        assertThat(requestIntent, hasExtraWithKey(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG));
+        assertThat(requestIntent, hasExtraWithKey(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL));
 
         shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, requestIntent);
     }
@@ -174,7 +174,7 @@ public class AddMealActivityRoboTest {
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
         Intent result = new Intent(requestIntent);
-        result.putExtra(IngredientDetailsActivity.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, "12.5");
+        result.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, "12.5");
 
         shadowActivity.receiveResult(requestIntent, Activity.RESULT_OK, result);
 
@@ -198,7 +198,7 @@ public class AddMealActivityRoboTest {
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
 
-        shadowActivity.receiveResult(requestIntent, IngredientDetailsActivity.RESULT_REMOVE, requestIntent);
+        shadowActivity.receiveResult(requestIntent, IngredientDetailActivity.RESULT_REMOVE, requestIntent);
 
         assertThat(activity.ingredientList.getChildCount(), equalTo(0));
     }

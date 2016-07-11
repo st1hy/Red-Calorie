@@ -1,17 +1,14 @@
-package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
-
-import java.math.BigDecimal;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 
 import rx.Observable;
 
-public interface IngredientDetailView {
-    void finish();
+public interface IngredientDetailView extends IngredientDetailScreen {
 
     void setName(@NonNull String name);
 
@@ -37,9 +34,8 @@ public interface IngredientDetailView {
     @NonNull
     Observable<Void> getAcceptObservable();
 
-    void setResultAndFinish(int resultCode, long ingredientId,
-                            @NonNull IngredientTypeParcel parcel, @NonNull BigDecimal amount);
-
     @NonNull
     String getCurrentAmount();
+
+    void hideSoftKeyboard();
 }

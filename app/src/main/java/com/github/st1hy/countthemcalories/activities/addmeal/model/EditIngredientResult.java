@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 
 public enum EditIngredientResult {
     EDIT, REMOVE, UNKNOWN;
@@ -13,9 +13,9 @@ public enum EditIngredientResult {
     @NonNull
     public static EditIngredientResult fromIngredientDetailResult(int resultCode) {
         switch (resultCode) {
-            case IngredientDetailsActivity.RESULT_OK:
+            case IngredientDetailActivity.RESULT_OK:
                 return EDIT;
-            case IngredientDetailsActivity.RESULT_REMOVE:
+            case IngredientDetailActivity.RESULT_REMOVE:
                 return REMOVE;
             default:
                 return UNKNOWN;

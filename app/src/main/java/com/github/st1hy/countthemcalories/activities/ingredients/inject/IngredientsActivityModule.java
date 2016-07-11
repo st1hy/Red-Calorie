@@ -80,7 +80,6 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-
     public IngredientsFragment provideContent(FragmentManager fragmentManager, Bundle arguments) {
         final String tag = "ingredients content";
 

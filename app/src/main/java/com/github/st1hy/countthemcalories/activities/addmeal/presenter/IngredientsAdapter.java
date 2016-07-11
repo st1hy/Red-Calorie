@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.presenter.viewholder.IngredientItemViewHolder;
@@ -63,39 +62,30 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO, null, null);
     }
 
+    public void onIngredientRemoved(long requestId) {
+        model.removeIngredient((int) requestId);
+        notifyDataSetChanged();
+    }
+
     public void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
-                                         @NonNull BigDecimal amount, @NonNull EditIngredientResult result) {
-        int position = (int) requestId;
-        switch (result) {
-            case EDIT:
-                if (requestId == -1) {
-                    onIngredientAdded(typeParcel, amount);
-                } else {
-                    onIngredientEdited(position, typeParcel, amount);
-                }
-                break;
-            case REMOVE:
-                if (requestId != -1) {
-                    onIngredientRemoved(position);
-                }
+                                         @NonNull BigDecimal amount) {
+        if (requestId == -1) {
+            onIngredientAdded(typeParcel, amount);
+        } else {
+            onIngredientEdited(requestId, typeParcel, amount);
         }
     }
 
-    private void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
-                                   @NonNull BigDecimal amount) {
-        subscriptions.add(model.addIngredientOfType(typeParcel, amount)
-                .subscribe(notifyInserted()));
-    }
-
-    private void onIngredientEdited(int position, @NonNull IngredientTypeParcel typeParcel,
-                                    @NonNull BigDecimal amount) {
-        subscriptions.add(model.modifyIngredient(position, typeParcel, amount)
+    void onIngredientEdited(long requestId, @NonNull IngredientTypeParcel typeParcel,
+                            @NonNull BigDecimal amount) {
+        subscriptions.add(model.modifyIngredient((int) requestId, typeParcel, amount)
                 .subscribe(notifyChanged()));
     }
 
-    private void onIngredientRemoved(int position) {
-        model.removeIngredient(position);
-        notifyDataSetChanged();
+    void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
+                                   @NonNull BigDecimal amount) {
+        subscriptions.add(model.addIngredientOfType(typeParcel, amount)
+                .subscribe(notifyInserted()));
     }
 
     @Override

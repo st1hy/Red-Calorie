@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 @Module
 public class OverviewFragmentModule {
+
     final OverviewFragment fragment;
 
     public OverviewFragmentModule(@NonNull OverviewFragment fragment) {
