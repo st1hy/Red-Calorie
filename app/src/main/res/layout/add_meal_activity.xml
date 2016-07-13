@@ -59,7 +59,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/add_meal_content" />
+    <FrameLayout
+        android:id="@+id/add_meal_content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!--<include layout="@layout/add_meal_content" />-->
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_meal_fab_add_ingredient"

@@ -12,9 +12,12 @@ import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngr
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
+import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,14 +42,16 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     @Inject
     public AddIngredientPresenterImp(@NonNull AddIngredientView view,
                                      @NonNull PermissionsHelper permissionsHelper,
-                                     @NonNull AddIngredientModel model) {
-        super(view, permissionsHelper, model);
+                                     @NonNull AddIngredientModel model,
+                                     @NonNull Picasso picasso) {
+        super(view, permissionsHelper, model, picasso);
         this.view = view;
         this.model = model;
     }
 
     @Override
     public void onStart() {
+        super.onStart();
         subscriptions.add(model.getLoading()
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -58,7 +63,9 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     private void onIngredientModelReady() {
         Uri imageUri = model.getImageUri();
-        if (!imageUri.equals(Uri.EMPTY)) onImageReceived(imageUri);
+        if (!imageUri.equals(Uri.EMPTY))
+            subscriptions.add(loadPictureObservable(imageUri)
+                    .subscribe(new SimpleSubscriber<RxPicasso.PicassoEvent>()));
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());
         view.setSelectedUnitName(model.getEnergyDensityUnit());
@@ -88,7 +95,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @Override
-    public void onImageReceived(@NonNull Uri uri) {
+    protected void onImageReceived(@NonNull Uri uri) {
         super.onImageReceived(uri);
         model.setImageUri(uri);
     }

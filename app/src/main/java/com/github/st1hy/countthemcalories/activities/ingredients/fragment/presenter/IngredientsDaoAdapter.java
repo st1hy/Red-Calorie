@@ -23,7 +23,7 @@ import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
+import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -324,7 +324,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
             @NonNull final CommandResponse<Response, UndoResponse> response,
             @StringRes final int undoMessage) {
-        return new UndoTranformer<>(response, showUndoMessage(undoMessage));
+        return new UndoTransformer<>(response, showUndoMessage(undoMessage));
     }
 
     @NonNull

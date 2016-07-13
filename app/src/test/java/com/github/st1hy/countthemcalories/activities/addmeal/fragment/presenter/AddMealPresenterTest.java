@@ -1,26 +1,34 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.AddMealModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.testrunner.RxMockitoJUnitRunner;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -37,13 +45,16 @@ public class AddMealPresenterTest {
     private IngredientsAdapter ingredientsAdapter;
     @Mock
     private AddMealModel model;
+    @Mock
+    private Picasso picasso;
     private AddMealPresenterImp presenter;
 
     @Before
     public void setup() {
-        presenter = new AddMealPresenterImp(view, permissionsHelper, ingredientsAdapter, model);
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
+
+        presenter = new AddMealPresenterImp(view, permissionsHelper, model, picasso);
     }
 
     @Test
@@ -56,9 +67,9 @@ public class AddMealPresenterTest {
         verify(model).getNameError();
         verify(model).getIngredientsError();
         verify(model).saveToDatabase();
-        verify(view).setResultAndFinish();
+        verify(view).onMealSaved();
         verify(view).showNameError(null);
-        verify(view).showIngredientsError(null);
+        verify(view).showSnackbarError(null);
         verifyNoMoreInteractions(view, permissionsHelper, ingredientsAdapter, model);
     }
 
@@ -71,7 +82,7 @@ public class AddMealPresenterTest {
         verify(model).getNameError();
         verify(model).getIngredientsError();
         verify(view).showNameError("error");
-        verify(view).showIngredientsError("error2");
+        verify(view).showSnackbarError("error2");
         verifyNoMoreInteractions(view, permissionsHelper, ingredientsAdapter, model);
     }
 

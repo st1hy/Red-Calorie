@@ -8,14 +8,14 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-public class UndoTranformer<Response, UndoResponse> implements Observable.Transformer<Boolean, UndoResponse> {
+public class UndoTransformer<Response, UndoResponse> implements Observable.Transformer<Boolean, UndoResponse> {
     @NonNull
     final CommandResponse<Response, UndoResponse> response;
     @NonNull
     final Func1<Boolean, Observable<Void>> selectUndoCall;
 
-    public UndoTranformer(@NonNull CommandResponse<Response, UndoResponse> response,
-                          @NonNull Func1<Boolean, Observable<Void>> selectUndoCall) {
+    public UndoTransformer(@NonNull CommandResponse<Response, UndoResponse> response,
+                           @NonNull Func1<Boolean, Observable<Void>> selectUndoCall) {
         this.response = response;
         this.selectUndoCall = selectUndoCall;
     }

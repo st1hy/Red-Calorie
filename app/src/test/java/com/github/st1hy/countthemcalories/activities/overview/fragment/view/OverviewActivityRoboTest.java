@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
@@ -174,7 +175,7 @@ public class OverviewActivityRoboTest {
         shadowOf(activity).receiveResult(intent, MealDetailActivity.RESULT_EDIT, result);
         intent = shadowOf(activity).getNextStartedActivity();
         assertThat(intent, hasComponent(new ComponentName(activity, EditMealActivity.class)));
-        assertThat(intent, hasExtra(equalTo(EditMealActivity.EXTRA_MEAL_PARCEL),
+        assertThat(intent, hasExtra(equalTo(AddMealFragmentModule.EXTRA_MEAL_PARCEL),
                 any(MealParcel.class)));
     }
 

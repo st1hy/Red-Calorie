@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.model;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
 import android.content.res.Resources;
 import android.net.Uri;

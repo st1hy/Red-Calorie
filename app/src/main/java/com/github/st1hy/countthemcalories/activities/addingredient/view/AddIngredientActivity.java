@@ -24,6 +24,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.presenter.Ing
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.google.common.base.Optional;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.Collection;
@@ -86,13 +87,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
             @Override
             public void onClick(View v) {
                 onBackPressed();
-            }
-        });
-
-        ingredientImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onImageClicked();
             }
         });
 
@@ -193,6 +187,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         }
     }
 
+    @NonNull
+    @Override
+    public ImageView getImageView() {
+        return ingredientImage;
+    }
+
     @Override
     public void requestFocusToName() {
         name.requestFocus();
@@ -221,14 +221,14 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @Override
-    protected ImageView getImageView() {
-        return ingredientImage;
-    }
-
-    @Override
-    protected void onImageShown() {
-        super.onImageShown();
+    public void showImageOverlay() {
         imageOverlayBottom.setVisibility(View.VISIBLE);
         imageOverlayTop.setVisibility(View.VISIBLE);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getSelectPictureObservable() {
+        return RxView.clicks(ingredientImage);
     }
 }

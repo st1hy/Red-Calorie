@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.model;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
 
 import android.net.Uri;
@@ -28,24 +28,19 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.plugins.TestRxPlugins;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel.ParcelableProxy.CREATOR;
+import static com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel.ParcelableProxy.CREATOR;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 
@@ -123,26 +118,7 @@ public class MealIngredientsListModelProxyTest {
 
         MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, rxMealsDatabaseModel, null, bundle);
 
-        final AtomicBoolean isCompleted = new AtomicBoolean(false);
-        final List<Integer> integers = new ArrayList<>(5);
-        restoredModel.getItemsLoadedObservable().subscribe(new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {
-                isCompleted.set(true);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                throw new Error(e);
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-                integers.add(integer);
-            }
-        });
-        assertThat(isCompleted.get(), equalTo(true));
-        assertThat(integers, hasItems(0, 1, 2));
+        restoredModel.getItemsLoadedObservable().toBlocking().first();
 
         Assert.assertThat(restoredModel.ingredients, hasSize(exampleIngredientTemplate.length));
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
@@ -186,7 +162,7 @@ public class MealIngredientsListModelProxyTest {
         Timber.uprootAll();
 
         final AtomicReference<Throwable> error = new AtomicReference<>();
-        model.loadItems(Collections.singletonList(new Ingredient())).subscribe(new SimpleSubscriber<Integer>() {
+        model.loadItems(Collections.singletonList(new Ingredient())).subscribe(new SimpleSubscriber<Void>() {
             @Override
             public void onError(Throwable e) {
                 error.set(e);

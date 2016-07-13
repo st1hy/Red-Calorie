@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.view;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.view;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -10,16 +10,18 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.TestAddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
+import com.google.common.base.Preconditions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +52,9 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddMealActivityRoboTest {
-    private AddMealActivity activity;
+
+    private TestAddMealActivity activity;
+    private AddMealFragment fragment;
 
     @Before
     public void setup() {
@@ -58,7 +62,9 @@ public class AddMealActivityRoboTest {
         TestRxPlugins.registerImmediateHookIO();
         DaoSession daoSession = OverviewActivityRoboTest.prepareDatabase();
         IngredientsActivityRoboTest.addExampleIngredientsTagsAndJoin(daoSession);
-        activity = Robolectric.setupActivity(AddMealActivity.class);
+        activity = Robolectric.setupActivity(TestAddMealActivity.class);
+        fragment = (AddMealFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("add meal content");
     }
 
     @After
@@ -71,7 +77,7 @@ public class AddMealActivityRoboTest {
     public void testSaveButtonAction() throws Exception {
         ShadowActivity shadowActivity = shadowOf(activity);
         shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
-        activity.name.setText("Name");
+        fragment.name.setText("Name");
         addIngredient();
         handleNewIngredient();
         shadowActivity.clickMenuItem(R.id.action_save);
@@ -79,48 +85,46 @@ public class AddMealActivityRoboTest {
         assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
     }
 
-
     @Test
     public void testSaveErrors() throws Exception {
         ShadowActivity shadowActivity = shadowOf(activity);
         shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
         shadowActivity.clickMenuItem(R.id.action_save);
         assertThat(shadowActivity.isFinishing(), equalTo(false));
-        assertThat(activity.name.getError(), notNullValue());
-        assertNotNull(activity.ingredientsError);
-        assertThat(activity.ingredientsError.isShownOrQueued(), equalTo(true));
+        assertThat(fragment.name.getError(), notNullValue());
+        assertNotNull(activity.ingredientsError());
+        assertThat(activity.ingredientsError().isShownOrQueued(), equalTo(true));
     }
 
     @Test
     public void testOnSaveInstance() throws Exception {
-        activity.presenter = mock(AddMealPresenter.class);
-        activity.onSaveInstanceState(new Bundle());
-        verify(activity.presenter).onSaveState(any(Bundle.class));
+        fragment.presenter = mock(AddMealPresenter.class);
+        fragment.onSaveInstanceState(new Bundle());
+        verify(fragment.presenter).onSaveState(any(Bundle.class));
     }
 
     @Test
     public void testAddIngredient() throws Exception {
-        assertThat(activity.ingredientList.getChildCount(), equalTo(0));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(0));
 
         addIngredient();
         handleNewIngredient();
 
-        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(1));
     }
 
     @Test
     public void testAddIngredient2() throws Exception {
-        assertThat(activity.ingredientList.getChildCount(), equalTo(0));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(0));
 
         addIngredientFromParcel();
         handleNewIngredient();
 
-        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(1));
     }
 
-
     private void addIngredient() {
-        activity.addIngredientFab.performClick();
+        Preconditions.checkNotNull(activity.findViewById(R.id.add_meal_fab_add_ingredient)).performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
@@ -134,7 +138,7 @@ public class AddMealActivityRoboTest {
 
 
     private void addIngredientFromParcel() {
-        activity.addIngredientFab.performClick();
+        Preconditions.checkNotNull(activity.findViewById(R.id.add_meal_fab_add_ingredient)).performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
@@ -170,7 +174,7 @@ public class AddMealActivityRoboTest {
 
         checkFirstIngredientAmountEqualTo("0 g");
 
-        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
+        fragment.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
         Intent result = new Intent(requestIntent);
@@ -182,7 +186,7 @@ public class AddMealActivityRoboTest {
     }
 
     private void checkFirstIngredientAmountEqualTo(String amountString) {
-        View childRoot = activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root);
+        View childRoot = fragment.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_root);
         assertThat(childRoot, notNullValue());
         TextView amount = (TextView) childRoot.findViewById(R.id.add_meal_ingredient_amount);
         assertThat(amount.getText().toString(), equalTo(amountString));
@@ -192,14 +196,14 @@ public class AddMealActivityRoboTest {
     public void testRemoveIngredient() throws Exception {
         testAddIngredient();
 
-        assertThat(activity.ingredientList.getChildCount(), equalTo(1));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(1));
 
-        activity.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
+        fragment.ingredientList.getChildAt(0).findViewById(R.id.add_meal_ingredient_compact).performClick();
         ShadowActivity shadowActivity = shadowOf(activity);
         Intent requestIntent = shadowActivity.getNextStartedActivity();
 
         shadowActivity.receiveResult(requestIntent, IngredientDetailActivity.RESULT_REMOVE, requestIntent);
 
-        assertThat(activity.ingredientList.getChildCount(), equalTo(0));
+        assertThat(fragment.ingredientList.getChildCount(), equalTo(0));
     }
 }

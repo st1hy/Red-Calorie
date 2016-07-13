@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.presenter;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter;
 
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
@@ -9,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.viewholder.IngredientItemViewHolder;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -21,12 +22,14 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 
 import dagger.internal.Preconditions;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -48,10 +51,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onStart() {
-        final int initialSize = getItemCount();
-        onDatSetChanged();
         subscriptions.add(model.getItemsLoadedObservable()
-                .subscribe(onInitialLoading(initialSize)));
+                .subscribe(onInitialLoading()));
     }
 
     public void onStop() {
@@ -83,7 +84,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
-                                   @NonNull BigDecimal amount) {
+                           @NonNull BigDecimal amount) {
         subscriptions.add(model.addIngredientOfType(typeParcel, amount)
                 .subscribe(notifyInserted()));
     }
@@ -148,35 +149,33 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @NonNull
-    private MealIngredientsListModel.Loading onInitialLoading(final int initialSize) {
-        return new MealIngredientsListModel.Loading() {
+    private Subscriber<Void> onInitialLoading() {
+        return new SimpleSubscriber<Void>() {
             @Override
             public void onCompleted() {
-                if (initialSize != getItemCount()) {
-                    notifyDataSetChanged();
-                    onDatSetChanged();
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private MealIngredientsListModel.Loading notifyInserted() {
-        return new MealIngredientsListModel.Loading() {
-            @Override
-            public void onNext(Integer itemPosition) {
-                super.onNext(itemPosition);
-                notifyItemInserted(itemPosition);
-                view.scrollTo(itemPosition);
-                view.showIngredientsError(null);
+                notifyDataSetChanged();
                 onDatSetChanged();
             }
         };
     }
 
     @NonNull
-    private MealIngredientsListModel.Loading notifyChanged() {
-        return new MealIngredientsListModel.Loading() {
+    private Subscriber<Integer> notifyInserted() {
+        return new SimpleSubscriber<Integer>() {
+            @Override
+            public void onNext(Integer itemPosition) {
+                super.onNext(itemPosition);
+                notifyItemInserted(itemPosition);
+                view.scrollTo(itemPosition);
+                view.showSnackbarError(Optional.<String>absent());
+                onDatSetChanged();
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<Integer> notifyChanged() {
+        return new SimpleSubscriber<Integer>() {
             @Override
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);

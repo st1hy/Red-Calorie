@@ -1,6 +1,5 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.model;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,12 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.google.common.base.Optional;
 
 import org.joda.time.DateTime;
 
@@ -40,7 +39,7 @@ public class AddMealModel extends WithPictureModel {
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
                         @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Resources resources,
-                        @Nullable Intent intent,
+                        @Nullable MealParcel parcel,
                         @Nullable Bundle savedState) {
         this.ingredientsListModel = ingredientsListModel;
         this.databaseModel = databaseModel;
@@ -57,20 +56,16 @@ public class AddMealModel extends WithPictureModel {
             this.isEditing = parcelableProxy.isEditing;
             loading = Observable.just(null);
         } else {
-            Observable<Void> observable = null;
             parcelableProxy = new ParcelableProxy();
             this.mealId = -1L;
             this.name = "";
             this.imageUri = Uri.EMPTY;
-            if (intent != null) {
-                MealParcel parcel = intent.getParcelableExtra(EditMealActivity.EXTRA_MEAL_PARCEL);
-                if (parcel != null) {
-                    observable = loadParcel(parcel);
-                }
+            isEditing = parcel != null;
+            if (parcel != null) {
+                loading = loadParcel(parcel);
+            } else {
+                loading = Observable.just(null);
             }
-            isEditing = observable != null;
-            if (!isEditing) observable = Observable.just(null);
-            loading = observable;
         }
         this.parcelableProxy = parcelableProxy;
     }
@@ -138,17 +133,18 @@ public class AddMealModel extends WithPictureModel {
         return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
     }
 
-    @Nullable
-    public String getNameError() {
+    @NonNull
+    public Optional<String> getNameError() {
         return getName().trim().isEmpty() ?
-                resources.getString(R.string.add_meal_name_empty_error) : null;
+                Optional.of(resources.getString(R.string.add_meal_name_empty_error)) :
+                Optional.<String>absent();
     }
 
-    @Nullable
-    public String getIngredientsError() {
+    @NonNull
+    public Optional<String> getIngredientsError() {
         if (ingredientsListModel.getItemsCount() == 0) {
-            return resources.getString(R.string.add_meal_ingredients_empty_error);
-        } else return null;
+            return Optional.of(resources.getString(R.string.add_meal_ingredients_empty_error));
+        } else return Optional.absent();
     }
 
     static class ParcelableProxy implements Parcelable {

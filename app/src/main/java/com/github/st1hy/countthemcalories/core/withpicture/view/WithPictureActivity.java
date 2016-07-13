@@ -7,29 +7,22 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
-import com.squareup.picasso.Picasso;
-
-import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+import rx.subjects.BehaviorSubject;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
 public abstract class WithPictureActivity extends BaseActivity implements WithPictureView {
+
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;
 
-    @Inject
-    WithPicturePresenter presenter;
-    @Inject
-    Picasso picasso;
+    final BehaviorSubject<Uri> pictureSelectedSubject = BehaviorSubject.create();
 
-    protected abstract ImageView getImageView();
+    @NonNull
+    public abstract ImageView getImageView();
 
     @Override
     public void openCameraAndGetPicture() {
@@ -52,44 +45,23 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
         startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("On activity result!");
         if (requestCode == REQUEST_PICK_IMAGE || requestCode == REQUEST_CAMERA) {
             if (resultCode == RESULT_OK) {
                 Uri imageUri = data.getData();
                 if (imageUri != null)
-                    presenter.onImageReceived(imageUri);
+                    pictureSelectedSubject.onNext(imageUri);
                 else if (BuildConfig.DEBUG)
                     Timber.w("Received image but intent doesn't have image uri!");
             }
         } else super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @NonNull
     @Override
-    public Observable<RxPicasso.PicassoEvent> showImage(@NonNull Uri uri) {
-        return RxPicasso.Builder.with(picasso, uri)
-                .centerCrop()
-                .fit()
-                .into(getImageView())
-                .asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<RxPicasso.PicassoEvent>() {
-                    @Override
-                    public void call(RxPicasso.PicassoEvent event) {
-                        onImageShown();
-                    }
-                });
+    public Observable<Uri> getPictureSelectedObservable() {
+        return pictureSelectedSubject.asObservable();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.onStop();
-    }
-
-    protected void onImageShown() {
-
-    }
 }

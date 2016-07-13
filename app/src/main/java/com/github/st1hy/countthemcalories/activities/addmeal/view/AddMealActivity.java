@@ -7,31 +7,26 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
+import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.math.BigDecimal;
 
@@ -40,32 +35,24 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
-public class AddMealActivity extends WithPictureActivity implements AddMealView {
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+
+public class AddMealActivity extends WithPictureActivity implements AddMealScreen {
+
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
     public static final int REQUEST_EDIT_INGREDIENT = 0x3904;
-
-    @Inject
-    AddMealPresenter presenter;
-    @Inject
-    IngredientsAdapter adapter;
 
     @BindView(R.id.add_meal_toolbar)
     Toolbar toolbar;
     @BindView(R.id.add_meal_image)
     ImageView mealImage;
-    @BindView(R.id.add_meal_name)
-    EditText name;
-    @BindView(R.id.add_meal_ingredients_list)
-    RecyclerView ingredientList;
-    @BindView(R.id.add_meal_empty_ingredients)
-    View emptyIngredients;
-    @BindView(R.id.add_meal_button_add_ingredient)
-    Button addIngredientButton;
     @BindView(R.id.add_meal_fab_add_ingredient)
     FloatingActionButton addIngredientFab;
-    @BindView(R.id.add_meal_total_calories)
-    TextView totalCalories;
     @BindView(R.id.add_meal_image_overlay_top)
     View imageOverlayTop;
     @BindView(R.id.add_meal_image_overlay_bottom)
@@ -76,12 +63,17 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     @Nullable
     Snackbar ingredientsError;
 
+    @Inject
+    AddMealFragment content;
+
+    final PublishSubject<Void> saveClickedSubject = PublishSubject.create();
+
     @NonNull
-    protected AddMealActivityComponent getComponent(@Nullable Bundle savedInstanceState) {
+    protected AddMealActivityComponent getComponent() {
         if (component == null) {
             component = DaggerAddMealActivityComponent.builder()
                     .applicationComponent(getAppComponent())
-                    .addMealActivityModule(new AddMealActivityModule(this, savedInstanceState))
+                    .addMealActivityModule(new AddMealActivityModule(this))
                     .build();
         }
         return component;
@@ -92,7 +84,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_meal_activity);
         ButterKnife.bind(this);
-        getComponent(savedInstanceState).inject(this);
+        getComponent().inject(this);
         setSupportActionBar(toolbar);
         assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -101,45 +93,18 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
                 onBackPressed();
             }
         });
-
-        mealImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onImageClicked();
-            }
-        });
-        ingredientList.setAdapter(adapter);
-        ingredientList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        ingredientList.setNestedScrollingEnabled(false);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        presenter.onStart();
-    }
-
-    @Override
-    public void setName(@NonNull String name) {
-        this.name.setText(name);
     }
 
     @NonNull
     @Override
-    public Observable<CharSequence> getNameObservable() {
-        return RxTextView.textChanges(name);
+    public Observable<Void> getSelectPictureObservable() {
+        return RxView.clicks(mealImage);
     }
 
     @NonNull
     @Override
     public Observable<Void> getAddIngredientObservable() {
-        return Observable.merge(RxView.clicks(addIngredientButton), RxView.clicks(addIngredientFab));
-    }
-
-    @Override
-    public void setEmptyIngredientsVisibility(@NonNull Visibility visibility) {
-        //noinspection WrongConstant
-        emptyIngredients.setVisibility(visibility.getVisibility());
+        return RxView.clicks(addIngredientFab);
     }
 
     @Override
@@ -150,24 +115,18 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onClickedOnAction(item.getItemId()) || super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        presenter.onSaveState(outState);
-    }
-
-    @Override
-    public void setResultAndFinish() {
-        setResult(RESULT_OK);
-        finish();
+        int menuActionId = item.getItemId();
+        if (menuActionId == R.id.action_save) {
+            saveClickedSubject.onNext(null);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!presenter.handleActivityResult(requestCode, resultCode, data)) {
+        if (!handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -179,8 +138,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         startActivityForResult(intent, REQUEST_PICK_INGREDIENT);
     }
 
+    @NonNull
     @Override
-    protected ImageView getImageView() {
+    public ImageView getImageView() {
         return mealImage;
     }
 
@@ -203,26 +163,11 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
     }
 
     @Override
-    public void scrollTo(int itemPosition) {
-        ingredientList.scrollToPosition(itemPosition);
-    }
-
-    @Override
-    public void setTotalEnergy(@NonNull String totalEnergy) {
-        totalCalories.setText(totalEnergy);
-    }
-
-    @Override
-    public void showNameError(@Nullable String error) {
-        name.setError(error);
-    }
-
-    @Override
-    public void showIngredientsError(@Nullable String ingredientsError) {
+    public void showSnackbarError(@NonNull Optional<String> ingredientsError) {
         boolean isShown = this.ingredientsError != null && this.ingredientsError.isShownOrQueued();
-        if (ingredientsError != null) {
+        if (ingredientsError.isPresent()) {
             if (!isShown) {
-                this.ingredientsError = Snackbar.make(addIngredientFab, ingredientsError, Snackbar.LENGTH_INDEFINITE);
+                this.ingredientsError = Snackbar.make(addIngredientFab, ingredientsError.get(), Snackbar.LENGTH_INDEFINITE);
                 this.ingredientsError.setCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
@@ -239,10 +184,74 @@ public class AddMealActivity extends WithPictureActivity implements AddMealView 
         }
     }
 
+    @NonNull
     @Override
-    protected void onImageShown() {
-        super.onImageShown();
+    public Observable<Void> getSaveClickedObservable() {
+        return saveClickedSubject.asObservable();
+    }
+
+    @Override
+    public void showImageOverlay() {
         imageOverlayBottom.setVisibility(View.VISIBLE);
         imageOverlayTop.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onMealSaved() {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    private boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AddMealActivity.REQUEST_PICK_INGREDIENT) {
+            if (!handlePickIngredientResult(resultCode, data)) {
+                Timber.w("Pick ingredient returned incomplete result: %d, intent: %s", resultCode, data);
+            }
+            return true;
+        } else if (requestCode == AddMealActivity.REQUEST_EDIT_INGREDIENT) {
+            EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
+            if (!handleEditIngredientResponse(result, data)) {
+                Timber.w("Edit ingredient returned incomplete result: %d, intent: %s", resultCode, data);
+            }
+            return true;
+        } else return false;
+    }
+
+
+    /**
+     * @return false if data or resultCode was in incorrect state
+     */
+    private boolean handlePickIngredientResult(int resultCode, @Nullable Intent data) {
+        if (resultCode == IngredientsActivity.RESULT_OK) {
+            if (data == null) return false;
+            IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
+            if (typeParcel == null) return false;
+            content.onIngredientReceived(typeParcel);
+        }
+        return true;
+    }
+
+    /**
+     * @return false if data or result was in incorrect state
+     */
+    private boolean handleEditIngredientResponse(@NonNull EditIngredientResult result, @Nullable Intent data) {
+        if (data == null) return false;
+        long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
+        if (requestId == -2L) return false;
+        switch (result) {
+            case REMOVE:
+                content.onIngredientRemoved(requestId);
+                break;
+            case EDIT:
+                IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
+                String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
+                if (parcel == null || stringExtra == null) return false;
+                BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
+                content.onIngredientEditFinished(requestId, parcel, amount);
+                break;
+            case UNKNOWN:
+                return false;
+        }
+        return true;
     }
 }

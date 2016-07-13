@@ -1,15 +1,14 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.model;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -24,6 +23,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
@@ -36,11 +36,11 @@ public class MealIngredientsListModel {
     final ArrayList<Ingredient> ingredients;
     final ParcelableProxy parcelableProxy;
 
-    final Observable<Integer> loadingObservable;
+    final Observable<Void> loadingObservable;
 
     public MealIngredientsListModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                     @NonNull RxMealsDatabaseModel databaseModel,
-                                    @Nullable Intent intent,
+                                    @Nullable MealParcel parcel,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
         this.databaseModel = databaseModel;
@@ -54,20 +54,13 @@ public class MealIngredientsListModel {
                 loadingObservable = loadItems(parcelableProxy.ingredients);
             } else {
                 ingredients = new ArrayList<>(parcelableProxy.ingredients);
-                loadingObservable = Observable.empty();
+                loadingObservable = Observable.just(null);
             }
         } else {
             parcelableProxy = new ParcelableProxy();
             ingredients = new ArrayList<>(5);
-            Observable<Integer> observable = null;
-            if (intent != null) {
-                MealParcel parcel = intent.getParcelableExtra(EditMealActivity.EXTRA_MEAL_PARCEL);
-                if (parcel != null) {
-                    observable = loadItems(parcel);
-                }
-            }
-            if (observable == null) observable = Observable.empty();
-            loadingObservable = observable;
+            if (parcel != null) loadingObservable = loadItems(parcel);
+            else loadingObservable = Observable.just(null);
         }
         this.parcelableProxy = parcelableProxy;
     }
@@ -85,7 +78,7 @@ public class MealIngredientsListModel {
      * @return notifies that items have been loaded to memory, on main thread or immediate
      */
     @NonNull
-    public Observable<Integer> getItemsLoadedObservable() {
+    public Observable<Void> getItemsLoadedObservable() {
         return loadingObservable;
     }
 
@@ -105,7 +98,8 @@ public class MealIngredientsListModel {
                         return ingredient;
                     }
                 })
-                .map(onIngredient());
+                .doOnNext(onIngredient())
+                .map(Functions.into(ingredients.size() - 1));
     }
 
     @NonNull
@@ -138,9 +132,9 @@ public class MealIngredientsListModel {
     }
 
     @NonNull
-    Observable<Integer> loadItems(@NonNull List<Ingredient> ingredients) {
+    Observable<Void> loadItems(@NonNull List<Ingredient> ingredients) {
         Observable<Ingredient> notLoaded = Observable.from(ingredients);
-        Observable<Integer> loading = notLoaded
+        Observable<Void> loading = notLoaded
                 .concatMap(new Func1<Ingredient, Observable<IngredientTemplate>>() {
                     @Override
                     public Observable<IngredientTemplate> call(Ingredient ingredient) {
@@ -153,15 +147,16 @@ public class MealIngredientsListModel {
                         return ingredient;
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .map(onIngredient())
+                .doOnNext(onIngredient())
+                .map(Functions.INTO_VOID)
                 .replay().autoConnect().share();
         loading.subscribe(new Loading());
         return loading;
     }
 
     @NonNull
-    Observable<Integer> loadItems(@NonNull MealParcel mealParcel) {
-        Observable<Integer> loading = databaseModel.unParcel(mealParcel)
+    Observable<Void> loadItems(@NonNull MealParcel mealParcel) {
+        Observable<Void> loading = databaseModel.unParcel(mealParcel)
                 .map(new Func1<Meal, List<Ingredient>>() {
                     @Override
                     public List<Ingredient> call(Meal meal) {
@@ -174,7 +169,8 @@ public class MealIngredientsListModel {
                         return Observable.from(ingredients);
                     }
                 })
-                .map(onIngredient())
+                .doOnNext(onIngredient())
+                .map(Functions.INTO_VOID)
                 .replay().autoConnect().share();
         loading.subscribe(new Loading());
         return loading;
@@ -185,12 +181,11 @@ public class MealIngredientsListModel {
     }
 
     @NonNull
-    private Func1<Ingredient, Integer> onIngredient() {
-        return new Func1<Ingredient, Integer>() {
+    private Action1<Ingredient> onIngredient() {
+        return new Action1<Ingredient>() {
             @Override
-            public Integer call(Ingredient ingredient) {
+            public void call(Ingredient ingredient) {
                 ingredients.add(ingredient);
-                return ingredients.size() - 1;
             }
         };
     }
@@ -203,7 +198,7 @@ public class MealIngredientsListModel {
         return ingredients;
     }
 
-    public static class Loading extends Subscriber<Integer> {
+    public static class Loading extends Subscriber<Void> {
 
         @Override
         public void onCompleted() {
@@ -215,7 +210,7 @@ public class MealIngredientsListModel {
         }
 
         @Override
-        public void onNext(Integer itemPosition) {
+        public void onNext(Void aVoid) {
             Timber.v("Ingredient loaded");
         }
     }

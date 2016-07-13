@@ -21,7 +21,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholde
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
-import com.github.st1hy.countthemcalories.core.command.UndoTranformer;
+import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -335,7 +335,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
             @NonNull final CommandResponse<Response, UndoResponse> response,
             @StringRes final int undoMessage) {
-        return new UndoTranformer<>(response, showUndoMessage(undoMessage));
+        return new UndoTransformer<>(response, showUndoMessage(undoMessage));
     }
 
     @NonNull
