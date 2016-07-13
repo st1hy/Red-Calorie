@@ -52,13 +52,13 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
+                AddMealPresenterImp.super.onStart();
                 Uri imageUri = model.getImageUri();
                 if (!imageUri.equals(Uri.EMPTY))
                     subscriptions.add(loadPictureObservable(imageUri)
                             .subscribe(new SimpleSubscriber<RxPicasso.PicassoEvent>()));
                 view.setName(model.getName());
 
-                AddMealPresenterImp.super.onStart();
                 subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
                 subscriptions.add(view.getAddIngredientObservable().subscribe(onAddNewIngredient()));
 
