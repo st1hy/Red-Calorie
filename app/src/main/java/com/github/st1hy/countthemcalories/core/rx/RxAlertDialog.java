@@ -73,6 +73,7 @@ public class RxAlertDialog {
                     @Override
                     protected void onUnsubscribe() {
                         itemClickedDelegate = null;
+                        dialog.dismiss();
                     }
                 });
             }
@@ -95,6 +96,7 @@ public class RxAlertDialog {
                     @Override
                     protected void onUnsubscribe() {
                         negativeClickedDelegate = null;
+                        dialog.dismiss();
                     }
                 });
             }
@@ -117,6 +119,7 @@ public class RxAlertDialog {
                     @Override
                     protected void onUnsubscribe() {
                         positiveClickedDelegate = null;
+                        dialog.dismiss();
                     }
                 });
             }
@@ -153,7 +156,15 @@ public class RxAlertDialog {
     public static class Builder {
         private final Context context;
         private final AlertDialog.Builder builder;
-        private final RxAlertDialog rxAlertDialog = new RxAlertDialog();
+        @ArrayRes
+        int items = -1;
+        CharSequence[] itemsArray = null;
+        @LayoutRes
+        int layoutId = -1;
+        @StringRes
+        int positiveButtonName = -1;
+        @StringRes
+        int negativeButtonName = -1;
 
         public static RxAlertDialog.Builder with(@NonNull Context context) {
             return new Builder(context);
@@ -177,32 +188,29 @@ public class RxAlertDialog {
 
         @NonNull
         public RxAlertDialog.Builder items(@ArrayRes int items) {
-            builder.setItems(items, rxAlertDialog.clickListener);
+            this.items = items;
             return this;
         }
 
         @NonNull
         public RxAlertDialog.Builder items(@NonNull CharSequence[] items) {
-            builder.setItems(items, rxAlertDialog.clickListener);
+            this.itemsArray = items;
             return this;
         }
 
         @NonNull
         public RxAlertDialog.Builder customView(@LayoutRes int layoutId) {
-            View view = LayoutInflater.from(context).inflate(layoutId, null);
-            rxAlertDialog.customView = view;
-            builder.setView(view);
+            this.layoutId = layoutId;
             return this;
         }
 
         @NonNull
         public RxAlertDialog.Builder positiveButton(@StringRes int name) {
-            builder.setPositiveButton(name, rxAlertDialog.clickListener);
+            this.positiveButtonName = name;
             return this;
         }
 
         public RxAlertDialog.Builder negativeButton(@StringRes int name) {
-            builder.setNegativeButton(name, rxAlertDialog.clickListener);
             return this;
         }
 
@@ -214,6 +222,24 @@ public class RxAlertDialog {
 
         @NonNull
         public RxAlertDialog show() {
+            RxAlertDialog rxAlertDialog = new RxAlertDialog();
+            if (items != -1) {
+                builder.setItems(items, rxAlertDialog.clickListener);
+            }
+            if (itemsArray != null) {
+                builder.setItems(itemsArray, rxAlertDialog.clickListener);
+            }
+            if (layoutId != -1) {
+                View view = LayoutInflater.from(context).inflate(layoutId, null);
+                rxAlertDialog.customView = view;
+                builder.setView(view);
+            }
+            if (positiveButtonName != -1) {
+                builder.setPositiveButton(positiveButtonName, rxAlertDialog.clickListener);
+            }
+            if (negativeButtonName != -1) {
+                builder.setNegativeButton(negativeButtonName, rxAlertDialog.clickListener);
+            }
             builder.setOnCancelListener(rxAlertDialog.onCancel);
             rxAlertDialog.dialog = builder.show();
             return rxAlertDialog;
