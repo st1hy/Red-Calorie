@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 
 import org.junit.Before;

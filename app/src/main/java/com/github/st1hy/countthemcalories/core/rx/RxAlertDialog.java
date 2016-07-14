@@ -211,6 +211,7 @@ public class RxAlertDialog {
         }
 
         public RxAlertDialog.Builder negativeButton(@StringRes int name) {
+            this.negativeButtonName = name;
             return this;
         }
 
@@ -218,7 +219,6 @@ public class RxAlertDialog {
             builder.setMessage(messageId);
             return this;
         }
-
 
         @NonNull
         public RxAlertDialog show() {

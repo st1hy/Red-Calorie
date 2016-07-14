@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
+package com.github.st1hy.countthemcalories.activities.tags.view;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -6,7 +6,6 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;

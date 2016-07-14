@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment.prese
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 
 public interface IngredientsPresenter {
 

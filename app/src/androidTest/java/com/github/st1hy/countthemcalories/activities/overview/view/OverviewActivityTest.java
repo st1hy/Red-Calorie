@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivit
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientActivityTest;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;

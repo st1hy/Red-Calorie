@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.DaggerIngredientsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentModule;

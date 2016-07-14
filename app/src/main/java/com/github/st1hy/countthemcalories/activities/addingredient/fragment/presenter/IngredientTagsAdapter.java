@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;

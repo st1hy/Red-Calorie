@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.model;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
 import android.content.Intent;
 import android.content.res.Resources;

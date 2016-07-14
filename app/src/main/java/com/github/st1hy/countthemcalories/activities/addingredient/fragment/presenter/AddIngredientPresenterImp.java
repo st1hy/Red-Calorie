@@ -1,14 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -28,12 +27,13 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
     private final AddIngredientView view;
@@ -61,6 +61,17 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                 }));
     }
 
+    @Override
+    public void onSaveState(@NonNull Bundle outState) {
+        model.onSaveState(outState);
+    }
+
+    @Override
+    protected void onImageReceived(@NonNull Uri uri) {
+        super.onImageReceived(uri);
+        model.setImageUri(uri);
+    }
+
     private void onIngredientModelReady() {
         Uri imageUri = model.getImageUri();
         if (!imageUri.equals(Uri.EMPTY))
@@ -78,26 +89,21 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         subscriptions.add(Observable.combineLatest(nameObservable, valueObservable,
                 combineCheckCanCreateIngredient())
                 .subscribe());
+
+        subscriptions.add(view.getSaveObservable()
+                .flatMap(saveToDatabase())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onAddedIngredientToDatabase()));
     }
 
-    @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
-    }
-
-    @Override
-    public boolean onClickedOnAction(int itemId) {
-        if (itemId == R.id.action_save) {
-            onSaveClicked();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected void onImageReceived(@NonNull Uri uri) {
-        super.onImageReceived(uri);
-        model.setImageUri(uri);
+    @NonNull
+    private Func1<Void, Observable<IngredientTemplate>> saveToDatabase() {
+        return new Func1<Void, Observable<IngredientTemplate>>() {
+            @Override
+            public Observable<IngredientTemplate> call(Void aVoid) {
+                return model.saveIntoDatabase();
+            }
+        };
     }
 
     @NonNull
@@ -118,13 +124,6 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                 model.setName(charSequence.toString());
             }
         };
-    }
-
-    private void onSaveClicked() {
-        model.saveIntoDatabase()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onAddedIngredientToDatabase());
-
     }
 
     @NonNull

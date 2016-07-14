@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,5 +9,4 @@ public interface AddIngredientPresenter extends WithPicturePresenter {
 
     void onSaveState(@NonNull Bundle outState);
 
-    boolean onClickedOnAction(int itemId);
 }

@@ -1,11 +1,11 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.model;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel.ParcelableProxy;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
@@ -23,7 +23,7 @@ import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.model.IngredientTagsModel.ParcelableProxy.CREATOR;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel.ParcelableProxy.CREATOR;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.arrayWithSize;

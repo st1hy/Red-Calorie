@@ -19,8 +19,8 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
-import com.github.st1hy.countthemcalories.activities.addingredient.presenter.AddIngredientPresenter;
-import com.github.st1hy.countthemcalories.activities.addingredient.presenter.IngredientTagsAdapter;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.google.common.base.Optional;
@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class AddIngredientActivity extends WithPictureActivity implements AddIngredientView {
@@ -63,6 +64,8 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     View imageOverlayTop;
     @BindView(R.id.add_ingredient_image_overlay_bottom)
     View imageOverlayBottom;
+
+    final PublishSubject<Void> saveClickedSubject = PublishSubject.create();
 
     @NonNull
     protected AddIngredientComponent getComponent(@Nullable Bundle savedInstanceState) {
@@ -122,7 +125,13 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return presenter.onClickedOnAction(item.getItemId()) ||  super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_save) {
+            saveClickedSubject.onNext(null);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -230,5 +239,11 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     public Observable<Void> getSelectPictureObservable() {
         return RxView.clicks(ingredientImage);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getSaveObservable() {
+        return saveClickedSubject;
     }
 }

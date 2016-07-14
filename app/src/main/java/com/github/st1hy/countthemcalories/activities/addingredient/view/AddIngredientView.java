@@ -37,4 +37,7 @@ public interface AddIngredientView extends WithPictureView {
     void requestFocusToName();
 
     void requestFocusToValue();
+
+    @NonNull
+    Observable<Void> getSaveObservable();
 }

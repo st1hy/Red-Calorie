@@ -1,13 +1,12 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.presenter;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
@@ -39,8 +38,6 @@ import rx.Observable;
 import rx.plugins.TestRxPlugins;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -100,6 +97,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getValueObservable()).thenReturn(Observable.<CharSequence>empty());
         when(view.getPictureSelectedObservable()).thenReturn(Observable.<Uri>empty());
         when(view.getSelectPictureObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getSaveObservable()).thenReturn(Observable.<Void>empty());
         when(model.canCreateIngredient(anyString(), anyString()))
                 .thenReturn(Collections.<ErrorType>emptyList());
 
@@ -109,34 +107,6 @@ public class AddIngredientPresenterImpTest {
     @After
     public void tearDown() throws Exception {
         TestRxPlugins.reset();
-    }
-
-    @Test
-    public void testSave() {
-        when(model.saveIntoDatabase()).thenReturn(Observable.just(new IngredientTemplate(1L)));
-        presenter.onClickedOnAction(R.id.action_save);
-
-        verify(model).saveIntoDatabase();
-        verify(view).showNameError(Optional.<Integer>absent());
-        verify(view).showValueError(Optional.<Integer>absent());
-        verify(view).setResultAndFinish(argThat(hasExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, 1L)));
-
-        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
-    }
-
-    @Test
-    public void testSaveError() throws Exception {
-        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(new TestError()));
-        presenter.onClickedOnAction(R.id.action_save);
-
-        verify(model).saveIntoDatabase();
-
-        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
-    }
-
-    @Test
-    public void testActionNotHandled() throws Exception {
-        assertThat(presenter.onClickedOnAction(-1), equalTo(false));
     }
 
     @Test
@@ -153,6 +123,37 @@ public class AddIngredientPresenterImpTest {
         presenter.onStart();
 
         testVerifyStart();
+        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
+    }
+
+    @Test
+    public void testSave() {
+        when(model.saveIntoDatabase()).thenReturn(Observable.just(new IngredientTemplate(1L)));
+        when(view.getSaveObservable()).thenReturn(Observable.<Void>just(null));
+
+        presenter.onStart();
+
+        testVerifyStart();
+
+        verify(model).saveIntoDatabase();
+        verify(view).showNameError(Optional.<Integer>absent());
+        verify(view).showValueError(Optional.<Integer>absent());
+        verify(view).setResultAndFinish(argThat(hasExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, 1L)));
+
+        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
+    }
+
+    @Test
+    public void testSaveError() throws Exception {
+        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(new TestError()));
+        when(view.getSaveObservable()).thenReturn(Observable.<Void>just(null));
+
+        presenter.onStart();
+
+        testVerifyStart();
+
+        verify(model).saveIntoDatabase();
+
         verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
     }
 
@@ -247,5 +248,6 @@ public class AddIngredientPresenterImpTest {
         verify(view).setSelectedUnitName(testUnit);
         verify(view).getNameObservable();
         verify(view).getValueObservable();
+        verify(view).getSaveObservable();
     }
 }
