@@ -1,28 +1,19 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.view;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.view;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.google.common.base.Optional;
-
-import java.util.Collection;
 
 import rx.Observable;
 
-public interface AddIngredientView extends WithPictureView {
-    void setResultAndFinish(@NonNull Intent intent);
+public interface AddIngredientView extends AddIngredientScreen {
 
     void setSelectedUnitName(@NonNull String unitName);
 
     void setName(@NonNull String name);
 
     void setEnergyDensityValue(@NonNull String energyValue);
-
-    /**
-     * @param tagNames add to excluded
-     */
-    void openSelectTagScreen(@NonNull Collection<String> tagNames);
 
     @NonNull
     Observable<CharSequence> getNameObservable();
@@ -38,6 +29,4 @@ public interface AddIngredientView extends WithPictureView {
 
     void requestFocusToValue();
 
-    @NonNull
-    Observable<Void> getSaveObservable();
 }

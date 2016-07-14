@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -51,7 +51,6 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     @Override
     public void onStart() {
-        super.onStart();
         subscriptions.add(model.getLoading()
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -73,6 +72,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     private void onIngredientModelReady() {
+        super.onStart();
         Uri imageUri = model.getImageUri();
         if (!imageUri.equals(Uri.EMPTY))
             subscriptions.add(loadPictureObservable(imageUri)

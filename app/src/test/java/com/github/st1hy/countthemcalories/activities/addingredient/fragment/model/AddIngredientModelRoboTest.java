@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,8 +13,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
@@ -113,7 +111,8 @@ public class AddIngredientModelRoboTest {
     }
 
     private void setUpEmptyIngredient() {
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, null);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources,
+                AmountUnitType.MASS, null, null);
 
         verify(settingsModel).getEnergyUnit();
         verify(settingsModel).getAmountUnitFrom(AmountUnitType.MASS);
@@ -126,12 +125,10 @@ public class AddIngredientModelRoboTest {
         List<JointIngredientTag> jTags = Lists.transform(tags, intoJTags(example));
         doReturn(jTags).when(example).getTags();
 
-        Intent intent = new Intent();
-        intent.setAction(EditIngredientActivity.ACTION_EDIT);
         IngredientTypeParcel parcel = new IngredientTypeParcel(example);
-        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, parcel);
         when(typesModel.unParcel(argThat(hasIngredientId(example)))).thenReturn(Observable.just(example));
-        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, null, intent);
+        model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources,
+                AmountUnitType.MASS, parcel, null);
 
         model.setName("testName");
         model.setName("testEnergy");
@@ -194,7 +191,8 @@ public class AddIngredientModelRoboTest {
         Bundle bundle = new Bundle();
 
         model.onSaveState(bundle);
-        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources, bundle, null);
+        AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel,
+                typesModel, resources, AmountUnitType.MASS, null, bundle);
         verify(settingsModel, times(2)).getEnergyUnit();
         verify(settingsModel, times(2)).getAmountUnitFrom(AmountUnitType.MASS);
 
@@ -283,22 +281,6 @@ public class AddIngredientModelRoboTest {
         model.name = "s";
         model.energyValue = "100";
         assertThat(model.canCreateIngredient(), hasSize(0));;
-        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
-    }
-
-    @Test
-    public void testGetUnitType() throws Exception {
-        setUpEmptyIngredient();
-
-        assertThat(model.getUnitTypeFrom(null), equalTo(AmountUnitType.MASS));
-        Intent intent = new Intent();
-        assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(EditIngredientActivity.ACTION_EDIT);
-        assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(AddIngredientType.MEAL.getAction());
-        assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.MASS));
-        intent.setAction(AddIngredientType.DRINK.getAction());
-        assertThat(model.getUnitTypeFrom(intent), equalTo(AmountUnitType.VOLUME));;
         verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
     }
 

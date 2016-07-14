@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
@@ -34,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -43,7 +42,6 @@ public class AddIngredientModel extends WithPictureModel {
     final IngredientTagsModel tagsModel;
     final RxIngredientsDatabaseModel databaseModel;
     final Resources resources;
-    final Intent intent;
     final ParcelableProxy parcelableProxy;
 
     EnergyUnit energyUnit;
@@ -62,13 +60,13 @@ public class AddIngredientModel extends WithPictureModel {
                               @NonNull IngredientTagsModel tagsModel,
                               @NonNull RxIngredientsDatabaseModel databaseModel,
                               @NonNull Resources resources,
-                              @Nullable Bundle savedState,
-                              @Nullable Intent intent) {
+                              @NonNull AmountUnitType amountType,
+                              @Nullable IngredientTypeParcel editSource,
+                              @Nullable @Named("savedState") Bundle savedState) {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;
         this.databaseModel = databaseModel;
         this.resources = resources;
-        this.intent = intent;
         ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
@@ -84,12 +82,7 @@ public class AddIngredientModel extends WithPictureModel {
             amountUnit = settingsModel.getAmountUnitFrom(amountType);
         } else {
             parcelableProxy = new ParcelableProxy();
-            source = null;
-            if (intent != null) {
-                if (EditIngredientActivity.ACTION_EDIT.equals(intent.getAction())) {
-                    source = intent.getParcelableExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL);
-                }
-            }
+            source = editSource;
             if (source != null) {
                 this.loading = databaseModel.unParcel(source)
                         .map(onLoadedFromDatabase())
@@ -99,7 +92,7 @@ public class AddIngredientModel extends WithPictureModel {
                 this.source = null;
                 this.name = "";
                 this.energyValue = "";
-                this.amountType = getUnitTypeFrom(intent);
+                this.amountType = amountType;
                 this.imageUri = Uri.EMPTY;
                 this.loading = Observable.just(null);
                 energyUnit = settingsModel.getEnergyUnit();
@@ -107,19 +100,6 @@ public class AddIngredientModel extends WithPictureModel {
             }
         }
         this.parcelableProxy = parcelableProxy;
-    }
-
-    @NonNull
-    AmountUnitType getUnitTypeFrom(@Nullable Intent intent) {
-        if (intent != null) {
-            String action = intent.getAction();
-            if (AddIngredientType.DRINK.getAction().equals(action)) {
-                return AmountUnitType.VOLUME;
-            } else if (AddIngredientType.MEAL.getAction().equals(action)) {
-                return AmountUnitType.MASS;
-            }
-        }
-        return AmountUnitType.MASS;
     }
 
     /**
@@ -248,7 +228,8 @@ public class AddIngredientModel extends WithPictureModel {
         List<IngredientTypeCreateException.ErrorType> errors = new ArrayList<>(4);
         if (isEmpty(name)) errors.add(IngredientTypeCreateException.ErrorType.NO_NAME);
         if (isEmpty(value)) errors.add(IngredientTypeCreateException.ErrorType.NO_VALUE);
-        else if (!isValueGreaterThanZero(value)) errors.add(IngredientTypeCreateException.ErrorType.ZERO_VALUE);
+        else if (!isValueGreaterThanZero(value))
+            errors.add(IngredientTypeCreateException.ErrorType.ZERO_VALUE);
         return errors;
     }
 

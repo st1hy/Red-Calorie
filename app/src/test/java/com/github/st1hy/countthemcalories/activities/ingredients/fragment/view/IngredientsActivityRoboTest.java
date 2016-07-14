@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
@@ -237,9 +238,8 @@ public class IngredientsActivityRoboTest {
         fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_edit).performClick();
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, EditIngredientActivity.class)));
-        assertThat(nextStartedActivity, hasAction(EditIngredientActivity.ACTION_EDIT));
-        assertThat(nextStartedActivity, hasExtra(equalTo(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL), notNullValue()));
-        IngredientTemplate template = nextStartedActivity.<IngredientTypeParcel>getParcelableExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL)
+        assertThat(nextStartedActivity, hasExtra(equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL), notNullValue()));
+        IngredientTemplate template = nextStartedActivity.<IngredientTypeParcel>getParcelableExtra(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL)
                 .getWhenReady().getOrNull();
         assertNotNull(template);
         assertThat(template.getName(), equalTo(exampleIngredients[0].getName()));

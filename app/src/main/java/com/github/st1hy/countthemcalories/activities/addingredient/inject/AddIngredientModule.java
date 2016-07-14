@@ -1,79 +1,80 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import dagger.Module;
 import dagger.Provides;
 
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_AMOUNT_UNIT;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG;
+
 @Module
 public class AddIngredientModule {
     private final AddIngredientActivity activity;
-    private final Bundle bundle;
 
-    public AddIngredientModule(@NonNull AddIngredientActivity activity, @Nullable Bundle savedState) {
+    public AddIngredientModule(@NonNull AddIngredientActivity activity) {
         this.activity = activity;
-        this.bundle = savedState;
     }
 
     @Provides
-    @PerActivity
-    public AddIngredientView provideView() {
-        return activity;
+    public AddIngredientFragment provideContent(Bundle arguments, FragmentManager fragmentManager) {
+        final String tag = "add ingredient content";
+
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new AddIngredientFragment();
+            fragment.setArguments(arguments);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.add_ingredient_content_frame, fragment, tag)
+                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
+                    .commit();
+        }
+        return (AddIngredientFragment) fragment;
     }
 
     @Provides
-    @PerActivity
-    public AddIngredientPresenter providePresenter(AddIngredientPresenterImp presenter) {
-        return presenter;
+    public Bundle provideArguments(Intent intent, AmountUnitType unitType) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(ARG_EDIT_INGREDIENT_PARCEL,
+                intent.getParcelableExtra(ARG_EDIT_INGREDIENT_PARCEL));
+        arguments.putSerializable(ARG_AMOUNT_UNIT, unitType);
+        arguments.putLong(ARG_EDIT_REQUEST_ID_LONG,
+                intent.getLongExtra(ARG_EDIT_REQUEST_ID_LONG, -1L));
+        return arguments;
     }
 
     @Provides
-    @PerActivity
-    public PermissionSubject providePermissionSubject() {
-        return activity;
+    public FragmentManager provideFragmentManager() {
+        return activity.getSupportFragmentManager();
     }
 
     @Provides
-    @PerActivity
-    @Nullable
-    public Bundle provideSavedStateBundle() {
-        return bundle;
-    }
-
-    @Provides
-    @PerActivity
-    public WithPicturePresenter providePicturePresenter(AddIngredientPresenter presenter) {
-        return presenter;
-    }
-
-    @Provides
-    @PerActivity
-    public IngredientTagsModel provideIngredientTagModel(@Nullable Bundle savedState) {
-        return new IngredientTagsModel(savedState);
-    }
-
-    @Provides
-    @PerActivity
-    public Resources provideResources() {
-        return activity.getResources();
-    }
-
-    @Provides
-    @PerActivity
     public Intent provideIntent() {
         return activity.getIntent();
     }
+
+    @Provides
+    public AmountUnitType provideUnitType(Intent intent) {
+        String action = intent.getAction();
+        if (AddIngredientType.DRINK.getAction().equals(action)) {
+            return AmountUnitType.VOLUME;
+        } else if (AddIngredientType.MEAL.getAction().equals(action)) {
+            return AmountUnitType.MASS;
+        }
+        return AmountUnitType.MASS;
+    }
+
 }

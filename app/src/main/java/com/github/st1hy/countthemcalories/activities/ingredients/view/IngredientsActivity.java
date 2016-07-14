@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
@@ -127,9 +128,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel) {
         Intent intent = new Intent(this, EditIngredientActivity.class);
-        intent.setAction(EditIngredientActivity.ACTION_EDIT);
-        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_REQUEST_ID_LONG, requestID);
-        intent.putExtra(EditIngredientActivity.EXTRA_EDIT_INGREDIENT_PARCEL, ingredientParcel);
+        intent.putExtra(AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG, requestID);
+        intent.putExtra(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL, ingredientParcel);
         startActivityForResult(intent, REQUEST_EDIT);
     }
 

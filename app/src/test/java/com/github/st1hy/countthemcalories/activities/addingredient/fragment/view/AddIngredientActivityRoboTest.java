@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.view;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.view;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.baseview.TestPermissionHelper;
@@ -25,6 +26,7 @@ import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
+import com.google.common.base.Preconditions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -66,6 +68,7 @@ public class AddIngredientActivityRoboTest {
     public static Tag[] exampleTags = new Tag[]{new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
 
     private AddIngredientActivity activity;
+    private AddIngredientFragment fragment;
     private DaoSession daoSession;
 
     @Before
@@ -75,6 +78,8 @@ public class AddIngredientActivityRoboTest {
         daoSession = OverviewActivityRoboTest.prepareDatabase();
         prepareDb();
         activity = Robolectric.setupActivity(AddIngredientActivity.class);
+        fragment = (AddIngredientFragment) activity.getSupportFragmentManager()
+                .findFragmentByTag("add ingredient content");
     }
 
     private void prepareDb() {
@@ -99,8 +104,8 @@ public class AddIngredientActivityRoboTest {
     @SuppressLint("SetTextI18n")
     @Test
     public void testSaveButtonAction() throws Exception {
-        activity.name.setText("Name");
-        activity.energyDensityValue.setText("300.6");
+        fragment.name.setText("Name");
+        fragment.energyDensityValue.setText("300.6");
 
         ShadowActivity shadowActivity = shadowOf(activity);
         shadowActivity.onCreateOptionsMenu(new RoboMenu(activity));
@@ -115,7 +120,7 @@ public class AddIngredientActivityRoboTest {
 
     @Test
     public void testImageButton() throws Exception {
-        activity.ingredientImage.performClick();
+        Preconditions.checkNotNull(activity.findViewById(R.id.add_ingredient_image)).performClick();
         TestPermissionHelper.grantPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
@@ -128,36 +133,36 @@ public class AddIngredientActivityRoboTest {
     @Test
     public void testSaveInstance() throws Exception {
         Bundle bundle = new Bundle();
-        activity.onSaveInstanceState(bundle);
+        fragment.onSaveInstanceState(bundle);
         assertThat(bundle.isEmpty(), equalTo(false));
     }
 
     @Test
     public void testOnStop() throws Exception {
         AddIngredientPresenter presenterMock = Mockito.mock(AddIngredientPresenterImp.class);
-        activity.presenter = presenterMock;
-        activity.onStop();
+        fragment.presenter = presenterMock;
+        fragment.onStop();
         verify(presenterMock).onStop();
     }
 
     @Test
     public void testAddRemoveTag() throws Exception {
-        assertThat(activity.tagsRecycler.getChildCount(), equalTo(1));
+        assertThat(fragment.tagsRecycler.getChildCount(), equalTo(1));
 
         Tag tag = addTag(0);
 
-        assertThat(activity.tagsRecycler.getChildCount(), equalTo(2));
-        View tagView = activity.tagsRecycler.getChildAt(0);
+        assertThat(fragment.tagsRecycler.getChildCount(), equalTo(2));
+        View tagView = fragment.tagsRecycler.getChildAt(0);
         TextView textView = (TextView) tagView.findViewById(R.id.add_ingredient_category_name);
         assertThat(textView.getText().toString(), equalTo(tag.getName()));
 
         tagView.findViewById(R.id.add_ingredient_category_remove).performClick();
-        assertThat(activity.tagsPresenter.getItemCount(), equalTo(1));
+        assertThat(fragment.tagsPresenter.getItemCount(), equalTo(1));
     }
 
     private Tag addTag(int position) {
-        int addTagPos = activity.tagsRecycler.getChildCount() - 1;
-        activity.tagsRecycler.getChildAt(addTagPos).findViewById(R.id.add_ingredient_category_add).performClick();
+        int addTagPos = fragment.tagsRecycler.getChildCount() - 1;
+        fragment.tagsRecycler.getChildAt(addTagPos).findViewById(R.id.add_ingredient_category_add).performClick();
 
         ShadowActivity shadowActivity = shadowOf(activity);
         ShadowActivity.IntentForResult activityForResult = shadowActivity.getNextStartedActivityForResult();
@@ -178,8 +183,8 @@ public class AddIngredientActivityRoboTest {
     public void testSaveWithTags() throws Exception {
         final String name = "Name";
         final String value = "300.6"; //default in settings model kcal / 100 g
-        activity.name.setText(name);
-        activity.energyDensityValue.setText(value);
+        fragment.name.setText(name);
+        fragment.energyDensityValue.setText(value);
 
         Tag tag = addTag(0);
         Tag tag1 = addTag(1);
@@ -208,34 +213,34 @@ public class AddIngredientActivityRoboTest {
 
     @Test
     public void testNameError() throws Exception {
-        assertThat(activity.name.getError(), nullValue());
+        assertThat(fragment.name.getError(), nullValue());
 
-        activity.name.setText("");
-        activity.energyDensityValue.setText("12");
+        fragment.name.setText("");
+        fragment.energyDensityValue.setText("12");
 
-        assertThat(activity.name.getError().toString(), equalTo(activity.getString(
+        assertThat(fragment.name.getError().toString(), equalTo(activity.getString(
                 NO_NAME.getErrorResId()
         )));
-        assertTrue(activity.name.hasFocus());
+        assertTrue(fragment.name.hasFocus());
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
     }
 
     @Test
     public void testValueError() throws Exception {
-        assertThat(activity.energyDensityValue.getError(), nullValue());
+        assertThat(fragment.energyDensityValue.getError(), nullValue());
 
-        activity.name.setText("Name");
-        activity.energyDensityValue.setText("0000");
+        fragment.name.setText("Name");
+        fragment.energyDensityValue.setText("0000");
 
-        assertThat(activity.energyDensityValue.getError().toString(), equalTo(activity.getString(
+        assertThat(fragment.energyDensityValue.getError().toString(), equalTo(activity.getString(
                 ZERO_VALUE.getErrorResId()
         )));
-        assertTrue(activity.energyDensityValue.hasFocus());
+        assertTrue(fragment.energyDensityValue.hasFocus());
         assertThat(shadowOf(activity).isFinishing(), equalTo(false));
     }
 
     @Test
     public void testGetImageView() throws Exception {
-        assertThat(activity.getImageView(), equalTo(activity.ingredientImage));
+        assertThat(fragment.getImageView(), equalTo(activity.findViewById(R.id.add_ingredient_image)));
     }
 }

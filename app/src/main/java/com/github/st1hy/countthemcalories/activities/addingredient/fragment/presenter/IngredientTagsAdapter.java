@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.AddNewTagViewHolder;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.ItemTagViewHolder;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.holder.TagViewHolder;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.AddNewTagViewHolder;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.ItemTagViewHolder;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.database.Tag;
 
