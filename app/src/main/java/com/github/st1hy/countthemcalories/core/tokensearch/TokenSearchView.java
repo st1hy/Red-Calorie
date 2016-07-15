@@ -204,6 +204,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
             out.writeInt(isExpanded ? 1 : 0);
         }
 
