@@ -23,7 +23,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
@@ -98,8 +97,7 @@ public class MealIngredientsListModel {
                         return ingredient;
                     }
                 })
-                .doOnNext(onIngredient())
-                .map(Functions.into(ingredients.size() - 1));
+                .map(onIngredient());
     }
 
     @NonNull
@@ -147,7 +145,7 @@ public class MealIngredientsListModel {
                         return ingredient;
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(onIngredient())
+                .map(onIngredient())
                 .map(Functions.INTO_VOID)
                 .replay().autoConnect().share();
         loading.subscribe(new Loading());
@@ -169,7 +167,7 @@ public class MealIngredientsListModel {
                         return Observable.from(ingredients);
                     }
                 })
-                .doOnNext(onIngredient())
+                .map(onIngredient())
                 .map(Functions.INTO_VOID)
                 .replay().autoConnect().share();
         loading.subscribe(new Loading());
@@ -181,11 +179,12 @@ public class MealIngredientsListModel {
     }
 
     @NonNull
-    private Action1<Ingredient> onIngredient() {
-        return new Action1<Ingredient>() {
+    private Func1<Ingredient, Integer> onIngredient() {
+        return new Func1<Ingredient, Integer>() {
             @Override
-            public void call(Ingredient ingredient) {
+            public Integer call(Ingredient ingredient) {
                 ingredients.add(ingredient);
+                return ingredients.size() - 1;
             }
         };
     }

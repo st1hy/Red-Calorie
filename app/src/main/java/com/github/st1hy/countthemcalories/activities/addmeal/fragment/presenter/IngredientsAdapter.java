@@ -154,7 +154,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             @Override
             public void onCompleted() {
                 notifyDataSetChanged();
-                onDatSetChanged();
+                onDataSetChanged();
             }
         };
     }
@@ -164,11 +164,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         return new SimpleSubscriber<Integer>() {
             @Override
             public void onNext(Integer itemPosition) {
-                super.onNext(itemPosition);
                 notifyItemInserted(itemPosition);
                 view.scrollTo(itemPosition);
                 view.showSnackbarError(Optional.<String>absent());
-                onDatSetChanged();
+                onDataSetChanged();
             }
         };
     }
@@ -180,12 +179,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onNext(Integer itemPosition) {
                 super.onNext(itemPosition);
                 notifyItemChanged(itemPosition);
-                onDatSetChanged();
+                onDataSetChanged();
             }
         };
     }
 
-    private void onDatSetChanged() {
+    private void onDataSetChanged() {
         setEmptyIngredientsVisibility();
         setTotalCalories();
     }

@@ -213,6 +213,9 @@ public class AddMealActivityTest {
         onView(withId(R.id.add_meal_fab_add_ingredient))
                 .perform(click());
         testAddIngredient();
+        onView(withId(R.id.add_meal_fab_add_ingredient))
+                .perform(click());
+        testAddIngredient2();
     }
 
     @Test
@@ -238,6 +241,21 @@ public class AddMealActivityTest {
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("42.6 g")).check(matches(isDisplayed()));
+    }
+
+    private void testAddIngredient2() {
+        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(typeTextIntoFocusedView("8"));
+        onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+
+        onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
+        onView(withText("8 ml")).check(matches(isDisplayed()));
     }
 
     @Test
