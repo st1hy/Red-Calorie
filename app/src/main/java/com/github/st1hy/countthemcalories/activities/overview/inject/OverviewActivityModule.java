@@ -1,19 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.overview.inject;
 
-import android.content.res.Resources;
-
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealsViewModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.commands.MealsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.overview.presenter.MealsAdapter;
-import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
-import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenterImp;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewView;
+import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.squareup.picasso.Picasso;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,48 +15,19 @@ import dagger.Provides;
 public class OverviewActivityModule {
     private OverviewActivity activity;
 
-
     public OverviewActivityModule(OverviewActivity activity) {
         this.activity = activity;
     }
 
     @PerActivity
     @Provides
-    public OverviewView provideView() {
-        return activity;
+    public DrawerPresenter provideDrawerPresenter() {
+        return new DrawerPresenterImpl(activity, DrawerMenuItem.OVERVIEW);
     }
 
-
-    @PerActivity
     @Provides
-    public MealsAdapter provideAdapter(OverviewView view, RxMealsDatabaseModel databaseModel,
-                                       Picasso picasso, PhysicalQuantitiesModel quantityModel,
-                                       MealsDatabaseCommands commands, MealsViewModel viewModel) {
-        return new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
+    public OverviewFragment provideOverviewFragment() {
+        return (OverviewFragment) activity.getSupportFragmentManager()
+                .findFragmentById(R.id.overview_content_fragment);
     }
-
-    @PerActivity
-    @Provides
-    public OverviewPresenterImp providePresenter(OverviewView view, MealsAdapter adapter) {
-        return new OverviewPresenterImp(view, adapter);
-    }
-
-    @PerActivity
-    @Provides
-    public OverviewPresenter provideOverviewPresenter(OverviewPresenterImp presenter) {
-        return presenter;
-    }
-
-    @PerActivity
-    @Provides
-    public DrawerPresenter provideDrawerPresenter(OverviewPresenterImp presenter) {
-        return presenter;
-    }
-
-    @PerActivity
-    @Provides
-    public Resources provideResources() {
-        return activity.getResources();
-    }
-
 }

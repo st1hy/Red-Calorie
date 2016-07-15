@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.application.inject;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.tags.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 
 import javax.inject.Singleton;

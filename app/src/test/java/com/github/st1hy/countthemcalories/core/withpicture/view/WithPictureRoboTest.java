@@ -4,25 +4,19 @@ package com.github.st1hy.countthemcalories.core.withpicture.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import org.hamcrest.Matcher;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -31,6 +25,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import rx.Observable;
 import rx.functions.Action1;
 
 import static android.app.Activity.RESULT_OK;
@@ -45,49 +40,38 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.only;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class WithPictureRoboTest {
 
     private WithPictureActivity activity;
-    private WithPicturePresenterImp presenterMock;
-    private Picasso mockedPicasso;
-    private ImageView mockedImageView;
-    private RequestCreator mockedRequestCreator;
-
 
     @Before
     public void setup() {
         WithPictureActivityTest activity = Robolectric.setupActivity(WithPictureActivityTest.class);
-        presenterMock = Mockito.mock(AddMealPresenterImp.class);
-        activity.presenter = presenterMock;
-        mockedImageView = Mockito.mock(ImageView.class);
-        activity.mockedImageView = mockedImageView;
-        mockedPicasso = Mockito.mock(Picasso.class);
-        activity.picasso = mockedPicasso;
+        activity.mockedImageView = Mockito.mock(ImageView.class);
         this.activity = activity;
-
-        mockedRequestCreator = Mockito.mock(RequestCreator.class);
-        when(mockedPicasso.load(any(Uri.class))).thenReturn(mockedRequestCreator);
-        when(mockedRequestCreator.centerCrop()).thenReturn(mockedRequestCreator);
-        when(mockedRequestCreator.fit()).thenReturn(mockedRequestCreator);
     }
 
     private static class WithPictureActivityTest extends WithPictureActivity {
         ImageView mockedImageView;
 
+        @NonNull
         @Override
-        protected ImageView getImageView() {
+        public ImageView getImageView() {
             return mockedImageView;
+        }
+
+        @NonNull
+        @Override
+        public Observable<Void> getSelectPictureObservable() {
+            return Observable.empty();
+        }
+
+        @Override
+        public void showImageOverlay() {
         }
     }
 
@@ -150,68 +134,22 @@ public class WithPictureRoboTest {
         final Uri mockedUri = Mockito.mock(Uri.class);
         testIntent.setData(mockedUri);
         activity.onActivityResult(REQUEST_PICK_IMAGE, RESULT_OK, testIntent);
-        verify(presenterMock, only()).onImageReceived(mockedUri);
+        Uri first = activity.getPictureSelectedObservable().toBlocking().first();
+        Assert.assertThat(first, equalTo(mockedUri));
     }
 
     @Test
     public void testActivityResultOther() throws Exception {
         Intent intent = Mockito.mock(Intent.class);
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
+        activity.getPictureSelectedObservable().subscribe(new Action1<Uri>() {
+            @Override
+            public void call(Uri uri) {
+                isCalled.set(true);
+            }
+        });
         activity.onActivityResult(-1, -1, intent);
-        verifyZeroInteractions(presenterMock);
+        assertThat(isCalled.get(), equalTo(false));
     }
 
-    @Test
-    public void testSetImageToViewSuccess() throws Exception {
-        Uri mockedUri = Mockito.mock(Uri.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback callback = (Callback) invocation.getArguments()[1];
-                callback.onSuccess();
-                return null;
-            }
-        }).when(mockedRequestCreator).into(eq(mockedImageView), any(Callback.class));
-        final AtomicBoolean isCalled = new AtomicBoolean(false);
-        activity.showImage(mockedUri)
-                .subscribe(new Action1<RxPicasso.PicassoEvent>() {
-                    @Override
-                    public void call(RxPicasso.PicassoEvent event) {
-                        isCalled.set(true);
-                        assertThat(RxPicasso.PicassoEvent.SUCCESS, equalTo(event));
-                    }
-                });
-        assertTrue(isCalled.get());
-        verify(mockedPicasso).load(mockedUri);
-    }
-
-    @Test
-    public void testSetImageToViewFailure() throws Exception {
-        Uri mockedUri = Mockito.mock(Uri.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback callback = (Callback) invocation.getArguments()[1];
-                callback.onError();
-                return null;
-            }
-        }).when(mockedRequestCreator).into(eq(mockedImageView), any(Callback.class));
-        final AtomicBoolean isCalled = new AtomicBoolean(false);
-        activity.showImage(mockedUri)
-                .subscribe(new Action1<RxPicasso.PicassoEvent>() {
-                    @Override
-                    public void call(RxPicasso.PicassoEvent event) {
-                        isCalled.set(true);
-                        assertThat(RxPicasso.PicassoEvent.ERROR, equalTo(event));
-                    }
-                });
-        assertTrue(isCalled.get());
-        verify(mockedPicasso).load(mockedUri);
-    }
-
-
-    @Test
-    public void tesOnStop() throws Exception {
-        activity.onStop();
-        verify(presenterMock).onStop();
-    }
 }

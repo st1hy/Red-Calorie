@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
@@ -59,7 +58,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class IngredientActivityTest {
     public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
             new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,

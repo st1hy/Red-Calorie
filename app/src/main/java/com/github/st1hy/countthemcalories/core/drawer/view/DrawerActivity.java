@@ -60,12 +60,6 @@ public abstract class DrawerActivity extends BaseActivity implements DrawerView,
         presenter.onStart();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.onStop();
-    }
-
     protected void registerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {
         drawer.addDrawerListener(drawerToggle);
         drawerToggle.syncState();

@@ -1,0 +1,80 @@
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.CardView;
+
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailFragment;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.DaggerIngredientDetailComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailModule;
+import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+
+import java.math.BigDecimal;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
+
+public class IngredientDetailActivity extends BaseActivity implements IngredientDetailScreen {
+
+    public static final int RESULT_REMOVE = 0x200;
+
+    @BindView(R.id.ingredient_detail_root)
+    CardView cardRoot;
+
+    IngredientDetailComponent component;
+
+    @Inject
+    IngredientDetailFragment content;
+
+    @NonNull
+    protected IngredientDetailComponent getComponent() {
+        if (component == null) {
+            component = DaggerIngredientDetailComponent.builder()
+                    .applicationComponent(getAppComponent())
+                    .ingredientDetailModule(new IngredientDetailModule(this))
+                    .build();
+        }
+        return component;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.ingredient_detail_activity);
+        ButterKnife.bind(this);
+        getComponent().inject(this);
+    }
+
+
+    @Override
+    public void commitEditedIngredientChanges(long ingredientId,
+                                              @NonNull IngredientTypeParcel parcel,
+                                              @NonNull BigDecimal amount) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
+        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, parcel);
+        intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        setResult(RESULT_OK, intent);
+        ActivityCompat.finishAfterTransition(this);
+    }
+
+    @Override
+    public void removeIngredient(long ingredientId) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
+        setResult(RESULT_REMOVE, intent);
+        ActivityCompat.finishAfterTransition(this);
+    }
+
+}

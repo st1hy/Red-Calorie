@@ -12,7 +12,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailsActivity;
+import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
@@ -131,7 +132,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
-        intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailsActivity.class)));
+        intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailActivity.class)));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withHint(R.string.add_meal_ingredient_amount_hint)).perform(click())
                 .perform(typeTextIntoFocusedView("200"))
@@ -195,6 +196,21 @@ public class OverviewActivityTest {
                 .check(matches(menuItemIsChecked(R.id.nav_overview)));
     }
 
+
+    @Test
+    public void testNavigateToContribute() {
+        openDrawerMenu();
+        onView(withId(R.id.nav_view))
+                .check(matches(isDisplayed()))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)))
+                .perform(navigateTo(R.id.nav_contribute));
+        onView(withId(R.id.contribute_link)).check(matches(isDisplayed()));
+        intended(hasComponent(new ComponentName(getTargetContext(), ContributeActivity.class)));
+        pressBack();
+        onView(withId(R.id.nav_view))
+                .check(matches(menuItemIsChecked(R.id.nav_overview)));
+    }
+
     @Test
     public void testNavigateToTags() {
         openDrawerMenu();
@@ -220,7 +236,7 @@ public class OverviewActivityTest {
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), MealDetailActivity.class)));
         onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()));
-        onView(withId(R.id.overview_extended_edit)).perform(click());
+        onView(withId(R.id.meal_detail_edit)).perform(click());
         checkEditActivity();
     }
 

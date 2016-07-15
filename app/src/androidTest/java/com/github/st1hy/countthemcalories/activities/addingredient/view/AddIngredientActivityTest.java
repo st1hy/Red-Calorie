@@ -14,6 +14,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.PermissionHelper;
@@ -82,7 +83,7 @@ public class AddIngredientActivityTest {
         tagDao.insertInTx(exampleTags);
         assertEquals(3, tagDao.loadAll().size());
 
-        main.launchActivity(new Intent(AddIngredientActivity.ACTION_CREATE_DRINK));
+        main.launchActivity(new Intent(AddIngredientType.DRINK.getAction()));
 
         // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
         // every test run. In this case all external Intents will be blocked.

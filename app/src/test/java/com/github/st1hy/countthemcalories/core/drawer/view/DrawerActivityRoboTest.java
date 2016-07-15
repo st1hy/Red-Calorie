@@ -7,11 +7,12 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.After;
@@ -23,6 +24,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import rx.Scheduler;
 import rx.plugins.TestRxPlugins;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -35,14 +37,25 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class DrawerActivityRoboTest {
     private DrawerActivity activity;
 
     @Before
     public void setUp() throws Exception {
+        TestRxPlugins.registerImmediateMainThreadHook();
+        Schedulers.registerHook(new Schedulers.HookImp() {
+            @Override
+            public Scheduler computation() {
+                return immediate();
+            }
+
+            @Override
+            public Scheduler io() {
+                return immediate();
+            }
+        });
         activity = Robolectric.setupActivity(OverviewActivity.class);
-        TestRxPlugins.registerImmediateHookIO();
         assertThat(activity, notNullValue());
         assertThat(activity.toolbar, notNullValue());
         assertThat(activity.presenter, notNullValue());
@@ -99,16 +112,8 @@ public class DrawerActivityRoboTest {
     }
 
     @Test
-    public void testOnStop() throws Exception {
-        IngredientsPresenter presenterMock = Mockito.mock(IngredientsPresenter.class);
-        activity.presenter = presenterMock;
-        activity.onStop();
-        verify(presenterMock).onStop();
-    }
-
-    @Test
     public void testOnStart() throws Exception {
-        IngredientsPresenter presenterMock = Mockito.mock(IngredientsPresenter.class);
+        DrawerPresenter presenterMock = Mockito.mock(DrawerPresenter.class);
         activity.presenter = presenterMock;
         activity.onStart();
         verify(presenterMock).onStart();

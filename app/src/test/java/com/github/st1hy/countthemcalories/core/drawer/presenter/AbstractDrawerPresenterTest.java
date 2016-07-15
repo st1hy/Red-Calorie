@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.core.drawer.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
@@ -26,7 +28,8 @@ public class AbstractDrawerPresenterTest {
 
     @Before
     public void setup() {
-        presenter = new AbstractDrawerPresenter(view) {
+        presenter = new DrawerPresenterImpl(view, currentItem) {
+            @NonNull
             @Override
             protected DrawerMenuItem currentItem() {
                 return currentItem;

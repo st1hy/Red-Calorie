@@ -1,24 +1,15 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenter;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.addmeal.presenter.IngredientsAdapter;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenter;
-import com.squareup.picasso.Picasso;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,69 +17,43 @@ import dagger.Provides;
 @Module
 public class AddMealActivityModule {
     private final AddMealActivity activity;
-    private final Bundle bundle;
 
-    public AddMealActivityModule(@NonNull AddMealActivity activity, @Nullable Bundle bundle) {
+    public AddMealActivityModule(@NonNull AddMealActivity activity) {
         this.activity = activity;
-        this.bundle = bundle;
-    }
-
-    @Provides
-    @PerActivity
-    @Nullable
-    public Bundle provideBundle() {
-        return bundle;
     }
 
 
     @Provides
-    @PerActivity
-    public AddMealView provideView() {
-        return activity;
+    public AddMealFragment provideContent(FragmentManager fragmentManager, Bundle arguments) {
+        final String tag = "add meal content";
+
+        AddMealFragment fragment = (AddMealFragment) fragmentManager.findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new AddMealFragment();
+            fragment.setArguments(arguments);
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.add_meal_content_frame, fragment, tag)
+                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
+                    .commit();
+        }
+        return fragment;
     }
 
     @Provides
-    @PerActivity
-    public PermissionSubject providePermissionSubject() {
-        return activity;
+    public FragmentManager provideFragmentManager() {
+        return activity.getSupportFragmentManager();
     }
 
     @Provides
-    @PerActivity
-    public AddMealPresenter providePresenter(AddMealPresenterImp presenter) {
-        return presenter;
+    public Bundle provideArguments(Intent intent) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(AddMealFragmentModule.EXTRA_MEAL_PARCEL,
+                intent.getParcelableExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL));
+        return arguments;
     }
 
     @Provides
-    @PerActivity
-    public WithPicturePresenter providePicturePresenter(AddMealPresenter presenter) {
-        return presenter;
-    }
-
-    @Provides
-    @PerActivity
-    public MealIngredientsListModel provideListModel(RxIngredientsDatabaseModel model,
-                                                     RxMealsDatabaseModel databaseModel,
-                                                     @Nullable Intent intent,
-                                                     @Nullable Bundle savedState) {
-        return new MealIngredientsListModel(model, databaseModel, intent, savedState);
-    }
-
-    @Provides
-    @PerActivity
-    public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
-                                                 PhysicalQuantitiesModel namesModel, Picasso picasso) {
-        return new IngredientsAdapter(view, model, namesModel, picasso);
-    }
-
-    @Provides
-    @PerActivity
-    public Resources provideResources() {
-        return activity.getResources();
-    }
-
-    @Provides
-    @PerActivity
     public Intent provideIntent() {
         return activity.getIntent();
     }
