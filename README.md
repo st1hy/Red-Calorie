@@ -8,7 +8,12 @@ All feedback/critique is welcome and appreciated.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state: 1.1.0
+## Current state: 1.1.1
+* Added remove picture
+* Improved opening ingredient and meal detail transitions.
+* Bug fixes.
+
+###1.1.0
 * Extracted view logic from activities to fragments.
 * Improved icon and background when no content is present.
 * Bug fixes.
