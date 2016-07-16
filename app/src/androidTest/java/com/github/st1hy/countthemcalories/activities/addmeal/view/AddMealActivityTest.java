@@ -226,6 +226,27 @@ public class AddMealActivityTest {
         testAddIngredient();
     }
 
+    @Test
+    public void testAddIngredientCancel() throws Exception {
+        onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
+        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
+                hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
+        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(typeTextIntoFocusedView("42.6"));
+        onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+
+        onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
+        onView(withText("42.6 g")).check(doesNotExist());
+    }
+
     private void testAddIngredient() {
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));

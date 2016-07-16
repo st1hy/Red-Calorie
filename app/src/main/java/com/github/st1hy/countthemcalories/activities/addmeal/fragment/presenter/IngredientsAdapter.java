@@ -69,6 +69,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onIngredientRemoved(long requestId) {
+        if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
         notifyDataSetChanged();
     }
