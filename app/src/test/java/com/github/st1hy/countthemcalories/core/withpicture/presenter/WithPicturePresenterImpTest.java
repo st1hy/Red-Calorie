@@ -113,7 +113,8 @@ public class WithPicturePresenterImpTest {
         verify(view).getPictureSelectedObservable();
         verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(model).getImageSourceDialogTitleResId();
-        verify(model).getImageSourceOptionArrayResId();
+        verify(model).getSelectImageSourceOptions();
+        verify(model).hasImage();
         verify(view).showAlertDialog(anyInt(), anyInt());
         verify(view).openCameraAndGetPicture();
 
@@ -133,7 +134,8 @@ public class WithPicturePresenterImpTest {
         verify(view).getPictureSelectedObservable();
         verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(model).getImageSourceDialogTitleResId();
-        verify(model).getImageSourceOptionArrayResId();
+        verify(model).getSelectImageSourceOptions();
+        verify(model).hasImage();
         verify(view).showAlertDialog(anyInt(), anyInt());
         verify(view).pickImageFromGallery();
         verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
@@ -150,7 +152,6 @@ public class WithPicturePresenterImpTest {
         verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
                 imageView);
     }
-
 
     @Test
     public void testSetImageToViewSuccess() throws Exception {
@@ -172,5 +173,32 @@ public class WithPicturePresenterImpTest {
 
         verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
                 imageView);
+    }
+
+    @Test
+    public void testRemovePicture() throws Exception {
+        when(view.getSelectPictureObservable())
+                .thenReturn(Observable.<Void>just(null));
+        when(view.showAlertDialog(anyInt(), anyInt())).thenReturn(Observable.just(2));
+        when(model.hasImage()).thenReturn(true);
+
+        presenter.onStart();
+
+        verify(view).getSelectPictureObservable();
+        verify(view).getPictureSelectedObservable();
+        verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
+        verify(model).getImageSourceDialogTitleResId();
+        verify(model).getSelectImageSourceAndRemoveOptions();
+        verify(model).hasImage();
+        verify(view).showAlertDialog(anyInt(), anyInt());
+        verify(view).hideImageOverlay();
+        verify(view).getImageView();
+        verify(model).getSelectImageDrawableRes();
+        verify(imageView).setImageResource(anyInt());
+
+        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
+                imageView);
+
+
     }
 }

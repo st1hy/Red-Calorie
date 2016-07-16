@@ -228,6 +228,11 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
     }
 
     @Override
+    public void hideImageOverlay() {
+        screen.hideImageOverlay();
+    }
+
+    @Override
     public Observable<Integer> showAlertDialog(@StringRes int titleRes, @ArrayRes int optionsRes) {
         return screen.showAlertDialog(titleRes, optionsRes);
     }

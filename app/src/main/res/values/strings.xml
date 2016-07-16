@@ -25,7 +25,8 @@
     <string name="add_meal_image_select_from_gallery">Select picture from gallery</string>
     <string name="add_meal_image_select_from_camera">Make a picture</string>
     <string name="add_meal_image_select_title">Select picture for your meal</string>
-    <string name="add_meal_image_gallery_picker">Select Image source</string>
+    <string name="add_meal_image_gallery_picker">Select image source</string>
+    <string name="add_meal_image_remove">Remove picture</string>
     <string name="add_meal_ingredient_photo_description">Photography of a food ingredient</string>
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>

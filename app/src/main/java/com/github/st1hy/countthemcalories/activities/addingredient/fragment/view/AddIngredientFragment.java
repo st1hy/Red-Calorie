@@ -214,6 +214,11 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
     }
 
     @Override
+    public void hideImageOverlay() {
+        screen.hideImageOverlay();
+    }
+
+    @Override
     public Observable<Integer> showAlertDialog(@StringRes int titleRes, @ArrayRes int optionsRes) {
         return screen.showAlertDialog(titleRes, optionsRes);
     }

@@ -44,7 +44,7 @@ public class AddMealModelTest {
 
     @Test
     public void testGetImageSourceArrayId() throws Exception {
-        int arrayResId = model.getImageSourceOptionArrayResId();
+        int arrayResId = model.getSelectImageSourceOptions();
         assertThat(arrayResId, equalTo(R.array.add_meal_image_select_options));
     }
 

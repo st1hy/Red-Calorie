@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.core.withpicture.presenter;
 
 import android.Manifest;
 import android.net.Uri;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
@@ -84,9 +85,13 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
         return new Func1<Permission, Observable<Integer>>() {
             @Override
             public Observable<Integer> call(Permission permission) {
+                @ArrayRes int options = (model.hasImage()) ?
+                        model.getSelectImageSourceAndRemoveOptions() :
+                        model.getSelectImageSourceOptions();
+
                 return view.showAlertDialog(
                         model.getImageSourceDialogTitleResId(),
-                        model.getImageSourceOptionArrayResId()
+                        options
                 );
             }
         };
@@ -99,6 +104,11 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
                 break;
             case GALLERY:
                 view.pickImageFromGallery();
+                break;
+            case REMOVE_SOURCE:
+                view.getImageView().setImageResource(model.getSelectImageDrawableRes());
+                view.hideImageOverlay();
+                onImageReceived(Uri.EMPTY);
                 break;
         }
     }

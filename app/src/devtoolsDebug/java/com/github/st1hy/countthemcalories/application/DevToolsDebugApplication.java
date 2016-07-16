@@ -15,8 +15,8 @@ public class DevToolsDebugApplication extends DebugApplication {
         Stetho.initializeWithDefaults(this);
         LeakCanary.install(this);
         TinyDancer.create()
-                .startingXPosition(200)
-                .startingYPosition(200)
+                .startingXPosition(500)
+                .startingYPosition(10)
                 .show(this);
         Timber.d("Finished devtools setup");
 

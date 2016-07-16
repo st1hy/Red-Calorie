@@ -252,7 +252,7 @@ public class AddIngredientModelRoboTest {
     @Test
     public void testGeImageSourceOptions() throws Exception {
         setUpEmptyIngredient();
-        int array = model.getImageSourceOptionArrayResId();
+        int array = model.getSelectImageSourceOptions();
         assertEquals(R.array.add_ingredient_image_select_options, array);;
         verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
     }

@@ -94,8 +94,18 @@ public class AddMealModel extends WithPictureModel {
     }
 
     @Override
-    public int getImageSourceOptionArrayResId() {
+    public int getSelectImageSourceOptions() {
         return R.array.add_meal_image_select_options;
+    }
+
+    @Override
+    public int getSelectImageSourceAndRemoveOptions() {
+        return R.array.add_meal_image_select_remove_options;
+    }
+
+    @Override
+    public boolean hasImage() {
+        return !Uri.EMPTY.equals(imageUri);
     }
 
     public void onSaveState(@NonNull Bundle outState) {

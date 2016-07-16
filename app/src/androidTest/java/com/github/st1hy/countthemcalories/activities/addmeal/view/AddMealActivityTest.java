@@ -158,6 +158,22 @@ public class AddMealActivityTest {
     }
 
     @Test
+    public void testRemoveImage() throws Exception {
+        testSelectImageFromGallery();
+
+        onView(withId(R.id.add_meal_image_overlay_bottom)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image_overlay_top)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_meal_image)).perform(click());
+        PermissionHelper.allowPermissionsIfNeeded();
+        onView(withText(R.string.add_meal_image_remove)).perform(click());
+        onView(withId(R.id.add_meal_image))
+                .check(matches(isDisplayed()))
+                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));
+        onView(withId(R.id.add_meal_image_overlay_bottom)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.add_meal_image_overlay_top)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
     public void testSelectImageFromCamera() {
         onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         @DrawableRes final int testDrawableId = android.R.drawable.ic_input_add;

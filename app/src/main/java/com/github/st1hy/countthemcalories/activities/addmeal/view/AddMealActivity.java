@@ -200,6 +200,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     }
 
     @Override
+    public void hideImageOverlay() {
+        imageOverlayBottom.setVisibility(View.GONE);
+        imageOverlayTop.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onMealSaved() {
         setResult(RESULT_OK);
         finish();

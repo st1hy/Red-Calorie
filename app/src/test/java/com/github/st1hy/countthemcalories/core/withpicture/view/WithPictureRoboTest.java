@@ -73,6 +73,10 @@ public class WithPictureRoboTest {
         @Override
         public void showImageOverlay() {
         }
+
+        @Override
+        public void hideImageOverlay() {
+        }
     }
 
     @Test

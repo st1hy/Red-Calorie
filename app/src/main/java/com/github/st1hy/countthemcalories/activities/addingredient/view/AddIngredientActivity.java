@@ -140,6 +140,12 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         imageOverlayTop.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void hideImageOverlay() {
+        imageOverlayBottom.setVisibility(View.GONE);
+        imageOverlayTop.setVisibility(View.GONE);
+    }
+
     @NonNull
     @Override
     public Observable<Void> getSelectPictureObservable() {

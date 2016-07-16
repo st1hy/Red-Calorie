@@ -14,6 +14,7 @@
     <string name="add_meal_image_select_from_camera">Zrób nowe zdjęcie</string>
     <string name="add_meal_image_select_from_gallery">Wybierz obrazek z galerii</string>
     <string name="add_meal_image_select_title">Wybierz obrazek dla posiłku</string>
+    <string name="add_meal_image_remove">Usuń obrazek</string>
     <string name="add_meal_ingredient_accept_description">Zakończ edycję ilości produktu</string>
     <string name="add_meal_ingredient_amount_hint">Ilość np. 200 g lub ml</string>
     <string name="add_meal_ingredient_photo_description">Zdjęcie jednego ze składników</string>

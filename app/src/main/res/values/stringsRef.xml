@@ -14,6 +14,7 @@
     <string name="add_ingredient_categories_name" translatable="false">@string/tags_title</string>
     <string name="add_ingredient_image_select_from_gallery" translatable="false">@string/add_meal_image_select_from_gallery</string>
     <string name="add_ingredient_image_select_from_camera" translatable="false">@string/add_meal_image_select_from_camera</string>
+    <string name="add_ingredient_image_remove" translatable="false">@string/add_meal_image_remove</string>
     <string name="add_ingredient_save_action" translatable="false">@string/add_meal_save_action</string>
     <string name="edit_ingredient_title" translatable="false">@string/ingredients_item_edit_ingredient</string>
     <string name="edit_meal_title" translatable="false">@string/overview_meal_edit_description</string>

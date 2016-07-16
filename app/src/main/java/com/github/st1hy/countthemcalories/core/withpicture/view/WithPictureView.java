@@ -24,4 +24,6 @@ public interface WithPictureView extends DialogView {
     ImageView getImageView();
 
     void showImageOverlay();
+
+    void hideImageOverlay();
 }

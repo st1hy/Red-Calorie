@@ -131,6 +131,21 @@ public class AddIngredientActivityTest {
     }
 
     @Test
+    public void testRemoveImage() throws Exception {
+        testSelectImageFromGallery();
+
+        onView(withId(R.id.add_ingredient_image_overlay_top)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_ingredient_image_overlay_bottom)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_ingredient_image)).perform(click());
+        onView(withText(R.string.add_ingredient_image_remove)).perform(click());
+        onView(withId(R.id.add_ingredient_image))
+                .check(matches(isDisplayed()))
+                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));
+        onView(withId(R.id.add_ingredient_image_overlay_top)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.add_ingredient_image_overlay_bottom)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
     public void testSelectImageFromGalleryUserCanceled() {
         intending(galleryIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
