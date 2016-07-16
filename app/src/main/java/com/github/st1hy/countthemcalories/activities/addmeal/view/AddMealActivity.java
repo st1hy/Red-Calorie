@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -145,14 +147,15 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     }
 
     @Override
-    public void showIngredientDetails(long requestId,
-                                      @NonNull IngredientTypeParcel ingredientParcel,
-                                      @NonNull BigDecimal amount,
-                                      @Nullable View sharedElement,
-                                      @Nullable String sharedElementName) {
+    public final void showIngredientDetails(long requestId,
+                                            @NonNull IngredientTypeParcel ingredientParcel,
+                                            @NonNull BigDecimal amount,
+                                            @NonNull List<Pair<View, String>> sharedElements) {
         Bundle startOptions = null;
-        if (sharedElement != null) {
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, sharedElement, sharedElementName);
+        if (!sharedElements.isEmpty()) {
+            @SuppressWarnings("unchecked")
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                    sharedElements.toArray(new Pair[sharedElements.size()]));
             startOptions = options.toBundle();
         }
         Intent intent = new Intent(this, IngredientDetailActivity.class);

@@ -181,4 +181,9 @@ public class IngredientDetailFragment extends BaseFragment implements Ingredient
     public void removeIngredient(long ingredientId) {
         screen.removeIngredient(ingredientId);
     }
+
+//    @Override
+//    public void resumeEnterTransition() {
+//        screen.resumeEnterTransition();
+//    }
 }

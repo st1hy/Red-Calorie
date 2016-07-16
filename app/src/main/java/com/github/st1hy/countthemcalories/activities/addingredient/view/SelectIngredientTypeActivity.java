@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -31,12 +32,12 @@ public class SelectIngredientTypeActivity extends BaseActivity {
     @OnClick(R.id.select_ingredient_type_meal)
     void onMealClicked() {
         setResult(RESULT_MEAL);
-        finish();
+        ActivityCompat.finishAfterTransition(this);
     }
 
     @OnClick(R.id.select_ingredient_type_drink)
     void onDrinkClicked() {
         setResult(RESULT_DRINK);
-        finish();
+        ActivityCompat.finishAfterTransition(this);
     }
 }

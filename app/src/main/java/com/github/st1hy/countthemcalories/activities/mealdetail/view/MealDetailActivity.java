@@ -14,6 +14,9 @@ import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MealDetailActivity extends BaseActivity implements MealDetailScreen {
 
     public static final String EXTRA_MEAL_PARCEL = "meal detail parcel";
@@ -40,6 +43,7 @@ public class MealDetailActivity extends BaseActivity implements MealDetailScreen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meal_detail_activity);
+        ButterKnife.bind(this);
         getComponent().inject(this);
     }
 
@@ -57,6 +61,11 @@ public class MealDetailActivity extends BaseActivity implements MealDetailScreen
         Intent intent = new Intent();
         intent.putExtra(EXTRA_RESULT_MEAL_ID_LONG, mealId);
         setResult(resultCode, intent);
+        ActivityCompat.finishAfterTransition(this);
+    }
+
+    @OnClick(R.id.meal_detail_root)
+    public void onClickedOutside() {
         ActivityCompat.finishAfterTransition(this);
     }
 }

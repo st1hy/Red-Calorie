@@ -1,11 +1,4 @@
 <resources>
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-    </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -19,12 +12,26 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <!-- enable window content transitions -->
-        <item name="android:windowContentTransitions">true</item>
 
-        <!-- specify exit default_exit_transition -->
-        <item name="android:windowExitTransition">@android:transition/no_transition</item>
-        <item name="android:windowEnterTransition">@android:transition/no_transition</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Semitransparent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:navigationBarColor">#2a0306</item>
+        <item name="android:statusBarColor">#2a0306</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/auto</item>
+        <item name="android:windowSharedElementExitTransition">@transition/auto</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
     </style>
 
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
@@ -39,12 +46,6 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <!-- enable window content transitions -->
-        <item name="android:windowContentTransitions">true</item>
-
-        <!-- specify exit default_exit_transition -->
-        <item name="android:windowEnterTransition">@transition/auto</item>
-        <item name="android:windowExitTransition">@transition/auto</item>
     </style>
 
     <style name="ActivityContent"/>

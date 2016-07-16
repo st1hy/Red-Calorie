@@ -13,4 +13,5 @@ public interface IngredientDetailScreen {
                                        @NonNull BigDecimal amount);
 
     void removeIngredient(long ingredientId);
+
 }

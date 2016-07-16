@@ -6,6 +6,7 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -185,13 +187,11 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
     }
 
     @Override
-    public void showIngredientDetails(long requestID,
-                                      @NonNull IngredientTypeParcel ingredientParcel,
-                                      @NonNull BigDecimal amount,
-                                      @Nullable View sharedIngredientCompact,
-                                      @Nullable String sharedElementName) {
-        screen.showIngredientDetails(requestID, ingredientParcel, amount, sharedIngredientCompact,
-                sharedElementName);
+    public final void showIngredientDetails(long requestId,
+                                            @NonNull IngredientTypeParcel ingredientParcel,
+                                            @NonNull BigDecimal amount,
+                                            @NonNull List<Pair<View, String>> sharedElements) {
+        screen.showIngredientDetails(requestId, ingredientParcel, amount, sharedElements);
     }
 
     @Override

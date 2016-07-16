@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
                 android:textSize="18sp"
+                android:transitionName="ingredient-shared-view-name"
                 tools:text="Example ingredient name" />
 
             <TextView
@@ -60,6 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
+                android:transitionName="ingredient-shared-view-density"
                 tools:text="400 kcal / 100 g" />
 
             <TextView
@@ -67,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
+                android:transitionName="ingredient-shared-view-calories"
                 tools:text="40 g" />
         </LinearLayout>
 

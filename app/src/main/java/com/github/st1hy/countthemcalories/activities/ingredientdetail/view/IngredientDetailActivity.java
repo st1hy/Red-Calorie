@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.CardView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailFragment;
@@ -18,8 +17,8 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
@@ -28,9 +27,6 @@ import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fra
 public class IngredientDetailActivity extends BaseActivity implements IngredientDetailScreen {
 
     public static final int RESULT_REMOVE = 0x200;
-
-    @BindView(R.id.ingredient_detail_root)
-    CardView cardRoot;
 
     IngredientDetailComponent component;
 
@@ -74,6 +70,11 @@ public class IngredientDetailActivity extends BaseActivity implements Ingredient
         Intent intent = new Intent();
         intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
         setResult(RESULT_REMOVE, intent);
+        ActivityCompat.finishAfterTransition(this);
+    }
+
+    @OnClick(R.id.ingredient_detail_root)
+    void onClickedOutside() {
         ActivityCompat.finishAfterTransition(this);
     }
 

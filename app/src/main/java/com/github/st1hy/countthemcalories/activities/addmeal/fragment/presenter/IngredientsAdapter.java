@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,9 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -23,9 +24,12 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 import dagger.internal.Preconditions;
 import rx.Observable;
@@ -60,7 +64,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
-        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO, null, null);
+        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO,
+                Collections.<Pair<View,String>>emptyList());
     }
 
     public void onIngredientRemoved(long requestId) {
@@ -100,14 +105,24 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @Override
-    public void onIngredientClicked(@NonNull View sharedElement,
-                                    @NonNull Ingredient ingredient,
-                                    @NonNull String sharedElementName) {
+    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull IngredientItemViewHolder viewHolder) {
         IngredientTypeParcel typeParcel = new IngredientTypeParcel(ingredient.getIngredientType());
         BigDecimal amount = ingredient.getAmount();
         int position = model.indexOf(ingredient);
-        view.showIngredientDetails(position, typeParcel, amount, sharedElement, sharedElementName);
+        List<Pair<View, String>> sharedViews = ImmutableList.of(
+                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
+//                pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
+//                pairOf(viewHolder.getName(), "ingredient-shared-view-name")
+//                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
+//                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
+                );
+        view.showIngredientDetails(position, typeParcel, amount, sharedViews);
     }
+
+    private static Pair<View, String> pairOf(@NonNull View view, @NonNull String string) {
+        return Pair.create(view, string);
+    }
+
 
     @Override
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

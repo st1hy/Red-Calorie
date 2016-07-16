@@ -31,7 +31,7 @@ public class MealDetailActivityModel {
             fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
-                    .add(R.id.meal_detail_root, fragment, tag)
+                    .add(R.id.meal_detail_content_root, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
         }

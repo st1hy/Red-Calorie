@@ -59,7 +59,7 @@
         <activity
             android:name=".activities.ingredientdetail.view.IngredientDetailActivity"
             android:label="@string/add_meal_title"
-            android:theme="@style/AppTheme.Dialog"
+            android:theme="@style/AppTheme.Semitransparent"
             />
         <activity android:name=".activities.addingredient.view.SelectIngredientTypeActivity"
             android:label="@string/select_ingredient_type_title"
@@ -67,7 +67,7 @@
             />
         <activity android:name=".activities.mealdetail.view.MealDetailActivity"
             android:label="@string/meal_details_title"
-            android:theme="@style/AppTheme.Dialog"
+            android:theme="@style/AppTheme.Semitransparent"
             />
         <activity android:name=".activities.contribute.view.ContributeActivity"
             android:label="@string/contribute_title"

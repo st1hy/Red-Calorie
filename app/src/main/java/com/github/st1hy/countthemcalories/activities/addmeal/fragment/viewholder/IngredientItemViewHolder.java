@@ -68,13 +68,32 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.add_meal_ingredient_compact)
     public void onClicked() {
-        if (ingredient != null) callback.onIngredientClicked(image, ingredient, "ingredient-shared-view-image");
+        if (ingredient != null) callback.onIngredientClicked(ingredient, this);
+    }
+
+    @NonNull
+    public View getRoot() {
+        return root;
+    }
+
+    @NonNull
+    public TextView getName() {
+        return name;
+    }
+
+    @NonNull
+    public TextView getCalories() {
+        return calorieCount;
+    }
+
+    @NonNull
+    public TextView getDensity() {
+        return energyDensity;
     }
 
     public interface Callback {
-        void onIngredientClicked(@NonNull View sharedIngredientCompact,
-                                 @NonNull Ingredient ingredient,
-                                 @NonNull String sharedElementName);
+        void onIngredientClicked(@NonNull Ingredient ingredient,
+                                 @NonNull IngredientItemViewHolder viewHolder);
     }
 
 }

@@ -83,7 +83,6 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             view.setAmount(amount.toPlainString());
         }
         view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
-        bindImage(type);
         view.setUnitName(quantityModel.getUnitName(amountUnit));
 
         subscriptions.add(view.getAmountObservable()
@@ -93,6 +92,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         subscriptions.add(view.getAcceptObservable()
                 .filter(formCompleted())
                 .subscribe(onAcceptClicked()));
+        bindImage(type);
     }
 
     private void bindImage(@NonNull IngredientTemplate type) {

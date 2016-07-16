@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_gravity="center"
     android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
     app:cardCornerRadius="4dp"
     app:cardElevation="24dp"
     app:cardUseCompatPadding="true">
+
     <LinearLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:orientation="horizontal">
+
         <android.support.v7.widget.AppCompatImageButton
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:contentDescription="@string/select_ingredient_type_drink_description"
             android:id="@+id/select_ingredient_type_drink"
-            android:layout_width="@dimen/select_ingredient_option_size"
             android:layout_height="@dimen/select_ingredient_option_size"
+            android:layout_width="@dimen/select_ingredient_option_size"
             android:scaleType="fitCenter"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            tools:src="@drawable/ic_fizzy_drink"
-            android:contentDescription="@string/select_ingredient_type_drink_description" />
+            tools:src="@drawable/ic_fizzy_drink" />
+
         <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
             android:background="@drawable/tags_separator"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_width="2dp" />
+
         <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/select_ingredient_type_meal"
-            android:layout_width="@dimen/select_ingredient_option_size"
-            android:layout_height="@dimen/select_ingredient_option_size"
-            android:scaleType="fitCenter"
             style="@style/Widget.AppCompat.Button.Borderless"
-            tools:src="@drawable/ic_fork_and_knife_wide"
-            android:contentDescription="@string/select_ingredient_type_meal_description" />
+            android:contentDescription="@string/select_ingredient_type_meal_description"
+            android:id="@+id/select_ingredient_type_meal"
+            android:layout_height="@dimen/select_ingredient_option_size"
+            android:layout_width="@dimen/select_ingredient_option_size"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/ic_fork_and_knife_wide" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

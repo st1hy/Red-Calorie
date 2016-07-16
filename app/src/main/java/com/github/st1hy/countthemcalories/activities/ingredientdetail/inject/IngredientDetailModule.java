@@ -41,7 +41,7 @@ public class IngredientDetailModule {
             fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
-                    .add(R.id.ingredient_detail_root, fragment, tag)
+                    .add(R.id.ingredient_detail_content, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
         }
