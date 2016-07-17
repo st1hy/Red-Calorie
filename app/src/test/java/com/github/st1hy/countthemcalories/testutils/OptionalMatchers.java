@@ -39,4 +39,20 @@ public class OptionalMatchers {
             }
         };
     }
+
+    public static <T> Matcher<Optional<T>> valueMatches(@NonNull final Matcher<T> matcher) {
+        return new TypeSafeMatcher<Optional<T>>() {
+
+            @Override
+            protected boolean matchesSafely(Optional<T> item) {
+                return matcher.matches(item.orNull());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with value ");
+                description.appendDescriptionOf(matcher);
+            }
+        };
+    }
 }

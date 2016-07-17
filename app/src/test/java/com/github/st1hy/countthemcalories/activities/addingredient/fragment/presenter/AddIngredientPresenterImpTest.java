@@ -6,20 +6,23 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
-import com.github.st1hy.countthemcalories.testutils.TestError;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,16 +36,20 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Collections;
+import java.util.List;
 
 import rx.Observable;
 import rx.plugins.TestRxPlugins;
+import rx.subjects.PublishSubject;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static com.github.st1hy.countthemcalories.testutils.OptionalMatchers.valueMatches;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -145,16 +152,37 @@ public class AddIngredientPresenterImpTest {
 
     @Test
     public void testSaveError() throws Exception {
-        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(new TestError()));
-        when(view.getSaveObservable()).thenReturn(Observable.<Void>just(null));
+        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(
+                saveErrorOf(ImmutableList.of(ErrorType.NO_NAME)))
+        );
+        final PublishSubject<Void> saveSubject = PublishSubject.create();
+        when(view.getSaveObservable()).thenReturn(saveSubject);
 
         presenter.onStart();
+        saveSubject.onNext(null);
 
         testVerifyStart();
 
         verify(model).saveIntoDatabase();
+        verify(view).showNameError(argThat(valueMatches(Matchers.any(Integer.class))));
+        verify(view).showValueError(argThat(OptionalMatchers.<Integer>isAbsent()));
+        verify(view).requestFocusToName();
+
+        when(model.saveIntoDatabase()).thenReturn(Observable.<IngredientTemplate>error(
+                saveErrorOf(ImmutableList.of(ErrorType.NO_VALUE)))
+        );
+        saveSubject.onNext(null);
+
+        verify(model, times(2)).saveIntoDatabase();
+        verify(view).showNameError(argThat(OptionalMatchers.<Integer>isAbsent()));
+        verify(view).showValueError(argThat(valueMatches(Matchers.any(Integer.class))));
+        verify(view).requestFocusToValue();
 
         verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
+    }
+
+    private static IngredientTypeCreateException saveErrorOf(List<ErrorType> errors) {
+        return new IngredientTypeCreateException(errors);
     }
 
     @Test

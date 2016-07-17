@@ -44,6 +44,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -51,6 +52,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
+import static com.github.st1hy.countthemcalories.matchers.EditTextMatchers.hasNoError;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -167,8 +169,12 @@ public class IngredientActivityTest {
         intended(hasComponent(new ComponentName(getTargetContext(), SelectIngredientTypeActivity.class)));
         onView(withId(R.id.select_ingredient_type_meal)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddIngredientActivity.class)));
+        onView(withText(R.string.add_ingredient_save_action)).check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.add_ingredient_name)).check(matches(hasErrorText(getTargetContext().getString(R.string.add_ingredient_name_error_empty))));
         onView(withHint(R.string.add_ingredient_name_hint)).check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("New ingredient name"));
+        onView(withId(R.id.add_ingredient_name)).check(matches(hasNoError()));
         onView(withHint(R.string.add_ingredient_energy_density_hint)).check(matches(isDisplayed()))
                 .perform(click())
                 .perform(typeTextIntoFocusedView("30"));

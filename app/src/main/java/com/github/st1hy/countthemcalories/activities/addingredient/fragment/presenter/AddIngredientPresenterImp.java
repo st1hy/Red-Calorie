@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -93,6 +93,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         subscriptions.add(view.getSaveObservable()
                 .flatMap(saveToDatabase())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(onSaveError())
                 .subscribe(onAddedIngredientToDatabase()));
     }
 
@@ -128,28 +129,30 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     @NonNull
     private Subscriber<IngredientTemplate> onAddedIngredientToDatabase() {
-        return new Subscriber<IngredientTemplate>() {
-
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                if (error instanceof IngredientTypeCreateException) {
-                    List<ErrorType> errors = ((IngredientTypeCreateException) error).getErrors();
-                    onCreateIngredientResult(errors);
-                } else {
-                    Timber.e(error, "Error adding new ingredient type to database");
-                }
-            }
-
+        return new SimpleSubscriber<IngredientTemplate>() {
             @Override
             public void onNext(IngredientTemplate template) {
                 onCreateIngredientResult(Collections.<ErrorType>emptyList());
                 Intent intent = new Intent();
                 intent.putExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, template.getId());
                 view.setResultAndFinish(intent);
+            }
+        };
+    }
+
+    @NonNull
+    private Func2<Integer, Throwable, Boolean> onSaveError() {
+        return new Func2<Integer, Throwable, Boolean>() {
+            @Override
+            public Boolean call(Integer attempt, Throwable error) {
+                if (error instanceof IngredientTypeCreateException) {
+                    List<ErrorType> errors = ((IngredientTypeCreateException) error).getErrors();
+                    onCreateIngredientResult(errors);
+                    return true;
+                } else {
+                    Timber.e(error, "Error adding new ingredient type to database");
+                    return attempt < 128;
+                }
             }
         };
     }
@@ -183,7 +186,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
     }
 
     @NonNull
-    private Optional<Integer> searchListFor(@NonNull List<ErrorType> errors,
+    private static Optional<Integer> searchListFor(@NonNull List<ErrorType> errors,
                                             @NonNull ErrorType error) {
         return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
     }
