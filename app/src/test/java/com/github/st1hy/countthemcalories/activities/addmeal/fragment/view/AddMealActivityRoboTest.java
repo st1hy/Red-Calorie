@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.Ingre
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
@@ -81,8 +82,8 @@ public class AddMealActivityRoboTest {
         addIngredient();
         handleNewIngredient();
         shadowActivity.clickMenuItem(R.id.action_save);
-        assertThat(shadowActivity.isFinishing(), equalTo(true));
-        assertThat(shadowActivity.getResultCode(), equalTo(Activity.RESULT_OK));
+        Intent nextStartedActivity = shadowActivity.getNextStartedActivity();
+        assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, OverviewActivity.class)));
     }
 
     @Test

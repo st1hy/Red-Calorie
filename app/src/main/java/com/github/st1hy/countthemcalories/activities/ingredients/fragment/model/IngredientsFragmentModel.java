@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.model;
 
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
@@ -43,4 +44,13 @@ public class IngredientsFragmentModel {
         return R.string.ingredients_search_result_empty;
     }
 
+    @ArrayRes
+    public int getIngredientOptions() {
+        return R.array.ingredient_item_options;
+    }
+
+    @StringRes
+    public int getIngredientOptionsTitle() {
+        return R.string.ingredients_item_options_title;
+    }
 }

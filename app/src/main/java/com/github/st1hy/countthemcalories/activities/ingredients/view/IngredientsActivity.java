@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
@@ -118,6 +119,13 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
         result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, ingredientTypeParcel);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    @Override
+    public void openNewMealScreen(@NonNull IngredientTypeParcel parcel) {
+        Intent intent = new Intent(this, AddMealActivity.class);
+        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, parcel);
+        startActivity(intent);
     }
 
     @Override

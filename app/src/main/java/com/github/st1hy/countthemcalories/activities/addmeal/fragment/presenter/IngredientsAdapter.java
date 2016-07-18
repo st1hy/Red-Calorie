@@ -171,6 +171,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             public void onCompleted() {
                 notifyDataSetChanged();
                 onDataSetChanged();
+                Optional<IngredientTypeParcel> extraIngredient = model.getExtraIngredient();
+                if (extraIngredient.isPresent()) {
+                    onIngredientReceived(extraIngredient.get());
+                }
             }
         };
     }

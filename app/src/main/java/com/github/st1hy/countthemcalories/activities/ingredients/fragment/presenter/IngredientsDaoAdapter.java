@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
@@ -42,11 +43,14 @@ import java.util.Queue;
 import java.util.concurrent.Callable;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
+
+import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
 
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
         implements IngredientItemViewHolder.Callback {
@@ -138,9 +142,14 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @Override
-    public void onIngredientClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
+    public void onIngredientClicked(@NonNull final IngredientTemplate ingredientTemplate,
+                                    int position) {
         if (model.isInSelectMode()) {
             view.onIngredientSelected(new IngredientTypeParcel(ingredientTemplate));
+        } else {
+            view.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onAddToNewMealClicked(ingredientTemplate));
         }
     }
 
@@ -194,6 +203,27 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                         onSearchFinished();
                     }
                 });
+    }
+
+    @NonNull
+    private Subscriber<Integer> onAddToNewMealClicked(@NonNull final IngredientTemplate ingredient) {
+        return new SimpleSubscriber<Integer>() {
+            @Override
+            public void onNext(Integer selectedOptionPosition) {
+                IngredientOptions selectedOption = from(selectedOptionPosition);
+                switch (selectedOption) {
+                    case ADD_TO_NEW:
+                        view.openNewMealScreen(new IngredientTypeParcel(ingredient));
+                        break;
+                    case EDIT:
+                        //TODO
+                        break;
+                    case REMOVE:
+                        //TODO
+                        break;
+                }
+            }
+        };
     }
 
     @NonNull
@@ -371,7 +401,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
             holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
             onBindImage(ingredient, holder);
         } else {
-            Timber.w("Cursor closed duding binding views.");
+            Timber.w("Cursor closed during binding views.");
         }
     }
 

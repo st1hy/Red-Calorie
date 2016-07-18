@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,6 +51,8 @@ public class AddMealActivityModule {
         Bundle arguments = new Bundle();
         arguments.putParcelable(AddMealFragmentModule.EXTRA_MEAL_PARCEL,
                 intent.getParcelableExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL));
+        arguments.putParcelable(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL,
+                intent.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
         return arguments;
     }
 

@@ -15,9 +15,11 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
+import com.google.common.base.Optional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import rx.Observable;
@@ -36,13 +38,16 @@ public class MealIngredientsListModel {
     final ParcelableProxy parcelableProxy;
 
     final Observable<Void> loadingObservable;
+    @Nullable final IngredientTypeParcel extraStartingIngredient;
 
     public MealIngredientsListModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                     @NonNull RxMealsDatabaseModel databaseModel,
                                     @Nullable MealParcel parcel,
+                                    @Nullable IngredientTypeParcel extraStartingIngredient,
                                     @Nullable Bundle savedState) {
         this.ingredientTypesModel = ingredientTypesModel;
         this.databaseModel = databaseModel;
+        this.extraStartingIngredient = extraStartingIngredient;
         ParcelableProxy parcelableProxy = null;
         if (savedState != null) {
             parcelableProxy = savedState.getParcelable(ParcelableProxy.STATE_MODEL);
@@ -193,8 +198,14 @@ public class MealIngredientsListModel {
         return ingredients.indexOf(ingredient);
     }
 
-    public ArrayList<Ingredient> getIngredients() {
+    @NonNull
+    public Collection<Ingredient> getIngredients() {
         return ingredients;
+    }
+
+    @NonNull
+    public Optional<IngredientTypeParcel> getExtraIngredient() {
+        return Optional.fromNullable(extraStartingIngredient);
     }
 
     public static class Loading extends Subscriber<Void> {

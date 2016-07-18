@@ -19,7 +19,6 @@ public interface IngredientsView extends UndoView, IngredientsScreen {
     @NonNull
     Observable<Void> showUsedIngredientRemoveConfirmationDialog();
 
-
     void scrollToPosition(int position);
 
     void setNoIngredientsMessage(@StringRes int noIngredientTextResId);

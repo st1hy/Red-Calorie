@@ -466,4 +466,21 @@ public class IngredientsDaoAdapterTest {
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
     }
+
+    @Test
+    public void testAddToNewMeal() throws Exception {
+        when(model.isInSelectMode()).thenReturn(false);
+        final IngredientTemplate ingredient = mock(IngredientTemplate.class);
+        when(view.showAlertDialog(anyInt(), anyInt())).thenReturn(Observable.just(0));
+
+        adapter.onIngredientClicked(ingredient, 0);
+
+        verify(model).isInSelectMode();
+        verify(model).getIngredientOptions();
+        verify(model).getIngredientOptionsTitle();
+        verify(view).showAlertDialog(anyInt(), anyInt());
+        verify(view).openNewMealScreen(argThat(hasIngredient(ingredient)));
+
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+    }
 }

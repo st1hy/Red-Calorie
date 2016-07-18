@@ -121,6 +121,7 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
 
         @NonNull
         Observable<RecyclerEvent> getEvents();
+
     }
 
 }

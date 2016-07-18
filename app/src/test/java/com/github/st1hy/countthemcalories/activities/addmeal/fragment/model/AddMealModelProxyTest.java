@@ -12,7 +12,8 @@ import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -27,23 +28,24 @@ public class AddMealModelProxyTest {
     final String testName = "Name";
     final Uri testUri = Uri.parse("http://test.org/");
 
-    private MealIngredientsListModel listModel;
+    @Mock
+    MealIngredientsListModel listModel;
+    @Mock
+    RxMealsDatabaseModel databaseModel;
+
     private Resources resources;
-    private RxMealsDatabaseModel databaseModel;
     private AddMealModel model;
 
 
     @Before
     public void setUp() throws Exception {
-        listModel = Mockito.mock(MealIngredientsListModel.class);
+        MockitoAnnotations.initMocks(this);
         resources = RuntimeEnvironment.application.getResources();
-        databaseModel = Mockito.mock(RxMealsDatabaseModel.class);
         model = new AddMealModel(listModel, databaseModel, resources, null, null);
 
         model.setName(testName);
         model.setImageUri(testUri);
     }
-
 
     @Test
     public void testOnSaveState() throws Exception {

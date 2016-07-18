@@ -23,7 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -61,17 +62,19 @@ public class MealIngredientsListModelProxyTest {
             new BigDecimal("52.0"),
     };
 
-    private RxIngredientsDatabaseModel ingredientTypesModel;
-    private RxMealsDatabaseModel rxMealsDatabaseModel;
+    @Mock
+    RxIngredientsDatabaseModel ingredientTypesModel;
+    @Mock
+    RxMealsDatabaseModel rxMealsDatabaseModel;
     private MealIngredientsListModel model;
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
-        ingredientTypesModel = Mockito.mock(RxIngredientsDatabaseModel.class);
-        rxMealsDatabaseModel = Mockito.mock(RxMealsDatabaseModel.class);
-        model = new MealIngredientsListModel(ingredientTypesModel, rxMealsDatabaseModel, null, null);
+        model = new MealIngredientsListModel(ingredientTypesModel, rxMealsDatabaseModel, null,
+                null, null);
 
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
             IngredientTypeParcel typeParcel = new IngredientTypeParcel(exampleIngredientTemplate[i]);
@@ -96,7 +99,8 @@ public class MealIngredientsListModelProxyTest {
 
         model.onSaveState(bundle);
 
-        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, rxMealsDatabaseModel, null, bundle);
+        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel,
+                rxMealsDatabaseModel, null, null, bundle);
 
         Assert.assertThat(restoredModel.ingredients, hasSize(exampleIngredientTemplate.length));
         for (int i = 0; i < exampleIngredientTemplate.length; i++) {
@@ -116,7 +120,8 @@ public class MealIngredientsListModelProxyTest {
         Bundle bundle = new Bundle();
         bundle.putParcelable(MealIngredientsListModel.ParcelableProxy.STATE_MODEL, fromParcel);
 
-        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel, rxMealsDatabaseModel, null, bundle);
+        MealIngredientsListModel restoredModel = new MealIngredientsListModel(ingredientTypesModel,
+                rxMealsDatabaseModel, null, null, bundle);
 
         restoredModel.getItemsLoadedObservable().toBlocking().first();
 

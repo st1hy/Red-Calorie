@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredien
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
@@ -208,7 +209,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     @Override
     public void onMealSaved() {
         setResult(RESULT_OK);
-        finish();
+        Intent intent = new Intent(this, OverviewActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

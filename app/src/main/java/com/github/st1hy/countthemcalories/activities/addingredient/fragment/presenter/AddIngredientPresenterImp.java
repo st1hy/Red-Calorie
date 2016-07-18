@@ -106,7 +106,8 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             @Override
             public void onNext(Void aVoid) {
                 String name = model.getName();
-                view.showInWebBrowser(model.getSearchIngredientQuery(name));
+                if (!name.trim().isEmpty())
+                    view.showInWebBrowser(model.getSearchIngredientQuery(name));
             }
         };
     }

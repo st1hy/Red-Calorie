@@ -36,7 +36,9 @@
     <string name="ingredients_search_tag_remove_desc">Usuń kategorię z wyszukiwania</string>
     <string name="ingredients_search_title">Szukaj składników</string>
     <string name="ingredients_title">Składniki</string>
+    <string name="ingredients_item_add_to_new_meal">Dodaj do nowego posiłku</string>
     <string name="ingredients_undo_remove">Składnik został usunięty</string>
+    <string name="ingredients_item_options_title">Opcje</string>
     <string name="meal_details_title">Detale posiłku</string>
     <string name="nav_overview">Przegląd</string>
     <string name="navigation_drawer_close">Zamnkij panel do nawigacji</string>

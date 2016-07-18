@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewActivityRoboTest;
@@ -53,6 +54,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsActivityRoboTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -254,5 +256,22 @@ public class IngredientsActivityRoboTest {
         assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
         ShadowSnackbar.getLatest().performAction();
         assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+    }
+
+    @Test
+    public void testAddToNewMeal() throws Exception {
+        setupActivity();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button).performClick();
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(latestAlertDialog);
+        shadowOf(latestAlertDialog).clickOnItem(0); //Add to new meal
+        Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(nextStartedActivity);
+        assertThat(nextStartedActivity, hasComponent(new ComponentName(activity, AddMealActivity.class)));
+        assertThat(nextStartedActivity, hasExtra(
+                equalTo(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL),
+                any(IngredientTypeParcel.class)
+        ));
     }
 }

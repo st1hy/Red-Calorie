@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -18,6 +19,7 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
@@ -43,6 +45,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -54,6 +57,8 @@ import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivi
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static com.github.st1hy.countthemcalories.matchers.EditTextMatchers.hasNoError;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -269,6 +274,22 @@ public class IngredientActivityTest {
         onView(allOf(withId(R.id.ingredients_item_edit), isDisplayed()))
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)));
+    }
 
+
+    @Test
+    public void testAddToNewIngredient() throws Exception {
+        main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(click());
+        onView(withText(R.string.ingredients_item_add_to_new_meal))
+                .perform(click());
+        intended(allOf(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)),
+                hasExtra(
+                        equalTo(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL),
+                        any(IngredientTypeParcel.class))
+                )
+        );
     }
 }

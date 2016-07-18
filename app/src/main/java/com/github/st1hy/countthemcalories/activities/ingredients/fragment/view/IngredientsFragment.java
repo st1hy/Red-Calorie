@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.view;
 
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -170,5 +171,20 @@ public class IngredientsFragment extends BaseFragment implements IngredientsView
     @Override
     public void hideUndoMessage() {
         screen.hideUndoMessage();
+    }
+
+    @Override
+    public Observable<Integer> showAlertDialog(@StringRes int titleRes, @ArrayRes int optionsRes) {
+        return screen.showAlertDialog(titleRes, optionsRes);
+    }
+
+    @Override
+    public Observable<Integer> showAlertDialog(@StringRes int titleRes, CharSequence[] options) {
+        return screen.showAlertDialog(titleRes, options);
+    }
+
+    @Override
+    public void openNewMealScreen(@NonNull IngredientTypeParcel parcel) {
+        screen.openNewMealScreen(parcel);
     }
 }

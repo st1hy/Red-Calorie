@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredi
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
+import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
@@ -29,6 +30,7 @@ import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSub
 public class AddMealFragmentModule {
 
     public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
+    public static final String EXTRA_INGREDIENT_PARCEL = "edit ingredient parcel";
 
     private final AddMealFragment fragment;
     @Nullable
@@ -60,8 +62,10 @@ public class AddMealFragmentModule {
     public MealIngredientsListModel provideListModel(RxIngredientsDatabaseModel model,
                                                      RxMealsDatabaseModel databaseModel,
                                                      @Nullable MealParcel mealParcel,
+                                                     @Nullable IngredientTypeParcel ingredientsParcel,
                                                      @Nullable Bundle savedState) {
-        return new MealIngredientsListModel(model, databaseModel, mealParcel, savedState);
+        return new MealIngredientsListModel(model, databaseModel, mealParcel, ingredientsParcel,
+                savedState);
     }
 
     @Provides
@@ -94,5 +98,15 @@ public class AddMealFragmentModule {
     @Nullable
     public Bundle provideSavedState() {
         return savedState;
+    }
+
+    @Provides
+    @Nullable
+    public IngredientTypeParcel provideIngredientsParcel() {
+        Bundle arguments = fragment.getArguments();
+        Preconditions.checkNotNull(arguments);
+        IngredientTypeParcel parcel = arguments.getParcelable(EXTRA_INGREDIENT_PARCEL);
+        arguments.remove(EXTRA_INGREDIENT_PARCEL);
+        return parcel;
     }
 }
