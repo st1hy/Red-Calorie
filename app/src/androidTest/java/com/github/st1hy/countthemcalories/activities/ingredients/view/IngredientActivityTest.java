@@ -7,6 +7,7 @@ import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
@@ -276,9 +277,8 @@ public class IngredientActivityTest {
         intended(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)));
     }
 
-
     @Test
-    public void testAddToNewIngredient() throws Exception {
+    public void testAddToNewMeal() throws Exception {
         main.launchActivity(null);
         onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withText(exampleIngredients[0].getName()))
@@ -291,5 +291,33 @@ public class IngredientActivityTest {
                         any(IngredientTypeParcel.class))
                 )
         );
+    }
+
+    @Test
+    public void testEditIngredientFromOptions() throws Exception {
+        main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(click());
+        onView(withText(R.string.ingredients_item_edit_ingredient))
+                .perform(click());
+
+        intended(allOf(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)),
+                hasExtra(
+                        equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL),
+                        any(IngredientTypeParcel.class))
+                )
+        );
+    }
+
+    @Test
+    public void testDeleteFromOptions() throws Exception {
+        main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(click());
+        onView(withText(R.string.ingredients_item_delete_ingredient))
+                .perform(click());
+        onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
     }
 }

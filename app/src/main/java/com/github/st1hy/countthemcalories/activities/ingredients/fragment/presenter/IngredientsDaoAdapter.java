@@ -149,7 +149,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         } else {
             view.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onAddToNewMealClicked(ingredientTemplate));
+                    .subscribe(onAddToNewMealClicked(ingredientTemplate, position));
         }
     }
 
@@ -206,7 +206,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @NonNull
-    private Subscriber<Integer> onAddToNewMealClicked(@NonNull final IngredientTemplate ingredient) {
+    private Subscriber<Integer> onAddToNewMealClicked(@NonNull final IngredientTemplate ingredient,
+                                                      final int position) {
         return new SimpleSubscriber<Integer>() {
             @Override
             public void onNext(Integer selectedOptionPosition) {
@@ -216,10 +217,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                         view.openNewMealScreen(new IngredientTypeParcel(ingredient));
                         break;
                     case EDIT:
-                        //TODO
+                        onEditClicked(ingredient, position);
                         break;
                     case REMOVE:
-                        //TODO
+                        onDeleteClicked(ingredient, position);
                         break;
                 }
             }

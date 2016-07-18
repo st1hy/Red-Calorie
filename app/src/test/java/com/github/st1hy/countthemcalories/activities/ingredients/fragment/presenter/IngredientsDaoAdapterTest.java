@@ -405,7 +405,7 @@ public class IngredientsDaoAdapterTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Has the same ingredient");
+                description.appendText("Has the same ingredient " + ingredient);
             }
         };
     }
@@ -475,12 +475,44 @@ public class IngredientsDaoAdapterTest {
 
         adapter.onIngredientClicked(ingredient, 0);
 
+        testVerifyOpenOptions();
+        verify(view).openNewMealScreen(argThat(hasIngredient(ingredient)));
+
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+    }
+
+    @Test
+    public void testEditIngredientFromOptions() throws Exception {
+        when(model.isInSelectMode()).thenReturn(false);
+        final IngredientTemplate ingredient = mock(IngredientTemplate.class);
+        when(view.showAlertDialog(anyInt(), anyInt())).thenReturn(Observable.just(1));
+
+        adapter.onIngredientClicked(ingredient, 0);
+
+        testVerifyOpenOptions();
+        verify(view).openEditIngredientScreen(eq(0L), argThat(hasIngredient(ingredient)));
+
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+    }
+
+    @Test
+    public void testDeleteIngredientFromOptions() throws Exception {
+        when(model.isInSelectMode()).thenReturn(false);
+        final IngredientTemplate ingredient = prepareDelete();
+        when(view.showAlertDialog(anyInt(), anyInt())).thenReturn(Observable.just(2));
+
+        adapter.onIngredientClicked(ingredient, 0);
+
+        testVerifyOpenOptions();
+        verifyDelete(ingredient);
+
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+    }
+
+    private void testVerifyOpenOptions() {
         verify(model).isInSelectMode();
         verify(model).getIngredientOptions();
         verify(model).getIngredientOptionsTitle();
         verify(view).showAlertDialog(anyInt(), anyInt());
-        verify(view).openNewMealScreen(argThat(hasIngredient(ingredient)));
-
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
     }
 }

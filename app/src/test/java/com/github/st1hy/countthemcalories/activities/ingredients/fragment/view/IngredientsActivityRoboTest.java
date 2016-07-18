@@ -34,7 +34,6 @@ import com.google.common.base.Preconditions;
 
 import org.joda.time.DateTime;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,7 +156,7 @@ public class IngredientsActivityRoboTest {
 
     private void addAdditionalIngredientToDatabase() {
         session.insert(additionalIngredient);
-        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(4));
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(4));
     }
 
     @Test
@@ -197,7 +196,7 @@ public class IngredientsActivityRoboTest {
     public void testDelete() throws Exception {
         setupActivity();
 
-        Assert.assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
         assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
         TextView title = (TextView) fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
         assertThat(title.getText().toString(), equalTo(exampleIngredients[0].getName()));
@@ -212,9 +211,6 @@ public class IngredientsActivityRoboTest {
         List<IngredientTemplate> templates = session.getIngredientTemplateDao().loadAll();
         assertThat(templates, hasSize(1));
         assertThat(templates.get(0).getName(), equalTo(exampleIngredients[2].getName()));
-//        assertThat(activity.recyclerView.getAdapter().getItemCount(), equalTo(2));
-//        title = (TextView) activity.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_name);
-//        Assert.assertThat(title.getText().toString(), equalTo(exampleIngredients[2].getName()));
     }
 
     @Test
@@ -273,5 +269,39 @@ public class IngredientsActivityRoboTest {
                 equalTo(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL),
                 any(IngredientTypeParcel.class)
         ));
+    }
+
+
+    @Test
+    public void testEditIngredientFromOptions() throws Exception {
+        setupActivity();
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button).performClick();
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(latestAlertDialog);
+        shadowOf(latestAlertDialog).clickOnItem(1); //Edit ingredient
+        Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
+        assertNotNull(nextStartedActivity);
+        assertThat(nextStartedActivity, hasComponent(
+                new ComponentName(activity, EditIngredientActivity.class)));
+        assertThat(nextStartedActivity, hasExtra(
+                equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL),
+                any(IngredientTypeParcel.class)
+        ));
+    }
+
+    @Test
+    public void testRemoveIngredientFromDialog() throws Exception {
+        setupActivity();
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(3));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(4));
+
+        fragment.recyclerView.getChildAt(0).findViewById(R.id.ingredients_item_button).performClick();
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull(latestAlertDialog);
+        shadowOf(latestAlertDialog).clickOnItem(2); //Remove ingredient
+
+        assertThat(session.getIngredientTemplateDao().loadAll(), hasSize(2));
+        assertThat(fragment.recyclerView.getAdapter().getItemCount(), equalTo(3));
     }
 }
