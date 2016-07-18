@@ -26,7 +26,6 @@ import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
-import com.google.common.base.Preconditions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,9 +48,12 @@ import timber.log.Timber;
 
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -120,7 +122,7 @@ public class AddIngredientActivityRoboTest {
 
     @Test
     public void testImageButton() throws Exception {
-        Preconditions.checkNotNull(activity.findViewById(R.id.add_ingredient_image)).performClick();
+        checkNotNull(activity.findViewById(R.id.add_ingredient_image)).performClick();
         TestPermissionHelper.grantPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
@@ -242,5 +244,15 @@ public class AddIngredientActivityRoboTest {
     @Test
     public void testGetImageView() throws Exception {
         assertThat(fragment.getImageView(), equalTo(activity.findViewById(R.id.add_ingredient_image)));
+    }
+
+    @Test
+    public void testSearchIngredientInTheInternet() throws Exception {
+        fragment.name.setText("Eggs");
+        checkNotNull(fragment.getView()).findViewById(R.id.add_ingredient_name_search)
+                .performClick();
+        Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
+        assertThat(nextStartedActivity, allOf(hasAction(Intent.ACTION_VIEW),
+                hasData("https://google.com/#q=Eggs+calories")));
     }
 }

@@ -44,6 +44,7 @@
     <string name="ingredients_remove_ingredient_dialog_message">This ingredient is used somewhere in a meal. Removing this ingredient will change all meals that contains it.\nIs this what you want?</string>
     <string name="ingredients_undo_remove">Ingredient removed</string>
     <string name="ingredients_search_tag_remove_desc">Remove category from search</string>
+    <string name="add_ingredient_default_search_keywords">calories</string>
 
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
@@ -54,6 +55,7 @@
     <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>
     <string name="add_ingredient_energy_density_error_empty">Amount has be specified!</string>
     <string name="add_ingredient_energy_density_error_zero">Amount must be greater than zero!</string>
+    <string name="add_ingredient_search_name_desc">Search the Internet for this ingredient</string>
 
     <string name="tags_title">Categories</string>
     <string name="tags_new_tag_dialog">New category</string>

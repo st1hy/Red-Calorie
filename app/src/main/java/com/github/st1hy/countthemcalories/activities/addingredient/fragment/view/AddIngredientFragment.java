@@ -27,6 +27,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.Collection;
@@ -56,6 +57,8 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
     TextView energyDensityUnit;
     @BindView(R.id.add_ingredient_categories_recycler)
     RecyclerView tagsRecycler;
+    @BindView(R.id.add_ingredient_name_search)
+    View searchName;
 
     @Nullable
     @Override
@@ -226,5 +229,16 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
     @Override
     public Observable<Integer> showAlertDialog(@StringRes int titleRes, CharSequence[] options) {
         return screen.showAlertDialog(titleRes, options);
+    }
+
+    @Override
+    public void showInWebBrowser(@NonNull Uri address) {
+        screen.showInWebBrowser(address);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getSearchObservable() {
+        return RxView.clicks(searchName);
     }
 }

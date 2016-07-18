@@ -10,6 +10,8 @@
     <string name="add_ingredient_name_hint">Nazwa</string>
     <string name="add_ingredient_remove_category">Usuń kategorię</string>
     <string name="add_ingredient_title">Dodaj składnik</string>
+    <string name="add_ingredient_search_name_desc">Wyszukaj w Internecie po nazwie tego składnika</string>
+    <string name="add_ingredient_default_search_keywords">kalorie</string>
     <string name="add_meal_image_gallery_picker">Wybierz źródło</string>
     <string name="add_meal_image_select_from_camera">Zrób nowe zdjęcie</string>
     <string name="add_meal_image_select_from_gallery">Wybierz obrazek z galerii</string>

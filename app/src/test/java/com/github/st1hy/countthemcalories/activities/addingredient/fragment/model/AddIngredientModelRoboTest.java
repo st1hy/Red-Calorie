@@ -365,6 +365,13 @@ public class AddIngredientModelRoboTest {
         }), argThat(contains(tagIds))); // new tags
     }
 
+    @Test
+    public void testGetSearchQuery() throws Exception {
+        setUpEmptyIngredient();
+        Uri query = model.getSearchIngredientQuery("Eggs");
+        assertThat(query.toString(), equalTo("https://google.com/#q=Eggs+calories"));
+    }
+
     @NonNull
     public static <T> Matcher<Collection<T>> contains(final Collection<T> items) {
         return new TypeSafeMatcher<Collection<T>>() {
@@ -409,17 +416,6 @@ public class AddIngredientModelRoboTest {
                 JointIngredientTag spy = Mockito.spy(new JointIngredientTag(null, example.getId(), tag.getId()));
                 doReturn(tag).when(spy).getTag();
                 return spy;
-            }
-        };
-    }
-
-    @NonNull
-    private static Function<Tag, Long> intoTagIds() {
-        return new Function<Tag, Long>() {
-            @Nullable
-            @Override
-            public Long apply(@Nullable Tag tag) {
-                return tag.getId();
             }
         };
     }

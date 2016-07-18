@@ -107,6 +107,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getSaveObservable()).thenReturn(Observable.<Void>empty());
         when(model.canCreateIngredient(anyString(), anyString()))
                 .thenReturn(Collections.<ErrorType>emptyList());
+        when(view.getSearchObservable()).thenReturn(Observable.<Void>empty());
 
         presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, picasso);
     }
@@ -277,5 +278,27 @@ public class AddIngredientPresenterImpTest {
         verify(view).getNameObservable();
         verify(view).getValueObservable();
         verify(view).getSaveObservable();
+        verify(view).getSearchObservable();
+    }
+
+    @Test
+    public void testSearchIngredientInTheInternet() throws Exception {
+        PublishSubject<Void> search = PublishSubject.create();
+        when(view.getSearchObservable()).thenReturn(search);
+        PublishSubject<CharSequence> name = PublishSubject.create();
+        when(view.getNameObservable()).thenReturn(name);
+
+        presenter.onStart();
+        testVerifyStart();
+
+        name.onNext("Eggs");
+        verify(model).setName("Eggs");
+
+        search.onNext(null);
+        verify(model, times(2)).getName();
+        verify(model).getSearchIngredientQuery(anyString());
+        verify(view).showInWebBrowser(any(Uri.class));
+
+        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
     }
 }

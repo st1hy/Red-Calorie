@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -156,5 +157,10 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     @Override
     public Observable<Void> getSaveObservable() {
         return saveClickedSubject;
+    }
+
+    @Override
+    public void showInWebBrowser(@NonNull Uri address) {
+        startActivity(new Intent(Intent.ACTION_VIEW, address));
     }
 }

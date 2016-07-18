@@ -289,6 +289,13 @@ public class AddIngredientModel extends WithPictureModel {
         return source != null;
     }
 
+
+    public Uri getSearchIngredientQuery(@NonNull String name) {
+        String search = (name.trim() + "+" + resources.getString(R.string.add_ingredient_default_search_keywords))
+                .trim().replace(" ", "+");
+        return Uri.parse(resources.getString(R.string.default_search_query, search));
+    }
+
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add ingredient model";
         static final int FLAG_HAS_SOURCE = 0x01;

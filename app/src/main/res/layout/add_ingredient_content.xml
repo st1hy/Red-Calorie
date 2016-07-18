@@ -20,16 +20,40 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <EditText
-                android:id="@+id/add_ingredient_name"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_ingredient_name_hint"
-                android:inputType="textCapSentences"
-                android:textSize="20sp">
+                android:orientation="horizontal">
 
-                <requestFocus />
-            </EditText>
+                <EditText
+                    android:id="@+id/add_ingredient_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_ingredient_name_hint"
+                    android:inputType="textCapSentences"
+                    android:paddingRight="@dimen/add_ingredient_name_search_width"
+                    android:paddingEnd="@dimen/add_ingredient_name_search_width"
+                    android:textSize="20sp"
+                    tools:ignore="RtlSymmetry">
+
+                    <requestFocus />
+                </EditText>
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/add_ingredient_name_search"
+                    android:layout_width="@dimen/add_ingredient_name_search_width"
+                    android:layout_height="wrap_content"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                    app:srcCompat="@drawable/ic_search_24px"
+                    android:contentDescription="@string/add_ingredient_search_name_desc"
+                    android:tint="@color/colorAccent"
+                    android:layout_alignRight="@id/add_ingredient_name"
+                    android:layout_alignEnd="@id/add_ingredient_name"
+                    android:layout_alignBottom="@id/add_ingredient_name"
+                    android:layout_alignTop="@id/add_ingredient_name"
+                    />
+
+            </RelativeLayout>
 
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
@@ -71,10 +95,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_ingredient_categories_name"
-                android:minHeight="48dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_vertical"
+                android:minHeight="48dp"
+                android:text="@string/add_ingredient_categories_name"
                 android:textSize="14sp" />
         </LinearLayout>
 

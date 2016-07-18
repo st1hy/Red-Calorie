@@ -29,4 +29,6 @@ public interface AddIngredientView extends AddIngredientScreen {
 
     void requestFocusToValue();
 
+    @NonNull
+    Observable<Void> getSearchObservable();
 }

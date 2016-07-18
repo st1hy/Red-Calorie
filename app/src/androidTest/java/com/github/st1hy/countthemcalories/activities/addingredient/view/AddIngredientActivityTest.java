@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 
 import android.app.Activity;
-import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
@@ -36,12 +36,15 @@ import rx.functions.Func0;
 
 import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
@@ -87,7 +90,7 @@ public class AddIngredientActivityTest {
 
         // By default Espresso Intents does not stub any Intents. Stubbing needs to be setup before
         // every test run. In this case all external Intents will be blocked.
-        intending(not(isInternal())).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, null));
+        intending(not(isInternal())).respondWith(new ActivityResult(Activity.RESULT_OK, null));
     }
 
     @Test
@@ -104,7 +107,7 @@ public class AddIngredientActivityTest {
     @Test
     public void testSelectImageFromGallery() {
         @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
-        intending(galleryIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
+        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
             @Override
             public Intent call() {
                 Intent intent = new Intent();
@@ -147,7 +150,7 @@ public class AddIngredientActivityTest {
 
     @Test
     public void testSelectImageFromGalleryUserCanceled() {
-        intending(galleryIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
+        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -162,7 +165,7 @@ public class AddIngredientActivityTest {
     public void testSelectImageFromCamera() {
         @DrawableRes final int testDrawableId = android.R.drawable.ic_input_add;
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intending(cameraIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
+        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
             @Override
             public Intent call() {
                 Intent intent = new Intent();
@@ -187,7 +190,7 @@ public class AddIngredientActivityTest {
     @Test
     public void testSelectImageFromCameraUserCanceled() {
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intending(cameraIntentMatcher).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
+        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.add_ingredient_image)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -219,6 +222,18 @@ public class AddIngredientActivityTest {
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(click());
         intended(hasExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{exampleTags[1].getName()}));
+    }
+
+    @Test
+    public void testSearchIngredientOnTheInternet() throws Exception {
+        onView(withHint(R.string.add_ingredient_name_hint))
+                .perform(typeTextIntoFocusedView("Eggs"));
+        closeSoftKeyboard();
+        onView(withId(R.id.add_ingredient_name_search)).perform(click());
+        Matcher<Intent> intentMatcher = allOf(hasAction(Intent.ACTION_VIEW),
+                hasData("https://google.com/#q=Eggs+calories"));
+        intending(intentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
+        intended(intentMatcher);
 
     }
 }

@@ -95,6 +95,20 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(onSaveError())
                 .subscribe(onAddedIngredientToDatabase()));
+        subscriptions.add(view.getSearchObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onSearchForIngredientClicked()));
+    }
+
+    @NonNull
+    private Subscriber<? super Void> onSearchForIngredientClicked() {
+        return new SimpleSubscriber<Void>() {
+            @Override
+            public void onNext(Void aVoid) {
+                String name = model.getName();
+                view.showInWebBrowser(model.getSearchIngredientQuery(name));
+            }
+        };
     }
 
     @NonNull
@@ -187,7 +201,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
 
     @NonNull
     private static Optional<Integer> searchListFor(@NonNull List<ErrorType> errors,
-                                            @NonNull ErrorType error) {
+                                                   @NonNull ErrorType error) {
         return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
     }
 
