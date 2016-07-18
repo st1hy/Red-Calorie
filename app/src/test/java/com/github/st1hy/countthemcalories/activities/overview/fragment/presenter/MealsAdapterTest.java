@@ -216,6 +216,7 @@ public class MealsAdapterTest {
         verify(ingredient).getIngredientType();
         verify(template).getName();
         verify(holder).setIngredients("Ingredient");
+        verify(quantityModel).formatTime(any(DateTime.class));
         verify(quantityModel).sumAll();
         verify(quantityModel).setScale(0);
         verify(quantityModel).energyAsString();

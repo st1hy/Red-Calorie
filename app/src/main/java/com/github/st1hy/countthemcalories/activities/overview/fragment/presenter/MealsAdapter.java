@@ -13,10 +13,10 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.MealsViewModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.commands.MealsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
@@ -33,7 +33,6 @@ import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -184,7 +183,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         final Meal meal = list.get(position);
         holder.setName(meal.getName());
         holder.setMeal(meal);
-        holder.setDate(DateTimeFormat.shortTime().print(meal.getCreationDate()));
+        holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
         onBindIngredients(holder, meal.getIngredients());
         onBindImage(meal, holder);
     }

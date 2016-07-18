@@ -50,7 +50,7 @@ public class PhysicalQuantitiesModelTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
-        model = new PhysicalQuantitiesModel(settingsModel, application.getResources());
+        model = new PhysicalQuantitiesModel(settingsModel, application.getApplicationContext());
 
     }
 

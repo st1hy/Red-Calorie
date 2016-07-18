@@ -12,8 +12,6 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.squareup.picasso.Picasso;
 
-import org.joda.time.format.DateTimeFormat;
-
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
@@ -74,7 +72,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     private void setupView(@NonNull Meal meal) {
         view.setName(meal.getName());
         bindImage(meal);
-        view.setDate(DateTimeFormat.shortTime().print(meal.getCreationDate()));
+        view.setDate(quantitiesModel.formatTime(meal.getCreationDate()));
         Observable.from(meal.getIngredients())
                 .map(quantitiesModel.mapToEnergy())
                 .map(quantitiesModel.sumAll())

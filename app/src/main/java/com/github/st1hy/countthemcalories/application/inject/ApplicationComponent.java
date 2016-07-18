@@ -19,7 +19,6 @@ import dagger.Component;
 @Component(modules = {ApplicationModule.class, DatabaseModule.class, SettingsModule.class, DbModelsModule.class})
 public interface ApplicationComponent {
 
-    @Singleton
     Context getContext();
 
     @Singleton

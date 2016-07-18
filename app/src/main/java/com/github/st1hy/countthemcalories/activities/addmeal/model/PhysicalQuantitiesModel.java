@@ -1,7 +1,9 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.text.format.DateFormat;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
@@ -14,6 +16,9 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
@@ -23,14 +28,16 @@ import rx.functions.Func1;
 public class PhysicalQuantitiesModel {
     final SettingsModel settingsModel;
     final Resources resources;
+    final Context context;
     Func1<Ingredient, BigDecimal> ingredientToEnergy;
     Func1<BigDecimal, String> energyAsString;
 
     @Inject
     public PhysicalQuantitiesModel(@NonNull final SettingsModel settingsModel,
-                                   @NonNull Resources resources) {
+                                   @NonNull Context context) {
         this.settingsModel = settingsModel;
-        this.resources = resources;
+        this.context = context;
+        this.resources = context.getResources();
     }
 
     @NonNull
@@ -207,5 +214,14 @@ public class PhysicalQuantitiesModel {
                 return decimal.setScale(scale, BigDecimal.ROUND_HALF_UP);
             }
         };
+    }
+
+    @NonNull
+    public String formatTime(@NonNull DateTime date) {
+        if (DateFormat.is24HourFormat(context)) {
+            return DateTimeFormat.forPattern("HH:mm").print(date);
+        } else {
+            return DateTimeFormat.forPattern("hh:mm aa").print(date);
+        }
     }
 }

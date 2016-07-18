@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,6 +103,7 @@ public class MealDetailPresenterImplTest {
         verify(quantityModel).mapToEnergy();
         verify(quantityModel).sumAll();
         verify(quantityModel).energyAsString();
+        verify(quantityModel).formatTime(any(DateTime.class));
         verify(view).getImageView();
         verify(picasso).load(uri);
 
