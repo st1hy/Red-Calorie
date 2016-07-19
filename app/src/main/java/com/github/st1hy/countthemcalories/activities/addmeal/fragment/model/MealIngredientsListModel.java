@@ -38,7 +38,7 @@ public class MealIngredientsListModel {
     final ParcelableProxy parcelableProxy;
 
     final Observable<Void> loadingObservable;
-    @Nullable final IngredientTypeParcel extraStartingIngredient;
+    @Nullable IngredientTypeParcel extraStartingIngredient;
 
     public MealIngredientsListModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
                                     @NonNull RxMealsDatabaseModel databaseModel,
@@ -205,7 +205,11 @@ public class MealIngredientsListModel {
 
     @NonNull
     public Optional<IngredientTypeParcel> getExtraIngredient() {
-        return Optional.fromNullable(extraStartingIngredient);
+        try {
+            return Optional.fromNullable(extraStartingIngredient);
+        } finally {
+            extraStartingIngredient = null;
+        }
     }
 
     public static class Loading extends Subscriber<Void> {

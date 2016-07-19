@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
@@ -43,6 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -174,5 +176,13 @@ public class MealIngredientsListModelProxyTest {
             }
         });
         assertThat(error.get(), instanceOf(NullPointerException.class));
+    }
+
+    @Test
+    public void testGetExtraIngredient() throws Exception {
+        IngredientTypeParcel mock = mock(IngredientTypeParcel.class);
+        model.extraStartingIngredient =  mock;
+        assertThat(model.getExtraIngredient(), OptionalMatchers.equalTo(mock));
+        assertThat(model.getExtraIngredient(), OptionalMatchers.<IngredientTypeParcel>isAbsent());
     }
 }
