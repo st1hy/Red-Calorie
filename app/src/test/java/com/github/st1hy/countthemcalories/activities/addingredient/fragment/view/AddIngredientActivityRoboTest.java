@@ -253,6 +253,6 @@ public class AddIngredientActivityRoboTest {
                 .performClick();
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, allOf(hasAction(Intent.ACTION_VIEW),
-                hasData("https://google.com/#q=Eggs+calories")));
+                hasData("https://google.com/search?q=Eggs+calories")));
     }
 }

@@ -231,7 +231,7 @@ public class AddIngredientActivityTest {
         closeSoftKeyboard();
         onView(withId(R.id.add_ingredient_name_search)).perform(click());
         Matcher<Intent> intentMatcher = allOf(hasAction(Intent.ACTION_VIEW),
-                hasData("https://google.com/#q=Eggs+calories"));
+                hasData("https://google.com/search?q=Eggs+calories"));
         intending(intentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         intended(intentMatcher);
 

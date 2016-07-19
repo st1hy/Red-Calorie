@@ -369,7 +369,7 @@ public class AddIngredientModelRoboTest {
     public void testGetSearchQuery() throws Exception {
         setUpEmptyIngredient();
         Uri query = model.getSearchIngredientQuery("Eggs");
-        assertThat(query.toString(), equalTo("https://google.com/#q=Eggs+calories"));
+        assertThat(query.toString(), equalTo("https://google.com/search?q=Eggs+calories"));
     }
 
     @NonNull
