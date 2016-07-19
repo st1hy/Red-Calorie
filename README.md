@@ -8,7 +8,13 @@ All feedback/critique is welcome and appreciated.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state: 1.1.2
+## Current state: 1.2
+* Added quick search button in when adding new ingredients.
+* Clicking on ingredient on the list opens dialog with options: add to new meal, edit, remove.
+* Clicking on energy density unit opens dialog with ability to change the unit.
+* Improved time format: it should respect 24h system wide setting.
+
+### 1.1.2
 * Bug fix: fixed being unable to save ingredient after edit text error was displayed.
 
 ### 1.1.1
