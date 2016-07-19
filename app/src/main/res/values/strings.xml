@@ -58,6 +58,7 @@
     <string name="add_ingredient_energy_density_error_zero">Amount must be greater than zero!</string>
     <string name="add_ingredient_search_name_desc">Search the Internet for this ingredient</string>
     <string name="add_ingredient_default_search_keywords">calories</string>
+    <string name="add_ingredient_select_type_title">Select unit</string>
 
     <string name="tags_title">Categories</string>
     <string name="tags_new_tag_dialog">New category</string>

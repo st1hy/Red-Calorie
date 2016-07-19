@@ -13,9 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentComponent;
@@ -54,7 +54,7 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
     @BindView(R.id.add_ingredient_energy_density)
     EditText energyDensityValue;
     @BindView(R.id.add_ingredient_unit)
-    TextView energyDensityUnit;
+    Button energyDensityUnit;
     @BindView(R.id.add_ingredient_categories_recycler)
     RecyclerView tagsRecycler;
     @BindView(R.id.add_ingredient_name_search)
@@ -240,5 +240,11 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
     @Override
     public Observable<Void> getSearchObservable() {
         return RxView.clicks(searchName);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> getSelectTypeObservable() {
+        return RxView.clicks(energyDensityUnit);
     }
 }

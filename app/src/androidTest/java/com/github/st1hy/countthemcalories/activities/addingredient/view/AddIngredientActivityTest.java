@@ -8,7 +8,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -203,7 +202,7 @@ public class AddIngredientActivityTest {
 
     @Test
     public void testAddTag() throws Exception {
-        Espresso.closeSoftKeyboard();
+        closeSoftKeyboard();
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(betterScrollTo())
                 .perform(click());
@@ -234,6 +233,16 @@ public class AddIngredientActivityTest {
                 hasData("https://google.com/search?q=Eggs+calories"));
         intending(intentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         intended(intentMatcher);
+    }
 
+    @Test
+    public void testSelectIngredientType() throws Exception {
+        closeSoftKeyboard();
+        onView(allOf(withId(R.id.add_ingredient_unit), withText("kcal / 100 ml"))).perform(click());
+        onView(withText("kcal / 100 ml")).check(matches(isDisplayed()));
+        onView(withText("kcal / 100 g")).check(matches(isDisplayed()))
+                .perform(click());
+        onView(allOf(withId(R.id.add_ingredient_unit), withText("kcal / 100 g")))
+                .check(matches(isDisplayed()));
     }
 }

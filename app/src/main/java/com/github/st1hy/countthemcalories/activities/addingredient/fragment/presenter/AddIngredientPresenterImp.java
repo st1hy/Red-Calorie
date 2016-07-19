@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
@@ -15,7 +17,10 @@ import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -98,6 +103,10 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         subscriptions.add(view.getSearchObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onSearchForIngredientClicked()));
+        subscriptions.add(view.getSelectTypeObservable()
+                .flatMap(onSelectUnitClicked())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onUnitSelected()));
     }
 
     @NonNull
@@ -213,6 +222,52 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             public Void call(CharSequence name, CharSequence energyValue) {
                 onCreateIngredientResult(model.canCreateIngredient(name.toString(), energyValue.toString()));
                 return null;
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Void, Observable<AmountUnit>> onSelectUnitClicked() {
+        return new Func1<Void, Observable<AmountUnit>>() {
+            @Override
+            public Observable<AmountUnit> call(Void aVoid) {
+                final List<Pair<AmountUnit, CharSequence>> optionsList = model.getSelectTypeDialogOptions();
+                CharSequence[] options = Collections2.transform(optionsList, intoCharSequence())
+                        .toArray(new CharSequence[optionsList.size()]);
+                return view.showAlertDialog(model.getSelectTypeDialogTitle(), options)
+                        .map(intoAmountUnit(optionsList));
+            }
+        };
+    }
+
+    @NonNull
+    private static Func1<Integer, AmountUnit> intoAmountUnit(final List<Pair<AmountUnit, CharSequence>> optionsList) {
+        return new Func1<Integer, AmountUnit>() {
+            @Override
+            public AmountUnit call(Integer position) {
+                return optionsList.get(position).first;
+            }
+        };
+    }
+
+    @NonNull
+    private static Function<Pair<AmountUnit, CharSequence>, CharSequence> intoCharSequence() {
+        return new Function<Pair<AmountUnit, CharSequence>, CharSequence>() {
+            @Nullable
+            @Override
+            public CharSequence apply(Pair<AmountUnit, CharSequence> input) {
+                return input.second;
+            }
+        };
+    }
+
+    @NonNull
+    private SimpleSubscriber<AmountUnit> onUnitSelected() {
+        return new SimpleSubscriber<AmountUnit>() {
+            @Override
+            public void onNext(AmountUnit amountUnit) {
+                model.setAmountType(amountUnit.getType());
+                view.setSelectedUnitName(model.getEnergyDensityUnit());
             }
         };
     }

@@ -76,15 +76,13 @@
                     android:hint="@string/add_ingredient_energy_density_hint"
                     android:inputType="numberDecimal" />
 
-                <android.support.v4.widget.Space
-                    android:layout_width="4dp"
-                    android:layout_height="match_parent" />
-
-                <TextView
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                     android:id="@+id/add_ingredient_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textIsSelectable="false"
+                    android:textAllCaps="false"
                     tools:text="kcal / 100 g" />
             </LinearLayout>
 

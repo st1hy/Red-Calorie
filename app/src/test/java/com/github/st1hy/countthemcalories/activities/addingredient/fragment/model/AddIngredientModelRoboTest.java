@@ -22,9 +22,11 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
+import com.github.st1hy.countthemcalories.database.unit.Unit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TestError;
@@ -280,7 +282,7 @@ public class AddIngredientModelRoboTest {
         assertThat(model.canCreateIngredient(), Matchers.hasItems(ZERO_VALUE));
         model.name = "s";
         model.energyValue = "100";
-        assertThat(model.canCreateIngredient(), hasSize(0));;
+        assertThat(model.canCreateIngredient(), hasSize(0));
         verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
     }
 
@@ -342,11 +344,21 @@ public class AddIngredientModelRoboTest {
 
         final List<Long> tagIds = Collections.singletonList(33L);
         when(tagsModel.getTagIds()).thenReturn(tagIds);
-        when(typesModel.update(any(IngredientTemplate.class), anyCollection())).thenReturn(Observable.just(null));
+        when(typesModel.update(any(IngredientTemplate.class), anyCollection()))
+                .thenReturn(Observable.just(null));
 
         model.saveIntoDatabase().toBlocking().single();
 
-        verify(typesModel).update(argThat(new TypeSafeMatcher<IngredientTemplate>() {
+        verify(typesModel).update(argThat(withIngredientOf(creationDate, id, uri)),
+                argThat(contains(tagIds))); // new tags
+        verify(tagsModel).getTagIds();
+        verify(typesModel, times(2)).unParcel(any(IngredientTypeParcel.class));
+        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
+    }
+
+    @NonNull
+    private TypeSafeMatcher<IngredientTemplate> withIngredientOf(final DateTime creationDate, final Long id, final Uri uri) {
+        return new TypeSafeMatcher<IngredientTemplate>() {
             @Override
             protected boolean matchesSafely(IngredientTemplate item) {
                 assertThat(item.getName(), equalTo("Test update name"));
@@ -362,7 +374,7 @@ public class AddIngredientModelRoboTest {
             public void describeTo(Description description) {
                 description.appendText("has updated fields");
             }
-        }), argThat(contains(tagIds))); // new tags
+        };
     }
 
     @Test
@@ -370,6 +382,42 @@ public class AddIngredientModelRoboTest {
         setUpEmptyIngredient();
         Uri query = model.getSearchIngredientQuery("Eggs");
         assertThat(query.toString(), equalTo("https://google.com/search?q=Eggs+calories"));
+        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
+    }
+
+    @Test
+    public void testGetSelectTypeTitle() throws Exception {
+        setUpEmptyIngredient();
+        assertThat(model.getSelectTypeDialogTitle(),
+                equalTo(R.string.add_ingredient_select_type_title));
+        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
+    }
+
+    @Test
+    public void testGetSelectTypeOptions() throws Exception {
+        setUpEmptyIngredient();
+
+        assertThat(model.getSelectTypeDialogOptions(), hasSize(2));
+
+        verify(settingsModel).getMassUnit();
+        verify(settingsModel).getVolumeUnit();
+        verify(settingsModel, times(3)).getUnitName(any(Unit.class));
+
+        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
+    }
+
+    @Test
+    public void testSetAmountType() throws Exception {
+        setUpEmptyIngredient();
+
+        when(settingsModel.getAmountUnitFrom(AmountUnitType.VOLUME)).thenReturn(VolumeUnit.FL_OZ);
+
+        model.setAmountType(AmountUnitType.VOLUME);
+        verify(settingsModel).getAmountUnitFrom(AmountUnitType.VOLUME);
+        assertThat(model.amountType, equalTo(AmountUnitType.VOLUME));
+        assertThat(model.amountUnit, Matchers.<AmountUnit>equalTo(VolumeUnit.FL_OZ));
+
+        verifyNoMoreInteractions(tagsModel, typesModel, settingsModel);
     }
 
     @NonNull

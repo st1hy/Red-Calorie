@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
@@ -22,8 +23,11 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.database.unit.MassUnit;
+import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
 
@@ -79,7 +83,7 @@ public class AddIngredientModel extends WithPictureModel {
             this.imageUri = parcelableProxy.imageUri;
             this.loading = Observable.just(null);
             energyUnit = settingsModel.getEnergyUnit();
-            amountUnit = settingsModel.getAmountUnitFrom(amountType);
+            amountUnit = settingsModel.getAmountUnitFrom(this.amountType);
         } else {
             parcelableProxy = new ParcelableProxy();
             source = editSource;
@@ -118,7 +122,7 @@ public class AddIngredientModel extends WithPictureModel {
     public String getEnergyDensityUnit() {
         String energy = settingsModel.getUnitName(energyUnit);
         String amount = settingsModel.getUnitName(amountUnit);
-        return resources.getString(R.string.format_value_fraction, "", energy, amount).trim();
+        return energyDensityUnitOf(energy, amount);
     }
 
     @Override
@@ -294,6 +298,35 @@ public class AddIngredientModel extends WithPictureModel {
         String search = (name.trim() + "+" + resources.getString(R.string.add_ingredient_default_search_keywords))
                 .trim().replace(" ", "+");
         return Uri.parse(resources.getString(R.string.default_search_query, search));
+    }
+
+    @StringRes
+    public int getSelectTypeDialogTitle() {
+        return R.string.add_ingredient_select_type_title;
+    }
+
+    @NonNull
+    public List<Pair<AmountUnit, CharSequence>> getSelectTypeDialogOptions() {
+        String energy = settingsModel.getUnitName(energyUnit);
+        MassUnit massUnit = settingsModel.getMassUnit();
+        String mass = settingsModel.getUnitName(massUnit);
+        VolumeUnit volumeUnit = settingsModel.getVolumeUnit();
+        String volume = settingsModel.getUnitName(volumeUnit);
+        List<Pair<AmountUnit, CharSequence>> list = Lists.newLinkedList();
+        list.add(Pair.<AmountUnit, CharSequence>create(massUnit, energyDensityUnitOf(energy, mass)));
+        list.add(Pair.<AmountUnit, CharSequence>create(volumeUnit, energyDensityUnitOf(energy, volume)));
+        return list;
+    }
+
+    @NonNull
+    private String energyDensityUnitOf(String energyUnit, String amountUnit) {
+        return resources.getString(R.string.format_value_fraction, "", energyUnit, amountUnit)
+                .trim();
+    }
+
+    public void setAmountType(@NonNull AmountUnitType amountType) {
+        this.amountType = amountType;
+        this.amountUnit = settingsModel.getAmountUnitFrom(amountType);
     }
 
     static class ParcelableProxy implements Parcelable {

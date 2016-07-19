@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.vie
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +28,9 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -254,5 +257,23 @@ public class AddIngredientActivityRoboTest {
         Intent nextStartedActivity = shadowOf(activity).getNextStartedActivity();
         assertThat(nextStartedActivity, allOf(hasAction(Intent.ACTION_VIEW),
                 hasData("https://google.com/search?q=Eggs+calories")));
+    }
+
+    @Test
+    public void testSelectIngredientType() throws Exception {
+        Assert.assertThat(fragment.energyDensityUnit.getText(),
+                Matchers.<CharSequence>equalTo("kcal / 100 g")
+        );
+        fragment.energyDensityUnit.performClick();
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(latestAlertDialog, notNullValue());
+        ShadowAlertDialog shadowAlertDialog = shadowOf(latestAlertDialog);
+        assertThat(shadowAlertDialog.getItems(),
+                Matchers.<CharSequence>arrayContaining("kcal / 100 g", "kcal / 100 ml")
+        );
+        shadowAlertDialog.clickOnItem(1); //kcal / 100 ml
+        Assert.assertThat(fragment.energyDensityUnit.getText(),
+                Matchers.<CharSequence>equalTo("kcal / 100 ml")
+        );
     }
 }

@@ -2,6 +2,8 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.pre
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.test.espresso.core.deps.guava.collect.Lists;
+import android.support.v4.util.Pair;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
@@ -14,6 +16,9 @@ import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.database.unit.MassUnit;
+import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.google.common.base.Optional;
@@ -45,6 +50,7 @@ import rx.subjects.PublishSubject;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static com.github.st1hy.countthemcalories.testutils.OptionalMatchers.valueMatches;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -108,6 +114,7 @@ public class AddIngredientPresenterImpTest {
         when(model.canCreateIngredient(anyString(), anyString()))
                 .thenReturn(Collections.<ErrorType>emptyList());
         when(view.getSearchObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getSelectTypeObservable()).thenReturn(Observable.<Void>empty());
 
         presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, picasso);
     }
@@ -279,6 +286,7 @@ public class AddIngredientPresenterImpTest {
         verify(view).getValueObservable();
         verify(view).getSaveObservable();
         verify(view).getSearchObservable();
+        verify(view).getSelectTypeObservable();
     }
 
     @Test
@@ -298,6 +306,35 @@ public class AddIngredientPresenterImpTest {
         verify(model, times(2)).getName();
         verify(model).getSearchIngredientQuery(anyString());
         verify(view).showInWebBrowser(any(Uri.class));
+
+        verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
+    }
+
+    @Test
+    public void testSelectIngredientType() throws Exception {
+        List<Pair<AmountUnit, CharSequence>> list = Lists.newLinkedList();
+        list.add(Pair.<AmountUnit, CharSequence>create(MassUnit.G100,"option 1"));
+        list.add(Pair.<AmountUnit, CharSequence>create(VolumeUnit.ML100,"option 2"));
+        when(model.getSelectTypeDialogOptions()).thenReturn(list);
+        PublishSubject<Void> selectType = PublishSubject.create();
+        when(view.getSelectTypeObservable()).thenReturn(selectType);
+        when(view.showAlertDialog(anyInt(), any(CharSequence[].class)))
+                .thenReturn(Observable.just(1)); // option 2
+
+        presenter.onStart();
+        testVerifyStart();
+
+        when(model.getEnergyDensityUnit()).thenReturn("option 2");
+
+        selectType.onNext(null);
+        verify(model).getSelectTypeDialogTitle();
+        verify(model).getSelectTypeDialogOptions();
+        verify(view).showAlertDialog(anyInt(), argThat(
+                Matchers.<CharSequence>arrayContaining("option 1", "option 2")
+        ));
+        verify(model, times(2)).getEnergyDensityUnit();
+        verify(model).setAmountType(VolumeUnit.ML100.getType());
+        verify(view).setSelectedUnitName("option 2");
 
         verifyNoMoreInteractions(view, model, permissionsHelper, picasso);
     }

@@ -31,4 +31,7 @@ public interface AddIngredientView extends AddIngredientScreen {
 
     @NonNull
     Observable<Void> getSearchObservable();
+
+    @NonNull
+    Observable<Void> getSelectTypeObservable();
 }
