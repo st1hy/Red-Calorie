@@ -32,8 +32,8 @@ public class AddMealModel extends WithPictureModel {
     long mealId;
     String name;
     Uri imageUri;
+    DateTime creationDate;
     final Observable<Void> loading;
-    final boolean isEditing;
 
     @Inject
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
@@ -53,14 +53,13 @@ public class AddMealModel extends WithPictureModel {
             this.mealId = parcelableProxy.mealId;
             this.name = parcelableProxy.name;
             this.imageUri = parcelableProxy.imageUri;
-            this.isEditing = parcelableProxy.isEditing;
+            this.creationDate = parcelableProxy.creationDate;
             loading = Observable.just(null);
         } else {
             parcelableProxy = new ParcelableProxy();
             this.mealId = -1L;
             this.name = "";
             this.imageUri = Uri.EMPTY;
-            isEditing = parcel != null;
             if (parcel != null) {
                 loading = loadParcel(parcel);
             } else {
@@ -78,6 +77,7 @@ public class AddMealModel extends WithPictureModel {
                 mealId = meal.getId();
                 name = meal.getName();
                 imageUri = meal.getImageUri();
+                creationDate = meal.getCreationDate();
             }
         });
         return observable.map(Functions.INTO_VOID);
@@ -137,8 +137,8 @@ public class AddMealModel extends WithPictureModel {
         Meal meal = new Meal();
         if (mealId != -1L) meal.setId(mealId);
         meal.setName(getName());
-        if (meal.getCreationDate() == null)
-            meal.setCreationDate(DateTime.now());
+        if (creationDate == null) creationDate = DateTime.now();
+        meal.setCreationDate(creationDate);
         meal.setImageUri(getImageUri());
         return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
     }
@@ -159,10 +159,12 @@ public class AddMealModel extends WithPictureModel {
 
     static class ParcelableProxy implements Parcelable {
         static String STATE_MODEL = "add meal model";
+        static final int FLAG_CREATION_DATE = 0x1;
+
         long mealId;
         String name;
         Uri imageUri;
-        boolean isEditing;
+        DateTime creationDate;
 
         ParcelableProxy() {
         }
@@ -171,7 +173,7 @@ public class AddMealModel extends WithPictureModel {
             this.mealId = model.mealId;
             this.name = model.name;
             this.imageUri = model.imageUri;
-            this.isEditing = model.isEditing;
+            this.creationDate = model.creationDate;
             return this;
         }
 
@@ -179,10 +181,12 @@ public class AddMealModel extends WithPictureModel {
             @Override
             public ParcelableProxy createFromParcel(Parcel source) {
                 ParcelableProxy parcelableProxy = new ParcelableProxy();
-                parcelableProxy.isEditing = source.readInt() > 0;
+                int metaData = source.readInt();
                 parcelableProxy.mealId = source.readLong();
                 parcelableProxy.name = source.readString();
                 parcelableProxy.imageUri = source.readParcelable(Uri.class.getClassLoader());
+                if ((metaData & FLAG_CREATION_DATE) > 0)
+                    parcelableProxy.creationDate = new DateTime(source.readLong());
                 return parcelableProxy;
             }
 
@@ -199,10 +203,15 @@ public class AddMealModel extends WithPictureModel {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(isEditing ? 1 : 0);
+            int metaData = 0;
+            if (creationDate != null) metaData |= FLAG_CREATION_DATE;
+            dest.writeInt(metaData);
             dest.writeLong(mealId);
             dest.writeString(name);
             dest.writeParcelable(imageUri, flags);
+            if (creationDate != null) {
+                dest.writeLong(creationDate.getMillis());
+            }
         }
     }
 }
