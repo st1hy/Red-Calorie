@@ -75,7 +75,7 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
         return new Func1<Void, Observable<Permission>>() {
             @Override
             public Observable<Permission> call(Void aVoid) {
-                return permissionsHelper.checkPermissionAndAskIfNecessary(Manifest.permission.READ_EXTERNAL_STORAGE, null);
+                return permissionsHelper.checkPermissionAndAskIfNecessary(Manifest.permission.WRITE_EXTERNAL_STORAGE, null);
             }
         };
     }
@@ -89,10 +89,7 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
                         model.getSelectImageSourceAndRemoveOptions() :
                         model.getSelectImageSourceOptions();
 
-                return view.showAlertDialog(
-                        model.getImageSourceDialogTitleResId(),
-                        options
-                );
+                return view.showAlertDialog(model.getImageSourceDialogTitleResId(), options);
             }
         };
     }

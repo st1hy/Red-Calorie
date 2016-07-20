@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
@@ -33,8 +32,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-
-import rx.functions.Func0;
 
 import static android.support.test.InstrumentationRegistry.getContext;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -59,6 +56,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest.exampleIngredients;
+import static com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivityTestUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
@@ -117,15 +115,9 @@ public class AddMealActivityTest {
     @Test
     public void testSelectImageFromGallery() {
         onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
-        @DrawableRes @IdRes final int testDrawableId = android.R.drawable.ic_input_add;
-        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
-            @Override
-            public Intent call() {
-                Intent intent = new Intent();
-                intent.setData(resourceToUri(getContext(), testDrawableId));
-                return intent;
-            }
-        }.call()));
+        Intent intent = new Intent();
+        intent.setData(resourceToUri(getContext(), android.R.drawable.ic_input_add));
+        intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, intent));
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());
@@ -176,16 +168,13 @@ public class AddMealActivityTest {
     @Test
     public void testSelectImageFromCamera() {
         onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
-        @DrawableRes final int testDrawableId = android.R.drawable.ic_input_add;
-        final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, new Func0<Intent>() {
-            @Override
-            public Intent call() {
-                Intent intent = new Intent();
-                intent.setData(resourceToUri(getContext(), testDrawableId));
-                return intent;
-            }
-        }.call()));
+        AddMealActivity activity = main.getActivity();
+        final Uri uri = resourceToUri(activity, android.R.drawable.ic_input_add);
+        final Matcher<Intent> cameraIntentMatcher = allOf(
+                hasAction(MediaStore.ACTION_IMAGE_CAPTURE),
+                injectUriOnMatch(activity, uri)
+        );
+        intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, null));
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
                 .perform(click());

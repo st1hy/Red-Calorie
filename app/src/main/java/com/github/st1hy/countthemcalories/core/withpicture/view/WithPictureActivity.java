@@ -1,9 +1,12 @@
 package com.github.st1hy.countthemcalories.core.withpicture.view;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -11,22 +14,41 @@ import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
-import timber.log.BuildConfig;
 import timber.log.Timber;
 
 public abstract class WithPictureActivity extends BaseActivity implements WithPictureView {
 
+    private static final String SAVE_TEMP_URI = "with picture temp uri";
     public static final int REQUEST_CAMERA = 0x3901;
     public static final int REQUEST_PICK_IMAGE = 0x3902;
 
     final BehaviorSubject<Uri> pictureSelectedSubject = BehaviorSubject.create();
+    Uri tempImageUri;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            tempImageUri = savedInstanceState.getParcelable(SAVE_TEMP_URI);
+        }
+    }
 
     @NonNull
     public abstract ImageView getImageView();
 
     @Override
     public void openCameraAndGetPicture() {
-        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_CAMERA);
+        ContentValues values = new ContentValues(1);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+        tempImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Timber.d("Creating image at: %s", tempImageUri);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        startActivityForResult(intent, REQUEST_CAMERA);
     }
 
     @Override
@@ -47,15 +69,27 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_PICK_IMAGE || requestCode == REQUEST_CAMERA) {
-            if (resultCode == RESULT_OK) {
-                Uri imageUri = data.getData();
-                if (imageUri != null)
-                    pictureSelectedSubject.onNext(imageUri);
-                else if (BuildConfig.DEBUG)
-                    Timber.w("Received image but intent doesn't have image uri!");
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Timber.d("Request picture result intent: %s, bundle: %s", data,
+                    data != null ? data.getExtras() : "null");
+            if (requestCode == REQUEST_PICK_IMAGE) {
+                if (data != null) {
+                    Uri imageUri = data.getData();
+                    if (imageUri != null) {
+                        pictureSelectedSubject.onNext(imageUri);
+                        return;
+                    }
+                }
+                Timber.w("Received image but intent doesn't have image uri! %s", data);
             }
-        } else super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == REQUEST_CAMERA) {
+                if (tempImageUri != null) {
+                    pictureSelectedSubject.onNext(tempImageUri);
+                    tempImageUri = null;
+                }
+            }
+        }
     }
 
     @NonNull
@@ -64,4 +98,9 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
         return pictureSelectedSubject.asObservable();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVE_TEMP_URI, tempImageUri);
+    }
 }

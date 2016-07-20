@@ -126,7 +126,7 @@ public class AddIngredientActivityRoboTest {
     @Test
     public void testImageButton() throws Exception {
         checkNotNull(activity.findViewById(R.id.add_ingredient_image)).performClick();
-        TestPermissionHelper.grantPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        TestPermissionHelper.grantPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         ShadowAlertDialog shadowAlertDialog = shadowOf(RuntimeEnvironment.application).getLatestAlertDialog();
         assertThat(shadowAlertDialog, notNullValue());
         assertThat(shadowAlertDialog.getTitle().toString(), equalTo(activity.getString(R.string.add_ingredient_image_select_title)));
