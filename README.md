@@ -8,7 +8,12 @@ All feedback/critique is welcome and appreciated.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state: 1.2
+## Current state: 1.2.1
+* Fixed taking picture from the application.
+* Fixed meal date changing after editing.
+* Fixed adding new meal with ingredients behavior on add meal screen in some scenarios.
+
+### 1.2
 * Added quick search button in when adding new ingredients.
 * Clicking on ingredient on the list opens dialog with options: add to new meal, edit, remove.
 * Clicking on energy density unit opens dialog with ability to change the unit.
