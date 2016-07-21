@@ -15,7 +15,7 @@ ext {
     compileSdkVersion = 24
     buildToolsVersion = '24.0.1'
 
-    supportLibraryVersion = '23.4.0'
+    supportLibraryVersion = '24.1.0'
     daggerVersion = '2.5'
 
     rxJavaVersion = '1.1.6'
@@ -23,7 +23,7 @@ ext {
     timberVersion = '4.1.2'
     greenDaoVersion = '2.2.0'
 
-    robolectricVersion = '3.1'
+    robolectricVersion = '3.1.1'
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
 }
