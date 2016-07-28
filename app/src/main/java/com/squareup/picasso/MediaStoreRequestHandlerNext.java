@@ -100,7 +100,6 @@ public class MediaStoreRequestHandlerNext extends ContentStreamRequestHandler {
     static int getExitOrientationFromFile(ContentResolver contentResolver, Uri uri) {
         Cursor cursor = null;
         try {
-            contentResolver.openInputStream(uri);
             cursor = contentResolver.query(uri, CONTENT_DATA, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) {
                 return 0;
