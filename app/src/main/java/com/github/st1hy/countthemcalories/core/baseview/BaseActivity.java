@@ -1,24 +1,18 @@
 package com.github.st1hy.countthemcalories.core.baseview;
 
-import android.annotation.TargetApi;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
-import android.util.SparseArray;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
-import com.github.st1hy.countthemcalories.core.permissions.Permission;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionActor;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 
 import rx.Observable;
 
-public abstract class BaseActivity extends AppCompatActivity implements PermissionSubject, DialogView {
-    final SparseArray<PermissionActor> pendingPermissionRequests = new SparseArray<>(4);
+public abstract class BaseActivity extends AppCompatActivity implements DialogView {
 
     protected final ApplicationComponent getAppComponent() {
         return ((CaloriesCounterApplication) getApplication()).getComponent();
@@ -28,28 +22,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Permissi
     public static <T> T assertNotNull(@Nullable T t) {
         if (t == null) throw new NullPointerException();
         return t;
-    }
-
-    @NonNull
-    @TargetApi(23)
-    @Override
-    public Observable<Permission[]> requestPermission(@NonNull String[] permissions) {
-        PermissionActor permissionActor = new PermissionActor(permissions);
-        int requestId = permissionActor.hashCode();
-        pendingPermissionRequests.put(requestId, permissionActor);
-        requestPermissions(permissions, requestId);
-        return permissionActor.asObservable();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        PermissionActor permissionActor = pendingPermissionRequests.get(requestCode);
-        if (permissionActor != null) {
-            pendingPermissionRequests.remove(requestCode);
-            permissionActor.onRequestPermissionsResult(permissions, grantResults);
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
     @Override

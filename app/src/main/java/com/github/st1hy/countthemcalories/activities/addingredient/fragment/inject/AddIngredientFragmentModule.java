@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.inj
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
@@ -12,7 +13,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.core.FragmentDepends;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
@@ -53,11 +53,6 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public PermissionSubject providePermissionSubject() {
-        return FragmentDepends.checkIsSubclass(fragment.getActivity(), PermissionSubject.class);
-    }
-
-    @Provides
     @PerFragment
     public IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState) {
         return new IngredientTagsModel(savedState);
@@ -90,5 +85,10 @@ public class AddIngredientFragmentModule {
     @Nullable
     public IngredientTypeParcel provideParcelSource(@Named("arguments") Bundle arguments) {
         return arguments.getParcelable(ARG_EDIT_INGREDIENT_PARCEL);
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
     }
 }

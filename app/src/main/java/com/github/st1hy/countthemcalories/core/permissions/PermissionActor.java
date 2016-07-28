@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
 import timber.log.BuildConfig;
 import timber.log.Timber;
 
 public class PermissionActor {
-    private final Subject<Permission[], Permission[]> subject = new SerializedSubject<>(PublishSubject.<Permission[]>create());
+    private final Subject<Permission[], Permission[]> subject = new SerializedSubject<>(BehaviorSubject.<Permission[]>create());
     private final String[] requestedPermissionNames;
 
     /**
@@ -54,7 +54,6 @@ public class PermissionActor {
             }
         }
         subject.onNext(permissions);
-        subject.onCompleted();
     }
 
     private void checkReturningPermissionsNames(@NonNull String[] permissionsNames) {

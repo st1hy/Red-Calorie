@@ -17,7 +17,6 @@ public class CaloriesCounterApplication extends DatabaseApplication {
         getComponent().inject(this);
     }
 
-
     @NonNull
     public ApplicationComponent getComponent() {
         if (component == null) {

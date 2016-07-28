@@ -11,18 +11,54 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class PermissionsHelper {
     private final PermissionSubject subject;
     private final Utils utils;
+    private final PersistentPermissionCache permissionCache;
 
     @Inject
-    public PermissionsHelper(@NonNull PermissionSubject subject, @NonNull Utils utils) {
+    public PermissionsHelper(@NonNull PermissionSubject subject,
+                             @NonNull Utils utils,
+                             @NonNull PersistentPermissionCache permissionCache) {
         this.subject = subject;
         this.utils = utils;
+        this.permissionCache = permissionCache;
     }
 
+    /**
+     * Checks permission depending on API version. If permission have not been asked in this session
+     * shows question to the user to enable it, else returns cached result.
+     * <p/>
+     * For use when checking permission without direct user interaction.
+     *
+     * @param permission name of the permission
+     * @return observable on permission.
+     */
+    @NonNull
+    public Observable<Permission> checkPermissionAndAskOnce(@NonNull String permission) {
+        if (utils.hasMarshmallow()) {
+            Permission cachedPermission = permissionCache.get(permission);
+            if (cachedPermission != null)
+                return Observable.just(cachedPermission);
+            else
+                return checkPermissionAndAskIfNecessaryApi23(permission, null);
+        } else {
+            return Observable.just(Permission.GRANTED);
+        }
+    }
+
+    /**
+     * Checks permission depending on API version. Always asks permission if its not enabled.
+     * <p/>
+     * For use when permission is required by direct user action.
+     *
+     * @param permission name of the permission
+     * @param requestRationale optional rationale about this permission, may be null
+     * @return observable on permission
+     */
     @NonNull
     public Observable<Permission> checkPermissionAndAskIfNecessary(@NonNull String permission,
                                                                    @Nullable RequestRationale requestRationale) {
@@ -82,9 +118,10 @@ public class PermissionsHelper {
 
 
     @NonNull
-    private Observable<Permission> makeRequestFor(@NonNull final String permission) {
-        return subject.requestPermission(new String[]{permission})
-                .map(onlyOne());
+    private Observable<Permission> makeRequestFor(@NonNull final String permissionName) {
+        return subject.requestPermission(new String[]{permissionName})
+                .map(onlyOne())
+                .doOnNext(cachePermission(permissionName));
     }
 
     @NonNull
@@ -97,6 +134,16 @@ public class PermissionsHelper {
                             "Asked for one permission, expected 1 answer; got %d", permissions.length));
                 }
                 return permissions[0];
+            }
+        };
+    }
+
+    @NonNull
+    private Action1<Permission> cachePermission(@NonNull final String permissionName) {
+        return new Action1<Permission>() {
+            @Override
+            public void call(Permission permission) {
+                permissionCache.put(permissionName, permission);
             }
         };
     }

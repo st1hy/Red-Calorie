@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.core.permissions.PersistentPermissionCache;
 import com.squareup.picasso.MediaStoreRequestHandlerNext;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +38,12 @@ public class ApplicationModule {
         return new Picasso.Builder(context)
                 .addRequestHandler(new MediaStoreRequestHandlerNext(context))
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    public PersistentPermissionCache providePermissionCache() {
+        return new PersistentPermissionCache();
     }
 
 }

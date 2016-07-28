@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
@@ -15,7 +16,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
@@ -76,11 +76,6 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public PermissionSubject providePermissionSubject() {
-        return checkIsSubclass(fragment.getActivity(), PermissionSubject.class);
-    }
-
-    @Provides
     public Resources provideResources() {
         return fragment.getResources();
     }
@@ -108,5 +103,10 @@ public class AddMealFragmentModule {
         IngredientTypeParcel parcel = arguments.getParcelable(EXTRA_INGREDIENT_PARCEL);
         arguments.remove(EXTRA_INGREDIENT_PARCEL);
         return parcel;
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
     }
 }

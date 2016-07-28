@@ -25,10 +25,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RxMockitoJUnitRunner.class)
@@ -39,11 +37,13 @@ public class PermissionsHelperTest {
     private RequestRationale requestRationale;
     @Mock
     private Utils utils;
+    @Mock
+    private PersistentPermissionCache cache;
     private PermissionsHelper permissionsHelper;
 
     @Before
     public void setup() {
-        permissionsHelper = new PermissionsHelper(subject, utils);
+        permissionsHelper = new PermissionsHelper(subject, utils, cache);
     }
 
     @Test
@@ -63,11 +63,12 @@ public class PermissionsHelperTest {
         assertThat(subscriber.output, hasSize(1));
         assertThat(subscriber.output, hasItem(Permission.GRANTED));
 
-        verify(subject, times(1)).checkSelfPermission(testPermission);
-        verify(subject, times(1)).shouldShowRequestPermissionRationale(testPermission);
-        verify(requestRationale, times(1)).showRationale();
-        verify(subject, times(1)).requestPermission(any(String[].class));
-        verifyNoMoreInteractions(subject, requestRationale);
+        verify(subject).checkSelfPermission(testPermission);
+        verify(subject).shouldShowRequestPermissionRationale(testPermission);
+        verify(requestRationale).showRationale();
+        verify(subject).requestPermission(any(String[].class));
+        verify(cache).put(testPermission, Permission.GRANTED);
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
 
     @Test
@@ -85,9 +86,10 @@ public class PermissionsHelperTest {
         assertThat(subscriber.output, hasSize(1));
         assertThat(subscriber.output, hasItem(Permission.DENIED));
 
-        verify(subject, times(1)).checkSelfPermission(testPermission);
-        verify(subject, times(1)).requestPermission(any(String[].class));
-        verifyNoMoreInteractions(subject, requestRationale);
+        verify(subject).checkSelfPermission(testPermission);
+        verify(subject).requestPermission(any(String[].class));
+        verify(cache).put(testPermission, Permission.DENIED);
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
 
     @Test
@@ -103,8 +105,8 @@ public class PermissionsHelperTest {
         assertThat(subscriber.output, hasSize(1));
         assertThat(subscriber.output, hasItem(Permission.GRANTED));
 
-        verify(subject, times(1)).checkSelfPermission(testPermission);
-        verifyNoMoreInteractions(subject, requestRationale);
+        verify(subject).checkSelfPermission(testPermission);
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
 
     @Test
@@ -124,10 +126,10 @@ public class PermissionsHelperTest {
         assertThat(subscriber.output, hasSize(1));
         assertThat(subscriber.output, hasItem(Permission.REQUEST_CANCELED));
 
-        verify(subject, times(1)).checkSelfPermission(testPermission);
-        verify(subject, times(1)).shouldShowRequestPermissionRationale(testPermission);
-        verify(requestRationale, times(1)).showRationale();
-        verifyNoMoreInteractions(subject, requestRationale);
+        verify(subject).checkSelfPermission(testPermission);
+        verify(subject).shouldShowRequestPermissionRationale(testPermission);
+        verify(requestRationale).showRationale();
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
 
     @Test
@@ -142,7 +144,7 @@ public class PermissionsHelperTest {
         assertThat(subscriber.output, hasSize(1));
         assertThat(subscriber.output, hasItem(Permission.GRANTED));
 
-        verifyZeroInteractions(subject, requestRationale);
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -172,7 +174,14 @@ public class PermissionsHelperTest {
         assertThat(subscriber.error, notNullValue());
         assertTrue(subscriber.error instanceof IllegalArgumentException);
         assertThat(subscriber.output, hasSize(0));
+
+        verify(subject).checkSelfPermission(testPermission);
+        verify(subject).shouldShowRequestPermissionRationale(testPermission);
+        verify(subject).requestPermission(any(String[].class));
+        verifyNoMoreInteractions(subject, requestRationale, cache);
     }
+
+
 
     private static class ReadPermission extends Subscriber<Permission> {
         Throwable error;
