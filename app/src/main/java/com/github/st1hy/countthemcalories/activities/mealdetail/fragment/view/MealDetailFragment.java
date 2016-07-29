@@ -57,7 +57,6 @@ public class MealDetailFragment extends BaseFragment implements MealDetailView {
     @BindView(R.id.meal_detail_recycler)
     RecyclerView recyclerView;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -81,8 +80,8 @@ public class MealDetailFragment extends BaseFragment implements MealDetailView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         FragmentActivity activity = getActivity();
-        getComponent(savedInstanceState).inject(this);
         ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
+        getComponent(savedInstanceState).inject(this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

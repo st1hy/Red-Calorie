@@ -24,9 +24,9 @@ import static com.github.st1hy.countthemcalories.core.permissions.Permission.GRA
 
 public class ImageHolderDelegate {
 
-    final Picasso picasso;
-    final PermissionsHelper permissionsHelper;
-    final ImageView imageView;
+    protected final Picasso picasso;
+    protected final PermissionsHelper permissionsHelper;
+    protected final ImageView imageView;
 
     final Subject<Optional<Uri>, Optional<Uri>> imageUriSubject = BehaviorSubject.create();
     final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -112,12 +112,7 @@ public class ImageHolderDelegate {
                 @Override
                 public Observable<?> call(Optional<Uri> uri) {
                     if (uri.isPresent()) {
-                        return RxPicasso.Builder.with(picasso, uri.get())
-                                .placeholder(placeholderResId)
-                                .centerCrop()
-                                .fit()
-                                .into(imageView)
-                                .asObservable();
+                        return loadImage(uri.get()).asObservable();
                     } else {
                         imageView.setImageResource(placeholderResId);
                         return Observable.empty();
@@ -126,5 +121,14 @@ public class ImageHolderDelegate {
             };
         }
         return imageViewLoader;
+    }
+
+    @NonNull
+    protected RxPicasso loadImage(@NonNull Uri uri) {
+        return RxPicasso.Builder.with(picasso, uri)
+                .placeholder(placeholderResId)
+                .centerCrop()
+                .fit()
+                .into(imageView);
     }
 }

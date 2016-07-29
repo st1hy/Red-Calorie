@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
+import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -34,6 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -58,12 +60,15 @@ public class MealDetailPresenterImplTest {
     MealIngredientsAdapter adapter;
     @Mock
     RequestCreator requestCreator;
+    @Mock
+    ImageHolderDelegate imageHolderDelegate;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(picasso.load(any(Uri.class))).thenReturn(requestCreator);
-        presenter = new MealDetailPresenterImpl(view, model, picasso, adapter, quantityModel);
+        presenter = new MealDetailPresenterImpl(view, model, picasso, adapter, quantityModel,
+                imageHolderDelegate);
     }
 
     @Test
@@ -75,7 +80,7 @@ public class MealDetailPresenterImplTest {
         presenter.onStart();
         verifyOnStartValid();
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -104,10 +109,9 @@ public class MealDetailPresenterImplTest {
         verify(quantityModel).sumAll();
         verify(quantityModel).energyAsString();
         verify(quantityModel).formatTime(any(DateTime.class));
-        verify(view).getImageView();
-        verify(picasso).load(uri);
+        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter);
+        testVerifyNoMoreInteraction();
     }
 
     private void verifyOnStartValid() {
@@ -115,6 +119,7 @@ public class MealDetailPresenterImplTest {
         verify(view).getDeleteObservable();
         verify(view).getEditObservable();
         verify(adapter).onStart();
+        verify(imageHolderDelegate).onAttached();
     }
 
     @Test
@@ -126,8 +131,9 @@ public class MealDetailPresenterImplTest {
         assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
 
         verify(adapter).onStop();
+        verify(imageHolderDelegate).onDetached();
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -136,7 +142,7 @@ public class MealDetailPresenterImplTest {
         presenter.onSaveState(bundle);
         verify(model).onSaveState(bundle);
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -154,7 +160,8 @@ public class MealDetailPresenterImplTest {
         verify(meal).getId();
         verify(view).editMealWithId(2016L);
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, meal);
+        testVerifyNoMoreInteraction();
+        verifyNoMoreInteractions(meal);
 
     }
 
@@ -173,7 +180,8 @@ public class MealDetailPresenterImplTest {
         verify(meal).getId();
         verify(view).deleteMealWithId(2016L);
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, meal);
+        testVerifyNoMoreInteraction();
+        verifyNoMoreInteractions(meal);
     }
 
     @Test
@@ -185,10 +193,14 @@ public class MealDetailPresenterImplTest {
 
         presenter.bindImage(meal);
 
-        verify(view).getImageView();
         verify(meal).getImageUri();
-        verify(imageView).setImageResource(R.drawable.ic_fork_and_knife_wide);
+        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
 
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, meal, imageView);
+        testVerifyNoMoreInteraction();
+        verifyNoMoreInteractions(meal, imageView);
+    }
+
+    private void testVerifyNoMoreInteraction() {
+        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, imageHolderDelegate);
     }
 }

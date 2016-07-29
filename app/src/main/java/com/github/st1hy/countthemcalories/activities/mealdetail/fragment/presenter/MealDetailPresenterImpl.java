@@ -4,12 +4,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -27,21 +27,25 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     final Picasso picasso;
     final MealIngredientsAdapter adapter;
     final PhysicalQuantitiesModel quantitiesModel;
+    final ImageHolderDelegate imageHolderDelegate;
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public MealDetailPresenterImpl(@NonNull MealDetailView view, @NonNull MealDetailModel model,
                                    @NonNull Picasso picasso, @NonNull MealIngredientsAdapter adapter,
-                                   @NonNull PhysicalQuantitiesModel quantitiesModel) {
+                                   @NonNull PhysicalQuantitiesModel quantitiesModel,
+                                   @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.view = view;
         this.model = model;
         this.picasso = picasso;
         this.adapter = adapter;
         this.quantitiesModel = quantitiesModel;
+        this.imageHolderDelegate = imageHolderDelegate;
     }
 
     @Override
     public void onStart() {
+        imageHolderDelegate.onAttached();
         subscriptions.add(model.getMealObservable().subscribe(onMealLoaded()));
         subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
         subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
@@ -50,6 +54,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     @Override
     public void onStop() {
+        imageHolderDelegate.onDetached();
         subscriptions.clear();
         adapter.onStop();
     }
@@ -88,18 +93,9 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     void bindImage(@NonNull Meal meal) {
         Uri imageUri = meal.getImageUri();
-        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
-            subscriptions.add(RxPicasso.Builder.with(picasso, imageUri)
-                    .centerCrop()
-                    .fit()
-                    .noFade()
-                    .into(view.getImageView())
-                    .asObservable()
-                    .subscribe());
-
-        } else {
-            view.getImageView().setImageResource(R.drawable.ic_fork_and_knife_wide);
-        }
+        Optional<Uri> uriOptional = imageUri != null && !imageUri.equals(Uri.EMPTY)
+                ? Optional.of(imageUri) : Optional.<Uri>absent();
+        imageHolderDelegate.setImageUri(uriOptional);
     }
 
     private Action1<Void> onEditClicked() {

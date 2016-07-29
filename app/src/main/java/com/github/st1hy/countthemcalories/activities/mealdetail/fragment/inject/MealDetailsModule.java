@@ -1,9 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
@@ -15,7 +17,11 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.Me
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.squareup.picasso.Picasso;
 
 import dagger.Module;
 import dagger.Provides;
@@ -75,5 +81,26 @@ public class MealDetailsModule {
     @Provides
     public MealDetailScreen provideMealDetailScreen() {
         return (MealDetailScreen) fragment.getActivity();
+    }
+
+    @Provides
+    @PerFragment
+    public ImageHolderDelegate provideImageHolder(Picasso picasso, PermissionsHelper permissionsHelper) {
+        return new ImageHolderDelegate(picasso, permissionsHelper, fragment.getImageView()) {
+            @NonNull
+            @Override
+            protected RxPicasso loadImage(@NonNull Uri uri) {
+                return RxPicasso.Builder.with(picasso, uri)
+                        .centerCrop()
+                        .fit()
+                        .noFade()
+                        .into(imageView);
+            }
+        };
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
     }
 }
