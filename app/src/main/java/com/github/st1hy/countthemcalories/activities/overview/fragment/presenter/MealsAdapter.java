@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
@@ -22,14 +21,15 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholde
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -58,6 +58,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     final OverviewView view;
     final MealsDatabaseCommands commands;
     final MealsViewModel viewModel;
+    final PermissionsHelper permissionsHelper;
 
     List<Meal> list = Collections.emptyList();
 
@@ -66,13 +67,15 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
                         @NonNull Picasso picasso,
                         @NonNull PhysicalQuantitiesModel quantityModel,
                         @NonNull MealsDatabaseCommands commands,
-                        @NonNull MealsViewModel viewModel) {
+                        @NonNull MealsViewModel viewModel,
+                        @NonNull PermissionsHelper permissionsHelper) {
         this.view = view;
         this.commands = commands;
         this.databaseModel = databaseModel;
         this.picasso = picasso;
         this.quantityModel = quantityModel;
         this.viewModel = viewModel;
+        this.permissionsHelper = permissionsHelper;
     }
 
     public void onStart() {
@@ -102,7 +105,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
         if (viewType == mealItemLayout) {
-            MealItemHolder viewHolder =  new MealItemHolder(view, this);
+            MealItemHolder viewHolder =  new MealItemHolder(view, this, picasso, permissionsHelper);
             viewHolder.fillParent(parent);
             return viewHolder;
         } else {
@@ -214,17 +217,11 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
-        ImageView imageView = holder.getImage();
-        picasso.cancelRequest(imageView);
         Uri imageUri = meal.getImageUri();
-        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
-            RxPicasso.Builder.with(picasso, imageUri)
-                    .centerCrop()
-                    .fit()
-                    .into(imageView);
-        } else {
-            imageView.setImageResource(R.drawable.ic_fork_and_knife_wide);
-        }
+        Optional<Uri> uriOptional = imageUri != null && !imageUri.equals(Uri.EMPTY)
+                ? Optional.of(imageUri)
+                : Optional.<Uri>absent();
+        holder.setImageUri(uriOptional);
     }
 
     @Nullable

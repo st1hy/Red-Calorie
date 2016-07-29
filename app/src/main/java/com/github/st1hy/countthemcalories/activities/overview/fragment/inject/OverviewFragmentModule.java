@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.view.Over
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.squareup.picasso.Picasso;
 
 import dagger.Module;
@@ -48,8 +49,10 @@ public class OverviewFragmentModule {
     @Provides
     public MealsAdapter provideAdapter(OverviewView view, RxMealsDatabaseModel databaseModel,
                                        Picasso picasso, PhysicalQuantitiesModel quantityModel,
-                                       MealsDatabaseCommands commands, MealsViewModel viewModel) {
-        return new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
+                                       MealsDatabaseCommands commands, MealsViewModel viewModel,
+                                       PermissionsHelper permissionsHelper) {
+        return new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel,
+                permissionsHelper);
     }
 
     @PerFragment
@@ -62,5 +65,10 @@ public class OverviewFragmentModule {
     @Provides
     public Resources provideResources() {
         return fragment.getResources();
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
     }
 }

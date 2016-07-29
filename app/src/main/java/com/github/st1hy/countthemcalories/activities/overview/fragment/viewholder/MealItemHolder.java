@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.google.common.base.Optional;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,6 +24,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
     private final Callback callback;
     private final ScrollingItemDelegate scrollingItemDelegate;
+    private final ImageHolderDelegate imageHolderDelegate;
 
     private Meal meal;
 
@@ -41,8 +47,10 @@ public class MealItemHolder extends AbstractMealItemHolder {
     @BindView(R.id.overview_item_edit_frame)
     View editFrame;
 
-
-    public MealItemHolder(@NonNull View itemView, Callback callback) {
+    public MealItemHolder(@NonNull View itemView,
+                          @NonNull Callback callback,
+                          @NonNull Picasso picasso,
+                          @NonNull PermissionsHelper permissionHelper) {
         super(itemView);
         this.callback = callback;
         ButterKnife.bind(this, itemView);
@@ -52,6 +60,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
+        this.imageHolderDelegate = new ImageHolderDelegate(picasso, permissionHelper, image);
     }
 
     @OnClick(R.id.overview_item_content)
@@ -100,10 +109,16 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
     public void onAttached() {
         scrollingItemDelegate.onAttached();
+        imageHolderDelegate.onAttached();
     }
 
     public void onDetached() {
         scrollingItemDelegate.onDetached();
+        imageHolderDelegate.onDetached();
+    }
+
+    public void setImageUri(@NonNull Optional<Uri> uri) {
+        imageHolderDelegate.setImageUri(uri);
     }
 
     public interface Callback {
@@ -113,4 +128,5 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
         void onEditClicked(@NonNull Meal meal);
     }
+
 }

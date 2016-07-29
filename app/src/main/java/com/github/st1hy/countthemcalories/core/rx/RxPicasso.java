@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.core.rx;
 
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -104,6 +105,11 @@ public class RxPicasso implements Callback {
 
         public Builder noFade() {
             requestCreator.noFade();
+            return this;
+        }
+
+        public Builder placeholder(@DrawableRes int resId) {
+            requestCreator.placeholder(resId);
             return this;
         }
 

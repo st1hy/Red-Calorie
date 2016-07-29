@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.core.permissions;
 
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -29,22 +28,26 @@ public class PermissionsHelper {
     }
 
     /**
-     * Checks permission depending on API version. If permission have not been asked in this session
-     * shows question to the user to enable it, else returns cached result.
-     * <p/>
+     * Checks permission depending on API version. If permission is DENIED and have not been asked \
+     * in this session; shows question to the user to enable it, else returns current permission.
+     * <p>
      * For use when checking permission without direct user interaction.
      *
-     * @param permission name of the permission
+     * @param permissionName name of the permission
      * @return observable on permission.
      */
     @NonNull
-    public Observable<Permission> checkPermissionAndAskOnce(@NonNull String permission) {
+    public Observable<Permission> checkPermissionAndAskOnce(@NonNull String permissionName) {
         if (utils.hasMarshmallow()) {
-            Permission cachedPermission = permissionCache.get(permission);
-            if (cachedPermission != null)
-                return Observable.just(cachedPermission);
-            else
-                return checkPermissionAndAskIfNecessaryApi23(permission, null);
+            Permission actualPermission = checkPermission(permissionName);
+            if (actualPermission == Permission.GRANTED) {
+                return Observable.just(Permission.GRANTED);
+            } else {
+                if (hasAskedForPermissionBefore(permissionName)) {
+                    return Observable.just(actualPermission);
+                } else
+                    return makeRequestFor(permissionName);
+            }
         } else {
             return Observable.just(Permission.GRANTED);
         }
@@ -52,35 +55,39 @@ public class PermissionsHelper {
 
     /**
      * Checks permission depending on API version. Always asks permission if its not enabled.
-     * <p/>
+     * <p>
      * For use when permission is required by direct user action.
      *
-     * @param permission name of the permission
+     * @param permissionName       name of the permission
      * @param requestRationale optional rationale about this permission, may be null
      * @return observable on permission
      */
     @NonNull
-    public Observable<Permission> checkPermissionAndAskIfNecessary(@NonNull String permission,
+    public Observable<Permission> checkPermissionAndAskIfNecessary(@NonNull String permissionName,
                                                                    @Nullable RequestRationale requestRationale) {
         if (utils.hasMarshmallow()) {
-            return checkPermissionAndAskIfNecessaryApi23(permission, requestRationale);
+            Permission actualPermission = checkPermission(permissionName);
+            switch (actualPermission) {
+                case GRANTED:
+                    return Observable.just(Permission.GRANTED);
+                case DENIED:
+                    return maybeShowRequestRationale(permissionName, requestRationale);
+                default:
+                    throw new IllegalStateException("Check permission should return either GRANTED or DENIED");
+            }
         } else {
             return Observable.just(Permission.GRANTED);
         }
     }
 
+    private boolean hasAskedForPermissionBefore(@NonNull String permissionName) {
+        return permissionCache.get(permissionName) != null;
+    }
+
     @NonNull
-    private Observable<Permission> checkPermissionAndAskIfNecessaryApi23(@NonNull String permission,
-                                                                         @Nullable RequestRationale requestRationale) {
+    private Permission checkPermission(@NonNull String permission) {
         int checkResult = subject.checkSelfPermission(permission);
-        switch (checkResult) {
-            case PackageManager.PERMISSION_GRANTED:
-                return Observable.just(Permission.GRANTED);
-            case PackageManager.PERMISSION_DENIED:
-                return maybeShowRequestRationale(permission, requestRationale);
-            default:
-                throw new IllegalArgumentException("Unknown answer for checked permission");
-        }
+        return Permission.fromPermissionResult(checkResult);
     }
 
     @NonNull
@@ -143,7 +150,8 @@ public class PermissionsHelper {
         return new Action1<Permission>() {
             @Override
             public void call(Permission permission) {
-                permissionCache.put(permissionName, permission);
+                if (permission != Permission.REQUEST_CANCELED)
+                    permissionCache.put(permissionName, permission);
             }
         };
     }

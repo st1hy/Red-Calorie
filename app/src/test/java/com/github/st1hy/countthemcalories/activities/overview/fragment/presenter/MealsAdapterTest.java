@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.view.Over
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -24,6 +25,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -84,6 +86,8 @@ public class MealsAdapterTest {
     MealsDatabaseCommands commands;
     @Mock
     MealsViewModel viewModel;
+    @Mock
+    PermissionsHelper permissionsHelper;
 
     MealsAdapter adapter;
 
@@ -97,7 +101,7 @@ public class MealsAdapterTest {
             }
         });
         MockitoAnnotations.initMocks(this);
-        adapter = new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        adapter = new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel, permissionsHelper);
 
         Func1<?, BigDecimal> anyDecimal = Functions.into(BigDecimal.TEN);
         when(quantityModel.mapToEnergy()).thenReturn((Func1<Ingredient, BigDecimal>) anyDecimal);
@@ -123,7 +127,7 @@ public class MealsAdapterTest {
         onVerifyShowTotal();
         verify(view).setEmptyListVisibility(Visibility.VISIBLE);
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
     }
 
     @NonNull
@@ -152,7 +156,7 @@ public class MealsAdapterTest {
         adapter.onStop();
 
         assertThat(adapter.subscriptions.hasSubscriptions(), equalTo(false));
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
     }
 
     @Test
@@ -163,7 +167,7 @@ public class MealsAdapterTest {
         assertThat(adapter.getItemViewType(0), equalTo(MealsAdapter.mealItemLayout));
         assertThat(adapter.getItemViewType(1), equalTo(MealsAdapter.bottomSpaceLayout));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
     }
 
     @Test
@@ -173,7 +177,7 @@ public class MealsAdapterTest {
         adapter.list = Collections.singletonList(new Meal());
         assertThat(adapter.getItemCount(), equalTo(2));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
     }
 
     @Test
@@ -183,7 +187,7 @@ public class MealsAdapterTest {
                 instanceOf(EmptyMealItemHolder.class));
         assertThat(adapter.onCreateViewHolder(parent, MealsAdapter.mealItemLayout),
                 instanceOf(MealItemHolder.class));
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
     }
 
     @Test
@@ -223,13 +227,11 @@ public class MealsAdapterTest {
         verify(holder).setTotalEnergy("energy");
 
         //onBindImage
-        verify(holder).getImage();
-        verify(picasso).cancelRequest(imageView);
         verify(meal).getImageUri();
-        verify(imageView).setImageResource(R.drawable.ic_fork_and_knife_wide);
+        verify(holder).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal, holder, ingredient, template, imageView);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal, holder, ingredient, template, imageView);
     }
 
     @Test
@@ -240,8 +242,8 @@ public class MealsAdapterTest {
 
         verify(holder).onAttached();
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                holder);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(holder);
     }
 
     @Test
@@ -252,8 +254,8 @@ public class MealsAdapterTest {
 
         verify(holder).onDetached();
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                holder);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(holder);
     }
 
     @Test
@@ -265,8 +267,8 @@ public class MealsAdapterTest {
         verify(meal).getId();
         verify(view).openMealDetails(argThat(hasMeal(meal)), Matchers.<View>eq(null));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal);
     }
 
     @NonNull
@@ -296,8 +298,8 @@ public class MealsAdapterTest {
 
         verifyDelete(meal, response);
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal, response);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal, response);
     }
 
     private void verifyDelete(Meal meal, CommandResponse response) {
@@ -323,8 +325,8 @@ public class MealsAdapterTest {
         verify(meal, times(2)).getId();
         verify(view).openEditMealScreen(argThat(hasMeal(meal)));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal);
     }
 
     @Test
@@ -335,8 +337,8 @@ public class MealsAdapterTest {
 
         adapter.editMealWithId(1L);
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal);
     }
 
     @Test
@@ -347,8 +349,8 @@ public class MealsAdapterTest {
 
         adapter.deleteMealWithId(1L);
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal);
     }
 
     @Test
@@ -366,13 +368,11 @@ public class MealsAdapterTest {
 
         adapter.onBindImage(meal, holder);
 
-        verify(holder).getImage();
-        verify(picasso).cancelRequest(imageView);
         verify(meal).getImageUri();
-        verify(picasso).load(uri);
+        verify(holder).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal, holder, imageView);
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal, holder, imageView);
     }
 
     @Test
@@ -404,9 +404,8 @@ public class MealsAdapterTest {
         onVerifyShowTotal(2);
         verify(view, times(2)).setEmptyListVisibility(Visibility.GONE);
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
-                meal, response, undoResponse);
-
+        testVerifyNoMoreInteractions();
+        verifyNoMoreInteractions(meal, response, undoResponse);
     }
 
     //Auto-generated method class
@@ -445,6 +444,11 @@ public class MealsAdapterTest {
 
         verify(view).hideUndoMessage();
 
-        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel);
+        testVerifyNoMoreInteractions();
+    }
+
+    private void testVerifyNoMoreInteractions() {
+        verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
+                permissionsHelper);
     }
 }
