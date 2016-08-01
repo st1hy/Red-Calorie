@@ -41,6 +41,7 @@ public class AddIngredientModule {
                     .add(R.id.add_ingredient_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
+            fragmentManager.executePendingTransactions();
         }
         return (AddIngredientFragment) fragment;
     }

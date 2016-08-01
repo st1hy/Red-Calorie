@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
@@ -16,10 +17,15 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -108,5 +114,17 @@ public class AddMealFragmentModule {
     @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
+    }
+
+    @Provides
+    public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
+                                                          PermissionsHelper permissionsHelper,
+                                                          Provider<ImageView> image) {
+        return new NewImageHolderDelegate(picasso, permissionsHelper, image);
+    }
+
+    @Provides
+    public ImageView provideImageView() {
+        return fragment.getImageView();
     }
 }

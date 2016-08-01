@@ -45,6 +45,13 @@ public class TagsActivityRoboTest2 {
         TagsActivityRoboTest.addExampleTags(OverviewActivityRoboTest.prepareDatabase());
     }
 
+    @After
+    public void tearDown() throws Exception {
+        Timber.uprootAll();
+        TestRxPlugins.reset();
+        TagsDaoAdapter.debounceTime = 250;
+    }
+
     private Intent getPickTagIntentWithExclude() {
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
         intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{TagsActivityRoboTest.exampleTags[0].getName()});
@@ -60,12 +67,6 @@ public class TagsActivityRoboTest2 {
                 .findFragmentByTag("tags content");
     }
 
-    @After
-    public void tearDown() throws Exception {
-        Timber.uprootAll();
-        TestRxPlugins.reset();
-        TagsDaoAdapter.debounceTime = 250;
-    }
 
     @Test
     public void testExcludeTags() throws Exception {

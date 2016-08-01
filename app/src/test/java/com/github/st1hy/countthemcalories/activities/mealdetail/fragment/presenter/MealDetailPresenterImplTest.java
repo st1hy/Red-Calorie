@@ -8,13 +8,11 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -55,19 +53,14 @@ public class MealDetailPresenterImplTest {
     @Mock
     MealDetailModel model;
     @Mock
-    Picasso picasso;
-    @Mock
     MealIngredientsAdapter adapter;
-    @Mock
-    RequestCreator requestCreator;
     @Mock
     ImageHolderDelegate imageHolderDelegate;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(picasso.load(any(Uri.class))).thenReturn(requestCreator);
-        presenter = new MealDetailPresenterImpl(view, model, picasso, adapter, quantityModel,
+        presenter = new MealDetailPresenterImpl(view, model, adapter, quantityModel,
                 imageHolderDelegate);
     }
 
@@ -98,7 +91,6 @@ public class MealDetailPresenterImplTest {
             }
         });
         when(meal.getIngredients()).thenReturn(Collections.<Ingredient>emptyList());
-        when(view.getImageView()).thenReturn(mock(ImageView.class));
 
         presenter.onStart();
         verifyOnStartValid();
@@ -189,7 +181,6 @@ public class MealDetailPresenterImplTest {
         Meal meal = mock(Meal.class);
         when(meal.getImageUri()).thenReturn(Uri.EMPTY);
         ImageView imageView = mock(ImageView.class);
-        when(view.getImageView()).thenReturn(imageView);
 
         presenter.bindImage(meal);
 
@@ -201,6 +192,6 @@ public class MealDetailPresenterImplTest {
     }
 
     private void testVerifyNoMoreInteraction() {
-        verifyNoMoreInteractions(quantityModel, view, model, picasso, adapter, imageHolderDelegate);
+        verifyNoMoreInteractions(quantityModel, view, model, adapter, imageHolderDelegate);
     }
 }

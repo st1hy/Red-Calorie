@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
@@ -10,12 +9,11 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.google.common.base.Optional;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,8 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -34,7 +30,6 @@ import rx.plugins.TestRxPlugins;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -51,9 +46,7 @@ public class AddMealPresenterTest {
     @Mock
     private AddMealModel model;
     @Mock
-    private Picasso picasso;
-    @Mock
-    private RequestCreator requestCreator;
+    private ImageHolderDelegate imageHolderDelegate;
     private AddMealPresenterImp presenter;
 
     @Before
@@ -62,9 +55,6 @@ public class AddMealPresenterTest {
         TestRxPlugins.registerImmediateMainThreadHook();
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
-        when(picasso.load(any(Uri.class))).thenReturn(requestCreator);
-        when(requestCreator.centerCrop()).thenReturn(requestCreator);
-        when(requestCreator.fit()).thenReturn(requestCreator);
         when(model.getLoading()).thenReturn(Observable.<Void>just(null));
         when(model.getName()).thenReturn("Name");
         when(model.getImageUri()).thenReturn(Uri.EMPTY);
@@ -75,16 +65,9 @@ public class AddMealPresenterTest {
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>empty());
         when(view.getAddIngredientObservable()).thenReturn(Observable.<Void>empty());
         when(view.getSaveClickedObservable()).thenReturn(Observable.<Void>empty());
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback callback = (Callback) invocation.getArguments()[1];
-                callback.onSuccess();
-                return null;
-            }
-        }).when(requestCreator).into(any(ImageView.class), any(Callback.class));
+        when(imageHolderDelegate.getLoadingObservable()).thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new AddMealPresenterImp(view, permissionsHelper, model, picasso);
+        presenter = new AddMealPresenterImp(view, permissionsHelper, model, imageHolderDelegate);
     }
 
     @After
@@ -100,7 +83,7 @@ public class AddMealPresenterTest {
 
         verify(model).getLoading();
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -109,10 +92,15 @@ public class AddMealPresenterTest {
 
         testVerifyOnStart();
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     private void testVerifyOnStart() {
+        testVerifyOnStartNoImage();
+        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
+    }
+
+    private void testVerifyOnStartNoImage() {
         verify(model).getLoading();
         verify(model).getImageUri();
         verify(model).getName();
@@ -122,6 +110,8 @@ public class AddMealPresenterTest {
         verify(view).getSaveClickedObservable();
         verify(view).getSelectPictureObservable();
         verify(view).getPictureSelectedObservable();
+        verify(imageHolderDelegate).onAttached();
+        verify(imageHolderDelegate).getLoadingObservable();
     }
 
     @Test
@@ -129,17 +119,16 @@ public class AddMealPresenterTest {
         final Uri uri = mock(Uri.class);
 
         when(model.getImageUri()).thenReturn(uri);
+        when(imageHolderDelegate.getLoadingObservable())
+                .thenReturn(Observable.just(LoadedSource.PICASSO));
 
         presenter.onStart();
 
-        testVerifyOnStart();
-
-        verify(picasso).load(uri);
+        testVerifyOnStartNoImage();
+        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
         verify(view).showImageOverlay();
-        verify(view).getImageView();
-        verify(picasso).cancelRequest(any(ImageView.class));
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -154,7 +143,7 @@ public class AddMealPresenterTest {
         verify(model).getNameError();
         verify(view).showNameError(argThat(OptionalMatchers.<String>isAbsent()));
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -166,7 +155,7 @@ public class AddMealPresenterTest {
         testVerifyOnStart();
         verify(view).openAddIngredient();
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -183,7 +172,7 @@ public class AddMealPresenterTest {
         verify(view).onMealSaved();
         verify(view).showNameError(argThat(OptionalMatchers.<String>isAbsent()));
         verify(view).showSnackbarError(argThat(OptionalMatchers.<String>isAbsent()));
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -199,7 +188,7 @@ public class AddMealPresenterTest {
         verify(model).getIngredientsError();
         verify(view).showNameError(argThat(OptionalMatchers.equalTo("error")));
         verify(view).showSnackbarError(argThat(OptionalMatchers.equalTo("error2")));
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -208,6 +197,10 @@ public class AddMealPresenterTest {
         presenter.onSaveState(bundle);
 
         verify(model).onSaveState(bundle);
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso);
+        testVerifyNoMoreInteraction();
+    }
+
+    private void testVerifyNoMoreInteraction() {
+        verifyNoMoreInteractions(view, permissionsHelper, model, imageHolderDelegate);
     }
 }

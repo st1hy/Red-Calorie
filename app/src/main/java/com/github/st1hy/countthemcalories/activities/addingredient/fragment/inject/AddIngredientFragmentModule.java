@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
@@ -13,10 +14,15 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.core.FragmentDepends;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -90,5 +96,18 @@ public class AddIngredientFragmentModule {
     @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
+    }
+
+    @Provides
+    public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
+                                                          PermissionsHelper permissionsHelper,
+                                                          Provider<ImageView> image) {
+        return new NewImageHolderDelegate(picasso, permissionsHelper, image);
+    }
+
+
+    @Provides
+    public ImageView provideImageViewProvider() {
+        return fragment.getImageView();
     }
 }

@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.core.withpicture.view;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.core.baseview.DialogView;
 
@@ -19,9 +18,6 @@ public interface WithPictureView extends DialogView {
 
     @NonNull
     Observable<Uri> getPictureSelectedObservable();
-
-    @NonNull
-    ImageView getImageView();
 
     void showImageOverlay();
 

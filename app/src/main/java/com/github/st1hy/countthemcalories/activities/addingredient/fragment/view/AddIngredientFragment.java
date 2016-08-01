@@ -205,7 +205,6 @@ public class AddIngredientFragment extends BaseFragment implements AddIngredient
         return screen.getPictureSelectedObservable();
     }
 
-    @Override
     @NonNull
     public ImageView getImageView() {
         return screen.getImageView();

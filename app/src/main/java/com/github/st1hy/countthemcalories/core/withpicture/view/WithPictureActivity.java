@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
@@ -24,6 +23,7 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
 
     final BehaviorSubject<Uri> pictureSelectedSubject = BehaviorSubject.create();
     Uri tempImageUri;
+    final Observable<Uri> getPictureSelectedObservable = pictureSelectedSubject.asObservable();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,15 +33,11 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
         }
     }
 
-    @NonNull
-    public abstract ImageView getImageView();
-
     @Override
     public void openCameraAndGetPicture() {
         ContentValues values = new ContentValues(1);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
         tempImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        Timber.d("Creating image at: %s", tempImageUri);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -95,7 +91,7 @@ public abstract class WithPictureActivity extends BaseActivity implements WithPi
     @NonNull
     @Override
     public Observable<Uri> getPictureSelectedObservable() {
-        return pictureSelectedSubject.asObservable();
+        return getPictureSelectedObservable;
     }
 
     @Override

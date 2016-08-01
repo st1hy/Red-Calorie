@@ -4,22 +4,25 @@ import android.Manifest;
 import android.net.Uri;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.core.withpicture.model.ImageSource;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
-import com.squareup.picasso.Picasso;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
 import static com.github.st1hy.countthemcalories.core.withpicture.model.ImageSource.intoImageSource;
 
 public class WithPicturePresenterImp implements WithPicturePresenter {
@@ -28,45 +31,61 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
     protected final WithPictureView view;
     protected final WithPictureModel model;
     protected final CompositeSubscription subscriptions = new CompositeSubscription();
-    private final Picasso picasso;
+    private final ImageHolderDelegate imageHolderDelegate;
+    private final Subject<Uri, Uri> loadUriSource = PublishSubject.create();
+    private final Subject<Uri, Uri> deleteUriSource = PublishSubject.create();
 
     public WithPicturePresenterImp(@NonNull WithPictureView view,
                                    @NonNull PermissionsHelper permissionsHelper,
                                    @NonNull WithPictureModel model,
-                                   @NonNull Picasso picasso) {
+                                   @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.permissionsHelper = permissionsHelper;
         this.view = view;
         this.model = model;
-        this.picasso = picasso;
+        this.imageHolderDelegate = imageHolderDelegate;
     }
 
     @Override
     public void onStart() {
+        imageHolderDelegate.onAttached();
         subscriptions.add(view.getSelectPictureObservable()
                 .flatMap(checkPermission())
                 .filter(Permission.isGranted())
                 .flatMap(showDialog())
                 .map(intoImageSource())
-                .subscribe(new Action1<ImageSource>() {
+                .subscribe(new SimpleSubscriber<ImageSource>() {
                     @Override
-                    public void call(ImageSource imageSource) {
+                    public void onNext(ImageSource imageSource) {
                         onSelectedImageSource(imageSource);
                     }
                 }));
         subscriptions.add(view.getPictureSelectedObservable()
+                .mergeWith(deleteUriSource)
                 .doOnNext(new Action1<Uri>() {
                     @Override
                     public void call(Uri uri) {
-                        onImageReceived(uri);
+                        onImageUriChanged(uri);
                     }
                 })
-                .flatMap(intoImageView())
-                .filter(successfulLoading())
-                .subscribe(new SimpleSubscriber<RxPicasso.PicassoEvent>()));
+                .mergeWith(loadUriSource)
+                .subscribe(new SimpleSubscriber<Uri>() {
+                    @Override
+                    public void onNext(Uri uri) {
+                        setImageUri(uri);
+                    }
+                }));
+        subscriptions.add(imageHolderDelegate.getLoadingObservable()
+                .subscribe(new SimpleSubscriber<LoadedSource>() {
+                    @Override
+                    public void onNext(LoadedSource loadedSource) {
+                        showOverlay(loadedSource);
+                    }
+                }));
     }
 
     @Override
     public void onStop() {
+        imageHolderDelegate.onDetached();
         subscriptions.clear();
     }
 
@@ -103,50 +122,42 @@ public class WithPicturePresenterImp implements WithPicturePresenter {
                 view.pickImageFromGallery();
                 break;
             case REMOVE_SOURCE:
-                view.getImageView().setImageResource(model.getSelectImageDrawableRes());
-                view.hideImageOverlay();
-                onImageReceived(Uri.EMPTY);
+                deleteUriSource.onNext(Uri.EMPTY);
                 break;
         }
     }
 
-    @NonNull
-    private Func1<Uri, Observable<RxPicasso.PicassoEvent>> intoImageView() {
-        return new Func1<Uri, Observable<RxPicasso.PicassoEvent>>() {
-            @Override
-            public Observable<RxPicasso.PicassoEvent> call(Uri uri) {
-                return loadPictureObservable(uri);
-            }
-        };
+    /**
+     * Called when image uri has changed.
+     *
+     * @param uri image uri
+     */
+    protected void onImageUriChanged(@NonNull final Uri uri) {
     }
 
-    @NonNull
-    protected Observable<RxPicasso.PicassoEvent> loadPictureObservable(@NonNull Uri uri) {
-        return RxPicasso.Builder.with(picasso, uri)
-                .centerCrop()
-                .fit()
-                .into(view.getImageView())
-                .asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<RxPicasso.PicassoEvent>() {
-                    @Override
-                    public void call(RxPicasso.PicassoEvent event) {
-                        if (event == RxPicasso.PicassoEvent.SUCCESS) view.showImageOverlay();
-                    }
-                });
+    /**
+     * Request image loading into internal image view.
+     * Permissions will be checked if necessary.
+     *
+     * @param uri uri of the image. Null or Uri#EMPTY results in loading placeholder instead.
+     */
+    protected void loadImageUri(@Nullable final Uri uri) {
+        loadUriSource.onNext(uri);
     }
 
-    @NonNull
-    private Func1<RxPicasso.PicassoEvent, Boolean> successfulLoading() {
-        return new Func1<RxPicasso.PicassoEvent, Boolean>() {
-            @Override
-            public Boolean call(RxPicasso.PicassoEvent event) {
-                return event == RxPicasso.PicassoEvent.SUCCESS;
-            }
-        };
+    private void setImageUri(@Nullable Uri uri) {
+        imageHolderDelegate.setImageUri(from(uri));
     }
 
-    protected void onImageReceived(@NonNull final Uri uri) {
+    private void showOverlay(@NonNull LoadedSource loadedSource) {
+        switch (loadedSource) {
+            case PICASSO:
+                view.showImageOverlay();
+                break;
+            case PLACEHOLDER:
+                view.hideImageOverlay();
+                break;
+        }
     }
 
 }

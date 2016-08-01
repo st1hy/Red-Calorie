@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.internal.InstanceFactory;
 
 public class MealItemHolder extends AbstractMealItemHolder {
 
@@ -60,7 +61,8 @@ public class MealItemHolder extends AbstractMealItemHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
-        this.imageHolderDelegate = new ImageHolderDelegate(picasso, permissionHelper, image);
+        this.imageHolderDelegate = new ImageHolderDelegate(picasso, permissionHelper,
+                InstanceFactory.create(image));
     }
 
     @OnClick(R.id.overview_item_content)

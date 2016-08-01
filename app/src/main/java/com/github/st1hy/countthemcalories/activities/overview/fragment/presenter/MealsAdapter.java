@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -29,7 +28,6 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
-import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -45,6 +43,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
 
 public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> implements MealItemHolder.Callback {
     static final int mealItemLayout = R.layout.overview_item_scrolling;
@@ -217,11 +217,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
-        Uri imageUri = meal.getImageUri();
-        Optional<Uri> uriOptional = imageUri != null && !imageUri.equals(Uri.EMPTY)
-                ? Optional.of(imageUri)
-                : Optional.<Uri>absent();
-        holder.setImageUri(uriOptional);
+        holder.setImageUri(from(meal.getImageUri()));
     }
 
     @Nullable

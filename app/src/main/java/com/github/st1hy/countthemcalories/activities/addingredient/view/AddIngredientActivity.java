@@ -113,7 +113,6 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
     }
 
     @NonNull
-    @Override
     public ImageView getImageView() {
         return ingredientImage;
     }

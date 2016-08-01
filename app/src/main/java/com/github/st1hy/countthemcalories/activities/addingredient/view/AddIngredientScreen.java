@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
 
@@ -23,4 +24,6 @@ public interface AddIngredientScreen extends WithPictureView {
     Observable<Void> getSaveObservable();
 
     void showInWebBrowser(@NonNull Uri address);
+
+    ImageView getImageView();
 }

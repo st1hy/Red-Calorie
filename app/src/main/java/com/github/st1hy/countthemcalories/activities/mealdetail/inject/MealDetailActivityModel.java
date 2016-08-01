@@ -34,6 +34,7 @@ public class MealDetailActivityModel {
                     .add(R.id.meal_detail_content_root, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
+            fragmentManager.executePendingTransactions();
         }
         return fragment;
     }

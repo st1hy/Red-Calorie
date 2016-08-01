@@ -111,7 +111,6 @@ public class MealDetailFragment extends BaseFragment implements MealDetailView {
     }
 
     @NonNull
-    @Override
     public ImageView getImageView() {
         return image;
     }

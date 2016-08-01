@@ -1,18 +1,17 @@
 package com.github.st1hy.countthemcalories.core.withpicture.presenter;
 
 import android.net.Uri;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,8 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -34,7 +31,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -50,11 +47,7 @@ public class WithPicturePresenterImpTest {
     @Mock
     private WithPictureModel model;
     @Mock
-    private ImageView imageView;
-    @Mock
-    private Picasso picasso;
-    @Mock
-    private RequestCreator requestCreator;
+    private ImageHolderDelegate imageHolderDelegate;
     private WithPicturePresenterImp presenter;
 
 
@@ -64,24 +57,14 @@ public class WithPicturePresenterImpTest {
         TestRxPlugins.registerImmediateMainThreadHook();
         when(permissionsHelper.checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class)))
                 .thenReturn(Observable.just(Permission.GRANTED));
-        when(picasso.load(any(Uri.class))).thenReturn(requestCreator);
-        when(requestCreator.centerCrop()).thenReturn(requestCreator);
-        when(requestCreator.fit()).thenReturn(requestCreator);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback callback = (Callback) invocation.getArguments()[1];
-                callback.onSuccess();
-                return null;
-            }
-        }).when(requestCreator).into(any(ImageView.class), any(Callback.class));
-        when(view.getImageView()).thenReturn(imageView);
         when(view.getSelectPictureObservable())
                 .thenReturn(Observable.<Void>empty());
         when(view.getPictureSelectedObservable())
                 .thenReturn(Observable.<Uri>empty());
+        when(imageHolderDelegate.getLoadingObservable())
+                .thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new WithPicturePresenterImp(view, permissionsHelper, model,picasso);
+        presenter = new WithPicturePresenterImp(view, permissionsHelper, model,imageHolderDelegate);
     }
 
     @After
@@ -93,12 +76,15 @@ public class WithPicturePresenterImpTest {
     @Test
     public void testOnStart() {
         presenter.onStart();
+        testVerifyStart();
+        testVerifyNoMoreInteraction();
+    }
 
+    private void testVerifyStart() {
         verify(view).getSelectPictureObservable();
         verify(view).getPictureSelectedObservable();
-
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        verify(imageHolderDelegate).onAttached();
+        verify(imageHolderDelegate).getLoadingObservable();
     }
 
     @Test
@@ -109,8 +95,7 @@ public class WithPicturePresenterImpTest {
 
         presenter.onStart();
 
-        verify(view).getSelectPictureObservable();
-        verify(view).getPictureSelectedObservable();
+        testVerifyStart();
         verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(model).getImageSourceDialogTitleResId();
         verify(model).getSelectImageSourceOptions();
@@ -118,8 +103,7 @@ public class WithPicturePresenterImpTest {
         verify(view).showAlertDialog(anyInt(), anyInt());
         verify(view).openCameraAndGetPicture();
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -130,16 +114,14 @@ public class WithPicturePresenterImpTest {
 
         presenter.onStart();
 
-        verify(view).getSelectPictureObservable();
-        verify(view).getPictureSelectedObservable();
+        testVerifyStart();
         verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(model).getImageSourceDialogTitleResId();
         verify(model).getSelectImageSourceOptions();
         verify(model).hasImage();
         verify(view).showAlertDialog(anyInt(), anyInt());
         verify(view).pickImageFromGallery();
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -148,9 +130,9 @@ public class WithPicturePresenterImpTest {
 
         assertThat(presenter.subscriptions.isUnsubscribed(), equalTo(false));
         assertThat(presenter.subscriptions.hasSubscriptions(), equalTo(false));
+        verify(imageHolderDelegate).onDetached();
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -158,21 +140,16 @@ public class WithPicturePresenterImpTest {
         Uri mockedUri = Mockito.mock(Uri.class);
         when(view.getPictureSelectedObservable())
                 .thenReturn(Observable.just(mockedUri));
+        when(imageHolderDelegate.getLoadingObservable())
+                .thenReturn(Observable.just(LoadedSource.PICASSO));
 
         presenter.onStart();
 
-        verify(view).getSelectPictureObservable();
-        verify(view).getPictureSelectedObservable();
-        verify(picasso).load(mockedUri);
-        verify(view).getImageView();
+        testVerifyStart();
+        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(mockedUri)));
         verify(view).showImageOverlay();
-        verify(picasso).cancelRequest(any(ImageView.class));
-        verify(requestCreator).centerCrop();
-        verify(requestCreator).fit();
-        verify(requestCreator).into(any(ImageView.class), any(Callback.class));
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -181,24 +158,25 @@ public class WithPicturePresenterImpTest {
                 .thenReturn(Observable.<Void>just(null));
         when(view.showAlertDialog(anyInt(), anyInt())).thenReturn(Observable.just(2));
         when(model.hasImage()).thenReturn(true);
+        when(imageHolderDelegate.getLoadingObservable())
+                .thenReturn(Observable.just(LoadedSource.PLACEHOLDER));
 
         presenter.onStart();
 
-        verify(view).getSelectPictureObservable();
-        verify(view).getPictureSelectedObservable();
+        testVerifyStart();
         verify(permissionsHelper).checkPermissionAndAskIfNecessary(anyString(), any(RequestRationale.class));
         verify(model).getImageSourceDialogTitleResId();
         verify(model).getSelectImageSourceAndRemoveOptions();
         verify(model).hasImage();
         verify(view).showAlertDialog(anyInt(), anyInt());
         verify(view).hideImageOverlay();
-        verify(view).getImageView();
-        verify(model).getSelectImageDrawableRes();
-        verify(imageView).setImageResource(anyInt());
 
-        verifyNoMoreInteractions(view, permissionsHelper, model, picasso, imageView, requestCreator,
-                imageView);
+        testVerifyNoMoreInteraction();
 
 
+    }
+
+    private void testVerifyNoMoreInteraction() {
+        verifyNoMoreInteractions(view, permissionsHelper, model, imageHolderDelegate);
     }
 }

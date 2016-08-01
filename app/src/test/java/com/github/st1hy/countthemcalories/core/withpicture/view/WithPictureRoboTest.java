@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
@@ -50,19 +49,10 @@ public class WithPictureRoboTest {
 
     @Before
     public void setup() {
-        WithPictureActivityTest activity = Robolectric.setupActivity(WithPictureActivityTest.class);
-        activity.mockedImageView = Mockito.mock(ImageView.class);
-        this.activity = activity;
+        this.activity = Robolectric.setupActivity(WithPictureActivityTest.class);
     }
 
     private static class WithPictureActivityTest extends WithPictureActivity {
-        ImageView mockedImageView;
-
-        @NonNull
-        @Override
-        public ImageView getImageView() {
-            return mockedImageView;
-        }
 
         @NonNull
         @Override

@@ -45,6 +45,7 @@ public class TagsActivityModule {
                     .add(R.id.tags_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
+            fragmentManager.executePendingTransactions();
         }
         return fragment;
     }

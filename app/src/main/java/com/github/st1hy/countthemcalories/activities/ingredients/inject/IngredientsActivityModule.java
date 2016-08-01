@@ -92,6 +92,7 @@ public class IngredientsActivityModule {
                     .add(R.id.ingredients_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
+            fragmentManager.executePendingTransactions();
         }
         return fragment;
     }

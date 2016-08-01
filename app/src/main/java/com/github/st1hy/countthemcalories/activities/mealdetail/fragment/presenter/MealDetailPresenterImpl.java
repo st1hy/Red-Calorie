@@ -1,16 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.withpicture.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.google.common.base.Optional;
-import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 
@@ -20,11 +17,12 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
+
 public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     final MealDetailView view;
     final MealDetailModel model;
-    final Picasso picasso;
     final MealIngredientsAdapter adapter;
     final PhysicalQuantitiesModel quantitiesModel;
     final ImageHolderDelegate imageHolderDelegate;
@@ -32,12 +30,11 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     @Inject
     public MealDetailPresenterImpl(@NonNull MealDetailView view, @NonNull MealDetailModel model,
-                                   @NonNull Picasso picasso, @NonNull MealIngredientsAdapter adapter,
+                                   @NonNull MealIngredientsAdapter adapter,
                                    @NonNull PhysicalQuantitiesModel quantitiesModel,
                                    @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.view = view;
         this.model = model;
-        this.picasso = picasso;
         this.adapter = adapter;
         this.quantitiesModel = quantitiesModel;
         this.imageHolderDelegate = imageHolderDelegate;
@@ -92,10 +89,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     }
 
     void bindImage(@NonNull Meal meal) {
-        Uri imageUri = meal.getImageUri();
-        Optional<Uri> uriOptional = imageUri != null && !imageUri.equals(Uri.EMPTY)
-                ? Optional.of(imageUri) : Optional.<Uri>absent();
-        imageHolderDelegate.setImageUri(uriOptional);
+        imageHolderDelegate.setImageUri(from(meal.getImageUri()));
     }
 
     private Action1<Void> onEditClicked() {

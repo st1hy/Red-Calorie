@@ -44,6 +44,7 @@ public class IngredientDetailModule {
                     .add(R.id.ingredient_detail_content, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commit();
+            fragmentManager.executePendingTransactions();
         }
         return fragment;
     }

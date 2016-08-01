@@ -7,11 +7,10 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
 import com.google.common.base.Optional;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -29,8 +28,8 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     public AddMealPresenterImp(@NonNull AddMealView view,
                                @NonNull PermissionsHelper permissionsHelper,
                                @NonNull AddMealModel model,
-                               @NonNull Picasso picasso) {
-        super(view, permissionsHelper, model, picasso);
+                               @NonNull ImageHolderDelegate imageHolderDelegate) {
+        super(view, permissionsHelper, model, imageHolderDelegate);
         this.view = view;
         this.model = model;
     }
@@ -53,10 +52,7 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
             @Override
             public void call(Void aVoid) {
                 AddMealPresenterImp.super.onStart();
-                Uri imageUri = model.getImageUri();
-                if (!imageUri.equals(Uri.EMPTY))
-                    subscriptions.add(loadPictureObservable(imageUri)
-                            .subscribe(new SimpleSubscriber<RxPicasso.PicassoEvent>()));
+                loadImageUri(model.getImageUri());
                 view.setName(model.getName());
 
                 subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
@@ -102,8 +98,8 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
     }
 
     @Override
-    public void onImageReceived(@NonNull Uri uri) {
-        super.onImageReceived(uri);
+    public void onImageUriChanged(@NonNull Uri uri) {
+        super.onImageUriChanged(uri);
         model.setImageUri(uri);
     }
 
