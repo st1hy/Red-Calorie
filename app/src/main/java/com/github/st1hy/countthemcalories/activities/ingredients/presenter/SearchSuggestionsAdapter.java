@@ -19,10 +19,8 @@ import java.util.Collections;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
 
@@ -78,12 +76,6 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
     @NonNull
     private Subscription makeSuggestions(@NonNull final Observable<SearchResult> sequenceObservable) {
         return sequenceObservable
-                .doOnNext(new Action1<SearchResult>() {
-                    @Override
-                    public void call(SearchResult searchResult) {
-                        Timber.d("Tag search: %s", searchResult);
-                    }
-                })
                 .flatMap(new Func1<SearchResult, Observable<Cursor>>() {
                     @Override
                     public Observable<Cursor> call(SearchResult searchResult) {

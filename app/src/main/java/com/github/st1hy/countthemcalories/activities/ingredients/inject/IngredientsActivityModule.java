@@ -27,8 +27,6 @@ import dagger.Module;
 import dagger.Provides;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.ACTION_SELECT_INGREDIENT;
 
@@ -120,13 +118,7 @@ public class IngredientsActivityModule {
     @PerActivity
     public Observable<SearchResult> provideSearchResults() {
         Observable<SearchResult> sequenceObservable = RxSearchable.create(activity.getSearchView())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SearchResult>() {
-                    @Override
-                    public void call(SearchResult searchResult) {
-                        Timber.d("Raw search: %s", searchResult);
-                    }
-                });
+                .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {
             sequenceObservable = sequenceObservable
                     .share()

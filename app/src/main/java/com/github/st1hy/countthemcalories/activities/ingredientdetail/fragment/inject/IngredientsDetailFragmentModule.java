@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.v
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
@@ -23,6 +25,7 @@ import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
 
 import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSubclass;
 
@@ -86,7 +89,17 @@ public class IngredientsDetailFragmentModule {
     public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
                                                           PermissionsHelper permissionsHelper,
                                                           Provider<ImageView> imageViewProvider) {
-        return new ImageHolderDelegate(picasso, permissionsHelper, imageViewProvider);
+        return new ImageHolderDelegate(picasso, permissionsHelper, imageViewProvider) {
+            @NonNull
+            @Override
+            protected Observable<RxPicasso.PicassoEvent> loadImage(@NonNull Uri uri) {
+                return RxPicasso.Builder.with(picasso, uri)
+                        .centerCrop()
+                        .fit()
+                        .into(imageViewProvider.get())
+                        .asObservable();
+            }
+        };
     }
 
     @Provides

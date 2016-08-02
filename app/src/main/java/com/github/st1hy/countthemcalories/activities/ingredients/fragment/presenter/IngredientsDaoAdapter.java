@@ -179,12 +179,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @NonNull
     private Subscription searchIngredients(@NonNull Observable<SearchResult> sequenceObservable) {
         return sequenceObservable
-                .doOnNext(new Action1<SearchResult>() {
-                    @Override
-                    public void call(SearchResult text) {
-                        Timber.v("Search: %s", text);
-                    }
-                })
                 .flatMap(queryDatabaseFiltered())
                 .doOnError(new Action1<Throwable>() {
                     @Override
@@ -197,7 +191,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 .subscribe(new SimpleSubscriber<QueryFinished>() {
                     @Override
                     public void onNext(QueryFinished queryFinished) {
-                        Timber.v("Db cursor query ended");
                         onCursorUpdate(queryFinished.getCursor(), queryFinished.getSearchingFor());
                         notifyDataSetChanged();
                         onSearchFinished();

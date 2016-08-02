@@ -182,7 +182,6 @@ public class PermissionsHelperTest {
     }
 
 
-
     private static class ReadPermission extends Subscriber<Permission> {
         Throwable error;
         List<Permission> output = new ArrayList<>(1);
