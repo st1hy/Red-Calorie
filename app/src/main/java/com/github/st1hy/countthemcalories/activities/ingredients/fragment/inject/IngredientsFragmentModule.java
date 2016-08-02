@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredi
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
@@ -45,8 +46,9 @@ public class IngredientsFragmentModule {
                                                            IngredientsFragmentModel model,
                                                            RxIngredientsDatabaseModel databaseModel,
                                                            IngredientsDatabaseCommands commands,
-                                                           Picasso picasso) {
-        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso);
+                                                           Picasso picasso,
+                                                           PermissionsHelper permissionsHelper) {
+        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso, permissionsHelper);
     }
 
     @Provides
@@ -75,5 +77,10 @@ public class IngredientsFragmentModule {
     @Provides
     public Resources provideResources() {
         return fragment.getResources();
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
     }
 }

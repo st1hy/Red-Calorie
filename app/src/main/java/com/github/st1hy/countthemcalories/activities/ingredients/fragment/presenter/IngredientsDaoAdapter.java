@@ -1,15 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter;
 
 import android.database.Cursor;
-import android.net.Uri;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
@@ -25,12 +22,13 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
@@ -66,6 +64,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     final RxIngredientsDatabaseModel databaseModel;
     final IngredientsDatabaseCommands commands;
     final Picasso picasso;
+    final PermissionsHelper permissionsHelper;
 
     final Queue<Long> addedItems = new LinkedList<>();
 
@@ -75,12 +74,14 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                                  @NonNull IngredientsFragmentModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
-                                 @NonNull Picasso picasso) {
+                                 @NonNull Picasso picasso,
+                                 @NonNull PermissionsHelper permissionsHelper) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.picasso = picasso;
+        this.permissionsHelper = permissionsHelper;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
-            IngredientItemViewHolder holder = new IngredientItemViewHolder(view, this);
+            IngredientItemViewHolder holder = new IngredientItemViewHolder(view, this, picasso, permissionsHelper);
             holder.fillParent(parent);
             return holder;
         } else {
@@ -136,7 +137,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         super.onViewDetachedFromWindow(holder);
         if (holder instanceof IngredientItemViewHolder) {
             IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
-            picasso.cancelRequest(ingredientHolder.getImage());
             ingredientHolder.onDetached();
         }
     }
@@ -407,19 +407,9 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
-        ImageView imageView = holder.getImage();
-        picasso.cancelRequest(imageView);
-        Uri imageUri = ingredient.getImageUri();
-        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
-            RxPicasso.Builder.with(picasso, imageUri)
-                    .centerCrop()
-                    .fit()
-                    .into(imageView);
-        } else {
-            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
-                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
-            imageView.setImageResource(imageRes);
-        }
+        holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
+        holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
     }
 
     static class QueryFinished {

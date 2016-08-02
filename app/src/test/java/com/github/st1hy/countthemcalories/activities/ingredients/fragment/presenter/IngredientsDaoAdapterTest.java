@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
@@ -26,6 +27,7 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -94,13 +96,15 @@ public class IngredientsDaoAdapterTest {
     CommandResponse deleteResponse, insertResponse;
     @Mock
     InsertResult insertResult;
+    @Mock
+    PermissionsHelper permissionsHelper;
 
 
     @Before
     public void setup() {
         TestRxPlugins.registerImmediateMainThreadHook();
         MockitoAnnotations.initMocks(this);
-        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso);
+        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso, permissionsHelper);
 
         when(deleteResponse.undoAvailability()).thenReturn(Observable.just(true));
         when(deleteResponse.undo()).thenReturn(Observable.just(insertResponse));
@@ -113,8 +117,9 @@ public class IngredientsDaoAdapterTest {
                                          @NonNull IngredientsFragmentModel model,
                                          @NonNull RxIngredientsDatabaseModel databaseModel,
                                          @NonNull IngredientsDatabaseCommands commands,
-                                         @NonNull Picasso picasso) {
-            super(view, model, databaseModel, commands, picasso);
+                                         @NonNull Picasso picasso,
+                                         @NonNull PermissionsHelper permissionsHelper) {
+            super(view, model, databaseModel, commands, picasso, permissionsHelper);
         }
 
         @Override
@@ -145,7 +150,7 @@ public class IngredientsDaoAdapterTest {
         verify(view).setNoIngredientsVisibility(Visibility.VISIBLE);
         verify(cursor).getCount();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -157,7 +162,12 @@ public class IngredientsDaoAdapterTest {
 
         verify(cursor, times(2)).getCount();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+
+        testVerifyNoMoreInteraction();
+    }
+
+    private void testVerifyNoMoreInteraction() {
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, permissionsHelper);
     }
 
     @Test
@@ -168,7 +178,7 @@ public class IngredientsDaoAdapterTest {
         assertThat(adapter.onCreateViewHolder(viewGroup, IngredientsDaoAdapter.item_empty_space_layout),
                 instanceOf(EmptySpaceViewHolder.class));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -179,8 +189,6 @@ public class IngredientsDaoAdapterTest {
         when(ingredient.getAmountType()).thenReturn(AmountUnitType.MASS);
         when(ingredient.getEnergyDensityAmount()).thenReturn(BigDecimal.TEN);
         when(model.getReadableEnergyDensity(any(EnergyDensity.class))).thenReturn("10 kcal / g");
-        ImageView imageView = mock(ImageView.class);
-        when(holder.getImage()).thenReturn(imageView);
         Uri uri = Uri.parse("http://eat.me/ham.png");
         when(ingredient.getImageUri()).thenReturn(uri);
         RequestCreator requestCreator = mock(RequestCreator.class);
@@ -196,17 +204,16 @@ public class IngredientsDaoAdapterTest {
         verify(holder).setPosition(0);
         verify(ingredient).getName();
         verify(holder).setName(anyString());
-        verify(ingredient).getAmountType();
+        verify(ingredient, times(2)).getAmountType();
         verify(ingredient).getEnergyDensityAmount();
         verify(model).getReadableEnergyDensity(any(EnergyDensity.class));
         verify(holder).setEnergyDensity(anyString());
-        verify(picasso).cancelRequest(imageView);
-        verify(holder).getImage();
         verify(ingredient).getImageUri();
-        verify(picasso).load(uri);
+        verify(holder).setImagePlaceholder(R.drawable.ic_fork_and_knife_wide);
+        verify(holder).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
-                holder, imageView, ingredient);
+        testVerifyNoMoreInteraction();
+        verifyNoMoreInteractions(holder, ingredient);
     }
 
     @Test
@@ -215,15 +222,13 @@ public class IngredientsDaoAdapterTest {
         when(ingredient.getAmountType()).thenReturn(AmountUnitType.MASS);
         IngredientItemViewHolder holder = mock(IngredientItemViewHolder.class);
         ImageView imageView = mock(ImageView.class);
-        when(holder.getImage()).thenReturn(imageView);
         when(ingredient.getImageUri()).thenReturn(Uri.EMPTY);
 
         adapter.onBindImage(ingredient, holder);
-        verify(holder).getImage();
-        verify(picasso).cancelRequest(imageView);
         verify(ingredient).getImageUri();
         verify(ingredient).getAmountType();
-        verify(imageView).setImageResource(R.drawable.ic_fork_and_knife_wide);
+        verify(holder).setImagePlaceholder(R.drawable.ic_fork_and_knife_wide);
+        verify(holder).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
                 holder, imageView, ingredient);
@@ -237,7 +242,7 @@ public class IngredientsDaoAdapterTest {
 
         verify(cursor).getCount();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -256,12 +261,9 @@ public class IngredientsDaoAdapterTest {
     public void testOnDetachedFromWindow() throws Exception {
         IngredientItemViewHolder holder = mock(IngredientItemViewHolder.class);
         ImageView imageView = mock(ImageView.class);
-        when(holder.getImage()).thenReturn(imageView);
 
         adapter.onViewDetachedFromWindow(holder);
 
-        verify(holder).getImage();
-        verify(picasso).cancelRequest(imageView);
         verify(holder).onDetached();
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
@@ -360,7 +362,7 @@ public class IngredientsDaoAdapterTest {
     @Test
     public void testScrollToNewItemWhenSearchFinishes() throws Exception {
         adapter.onIngredientAdded(10L);
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
         Schedulers.registerHook(new Schedulers.HookImp() {
             @Override
             public Scheduler computation() {
@@ -375,7 +377,7 @@ public class IngredientsDaoAdapterTest {
         verify(daoModel).findInCursor(cursor, 10L);
         verify(view).scrollToPosition(500);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
         Schedulers.reset();
     }
 
@@ -438,7 +440,7 @@ public class IngredientsDaoAdapterTest {
 
         assertThat(event.get(), allOf(hasPosition(1), hasType(type)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -447,7 +449,7 @@ public class IngredientsDaoAdapterTest {
 
         verify(view).hideUndoMessage();
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -464,7 +466,7 @@ public class IngredientsDaoAdapterTest {
         verify(model).getNoIngredientsMessage();
         verify(view).setNoIngredientsMessage(anyInt());
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -478,7 +480,7 @@ public class IngredientsDaoAdapterTest {
         testVerifyOpenOptions();
         verify(view).openNewMealScreen(argThat(hasIngredient(ingredient)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -492,7 +494,7 @@ public class IngredientsDaoAdapterTest {
         testVerifyOpenOptions();
         verify(view).openEditIngredientScreen(eq(0L), argThat(hasIngredient(ingredient)));
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     @Test
@@ -506,7 +508,7 @@ public class IngredientsDaoAdapterTest {
         testVerifyOpenOptions();
         verifyDelete(ingredient);
 
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso);
+        testVerifyNoMoreInteraction();
     }
 
     private void testVerifyOpenOptions() {
