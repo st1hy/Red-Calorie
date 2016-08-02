@@ -10,8 +10,8 @@ android {
         applicationId "com.github.st1hy.countthemcalories"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "1.2.1"
+        versionCode 17
+        versionName "1.2.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -45,7 +45,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each {
             output ->
-                def String newApkName = "Count Them Calories $variant.versionName" + ".apk"
+                def String newApkName = "Count Them Calories ${variant.versionName}.apk"
 
                 def String dir = output.outputFile.parent;
                 output.outputFile = new File(dir, newApkName)
