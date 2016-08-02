@@ -99,7 +99,6 @@ public class MealDetailsModule {
                 return RxPicasso.Builder.with(picasso, uri)
                         .centerCrop()
                         .fit()
-                        .noFade()
                         .into(imageViewProvider.get())
                         .asObservable();
             }

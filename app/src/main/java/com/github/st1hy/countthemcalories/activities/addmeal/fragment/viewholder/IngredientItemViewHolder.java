@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder;
 
+import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,11 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.google.common.base.Optional;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.internal.InstanceFactory;
 
 public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -34,11 +41,17 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     final Callback callback;
     Ingredient ingredient;
 
+    final ImageHolderDelegate imageHolderDelegate;
+
     public IngredientItemViewHolder(@NonNull View itemView,
-                                    @NonNull final Callback callback) {
+                                    @NonNull final Callback callback,
+                                    @NonNull Picasso picasso,
+                                    @NonNull PermissionsHelper permissionsHelper) {
         super(itemView);
         this.callback = callback;
         ButterKnife.bind(this, itemView);
+        imageHolderDelegate = new ImageHolderDelegate(picasso, permissionsHelper,
+                InstanceFactory.create(image));
     }
 
     public void setName(@NonNull String name) {
@@ -59,11 +72,6 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
     public void setIngredient(@NonNull Ingredient ingredient) {
         this.ingredient = ingredient;
-    }
-
-    @NonNull
-    public ImageView getImage() {
-        return image;
     }
 
     @OnClick(R.id.add_meal_ingredient_compact)
@@ -89,6 +97,27 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     @NonNull
     public TextView getDensity() {
         return energyDensity;
+    }
+
+    public void setImageUri(@NonNull Optional<Uri> uri) {
+        imageHolderDelegate.setImageUri(uri);
+    }
+
+    public void setImagePlaceholder(@DrawableRes int placeholderResId) {
+        imageHolderDelegate.setImagePlaceholder(placeholderResId);
+    }
+
+    public void onAttached() {
+        imageHolderDelegate.onAttached();
+    }
+
+    public void onDetached() {
+        imageHolderDelegate.onDetached();
+    }
+
+    @NonNull
+    public ImageView getImage() {
+        return image;
     }
 
     public interface Callback {

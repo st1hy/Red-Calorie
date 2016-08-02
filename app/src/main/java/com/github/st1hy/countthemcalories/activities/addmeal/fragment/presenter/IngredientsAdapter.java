@@ -14,9 +14,11 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.Meal
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -43,15 +45,19 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     private final MealIngredientsListModel model;
     private final PhysicalQuantitiesModel quantityModel;
     private final Picasso picasso;
+    private final PermissionsHelper permissionsHelper;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     public IngredientsAdapter(@NonNull AddMealView view, @NonNull MealIngredientsListModel model,
-                              @NonNull PhysicalQuantitiesModel quantityModel, @NonNull Picasso picasso) {
+                              @NonNull PhysicalQuantitiesModel quantityModel,
+                              @NonNull Picasso picasso,
+                              @NonNull PermissionsHelper permissionsHelper) {
         this.view = view;
         this.model = model;
         this.quantityModel = quantityModel;
         this.picasso = picasso;
+        this.permissionsHelper = permissionsHelper;
     }
 
     public void onStart() {
@@ -129,7 +135,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
-        return new IngredientItemViewHolder(view, this);
+        return new IngredientItemViewHolder(view, this, picasso, permissionsHelper);
     }
 
     @Override
@@ -150,18 +156,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     void onBindImage(@NonNull IngredientTemplate ingredient,
                      @NonNull IngredientItemViewHolder holder) {
-        picasso.cancelRequest(holder.getImage());
-        Uri imageUri = ingredient.getImageUri();
-        if (imageUri != null && !imageUri.equals(Uri.EMPTY)) {
-            RxPicasso.Builder.with(picasso, imageUri)
-                    .centerCrop()
-                    .fit()
-                    .into(holder.getImage());
-        } else {
-            @DrawableRes int imageRes = ingredient.getAmountType() == AmountUnitType.VOLUME ?
-                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
-            holder.getImage().setImageResource(imageRes);
-        }
+        holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
+        holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
     }
 
     @NonNull
@@ -202,6 +199,18 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 onDataSetChanged();
             }
         };
+    }
+
+    @Override
+    public void onViewAttachedToWindow(IngredientItemViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onAttached();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(IngredientItemViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.onDetached();
     }
 
     private void onDataSetChanged() {

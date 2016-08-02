@@ -77,8 +77,9 @@ public class AddMealFragmentModule {
     @Provides
     @PerFragment
     public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
-                                                 PhysicalQuantitiesModel namesModel, Picasso picasso) {
-        return new IngredientsAdapter(view, model, namesModel, picasso);
+                                                 PhysicalQuantitiesModel namesModel, Picasso picasso,
+                                                 PermissionsHelper permissionsHelper) {
+        return new IngredientsAdapter(view, model, namesModel, picasso, permissionsHelper);
     }
 
     @Provides

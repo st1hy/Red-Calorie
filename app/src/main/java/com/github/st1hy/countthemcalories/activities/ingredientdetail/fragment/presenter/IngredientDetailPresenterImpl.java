@@ -1,8 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
@@ -10,7 +8,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.IngredientLoader;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
@@ -18,7 +16,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
-import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 
@@ -29,11 +26,13 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
+
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
     private final PhysicalQuantitiesModel quantityModel;
     private final IngredientDetailView view;
-    private final Picasso picasso;
+    private final ImageHolderDelegate imageHolderDelegate;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -43,11 +42,11 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     public IngredientDetailPresenterImpl(@NonNull IngredientDetailModel model,
                                          @NonNull PhysicalQuantitiesModel quantityModel,
                                          @NonNull IngredientDetailView view,
-                                         @NonNull Picasso picasso) {
+                                         @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.model = model;
         this.quantityModel = quantityModel;
         this.view = view;
-        this.picasso = picasso;
+        this.imageHolderDelegate = imageHolderDelegate;
     }
 
     @Override
@@ -65,6 +64,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     @Override
     public void onStop() {
         subscriptions.clear();
+        imageHolderDelegate.onDetached();
     }
 
     @Override
@@ -73,6 +73,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     }
 
     private void bindViews(Ingredient ingredient) {
+        imageHolderDelegate.onAttached();
         IngredientTemplate type = ingredient.getIngredientType();
         view.setName(type.getName());
         energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
@@ -96,19 +97,9 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     }
 
     private void bindImage(@NonNull IngredientTemplate type) {
-        if (!Uri.EMPTY.equals(type.getImageUri())) {
-            subscriptions.add(RxPicasso.Builder.with(picasso, type.getImageUri())
-                    .centerCrop()
-                    .fit()
-                    .into(view.getImageView())
-                    .asObservable()
-                    .subscribe());
-
-        } else {
-            @DrawableRes int imageRes = type.getAmountType() == AmountUnitType.VOLUME ?
-                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide;
-            view.getImageView().setImageResource(imageRes);
-        }
+        imageHolderDelegate.setImagePlaceholder(type.getAmountType() == AmountUnitType.VOLUME ?
+                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
+        imageHolderDelegate.setImageUri(from(type.getImageUri()));
     }
 
     private boolean checkAmountCorrect(@NonNull String amount) {

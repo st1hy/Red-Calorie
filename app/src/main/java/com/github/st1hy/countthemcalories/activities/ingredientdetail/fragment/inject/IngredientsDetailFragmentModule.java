@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenterImpl;
@@ -12,12 +13,18 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.v
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.google.common.base.Preconditions;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSubclass;
 
 @Module
 public class IngredientsDetailFragmentModule {
@@ -67,9 +74,23 @@ public class IngredientsDetailFragmentModule {
 
     @Provides
     public IngredientDetailScreen provideScreen() {
-        FragmentActivity activity = fragment.getActivity();
-        Preconditions.checkArgument(activity instanceof  IngredientDetailScreen,
-                "activity must implement " + IngredientDetailScreen.class.getSimpleName());
-        return (IngredientDetailScreen) activity;
+        return checkIsSubclass(fragment.getActivity(), IngredientDetailScreen.class);
+    }
+
+    @Provides
+    public FragmentActivity provideFragmentActivity() {
+        return fragment.getActivity();
+    }
+
+    @Provides
+    public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
+                                                          PermissionsHelper permissionsHelper,
+                                                          Provider<ImageView> imageViewProvider) {
+        return new ImageHolderDelegate(picasso, permissionsHelper, imageViewProvider);
+    }
+
+    @Provides
+    public ImageView provideImageView(IngredientDetailView view) {
+        return view.getImageView();
     }
 }

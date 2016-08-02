@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -54,6 +55,8 @@ public class IngredientsAdapterTest {
     private RequestCreator requestCreator;
     @Mock
     private PhysicalQuantitiesModel quantityModel;
+    @Mock
+    private PermissionsHelper permissionsHelper;
 
     private IngredientsAdapter adapter;
 
@@ -72,7 +75,7 @@ public class IngredientsAdapterTest {
         Func1<?, String> anyString = Functions.into("energy");
         when(quantityModel.energyAsString()).thenReturn((Func1<BigDecimal, String>) anyString);
 
-        adapter = new IngredientsAdapter(view, model, quantityModel, picasso);
+        adapter = new IngredientsAdapter(view, model, quantityModel, picasso, permissionsHelper);
     }
 
     @After
