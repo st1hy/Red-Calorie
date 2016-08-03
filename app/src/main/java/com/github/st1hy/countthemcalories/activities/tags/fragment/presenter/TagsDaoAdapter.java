@@ -355,7 +355,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         return new Func1<Void, Observable<String>>() {
             @Override
             public Observable<String> call(Void aVoid) {
-                return view.showEditTextDialog(viewModel.getNewTagDialogTitle(), "");
+                return view.showEditTextDialog(viewModel.getNewTagDialogTitle(), lastQuery);
             }
         };
     }

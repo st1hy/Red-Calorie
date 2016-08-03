@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.LastSearchResult;
+import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;

@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.LastSearchResult;
+import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;

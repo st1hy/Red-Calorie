@@ -1,8 +1,6 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.model;
+package com.github.st1hy.countthemcalories.core.tokensearch;
 
 import android.support.annotation.NonNull;
-
-import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 
 import javax.inject.Provider;
 

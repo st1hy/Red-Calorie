@@ -173,4 +173,20 @@ public class TagsActivityTest {
         onView(withText(IngredientActivityTest.exampleIngredients[2].getName())).check(doesNotExist());
 
     }
+
+    @Test
+    public void testNewTagNameMatchesSearchQuery() {
+        main.launchActivity(null);
+        final String newTag = "Special tag";
+        onView(withId(R.id.tags_search_view)).perform(click());
+        onView(withHint(R.string.search_hint))
+                .check(matches(isDisplayed()))
+                .perform(click())
+                .perform(typeTextIntoFocusedView(newTag))
+                .perform(loopMainThreadForAtLeast(500));//debounce
+        onView(withId(R.id.tags_empty)).check(matches(isDisplayed()));
+        onView(withId(R.id.tags_add_new)).perform(click());
+        onView(allOf(withId(R.id.tags_dialog_name), withText(newTag)))
+                .check(matches(isDisplayed()));
+    }
 }
