@@ -16,7 +16,7 @@ public interface IngredientsScreen extends UndoView, SearchableView, DialogView 
     @NonNull
     Observable<Void> getOnAddIngredientClickedObservable();
 
-    void openNewIngredientScreen(@NonNull AddIngredientType type);
+    void openNewIngredientScreen(@NonNull AddIngredientType type, @NonNull String extraName);
 
     void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel);
 

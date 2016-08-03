@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;
@@ -98,13 +99,16 @@ public class IngredientsDaoAdapterTest {
     InsertResult insertResult;
     @Mock
     PermissionsHelper permissionsHelper;
+    @Mock
+    LastSearchResult lastSearchResult;
 
 
     @Before
     public void setup() {
         TestRxPlugins.registerImmediateMainThreadHook();
         MockitoAnnotations.initMocks(this);
-        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso, permissionsHelper);
+        when(lastSearchResult.get()).thenReturn(SearchResult.EMPTY);
+        adapter = new IngredientDaoAdapterProxy(view, model, daoModel, commands, picasso, permissionsHelper, lastSearchResult);
 
         when(deleteResponse.undoAvailability()).thenReturn(Observable.just(true));
         when(deleteResponse.undo()).thenReturn(Observable.just(insertResponse));
@@ -118,8 +122,9 @@ public class IngredientsDaoAdapterTest {
                                          @NonNull RxIngredientsDatabaseModel databaseModel,
                                          @NonNull IngredientsDatabaseCommands commands,
                                          @NonNull Picasso picasso,
-                                         @NonNull PermissionsHelper permissionsHelper) {
-            super(view, model, databaseModel, commands, picasso, permissionsHelper);
+                                         @NonNull PermissionsHelper permissionsHelper,
+                                         @NonNull LastSearchResult recentSearchResult) {
+            super(view, model, databaseModel, commands, picasso, permissionsHelper, recentSearchResult);
         }
 
         @Override
@@ -137,7 +142,8 @@ public class IngredientsDaoAdapterTest {
     public void testStart() throws Exception {
         final String query = "query";
         final List<String> tokens = Collections.singletonList("token");
-        when(view.getSearchObservable()).thenReturn(Observable.just(new SearchResult(query, tokens)));
+        final SearchResult searchResult = new SearchResult(query, tokens);
+        when(view.getSearchObservable()).thenReturn(Observable.just(searchResult));
         when(daoModel.getAllFilteredBy(query, tokens)).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(0);
 
@@ -149,6 +155,7 @@ public class IngredientsDaoAdapterTest {
         verify(view).setNoIngredientsMessage(anyInt());
         verify(view).setNoIngredientsVisibility(Visibility.VISIBLE);
         verify(cursor).getCount();
+        verify(lastSearchResult).set(searchResult);
 
         testVerifyNoMoreInteraction();
     }
@@ -167,7 +174,8 @@ public class IngredientsDaoAdapterTest {
     }
 
     private void testVerifyNoMoreInteraction() {
-        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso, permissionsHelper);
+        verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
+                permissionsHelper, lastSearchResult);
     }
 
     @Test
@@ -465,6 +473,7 @@ public class IngredientsDaoAdapterTest {
         verify(view).setNoIngredientsVisibility(Visibility.VISIBLE);
         verify(model).getNoIngredientsMessage();
         verify(view).setNoIngredientsMessage(anyInt());
+        verify(lastSearchResult).get();
 
         testVerifyNoMoreInteraction();
     }
@@ -507,6 +516,7 @@ public class IngredientsDaoAdapterTest {
 
         testVerifyOpenOptions();
         verifyDelete(ingredient);
+        verify(lastSearchResult).get();
 
         testVerifyNoMoreInteraction();
     }

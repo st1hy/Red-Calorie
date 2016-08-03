@@ -19,9 +19,11 @@ import dagger.Provides;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_AMOUNT_UNIT;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EXTRA_NAME;
 
 @Module
 public class AddIngredientModule {
+    public static final String EXTRA_NAME = "ingredient extra name";
     private final AddIngredientActivity activity;
 
     public AddIngredientModule(@NonNull AddIngredientActivity activity) {
@@ -54,6 +56,7 @@ public class AddIngredientModule {
         arguments.putSerializable(ARG_AMOUNT_UNIT, unitType);
         arguments.putLong(ARG_EDIT_REQUEST_ID_LONG,
                 intent.getLongExtra(ARG_EDIT_REQUEST_ID_LONG, -1L));
+        arguments.putString(ARG_EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
         return arguments;
     }
 

@@ -65,6 +65,7 @@ public class AddIngredientModel extends WithPictureModel {
                               @NonNull RxIngredientsDatabaseModel databaseModel,
                               @NonNull Resources resources,
                               @NonNull AmountUnitType amountType,
+                              @NonNull String initialName,
                               @Nullable IngredientTypeParcel editSource,
                               @Nullable @Named("savedState") Bundle savedState) {
         this.settingsModel = settingsModel;
@@ -94,7 +95,7 @@ public class AddIngredientModel extends WithPictureModel {
                 loading.subscribe();
             } else {
                 this.source = null;
-                this.name = "";
+                this.name = initialName;
                 this.energyValue = "";
                 this.amountType = amountType;
                 this.imageUri = Uri.EMPTY;

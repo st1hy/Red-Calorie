@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
@@ -319,5 +320,27 @@ public class IngredientActivityTest {
         onView(withText(R.string.ingredients_item_delete_ingredient))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
+    }
+
+    @Test
+    public void testSearchQueryAddedToNewIngredient() throws Exception {
+        final String extraName = "Example ingredient name";
+        main.launchActivity(null);
+        onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
+        onView(withId(R.id.ingredients_search_view))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.token_search_text_view))
+                .check(matches(isDisplayed()))
+                .perform(typeTextIntoFocusedView(extraName))
+                .perform(loopMainThreadForAtLeast(500)); //Debounce
+        onView(withId(R.id.ingredients_empty)).check(matches(isDisplayed()));
+        onView(withId(R.id.ingredients_fab)).perform(click());
+        onView(withId(R.id.select_ingredient_type_meal)).perform(click());
+        intended(allOf(
+                hasComponent(new ComponentName(main.getActivity(), AddIngredientActivity.class)),
+                hasExtra(AddIngredientModule.EXTRA_NAME, extraName)
+        ));
+        onView(allOf(withId(R.id.add_ingredient_name), withText(extraName))).check(matches(isDisplayed()));
     }
 }

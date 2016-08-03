@@ -2,9 +2,11 @@ package com.github.st1hy.countthemcalories.core.tokensearch;
 
 import android.support.annotation.NonNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SearchResult {
+    public static final SearchResult EMPTY = new SearchResult("", Collections.<String>emptyList());
     final String query;
     final List<String> tokens;
 

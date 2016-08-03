@@ -148,8 +148,8 @@ public class IngredientsFragment extends BaseFragment implements IngredientsView
     }
 
     @Override
-    public void openNewIngredientScreen(@NonNull AddIngredientType type) {
-        screen.openNewIngredientScreen(type);
+    public void openNewIngredientScreen(@NonNull AddIngredientType type, @NonNull String extraName) {
+        screen.openNewIngredientScreen(type, extraName);
     }
 
     @Override

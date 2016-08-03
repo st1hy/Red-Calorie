@@ -33,6 +33,7 @@ public class AddIngredientFragmentModule {
     public static final String ARG_AMOUNT_UNIT = "amount unit type";
     public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
     public static final String ARG_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
+    public static final String ARG_EXTRA_NAME = "extra ingredient name";
 
     private final AddIngredientFragment fragment;
     private final Bundle savedState;
@@ -109,5 +110,10 @@ public class AddIngredientFragmentModule {
     @Provides
     public ImageView provideImageViewProvider() {
         return fragment.getImageView();
+    }
+
+    @Provides
+    public String provideInitialName(@Named("arguments") Bundle arguments) {
+        return arguments.getString(ARG_EXTRA_NAME, "");
     }
 }

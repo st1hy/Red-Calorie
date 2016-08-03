@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;
@@ -35,7 +36,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
@@ -68,20 +68,22 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
 
     final Queue<Long> addedItems = new LinkedList<>();
 
-    SearchResult lastQuery = new SearchResult("", Collections.<String>emptyList());
+    final LastSearchResult recentSearchResult;
 
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
                                  @NonNull IngredientsFragmentModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
                                  @NonNull Picasso picasso,
-                                 @NonNull PermissionsHelper permissionsHelper) {
+                                 @NonNull PermissionsHelper permissionsHelper,
+                                 @NonNull LastSearchResult recentSearchResult) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.picasso = picasso;
         this.permissionsHelper = permissionsHelper;
+        this.recentSearchResult = recentSearchResult;
     }
 
     @Override
@@ -191,7 +193,9 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 .subscribe(new SimpleSubscriber<QueryFinished>() {
                     @Override
                     public void onNext(QueryFinished queryFinished) {
-                        onCursorUpdate(queryFinished.getCursor(), queryFinished.getSearchingFor());
+                        SearchResult searchResult = queryFinished.getSearchingFor();
+                        recentSearchResult.set(searchResult);
+                        onCursorUpdate(queryFinished.getCursor(), searchResult);
                         notifyDataSetChanged();
                         onSearchFinished();
                     }
@@ -274,7 +278,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         return new Action1<Cursor>() {
             @Override
             public void call(Cursor cursor) {
-                onCursorUpdate(cursor, lastQuery);
+                onCursorUpdate(cursor, recentSearchResult.get());
                 notifyItemRemovedRx(position);
             }
         };
@@ -372,7 +376,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
             @Override
             public void onNext(InsertResult result) {
                 int newItemPosition = result.getNewItemPositionInCursor();
-                onCursorUpdate(result.getCursor(), lastQuery);
+                onCursorUpdate(result.getCursor(), recentSearchResult.get());
                 if (newItemPosition != -1) {
                     notifyItemInsertedRx(newItemPosition);
                     view.scrollToPosition(newItemPosition);

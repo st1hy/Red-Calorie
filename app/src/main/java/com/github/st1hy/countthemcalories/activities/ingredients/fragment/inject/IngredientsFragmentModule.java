@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
@@ -47,14 +48,17 @@ public class IngredientsFragmentModule {
                                                            RxIngredientsDatabaseModel databaseModel,
                                                            IngredientsDatabaseCommands commands,
                                                            Picasso picasso,
-                                                           PermissionsHelper permissionsHelper) {
-        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso, permissionsHelper);
+                                                           PermissionsHelper permissionsHelper,
+                                                           LastSearchResult recentSearchResult) {
+        return new IngredientsDaoAdapter(view, model, databaseModel, commands, picasso,
+                permissionsHelper, recentSearchResult);
     }
 
     @Provides
     @PerFragment
-    public IngredientsPresenter providePresenter(IngredientsView view) {
-        return new IngredientsPresenterImpl(view);
+    public IngredientsPresenter providePresenter(IngredientsView view,
+                                                LastSearchResult recentSearchResult) {
+        return new IngredientsPresenterImpl(view, recentSearchResult);
     }
 
     @PerFragment
@@ -82,5 +86,11 @@ public class IngredientsFragmentModule {
     @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
+    }
+
+    @Provides
+    @PerFragment
+    public LastSearchResult provideLastSearchResult() {
+        return new LastSearchResult();
     }
 }

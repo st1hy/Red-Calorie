@@ -12,6 +12,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
@@ -101,9 +102,10 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void openNewIngredientScreen(@NonNull AddIngredientType type) {
+    public void openNewIngredientScreen(@NonNull AddIngredientType type, @NonNull String extraName) {
         Intent intent = new Intent(this, AddIngredientActivity.class);
         intent.setAction(type.getAction());
+        intent.putExtra(AddIngredientModule.EXTRA_NAME, extraName);
         startActivityForResult(intent, REQUEST_ADD_INGREDIENT);
     }
 

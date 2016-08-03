@@ -114,7 +114,7 @@ public class AddIngredientModelRoboTest {
 
     private void setUpEmptyIngredient() {
         model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources,
-                AmountUnitType.MASS, null, null);
+                AmountUnitType.MASS, "", null, null);
 
         verify(settingsModel).getEnergyUnit();
         verify(settingsModel).getAmountUnitFrom(AmountUnitType.MASS);
@@ -130,7 +130,7 @@ public class AddIngredientModelRoboTest {
         IngredientTypeParcel parcel = new IngredientTypeParcel(example);
         when(typesModel.unParcel(argThat(hasIngredientId(example)))).thenReturn(Observable.just(example));
         model = new AddIngredientModel(settingsModel, tagsModel, typesModel, resources,
-                AmountUnitType.MASS, parcel, null);
+                AmountUnitType.MASS, "", parcel, null);
 
         model.setName("testName");
         model.setName("testEnergy");
@@ -194,7 +194,7 @@ public class AddIngredientModelRoboTest {
 
         model.onSaveState(bundle);
         AddIngredientModel restoredModel = new AddIngredientModel(settingsModel, tagsModel,
-                typesModel, resources, AmountUnitType.MASS, null, bundle);
+                typesModel, resources, AmountUnitType.MASS, "", null, bundle);
         verify(settingsModel, times(2)).getEnergyUnit();
         verify(settingsModel, times(2)).getAmountUnitFrom(AmountUnitType.MASS);
 
