@@ -47,6 +47,10 @@ public class MealItemHolder extends AbstractMealItemHolder {
     View deleteFrame;
     @BindView(R.id.overview_item_edit_frame)
     View editFrame;
+    @BindView(R.id.overview_item_edit)
+    View editButton;
+    @BindView(R.id.overview_item_delete)
+    View deleteButton;
 
     public MealItemHolder(@NonNull View itemView,
                           @NonNull Callback callback,
@@ -67,17 +71,17 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
     @OnClick(R.id.overview_item_content)
     public void onContentClicked() {
-        callback.onMealClicked(meal, image);
+        callback.onMealClicked(this);
     }
 
     @OnClick(R.id.overview_item_edit)
     public void onEditClicked() {
-        callback.onEditClicked(meal);
+        callback.onEditClicked(this);
     }
 
     @OnClick(R.id.overview_item_delete)
     public void onDeleteClicked() {
-        callback.onDeleteClicked(meal);
+        callback.onDeleteClicked(this);
     }
 
     public void fillParent(@NonNull final ViewGroup parent) {
@@ -109,6 +113,10 @@ public class MealItemHolder extends AbstractMealItemHolder {
         this.meal = meal;
     }
 
+    public Meal getMeal() {
+        return meal;
+    }
+
     public void onAttached() {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
@@ -119,16 +127,22 @@ public class MealItemHolder extends AbstractMealItemHolder {
         imageHolderDelegate.onDetached();
     }
 
+    public void setEnabled(boolean enabled) {
+        content.setEnabled(enabled);
+        editButton.setEnabled(enabled);
+        deleteButton.setEnabled(enabled);
+    }
+
     public void setImageUri(@NonNull Optional<Uri> uri) {
         imageHolderDelegate.setImageUri(uri);
     }
 
     public interface Callback {
-        void onMealClicked(@NonNull Meal meal, @NonNull View sharedImage);
+        void onMealClicked(@NonNull MealItemHolder holder);
 
-        void onDeleteClicked(@NonNull Meal meal);
+        void onDeleteClicked(@NonNull MealItemHolder holder);
 
-        void onEditClicked(@NonNull Meal meal);
+        void onEditClicked(@NonNull MealItemHolder holder);
     }
 
 }

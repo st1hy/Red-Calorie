@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.inject.Ov
 import com.github.st1hy.countthemcalories.activities.overview.fragment.inject.OverviewFragmentModule;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.MealsAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.OverviewPresenter;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -129,11 +130,9 @@ public class OverviewFragment extends BaseFragment implements OverviewView {
         overviewScreen.setTotalEnergy(energy);
     }
 
-    public void editMealWithId(long mealId) {
-        adapter.editMealWithId(mealId);
-    }
-
-    public void deleteMealWithId(long mealId) {
-        adapter.deleteMealWithId(mealId);
+    @NonNull
+    @Override
+    public Observable<MealDetailAction> getDetailScreenActionObservable() {
+        return overviewScreen.getDetailScreenActionObservable();
     }
 }

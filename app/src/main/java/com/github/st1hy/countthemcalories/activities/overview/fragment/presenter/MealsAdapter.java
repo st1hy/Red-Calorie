@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.view.Over
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -80,6 +81,8 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
 
     public void onStart() {
         loadTodayMeals();
+        subscriptions.add(view.getDetailScreenActionObservable()
+                .subscribe(onDetailScreenAction()));
     }
 
     public void onStop() {
@@ -105,7 +108,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
         if (viewType == mealItemLayout) {
-            MealItemHolder viewHolder =  new MealItemHolder(view, this, picasso, permissionsHelper);
+            MealItemHolder viewHolder = new MealItemHolder(view, this, picasso, permissionsHelper);
             viewHolder.fillParent(parent);
             return viewHolder;
         } else {
@@ -137,36 +140,75 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     @Override
-    public void onMealClicked(@NonNull Meal meal, @NonNull View sharedImage) {
-        view.openMealDetails(new MealParcel(meal), sharedImage);
+    public void onMealClicked(@NonNull final MealItemHolder holder) {
+        holder.setEnabled(false);
+        enableAfterMealDetailReturns(holder);
+        view.openMealDetails(new MealParcel(holder.getMeal()), holder.getImage());
+    }
+
+    private void enableAfterMealDetailReturns(@NonNull final MealItemHolder holder) {
+        subscriptions.add(view.getDetailScreenActionObservable()
+                .first()
+                .subscribe(new Action1<MealDetailAction>() {
+                    @Override
+                    public void call(MealDetailAction mealDetailAction) {
+                        holder.setEnabled(true);
+                    }
+                }));
     }
 
     @Override
-    public void onDeleteClicked(@NonNull Meal meal) {
-        deleteMealWithId(meal.getId());
+    public void onDeleteClicked(@NonNull MealItemHolder holder) {
+        holder.setEnabled(false);
+        deleteMealWithId(holder.getMeal().getId());
     }
 
-    public void editMealWithId(long mealId) {
+    @Override
+    public void onEditClicked(@NonNull MealItemHolder holder) {
+        holder.setEnabled(false);
+        openEditScreen(holder.getMeal());
+    }
+
+    @NonNull
+    private Action1<MealDetailAction> onDetailScreenAction() {
+        return new Action1<MealDetailAction>() {
+            @Override
+            public void call(MealDetailAction mealDetailAction) {
+                long mealId = mealDetailAction.getId();
+                switch (mealDetailAction.getType())  {
+                    case DELETE:
+                        deleteMealWithId(mealId);
+                        break;
+                    case EDIT:
+                        editMealWithId(mealId);
+                        break;
+                    case CANCELED:
+                        break;
+                }
+            }
+        };
+    }
+
+    void editMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
         if (mealPair != null) {
-            onEditClicked(mealPair.second);
+            openEditScreen(mealPair.second);
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }
     }
 
-    @Override
-    public void onEditClicked(@NonNull Meal meal) {
-        view.openEditMealScreen(new MealParcel(meal));
-    }
-
-    public void deleteMealWithId(long mealId) {
+    void deleteMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
         if (mealPair != null) {
             deleteMeal(mealPair.second, mealPair.first);
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }
+    }
+
+    private void openEditScreen(@NonNull Meal meal) {
+        view.openEditMealScreen(new MealParcel(meal));
     }
 
     private void loadTodayMeals() {
@@ -189,6 +231,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
         onBindIngredients(holder, meal.getIngredients());
         onBindImage(meal, holder);
+        holder.setEnabled(true);
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {

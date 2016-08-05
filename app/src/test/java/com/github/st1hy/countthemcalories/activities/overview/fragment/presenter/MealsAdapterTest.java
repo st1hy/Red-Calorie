@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.model.com
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -109,6 +110,7 @@ public class MealsAdapterTest {
         when(quantityModel.sumAll()).thenReturn((Func1<BigDecimal, BigDecimal>) anyDecimal);
         Func1<?, String> anyString = Functions.into("energy");
         when(quantityModel.energyAsString()).thenReturn((Func1<BigDecimal, String>) anyString);
+        when(view.getDetailScreenActionObservable()).thenReturn(Observable.<MealDetailAction>empty());
     }
 
     @After
@@ -126,6 +128,7 @@ public class MealsAdapterTest {
         verify(databaseModel).getAllFilteredSortedDate(any(DateTime.class), any(DateTime.class));
         onVerifyShowTotal();
         verify(view).setEmptyListVisibility(Visibility.VISIBLE);
+        verify(view).getDetailScreenActionObservable();
 
         testVerifyNoMoreInteractions();
     }
@@ -225,6 +228,7 @@ public class MealsAdapterTest {
         verify(quantityModel).setScale(0);
         verify(quantityModel).energyAsString();
         verify(holder).setTotalEnergy("energy");
+        verify(holder).setEnabled(true);
 
         //onBindImage
         verify(meal).getImageUri();
@@ -260,15 +264,23 @@ public class MealsAdapterTest {
 
     @Test
     public void testOnMealClicked() throws Exception {
+        MealItemHolder holder = mock(MealItemHolder.class);
         final Meal meal = mock(Meal.class);
+        when(holder.getMeal()).thenReturn(meal);
+        when(view.getDetailScreenActionObservable()).thenReturn(Observable.just(MealDetailAction.CANCELED));
 
-        adapter.onMealClicked(meal, null);
+        adapter.onMealClicked(holder);
 
         verify(meal).getId();
         verify(view).openMealDetails(argThat(hasMeal(meal)), Matchers.<View>eq(null));
+        verify(holder).getMeal();
+        verify(holder).setEnabled(false);
+        verify(holder).getImage();
+        verify(view).getDetailScreenActionObservable();
+        verify(holder).setEnabled(true);
 
         testVerifyNoMoreInteractions();
-        verifyNoMoreInteractions(meal);
+        verifyNoMoreInteractions(meal, holder);
     }
 
     @NonNull
@@ -293,13 +305,17 @@ public class MealsAdapterTest {
 
         Meal meal = prepareDelete.getMeal();
         CommandResponse response = prepareDelete.getResponse();
+        MealItemHolder holder = mock(MealItemHolder.class);
+        when(holder.getMeal()).thenReturn(meal);
 
-        adapter.onDeleteClicked(meal);
+        adapter.onDeleteClicked(holder);
 
         verifyDelete(meal, response);
+        verify(holder).getMeal();
+        verify(holder).setEnabled(false);
 
         testVerifyNoMoreInteractions();
-        verifyNoMoreInteractions(meal, response);
+        verifyNoMoreInteractions(meal, response, holder);
     }
 
     private void verifyDelete(Meal meal, CommandResponse response) {
@@ -383,10 +399,12 @@ public class MealsAdapterTest {
 
         Subject<Void, Void> undoSubject = PublishSubject.create();
         when(view.showUndoMessage(anyInt())).thenReturn(undoSubject);
+        MealItemHolder holder = mock(MealItemHolder.class);
+        when(holder.getMeal()).thenReturn(meal);
 
         assertThat(adapter.list, hasSize(2));
 
-        adapter.onDeleteClicked(meal);
+        adapter.onDeleteClicked(holder);
 
         verifyDelete(meal, response);
         assertThat(adapter.list, hasSize(1));
@@ -403,9 +421,11 @@ public class MealsAdapterTest {
         verify(meal, times(3)).getIngredients();
         onVerifyShowTotal(2);
         verify(view, times(2)).setEmptyListVisibility(Visibility.GONE);
+        verify(holder).getMeal();
+        verify(holder).setEnabled(false);
 
         testVerifyNoMoreInteractions();
-        verifyNoMoreInteractions(meal, response, undoResponse);
+        verifyNoMoreInteractions(meal, response, undoResponse, holder);
     }
 
     //Auto-generated method class

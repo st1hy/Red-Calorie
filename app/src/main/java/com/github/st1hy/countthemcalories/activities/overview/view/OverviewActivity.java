@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.view.Over
 import com.github.st1hy.countthemcalories.activities.overview.inject.DaggerOverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponent;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
@@ -30,7 +31,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import timber.log.Timber;
+import rx.internal.operators.BufferUntilSubscriber;
+import rx.subjects.Subject;
 
 public class OverviewActivity extends UndoDrawerActivity implements OverviewScreen {
 
@@ -50,6 +52,12 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewScre
     OverviewActivityComponent component;
 
     ActionBarDrawerToggle drawerToggle;
+
+    Subject<MealDetailAction, MealDetailAction> detailActionSubject = BufferUntilSubscriber.create();
+    final Observable<MealDetailAction> detailActionObservable = detailActionSubject.asObservable()
+            .publish()
+            .autoConnect();
+
 
     @NonNull
     protected OverviewActivityComponent getComponent() {
@@ -137,30 +145,35 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewScre
         totalEnergy.setText(energy);
     }
 
+    @NonNull
+    @Override
+    public Observable<MealDetailAction> getDetailScreenActionObservable() {
+        return detailActionObservable;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == OverviewActivity.REQUEST_MEAL_DETAIL) {
-            if (!handleResultMealDetail(resultCode, data)) {
-                Timber.w("Incorrect result from meal detail activity, code:%d, data:%s", requestCode, data);
-            }
+            detailActionSubject.onNext(getMealDetailResult(resultCode, data));
         }
     }
 
-    public boolean handleResultMealDetail(int resultCode, @Nullable Intent data) {
-        if (data == null) return false;
+    public MealDetailAction getMealDetailResult(int resultCode, @Nullable Intent data) {
+        if (data == null) return MealDetailAction.CANCELED;
         long mealId = data.getLongExtra(MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG, -2L);
-        if (mealId == -2L) return false;
+        if (mealId == -2L) return MealDetailAction.CANCELED;
+        MealDetailAction action;
         switch (resultCode) {
             case MealDetailActivity.RESULT_EDIT:
-                content.editMealWithId(mealId);
+                action = MealDetailAction.create(MealDetailAction.Type.EDIT, mealId);
                 break;
             case MealDetailActivity.RESULT_DELETE:
-                content.deleteMealWithId(mealId);
+                action = MealDetailAction.create(MealDetailAction.Type.DELETE, mealId);
                 break;
-            default: return false;
+            default:
+                return MealDetailAction.CANCELED;
         }
-        return true;
+        return action;
     }
 
 }
