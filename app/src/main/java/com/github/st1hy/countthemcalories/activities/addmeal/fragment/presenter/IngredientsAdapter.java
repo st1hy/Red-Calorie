@@ -182,6 +182,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
         notifyDataSetChanged();
+        onDataSetChanged();
     }
 
     void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
