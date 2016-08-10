@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction.EditData;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction.Type;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityModule;
@@ -24,6 +27,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.i
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
@@ -39,6 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
@@ -70,6 +75,8 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     AddMealFragment content;
 
     final PublishSubject<Void> saveClickedSubject = PublishSubject.create();
+    final Subject<IngredientAction, IngredientAction> ingredientActionSubject = QueueSubject.create();
+    final Observable<IngredientAction> ingredientActionObservable = ingredientActionSubject.asObservable();
 
     @NonNull
     protected AddMealActivityComponent getComponent() {
@@ -147,6 +154,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
         return mealImage;
     }
 
+    @NonNull
+    @Override
+    public Observable<IngredientAction> getIngredientActionObservable() {
+        return ingredientActionObservable;
+    }
+
     @Override
     public final void showIngredientDetails(long requestId,
                                             @NonNull IngredientTypeParcel ingredientParcel,
@@ -222,48 +235,45 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
             return true;
         } else if (requestCode == AddMealActivity.REQUEST_EDIT_INGREDIENT) {
             EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(resultCode);
-            if (!handleEditIngredientResponse(result, data)) {
-                Timber.w("Edit ingredient returned incomplete result: %d, intent: %s", resultCode, data);
-            }
+            ingredientActionSubject.onNext(getIngredientAction(result, data));
             return true;
         } else return false;
     }
 
-
-    /**
-     * @return false if data or resultCode was in incorrect state
-     */
     private boolean handlePickIngredientResult(int resultCode, @Nullable Intent data) {
         if (resultCode == IngredientsActivity.RESULT_OK) {
             if (data == null) return false;
             IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
             if (typeParcel == null) return false;
-            content.onIngredientReceived(typeParcel);
+            ingredientActionSubject.onNext(IngredientAction.valueOf(Type.NEW, -1L,
+                    Optional.of(EditData.valueOf(typeParcel, BigDecimal.ZERO))));
         }
         return true;
     }
 
-    /**
-     * @return false if data or result was in incorrect state
-     */
-    private boolean handleEditIngredientResponse(@NonNull EditIngredientResult result, @Nullable Intent data) {
-        if (data == null) return false;
+    @NonNull
+    private IngredientAction getIngredientAction(@NonNull EditIngredientResult result, @Nullable Intent data) {
+        if (data == null) return IngredientAction.CANCELED;
         long requestId = data.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -2L);
-        if (requestId == -2L) return false;
+        if (requestId == -2L) return IngredientAction.CANCELED;
+        IngredientAction ingredientAction;
         switch (result) {
             case REMOVE:
-                content.onIngredientRemoved(requestId);
+                ingredientAction = IngredientAction.valueOf(Type.REMOVE, requestId,
+                        Optional.<EditData>absent());
                 break;
             case EDIT:
                 IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
                 String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-                if (parcel == null || stringExtra == null) return false;
+                if (parcel == null || stringExtra == null) return IngredientAction.CANCELED;
                 BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
-                content.onIngredientEditFinished(requestId, parcel, amount);
+                ingredientAction = IngredientAction.valueOf(Type.EDIT, requestId,
+                        Optional.of(EditData.valueOf(parcel, amount)));
                 break;
             case UNKNOWN:
-                return false;
+            default:
+                ingredientAction = IngredientAction.CANCELED;
         }
-        return true;
+        return ingredientAction;
     }
 }

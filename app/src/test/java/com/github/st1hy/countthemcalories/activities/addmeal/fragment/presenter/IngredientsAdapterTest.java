@@ -5,6 +5,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.BuildConfig;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
@@ -74,6 +75,7 @@ public class IngredientsAdapterTest {
         when(quantityModel.sumAll()).thenReturn((Func1<BigDecimal, BigDecimal>) anyDecimal);
         Func1<?, String> anyString = Functions.into("energy");
         when(quantityModel.energyAsString()).thenReturn((Func1<BigDecimal, String>) anyString);
+        when(view.getIngredientActionObservable()).thenReturn(Observable.<IngredientAction>empty());
 
         adapter = new IngredientsAdapter(view, model, quantityModel, picasso, permissionsHelper);
     }
@@ -105,6 +107,7 @@ public class IngredientsAdapterTest {
         verify(quantityModel).energyAsString();
         verify(model).getExtraIngredient();
         verify(view).setEmptyIngredientsVisibility(Visibility.VISIBLE);
+        verify(view).getIngredientActionObservable();
     }
 
     @Test

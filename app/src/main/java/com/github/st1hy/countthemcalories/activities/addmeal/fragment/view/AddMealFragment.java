@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.DaggerAddMealFragmentComponent;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
@@ -109,21 +110,6 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         presenter.onSaveState(outState);
-    }
-
-
-    public void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
-        adapter.onIngredientReceived(typeParcel);
-    }
-
-    public void onIngredientRemoved(long requestId) {
-        adapter.onIngredientRemoved(requestId);
-    }
-
-    public void onIngredientEditFinished(long requestId,
-                                         @NonNull IngredientTypeParcel parcel,
-                                         @NonNull BigDecimal amount) {
-        adapter.onIngredientEditFinished(requestId, parcel, amount);
     }
 
     @Override
@@ -240,5 +226,11 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
     @Override
     public Observable<Integer> showAlertDialog(@StringRes int titleRes, CharSequence[] options) {
         return screen.showAlertDialog(titleRes, options);
+    }
+
+    @NonNull
+    @Override
+    public Observable<IngredientAction> getIngredientActionObservable() {
+        return screen.getIngredientActionObservable();
     }
 }

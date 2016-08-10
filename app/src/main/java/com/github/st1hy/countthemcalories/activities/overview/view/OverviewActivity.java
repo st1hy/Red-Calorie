@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewAct
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
+import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -31,7 +32,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.internal.operators.BufferUntilSubscriber;
 import rx.subjects.Subject;
 
 public class OverviewActivity extends UndoDrawerActivity implements OverviewScreen {
@@ -53,10 +53,8 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewScre
 
     ActionBarDrawerToggle drawerToggle;
 
-    Subject<MealDetailAction, MealDetailAction> detailActionSubject = BufferUntilSubscriber.create();
-    final Observable<MealDetailAction> detailActionObservable = detailActionSubject.asObservable()
-            .publish()
-            .autoConnect();
+    Subject<MealDetailAction, MealDetailAction> detailActionSubject = QueueSubject.create();
+    final Observable<MealDetailAction> detailActionObservable = detailActionSubject.asObservable();
 
 
     @NonNull

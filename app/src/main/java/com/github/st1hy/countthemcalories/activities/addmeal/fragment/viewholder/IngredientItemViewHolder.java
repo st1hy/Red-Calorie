@@ -120,6 +120,10 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         return image;
     }
 
+    public void setEnabled(boolean enabled) {
+        compatView.setEnabled(enabled);
+    }
+
     public interface Callback {
         void onIngredientClicked(@NonNull Ingredient ingredient,
                                  @NonNull IngredientItemViewHolder viewHolder);

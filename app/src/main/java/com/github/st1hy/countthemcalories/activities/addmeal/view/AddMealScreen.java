@@ -5,6 +5,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.google.common.base.Optional;
@@ -34,4 +35,7 @@ public interface AddMealScreen extends WithPictureView {
                                @NonNull List<Pair<View, String>> sharedElements);
 
     ImageView getImageView();
+
+    @NonNull
+    Observable<IngredientAction> getIngredientActionObservable();
 }

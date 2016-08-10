@@ -1,7 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter;
 
-import android.net.Uri;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
@@ -36,6 +34,7 @@ import java.util.List;
 import dagger.internal.Preconditions;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -61,44 +60,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onStart() {
-        subscriptions.add(model.getItemsLoadedObservable()
+        subscribe(model.getItemsLoadedObservable()
                 .subscribe(onInitialLoading()));
     }
 
     public void onStop() {
         subscriptions.clear();
-    }
-
-    public void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
-        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO,
-                Collections.<Pair<View,String>>emptyList());
-    }
-
-    public void onIngredientRemoved(long requestId) {
-        if (requestId == -1L) return;
-        model.removeIngredient((int) requestId);
-        notifyDataSetChanged();
-    }
-
-    public void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
-                                         @NonNull BigDecimal amount) {
-        if (requestId == -1) {
-            onIngredientAdded(typeParcel, amount);
-        } else {
-            onIngredientEdited(requestId, typeParcel, amount);
-        }
-    }
-
-    void onIngredientEdited(long requestId, @NonNull IngredientTypeParcel typeParcel,
-                            @NonNull BigDecimal amount) {
-        subscriptions.add(model.modifyIngredient((int) requestId, typeParcel, amount)
-                .subscribe(notifyChanged()));
-    }
-
-    void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
-                           @NonNull BigDecimal amount) {
-        subscriptions.add(model.addIngredientOfType(typeParcel, amount)
-                .subscribe(notifyInserted()));
     }
 
     @Override
@@ -112,24 +79,21 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     @Override
-    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull IngredientItemViewHolder viewHolder) {
+    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
         IngredientTypeParcel typeParcel = new IngredientTypeParcel(ingredient.getIngredientType());
         BigDecimal amount = ingredient.getAmount();
         int position = model.indexOf(ingredient);
         List<Pair<View, String>> sharedViews = ImmutableList.of(
                 pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
-//                pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
+//                pairOf(viewHolder.getRoot(), "ingredient-shared-view")
 //                pairOf(viewHolder.getName(), "ingredient-shared-view-name")
 //                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
 //                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
-                );
+        );
+        viewHolder.setEnabled(false);
+        enableOnNextIngredientAction(viewHolder);
         view.showIngredientDetails(position, typeParcel, amount, sharedViews);
     }
-
-    private static Pair<View, String> pairOf(@NonNull View view, @NonNull String string) {
-        return Pair.create(view, string);
-    }
-
 
     @Override
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -154,11 +118,96 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         onBindImage(type, holder);
     }
 
+    @Override
+    public void onViewAttachedToWindow(IngredientItemViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onAttached();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(IngredientItemViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.onDetached();
+    }
+
     void onBindImage(@NonNull IngredientTemplate ingredient,
                      @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
+    }
+
+    private void enableOnNextIngredientAction(@NonNull final IngredientItemViewHolder viewHolder) {
+        subscribe(view.getIngredientActionObservable()
+                .first()
+                .subscribe(new Action1<IngredientAction>() {
+                    @Override
+                    public void call(IngredientAction ingredientAction) {
+                        viewHolder.setEnabled(true);
+                    }
+                }));
+    }
+
+    private void subscribe(Subscription subscribe) {
+        subscriptions.add(subscribe);
+    }
+
+    @NonNull
+    private Subscriber<IngredientAction> onIngredientAction() {
+        return new SimpleSubscriber<IngredientAction>() {
+            @Override
+            public void onNext(IngredientAction ingredientAction) {
+                IngredientAction.EditData editData;
+                switch (ingredientAction.getType()) {
+                    case NEW:
+                        editData = ingredientAction.getDataOptional().get();
+                        onIngredientReceived(editData.getParcel());
+                        break;
+                    case EDIT:
+                        editData = ingredientAction.getDataOptional().get();
+                        onIngredientEditFinished(ingredientAction.getId(), editData.getParcel(),
+                                editData.getValue());
+                        break;
+                    case REMOVE:
+                        onIngredientRemoved(ingredientAction.getId());
+                        break;
+                    case CANCELED:
+                        break;
+                }
+            }
+        };
+    }
+
+    void onIngredientRemoved(long requestId) {
+        if (requestId == -1L) return;
+        model.removeIngredient((int) requestId);
+        notifyDataSetChanged();
+    }
+
+    void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
+                                  @NonNull BigDecimal amount) {
+        if (requestId == -1) {
+            onIngredientAdded(typeParcel, amount);
+        } else {
+            onIngredientEdited(requestId, typeParcel, amount);
+        }
+    }
+
+    void onIngredientEdited(long requestId, @NonNull IngredientTypeParcel typeParcel,
+                            @NonNull BigDecimal amount) {
+        subscribe(model.modifyIngredient((int) requestId, typeParcel, amount)
+                .subscribe(notifyChanged()));
+    }
+
+    void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
+                           @NonNull BigDecimal amount) {
+        subscribe(model.addIngredientOfType(typeParcel, amount)
+                .subscribe(notifyInserted()));
+    }
+
+    void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
+        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO,
+                Collections.<Pair<View, String>>emptyList());
     }
 
     @NonNull
@@ -172,6 +221,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 if (extraIngredient.isPresent()) {
                     onIngredientReceived(extraIngredient.get());
                 }
+                subscribe(view.getIngredientActionObservable()
+                        .subscribe(onIngredientAction()));
             }
         };
     }
@@ -201,18 +252,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         };
     }
 
-    @Override
-    public void onViewAttachedToWindow(IngredientItemViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        holder.onAttached();
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(IngredientItemViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        holder.onDetached();
-    }
-
     private void onDataSetChanged() {
         setEmptyIngredientsVisibility();
         setTotalCalories();
@@ -234,6 +273,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                         view.setTotalEnergy(totalEnergy);
                     }
                 });
+    }
+
+    @NonNull
+    private static Pair<View, String> pairOf(@NonNull View view, @NonNull String string) {
+        return Pair.create(view, string);
     }
 
 }
