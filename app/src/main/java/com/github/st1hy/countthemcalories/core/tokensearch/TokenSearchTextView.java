@@ -16,18 +16,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.tokenautocomplete.TokenCompleteTextViewNext;
+import com.tokenautocomplete.TokenCompleteTextView;
 
 import java.util.Collection;
 import java.util.List;
 
-public class TokenSearchTextView extends TokenCompleteTextViewNext<String> implements Searchable {
+public class TokenSearchTextView extends TokenCompleteTextView<String> implements Searchable {
 
     public static final String SAVE_TOKEN_COMPLETE = "TokenCompleteTextView";
     public static final String SAVE_CURRENT_COMPLETION_TEXT = "currentCompletionText";
     private TextWatcher textWatcher;
     private OnSearchChanged onSearchChanged = null;
-    private TokenListener<String> childListener;
+    private TokenCompleteTextView.TokenListener<String> childListener;
 
     public TokenSearchTextView(Context context) {
         super(context);
