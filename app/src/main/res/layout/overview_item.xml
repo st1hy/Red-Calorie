@@ -39,7 +39,8 @@
                 android:contentDescription="@string/add_meal_ingredient_photo_description"
                 android:scaleType="fitCenter"
                 android:transitionName="overview-shared-view-image"
-                app:srcCompat="@drawable/ic_fork_and_knife_wide" />
+                app:srcCompat="@drawable/ic_fork_and_knife_wide"
+                tools:targetApi="lollipop" />
         </android.support.v7.widget.CardView>
 
         <android.support.v4.widget.Space

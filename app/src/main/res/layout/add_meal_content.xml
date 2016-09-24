@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
             android:textSize="20sp"
-            android:singleLine="true"
+            android:maxLines="1"
             android:lines="1"
             android:hint="@string/add_meal_name_hint">
 

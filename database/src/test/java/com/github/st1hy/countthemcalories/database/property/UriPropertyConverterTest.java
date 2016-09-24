@@ -8,14 +8,14 @@ import com.github.st1hy.countthemcalories.database.application.DatabaseApplicati
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21, application = DatabaseApplication.class)
 public class UriPropertyConverterTest {
     private final UriPropertyConverter uriPropertyConverter = new UriPropertyConverter();

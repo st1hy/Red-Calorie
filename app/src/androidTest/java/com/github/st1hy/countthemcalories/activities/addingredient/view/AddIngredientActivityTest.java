@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
@@ -60,7 +59,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class AddIngredientActivityTest {
     private static final Tag[] exampleTags = new Tag[]{
             new Tag(1L, "Tag 1"),

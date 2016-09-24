@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:hint="@string/tags_new_tag_hint"
         android:imeOptions="actionDone"
-        android:singleLine="true"
+        android:maxLines="1"
         android:inputType="textCapSentences"
         android:lines="1"
         android:layout_width="match_parent"

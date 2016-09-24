@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -72,7 +72,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -82,7 +82,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
 public class AddIngredientModelRoboTest {
 
@@ -344,8 +344,8 @@ public class AddIngredientModelRoboTest {
 
         final List<Long> tagIds = Collections.singletonList(33L);
         when(tagsModel.getTagIds()).thenReturn(tagIds);
-        when(typesModel.update(any(IngredientTemplate.class), anyCollection()))
-                .thenReturn(Observable.just(null));
+        when(typesModel.update(any(IngredientTemplate.class), anyCollectionOf(Long.class)))
+                .thenReturn(Observable.<IngredientTemplate>just(null));
 
         model.saveIntoDatabase().toBlocking().single();
 

@@ -70,7 +70,6 @@
     <string name="tags_remove_dialog_title">Usuń kategorię</string>
     <string name="tags_remove_information">Ta kateria nie jest pusta. Czy na pewno chcesz ją usunąć?</string>
     <string name="tags_search_result_empty">Nie znaleziono żadnych pasujących kategorii.</string>
-    <string name="tags_search_title">Wyszukacj kategorię</string>
     <string name="tags_title">Kategorie</string>
     <string name="tags_undo_add_message">Dodano nową kategorię</string>
     <string name="tags_undo_delete_message">Kategoria została usunięta</string>

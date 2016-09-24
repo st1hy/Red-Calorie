@@ -55,7 +55,6 @@ android {
     dexOptions {
         preDexLibraries true
         javaMaxHeapSize "3g"
-        incremental true
         dexInProcess = true
     }
 }
@@ -106,11 +105,11 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.4.0'
     compile 'com.google.guava:guava:19.0'
-    compile "com.splitwise:tokenautocomplete:2.0.7@aar"
+    compile "com.splitwise:tokenautocomplete:2.0.8@aar"
 
-    devtoolsDebugCompile 'com.facebook.stetho:stetho:1.3.1'
-    devtoolsDebugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    devtoolsDebugCompile 'com.facebook.stetho:stetho:1.4.1'
+    devtoolsDebugCompile 'com.squareup.leakcanary:leakcanary-android:1.4'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
     devtoolsDebugCompile 'com.github.brianPlummer:tinydancer:0.0.9'
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
@@ -127,7 +126,7 @@ dependencies {
     androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
     androidTestCompile "junit:junit:$jUnitVersion"
     androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
-    androidTestCompile'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+    androidTestCompile'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 
     testCompile("org.robolectric:robolectric:$robolectricVersion") {
         exclude group: 'com.google.guava', module: 'guava'

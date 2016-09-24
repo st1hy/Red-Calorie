@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="unit_gram">g</string>
-    <string name="unit_milliliter">ml</string>
-    <string name="unit_100_gram">100 g</string>
-    <string name="unit_100_milliliter">100 ml</string>
-    <string name="unit_oz">oz</string>
-    <string name="unit_fl_oz">fl oz</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="unit_gram" tools:ignore="MissingTranslation">g</string>
+    <string name="unit_milliliter" tools:ignore="MissingTranslation">ml</string>
+    <string name="unit_100_gram" tools:ignore="MissingTranslation">100 g</string>
+    <string name="unit_100_milliliter" tools:ignore="MissingTranslation">100 ml</string>
+    <string name="unit_oz" tools:ignore="MissingTranslation">oz</string>
+    <string name="unit_fl_oz" tools:ignore="MissingTranslation">fl oz</string>
 
-    <string name="unit_kcal">kcal</string>
-    <string name="unit_kj">kJ</string>
+    <string name="unit_kcal" tools:ignore="MissingTranslation">kcal</string>
+    <string name="unit_kj" tools:ignore="MissingTranslation">kJ</string>
 
-    <string name="format_value_simple">%1$s %2$s</string>
-    <string name="format_value_fraction">%1$s %2$s / %3$s</string>
+    <string name="format_value_simple" tools:ignore="MissingTranslation">%1$s %2$s</string>
+    <string name="format_value_fraction" tools:ignore="MissingTranslation">%1$s %2$s / %3$s</string>
 
 </resources>

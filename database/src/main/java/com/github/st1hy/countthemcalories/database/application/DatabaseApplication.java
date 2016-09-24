@@ -4,7 +4,7 @@ import android.app.Application;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
-public class DatabaseApplication extends Application {
+public abstract class DatabaseApplication extends Application {
 
     @Override
     public void onCreate() {

@@ -37,7 +37,8 @@
                 android:layout_height="@dimen/list_item_image_size"
                 android:contentDescription="@string/add_meal_ingredient_photo_description"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_fork_and_knife_wide" />
+                app:srcCompat="@drawable/ic_fork_and_knife_wide"
+                tools:targetApi="lollipop" />
         </android.support.v7.widget.CardView>
 
         <LinearLayout
@@ -54,7 +55,8 @@
                 android:textIsSelectable="false"
                 android:textSize="18sp"
                 android:transitionName="ingredient-shared-view-name"
-                tools:text="Example ingredient name" />
+                tools:text="Example ingredient name"
+                tools:targetApi="lollipop" />
 
             <TextView
                 android:id="@+id/add_meal_ingredient_energy_density"
@@ -62,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
                 android:transitionName="ingredient-shared-view-density"
-                tools:text="400 kcal / 100 g" />
+                tools:text="400 kcal / 100 g"
+                tools:targetApi="lollipop" />
 
             <TextView
                 android:id="@+id/add_meal_ingredient_amount"
@@ -70,7 +73,8 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
                 android:transitionName="ingredient-shared-view-calories"
-                tools:text="40 g" />
+                tools:text="40 g"
+                tools:targetApi="lollipop" />
         </LinearLayout>
 
         <android.support.v4.widget.Space

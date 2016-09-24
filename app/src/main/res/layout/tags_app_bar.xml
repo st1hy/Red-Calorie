@@ -31,7 +31,7 @@
     <FrameLayout
         android:id="@+id/tags_content_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         style="@style/ActivityContent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </FrameLayout>

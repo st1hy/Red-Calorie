@@ -13,7 +13,6 @@ import android.support.annotation.DrawableRes;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
@@ -65,7 +64,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class AddMealActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());

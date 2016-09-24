@@ -42,7 +42,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            Timber.i("greenDAO", "Creating tables for schema version " + SCHEMA_VERSION);
+            Timber.i("Creating tables for schema version %d", + SCHEMA_VERSION);
             createAllTables(db, false);
         }
     }
@@ -55,7 +55,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Timber.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
+            Timber.i("Upgrading schema from version %d to %d by dropping all tables", oldVersion, newVersion);
             dropAllTables(db, true);
             onCreate(db);
         }

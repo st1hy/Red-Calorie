@@ -11,7 +11,7 @@ Application is available on [Google Play](https://play.google.com/store/apps/det
 ## Current state: 1.2.3
 * Fixed incorrectly starting multiple activities in some edge cases
 * Fixed missing view refresh when ingredient was removed in a meal.
-* Improved search flow: when user cannot find the searched result and ads new item default name is the same as the query.
+* Improved search flow: when user cannot find the searched result and adds new item default name is the same as the query.
 
 ### 1.2.2
 * Improved behaviour when permission to access external storage is revoked.

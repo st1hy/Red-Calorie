@@ -23,7 +23,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.QwertyKeyListener;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Gmail style auto complete view with easy token customization
  * override getViewForObject to provide your token view
@@ -56,8 +57,6 @@ import java.util.List;
  * @author mgod
  */
 public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteTextView implements TextView.OnEditorActionListener {
-    //Logging
-    public static final String TAG = "TokenAutoComplete";
 
     //When the token is deleted...
     public enum TokenDeleteStyle {
@@ -912,7 +911,7 @@ public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteText
         try {
             return super.extractText(request, outText);
         } catch (IndexOutOfBoundsException ignored) {
-            Log.d(TAG, "extractText hit IndexOutOfBoundsException. This may be normal.", ignored);
+            Timber.d(ignored, "extractText hit IndexOutOfBoundsException. This may be normal.");
             return false;
         }
     }
@@ -1191,13 +1190,13 @@ public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteText
         private T token;
         final TokenCompleteTextViewNext<T> parent;
 
-        public TokenImageSpan(View d, T token, int maxWidth, TokenCompleteTextViewNext<T> parent) {
+        TokenImageSpan(View d, T token, int maxWidth, TokenCompleteTextViewNext<T> parent) {
             super(d, maxWidth);
             this.token = token;
             this.parent = parent;
         }
 
-        public T getToken() {
+        T getToken() {
             return this.token;
         }
 
@@ -1282,7 +1281,7 @@ public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteText
     private class TokenTextWatcher implements TextWatcher {
         ArrayList<TokenImageSpan> spansToRemove = new ArrayList<>();
 
-        protected void removeToken(TokenImageSpan token, Editable text) {
+        void removeToken(TokenImageSpan token, Editable text) {
             text.removeSpan(token);
         }
 
@@ -1350,13 +1349,13 @@ public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteText
             if (obj instanceof Serializable) {
                 serializables.add((Serializable) obj);
             } else {
-                Log.e(TAG, "Unable to save '" + obj + "'");
+                Timber.e("Unable to save '%s'", obj);
             }
         }
         if (serializables.size() != objects.size()) {
             String message = "You should make your objects Serializable or override\n" +
                     "getSerializableObjects and convertSerializableArrayToObjectArray";
-            Log.e(TAG, message);
+            Timber.e(message);
         }
 
         return serializables;
@@ -1549,7 +1548,7 @@ public abstract class TokenCompleteTextViewNext<T> extends MultiAutoCompleteText
 
     private class TokenInputConnection extends InputConnectionWrapper {
 
-        public TokenInputConnection(InputConnection target, boolean mutable) {
+        TokenInputConnection(InputConnection target, boolean mutable) {
             super(target, mutable);
         }
 

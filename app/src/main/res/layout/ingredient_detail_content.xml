@@ -2,7 +2,6 @@
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_meal_ingredient_extended"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minWidth="400dp"
@@ -34,7 +33,8 @@
                 android:layout_height="@dimen/list_item_image_size"
                 android:contentDescription="@string/add_meal_ingredient_photo_description"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_fork_and_knife_wide" />
+                app:srcCompat="@drawable/ic_fork_and_knife_wide"
+                tools:targetApi="lollipop" />
         </android.support.v7.widget.CardView>
 
         <android.support.v4.widget.Space
@@ -56,7 +56,8 @@
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ingredient_detail_title_size"
                 android:transitionName="ingredient-shared-view-name"
-                tools:text="Example ingredient name" />
+                tools:text="Example ingredient name"
+                tools:targetApi="lollipop" />
 
             <TextView
                 android:id="@+id/add_meal_ingredient_energy_density"
@@ -64,7 +65,8 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
                 android:transitionName="ingredient-shared-view-density"
-                tools:text="400 kcal / 100 g" />
+                tools:text="400 kcal / 100 g"
+                tools:targetApi="lollipop" />
         </LinearLayout>
 
         <android.support.v4.widget.Space
@@ -81,7 +83,8 @@
             android:textIsSelectable="false"
             android:transitionName="ingredient-shared-view-calories"
             android:textSize="18sp"
-            tools:text="160 kcal" />
+            tools:text="160 kcal"
+            tools:targetApi="lollipop" />
     </LinearLayout>
 
     <LinearLayout
@@ -118,7 +121,6 @@
         android:layout_height="16dp" />
 
     <LinearLayout
-        android:id="@+id/add_meal_ingredient_button_bar"
         style="@style/Widget.AppCompat.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

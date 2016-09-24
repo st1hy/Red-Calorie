@@ -45,7 +45,8 @@
             android:textIsSelectable="false"
             android:textSize="@dimen/ingredient_detail_title_size"
             android:transitionName="ingredient-shared-view-name"
-            tools:text="Example ingredient name" />
+            tools:text="Example ingredient name"
+            tools:targetApi="lollipop" />
 
         <Space
             android:layout_width="match_parent"
@@ -57,7 +58,8 @@
             android:layout_height="wrap_content"
             android:textIsSelectable="false"
             android:transitionName="ingredient-shared-view-density"
-            tools:text="400 kcal / 100 g" />
+            tools:text="400 kcal / 100 g"
+            tools:targetApi="lollipop" />
 
         <Space
             android:layout_width="match_parent"
@@ -72,7 +74,8 @@
             android:textIsSelectable="false"
             android:transitionName="ingredient-shared-view-calories"
             android:textSize="18sp"
-            tools:text="160 kcal" />
+            tools:text="160 kcal"
+            tools:targetApi="lollipop" />
     </LinearLayout>
 
     <Space
@@ -113,7 +116,6 @@
         android:layout_height="16dp" />
 
     <LinearLayout
-        android:id="@+id/add_meal_ingredient_button_bar"
         style="@style/Widget.AppCompat.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
