@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.database.property;
 
 import com.github.st1hy.countthemcalories.database.BuildConfig;
-import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
+import com.github.st1hy.countthemcalories.database.testutils.TestApplication;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -18,7 +17,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, application = DatabaseApplication.class)
+@Config(constants = BuildConfig.class, sdk = 23, application = TestApplication.class)
 public class JodaTimePropertyConverterTest {
     private final JodaTimePropertyConverter jodaTimePropertyConverter = new JodaTimePropertyConverter();
 

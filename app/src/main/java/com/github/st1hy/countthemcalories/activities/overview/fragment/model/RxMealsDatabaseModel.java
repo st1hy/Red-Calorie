@@ -13,6 +13,9 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 
+import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.query.CursorQuery;
+import org.greenrobot.greendao.query.Query;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
@@ -23,9 +26,6 @@ import javax.inject.Provider;
 
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
-import de.greenrobot.dao.Property;
-import de.greenrobot.dao.query.CursorQuery;
-import de.greenrobot.dao.query.Query;
 import rx.Observable;
 
 public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {

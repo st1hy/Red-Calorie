@@ -2,9 +2,9 @@ package com.github.st1hy.countthemcalories.database.property;
 
 import android.support.annotation.Nullable;
 
-import java.math.BigDecimal;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
-import de.greenrobot.dao.converter.PropertyConverter;
+import java.math.BigDecimal;
 
 public class BigDecimalPropertyConverter implements PropertyConverter<BigDecimal, String> {
 

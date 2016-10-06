@@ -11,6 +11,11 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 
+import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.query.CursorQuery;
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,10 +26,6 @@ import javax.inject.Provider;
 
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
-import de.greenrobot.dao.Property;
-import de.greenrobot.dao.query.CursorQuery;
-import de.greenrobot.dao.query.QueryBuilder;
-import de.greenrobot.dao.query.WhereCondition;
 import rx.Observable;
 
 

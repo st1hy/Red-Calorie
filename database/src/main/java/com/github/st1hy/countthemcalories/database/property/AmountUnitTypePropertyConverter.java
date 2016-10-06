@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.database.property;
 
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
-import de.greenrobot.dao.converter.PropertyConverter;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
 public class AmountUnitTypePropertyConverter implements PropertyConverter<AmountUnitType, Integer> {
 

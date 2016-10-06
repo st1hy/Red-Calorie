@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.database;
 
-import de.greenrobot.daogenerator.DaoGenerator;
-import de.greenrobot.daogenerator.Entity;
-import de.greenrobot.daogenerator.Property;
-import de.greenrobot.daogenerator.Schema;
+import org.greenrobot.greendao.generator.DaoGenerator;
+import org.greenrobot.greendao.generator.Entity;
+import org.greenrobot.greendao.generator.Property;
+import org.greenrobot.greendao.generator.Schema;
 
 public class DatabaseGenerator {
     private static final String jodaTimeClassName = "org.joda.time.DateTime";

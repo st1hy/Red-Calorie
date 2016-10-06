@@ -5,11 +5,10 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 
+import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
-
-import de.greenrobot.dao.test.AbstractDaoTestLongPk;
 
 public class IngredientTemplateTest extends AbstractDaoTestLongPk<IngredientTemplateDao, IngredientTemplate> {
 

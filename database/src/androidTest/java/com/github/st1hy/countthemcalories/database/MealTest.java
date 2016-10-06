@@ -1,8 +1,7 @@
 package com.github.st1hy.countthemcalories.database;
 
+import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 import org.joda.time.DateTime;
-
-import de.greenrobot.dao.test.AbstractDaoTestLongPk;
 
 public class MealTest extends AbstractDaoTestLongPk<MealDao, Meal> {
 

@@ -4,7 +4,7 @@ package com.github.st1hy.countthemcalories.database.property;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.database.BuildConfig;
-import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
+import com.github.st1hy.countthemcalories.database.testutils.TestApplication;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, application = DatabaseApplication.class)
+@Config(constants = BuildConfig.class, sdk = 23, application = TestApplication.class)
 public class UriPropertyConverterTest {
     private final UriPropertyConverter uriPropertyConverter = new UriPropertyConverter();
 

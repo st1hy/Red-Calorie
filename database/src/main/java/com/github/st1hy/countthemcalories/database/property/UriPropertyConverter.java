@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.database.property;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import de.greenrobot.dao.converter.PropertyConverter;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
 public class UriPropertyConverter implements PropertyConverter<Uri, String> {
 

@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
-import de.greenrobot.dao.converter.PropertyConverter;
+import org.greenrobot.greendao.converter.PropertyConverter;
 
 public class JodaTimePropertyConverter implements PropertyConverter<DateTime, Long> {
 

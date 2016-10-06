@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.database;
 
-import java.math.BigDecimal;
+import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
-import de.greenrobot.dao.test.AbstractDaoTestLongPk;
+import java.math.BigDecimal;
 
 public class IngredientTest extends AbstractDaoTestLongPk<IngredientDao, Ingredient> {
 

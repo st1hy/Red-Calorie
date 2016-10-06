@@ -19,6 +19,12 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
+import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.query.CursorQuery;
+import org.greenrobot.greendao.query.Join;
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,11 +36,6 @@ import javax.inject.Provider;
 
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
-import de.greenrobot.dao.Property;
-import de.greenrobot.dao.query.CursorQuery;
-import de.greenrobot.dao.query.Join;
-import de.greenrobot.dao.query.QueryBuilder;
-import de.greenrobot.dao.query.WhereCondition;
 import rx.Observable;
 
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {

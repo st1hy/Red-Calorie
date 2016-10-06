@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.database.production;
 
-import android.database.sqlite.SQLiteDatabase;
-
+import org.greenrobot.greendao.database.Database;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -13,7 +12,7 @@ import static org.junit.Assert.assertFalse;
 public class DatabaseMigrationHelperTest {
     final DatabaseMigrationHelper migrationHelper = new DatabaseMigrationHelper();
     @Mock
-    private SQLiteDatabase db;
+    private Database db;
 
     @Test
     public void testUpgrade() throws Exception {

@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.database;
 
-import de.greenrobot.dao.test.AbstractDaoTestLongPk;
+import org.greenrobot.greendao.test.AbstractDaoTestLongPk;
 
 public class TagTest extends AbstractDaoTestLongPk<TagDao, Tag> {
 

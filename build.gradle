@@ -22,7 +22,7 @@ ext {
     rxJavaVersion = '1.1.10'
     rxAndroidVersion = '1.2.1'
     timberVersion = '4.3.1'
-    greenDaoVersion = '2.2.0'
+    greenDaoVersion = '3.2.0'
 
     robolectricVersion = '3.1.1'
     jUnitVersion = '4.12'

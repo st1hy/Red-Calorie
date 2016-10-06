@@ -7,11 +7,12 @@ import com.github.st1hy.countthemcalories.core.adapter.SearchableDatabase;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.google.common.base.Strings;
 
+import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.query.CursorQuery;
+
 import java.util.concurrent.Callable;
 
 import dagger.Lazy;
-import de.greenrobot.dao.Property;
-import de.greenrobot.dao.query.CursorQuery;
 import rx.Observable;
 
 public abstract class RxDatabaseModel<T> implements SearchableDatabase {
