@@ -50,6 +50,7 @@ dependencies {
     final jUnitVersion = rootProject.ext.jUnitVersion
     final robolectricVersion = rootProject.ext.robolectricVersion
     final mockitoVersion = rootProject.ext.mockitoVersion
+    final powerMockVersion = '1.6.2'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -66,6 +67,6 @@ dependencies {
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.robolectric:robolectric:$robolectricVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile('org.powermock:powermock-module-junit4:1.6.2')
-    testCompile('org.powermock:powermock-api-mockito:1.6.2')
+    testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
+    testCompile "org.powermock:powermock-api-mockito:$powerMockVersion"
 }

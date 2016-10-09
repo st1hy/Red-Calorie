@@ -7,9 +7,8 @@ import timber.log.Timber;
 public class DebugApplication extends CaloriesCounterApplication {
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
+    protected void init() {
+        super.init();
         Timber.plant(new Timber.DebugTree());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                 .detectAll()

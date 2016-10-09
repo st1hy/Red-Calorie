@@ -9,6 +9,10 @@ public abstract class DatabaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        init();
+    }
+
+    protected void init() {
         JodaTimeAndroid.init(getApplicationContext());
     }
 }

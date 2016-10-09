@@ -83,6 +83,7 @@ dependencies {
     final espressoVersion = '2.2.2'
     final hamcrestVersion = '2.0.0.0'
     final picassoVersion = '2.5.3-SNAPSHOT'
+    final leakCanaryVersion = '1.5'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -108,8 +109,8 @@ dependencies {
     compile "com.splitwise:tokenautocomplete:2.0.8@aar"
 
     devtoolsDebugCompile 'com.facebook.stetho:stetho:1.4.1'
-    devtoolsDebugCompile 'com.squareup.leakcanary:leakcanary-android:1.4'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
+    devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
     devtoolsDebugCompile 'com.github.brianPlummer:tinydancer:0.0.9'
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"

@@ -12,8 +12,8 @@ public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void init() {
+        super.init();
         getComponent().inject(this);
     }
 
