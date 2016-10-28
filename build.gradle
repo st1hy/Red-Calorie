@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -15,16 +15,17 @@ ext {
     compileSdkVersion = 24
     buildToolsVersion = '24.0.2'
 
-    supportLibraryVersion = '23.4.0' // '24.2.1'
+    supportLibraryVersion = '25.0.0' //'24.2.1' //'23.4.0'
 
     daggerVersion = '2.7'
+    butterknifeVersion = '8.4.0' //'8.0.1'
 
     rxJavaVersion = '1.1.10'
     rxAndroidVersion = '1.2.1'
     timberVersion = '4.3.1'
     greenDaoVersion = '3.2.0'
 
-    robolectricVersion = '3.1.1'
+    robolectricVersion = '3.1.2' // '3.2-SNAPSHOT'
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
 }

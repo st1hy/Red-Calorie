@@ -74,7 +74,7 @@ dependencies {
     final rxJavaVersion = rootProject.ext.rxJavaVersion
     final rxAndroidVersion = rootProject.ext.rxAndroidVersion
     final timberVersion = rootProject.ext.timberVersion
-    final butterknifeVersion = '8.0.1'
+    final butterknifeVersion = rootProject.ext.butterknifeVersion
 
     final jUnitVersion = rootProject.ext.jUnitVersion
     final robolectricVersion = rootProject.ext.robolectricVersion
