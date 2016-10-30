@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
+import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
@@ -15,16 +15,12 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,8 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class MealIngredientsAdapterTest {
 
     private MealIngredientsAdapter adapter;
@@ -55,11 +50,12 @@ public class MealIngredientsAdapterTest {
     PhysicalQuantitiesModel quantitiesModel;
     @Mock
     ViewGroup parent;
+    @Mock
+    Context context;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        when(parent.getContext()).thenReturn(RuntimeEnvironment.application);
+        when(parent.getContext()).thenReturn(context);
         when(parent.generateLayoutParams(any(AttributeSet.class)))
                 .thenReturn(new ViewGroup.LayoutParams(100, 100));
         adapter = new MealIngredientsAdapter(model, quantitiesModel);

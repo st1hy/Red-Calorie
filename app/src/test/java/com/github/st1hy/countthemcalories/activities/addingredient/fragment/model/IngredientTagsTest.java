@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel.ParcelableProxy;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -18,8 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
@@ -32,11 +29,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class IngredientTagsTest {
 
-    IngredientTagsModel model;
+    private IngredientTagsModel model;
 
     @Before
     public void setUp() throws Exception {

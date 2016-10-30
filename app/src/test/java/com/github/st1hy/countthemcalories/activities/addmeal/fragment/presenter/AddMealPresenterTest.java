@@ -3,7 +3,6 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
@@ -12,7 +11,6 @@ import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.google.common.base.Optional;
 
 import org.junit.After;
@@ -21,8 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import rx.Observable;
 import rx.plugins.TestRxPlugins;
@@ -35,8 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class AddMealPresenterTest {
 
     @Mock

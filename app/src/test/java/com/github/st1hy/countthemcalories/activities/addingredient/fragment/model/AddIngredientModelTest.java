@@ -9,12 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.test.espresso.core.deps.guava.base.Function;
 import android.support.test.espresso.core.deps.guava.collect.Lists;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientActivityRoboTest;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsActivityRoboTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -28,7 +25,6 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TestError;
 
 import org.hamcrest.Description;
@@ -44,9 +40,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -62,6 +56,7 @@ import rx.functions.Func1;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
+import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -82,22 +77,25 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
-public class AddIngredientModelRoboTest {
+@RunWith(MockitoJUnitRunner.class)
+public class AddIngredientModelTest {
+    private static final Tag[] exampleTags = new Tag[]{new Tag(1L, "Test tag"), new Tag(2L, "Tag2"), new Tag(3L, "meal")};
+    private static final IngredientTemplate exampleIngredient = new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,
+    getOrZero("20.5"));
 
-    final Uri testUri = Uri.parse("http://test.org/");
-    final EnergyUnit expectedEnergy = EnergyUnit.KCAL;
-    final MassUnit expectedMass = MassUnit.G100;
-    final VolumeUnit expectedVolume = VolumeUnit.ML100;
+    private final Uri testUri = Uri.parse("http://test.org/");
+    private final EnergyUnit expectedEnergy = EnergyUnit.KCAL;
+    private final MassUnit expectedMass = MassUnit.G100;
+    private final VolumeUnit expectedVolume = VolumeUnit.ML100;
 
     @Mock
-    IngredientTagsModel tagsModel;
+    private IngredientTagsModel tagsModel;
     @Mock
-    RxIngredientsDatabaseModel typesModel;
+    private RxIngredientsDatabaseModel typesModel;
     @Mock
-    SettingsModel settingsModel;
-    private final Resources resources = RuntimeEnvironment.application.getResources();
+    private SettingsModel settingsModel;
+    @Mock
+    private Resources resources;
     private AddIngredientModel model;
     private IngredientTemplate example;
     private List<Tag> tags;
@@ -122,8 +120,8 @@ public class AddIngredientModelRoboTest {
     }
 
     private void setUpEditIngredient() {
-        example = Mockito.spy(IngredientsActivityRoboTest.exampleIngredients[0]);
-        tags = Arrays.asList(AddIngredientActivityRoboTest.exampleTags);
+        example = Mockito.spy(exampleIngredient);
+        tags = Arrays.asList(exampleTags);
         List<JointIngredientTag> jTags = Lists.transform(tags, intoJTags(example));
         doReturn(jTags).when(example).getTags();
 

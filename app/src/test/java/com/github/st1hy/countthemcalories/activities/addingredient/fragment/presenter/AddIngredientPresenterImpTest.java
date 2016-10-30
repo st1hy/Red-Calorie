@@ -6,7 +6,6 @@ import android.support.test.espresso.core.deps.guava.collect.Lists;
 import android.support.v4.util.Pair;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
@@ -22,7 +21,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -34,8 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,12 +53,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class AddIngredientPresenterImpTest {
-    final String testUnit = "test unit";
-    final String testName = "test name";
-    final String testEnergy = "test energy";
+    private static final String testUnit = "test unit";
+    private static final String testName = "test name";
+    private static final String testEnergy = "test energy";
 
     @Mock
     private AddIngredientView view;

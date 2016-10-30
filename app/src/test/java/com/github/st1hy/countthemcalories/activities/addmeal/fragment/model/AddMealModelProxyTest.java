@@ -5,34 +5,29 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class AddMealModelProxyTest {
 
-    final String testName = "Name";
-    final Uri testUri = Uri.parse("http://test.org/");
+    private static final String testName = "Name";
+    private final Uri testUri = Uri.parse("http://test.org/");
 
     @Mock
-    MealIngredientsListModel listModel;
+    private MealIngredientsListModel listModel;
     @Mock
-    RxMealsDatabaseModel databaseModel;
-
+    private RxMealsDatabaseModel databaseModel;
+    @Mock
     private Resources resources;
     private AddMealModel model;
 
@@ -40,7 +35,6 @@ public class AddMealModelProxyTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        resources = RuntimeEnvironment.application.getResources();
         model = new AddMealModel(listModel, databaseModel, resources, null, null);
 
         model.setName(testName);

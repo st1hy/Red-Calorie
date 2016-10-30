@@ -6,18 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import rx.Observable;
 
@@ -27,8 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class RxDaoSearchAdapterTest {
 
     @Mock
@@ -41,10 +35,9 @@ public class RxDaoSearchAdapterTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
         adapter = new TestAdapter(model);
-        RecyclerView view = new RecyclerView(RuntimeEnvironment.application);
-        view.setAdapter(adapter);
+//        RecyclerView view = new RecyclerView(RuntimeEnvironment.application);
+//        view.setAdapter(adapter);
     }
 
 

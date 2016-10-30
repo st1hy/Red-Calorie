@@ -4,11 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TestError;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
@@ -20,8 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,8 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class MealDetailModelTest {
     public static final Meal example = new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now());
 

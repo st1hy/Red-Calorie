@@ -1,22 +1,21 @@
 package com.github.st1hy.countthemcalories.activities.settings.model;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import rx.Subscription;
 import rx.functions.Action1;
@@ -27,16 +26,22 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricTestRunner.class)
- @Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class SettingsModelTest {
+    @Mock
+    private Resources resources;
+    @Mock
+    private SharedPreferences preferences;
+
     private SettingsModel model;
 
     @Before
     public void setUp() throws Exception {
-        CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
-        model = application.getComponent().getSettingsModel();
-        model.getPreferences().edit().clear().apply();
+        model = new SettingsModel(preferences, resources);
+    }
+
+    private void verifyNoMoreInteractions() {
+        Mockito.verifyNoMoreInteractions(resources, preferences);
     }
 
     @Test
@@ -44,6 +49,7 @@ public class SettingsModelTest {
         assertThat(model.getEnergyUnit(), equalTo(EnergyUnit.KCAL));
         model.setEnergyUnit(EnergyUnit.KJ);
         assertThat(model.getEnergyUnit(), equalTo(EnergyUnit.KJ));
+        verifyNoMoreInteractions();
     }
 
     @Test
@@ -51,6 +57,7 @@ public class SettingsModelTest {
         assertThat(model.getMassUnit(), equalTo(MassUnit.G100));
         model.setMassUnit(MassUnit.G);
         assertThat(model.getMassUnit(), equalTo(MassUnit.G));
+        verifyNoMoreInteractions();
     }
 
     @Test
@@ -58,6 +65,7 @@ public class SettingsModelTest {
         assertThat(model.getVolumeUnit(), equalTo(VolumeUnit.ML100));
         model.setVolumeUnit(VolumeUnit.ML);
         assertThat(model.getVolumeUnit(), equalTo(VolumeUnit.ML));
+        verifyNoMoreInteractions();
     }
 
 
@@ -78,6 +86,7 @@ public class SettingsModelTest {
         assertThat(SettingsModel.defaultUnitOfEnergy, equalTo(model.getEnergyUnit()));
         assertThat(SettingsModel.defaultUnitOfMass, equalTo(model.getMassUnit()));
         assertThat(SettingsModel.defaultUnitOfVolume, equalTo(model.getVolumeUnit()));
+        verifyNoMoreInteractions();
     }
 
     @Test
@@ -88,16 +97,20 @@ public class SettingsModelTest {
         assertEquals("100 g", model.getUnitName(MassUnit.G100));
         assertEquals("ml", model.getUnitName(VolumeUnit.ML));
         assertEquals("100 ml", model.getUnitName(VolumeUnit.ML100));
+        verifyNoMoreInteractions();
     }
 
     @Test
     public void testGetUnitBy() throws Exception {
         assertThat(model.getAmountUnitFrom(AmountUnitType.VOLUME), Matchers.<AmountUnit>equalTo(SettingsModel.defaultUnitOfVolume));
         assertThat(model.getAmountUnitFrom(AmountUnitType.MASS), Matchers.<AmountUnit>equalTo(SettingsModel.defaultUnitOfMass));
+        verifyNoMoreInteractions();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetAmountByException() throws Exception {
-        model.getAmountUnitFrom(AmountUnitType.UNKNOWN);    }
+        model.getAmountUnitFrom(AmountUnitType.UNKNOWN);
+        verifyNoMoreInteractions();
+    }
 
 }

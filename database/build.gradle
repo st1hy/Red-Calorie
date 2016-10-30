@@ -48,9 +48,8 @@ dependencies {
     final timberVersion = rootProject.ext.timberVersion
 
     final jUnitVersion = rootProject.ext.jUnitVersion
-    final robolectricVersion = rootProject.ext.robolectricVersion
     final mockitoVersion = rootProject.ext.mockitoVersion
-    final powerMockVersion = '1.6.2'
+    final powerMockVersion = rootProject.ext.powerMockVersion
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -65,7 +64,6 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.3'
 
     testCompile "junit:junit:$jUnitVersion"
-    testCompile "org.robolectric:robolectric:$robolectricVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
     testCompile "org.powermock:powermock-api-mockito:$powerMockVersion"

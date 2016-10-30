@@ -4,8 +4,8 @@ import android.os.Build;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.robolectric.util.ReflectionHelpers;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -29,7 +29,7 @@ public class UtilsTest {
     }
 
     private void setBuildVersion(int version) {
-        ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", version);
+        Whitebox.setInternalState(Build.VERSION.class, "SDK_INT", version);
     }
 
 }

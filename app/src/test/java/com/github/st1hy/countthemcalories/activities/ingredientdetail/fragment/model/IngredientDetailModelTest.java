@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -13,7 +12,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TestError;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
@@ -25,10 +23,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -54,14 +51,14 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class IngredientDetailModelTest {
-    final IngredientTemplate example = new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"), DateTime.now(), AmountUnitType.MASS, EnergyDensityUtils.getOrZero("329.7"));
+    private final IngredientTemplate example = new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"), DateTime.now(), AmountUnitType.MASS, EnergyDensityUtils.getOrZero("329.7"));
 
     final BigDecimal amount = new BigDecimal("32.5");
 
     private RxIngredientsDatabaseModel ingredientTypesModel;
+    @Mock
     private Resources resources;
     private IngredientDetailModel model;
 
@@ -69,7 +66,6 @@ public class IngredientDetailModelTest {
     public void setUp() throws Exception {
         Timber.plant(TimberUtils.ABOVE_WARN);
         TestRxPlugins.registerImmediateHookIO();
-        resources = RuntimeEnvironment.application.getResources();
         ingredientTypesModel = Mockito.mock(RxIngredientsDatabaseModel.class);
         when(ingredientTypesModel.unParcel(any(IngredientTypeParcel.class)))
                 .thenReturn(Observable.just(example));

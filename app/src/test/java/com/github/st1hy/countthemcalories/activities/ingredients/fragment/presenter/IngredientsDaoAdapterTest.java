@@ -1,13 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
@@ -29,7 +28,6 @@ import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -40,9 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -74,33 +70,34 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class IngredientsDaoAdapterTest {
 
     @Mock
-    IngredientsView view;
+    private IngredientsView view;
     @Mock
-    IngredientsFragmentModel model;
+    private IngredientsFragmentModel model;
     @Mock
-    RxIngredientsDatabaseModel daoModel;
+    private RxIngredientsDatabaseModel daoModel;
     @Mock
-    Picasso picasso;
+    private Picasso picasso;
     @Mock
-    IngredientsDatabaseCommands commands;
+    private IngredientsDatabaseCommands commands;
     @Mock
-    Cursor cursor;
+    private Cursor cursor;
+    @Mock
+    private Context context;
 
-    IngredientsDaoAdapter adapter;
+    private IngredientsDaoAdapter adapter;
 
     @Mock
-    CommandResponse deleteResponse, insertResponse;
+    private CommandResponse deleteResponse, insertResponse;
     @Mock
-    InsertResult insertResult;
+    private InsertResult insertResult;
     @Mock
-    PermissionsHelper permissionsHelper;
+    private PermissionsHelper permissionsHelper;
     @Mock
-    LastSearchResult lastSearchResult;
+    private LastSearchResult lastSearchResult;
 
 
     @Before
@@ -173,20 +170,21 @@ public class IngredientsDaoAdapterTest {
         testVerifyNoMoreInteraction();
     }
 
-    private void testVerifyNoMoreInteraction() {
+    private void testVerifyNoMoreInteraction(Object... objects) {
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
                 permissionsHelper, lastSearchResult);
+        if (objects.length > 0) verifyNoMoreInteractions(objects);
     }
 
     @Test
     public void testOnCreateViewHolder() throws Exception {
-        ViewGroup viewGroup = new LinearLayout(RuntimeEnvironment.application.getApplicationContext());
+        ViewGroup viewGroup = mock(ViewGroup.class);
         assertThat(adapter.onCreateViewHolder(viewGroup, IngredientsDaoAdapter.item_layout),
                 instanceOf(IngredientItemViewHolder.class));
         assertThat(adapter.onCreateViewHolder(viewGroup, IngredientsDaoAdapter.item_empty_space_layout),
                 instanceOf(EmptySpaceViewHolder.class));
 
-        testVerifyNoMoreInteraction();
+        testVerifyNoMoreInteraction(viewGroup);
     }
 
     @Test

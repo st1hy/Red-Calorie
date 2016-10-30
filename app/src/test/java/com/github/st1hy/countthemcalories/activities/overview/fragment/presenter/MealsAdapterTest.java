@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.MealsViewModel;
@@ -27,7 +25,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -40,10 +37,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -71,8 +67,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class MealsAdapterTest {
 
     @Mock
@@ -185,12 +180,12 @@ public class MealsAdapterTest {
 
     @Test
     public void testOnCreateViewHolder() throws Exception {
-        ViewGroup parent = new LinearLayout(RuntimeEnvironment.application.getApplicationContext());
+        ViewGroup parent = Mockito.mock(ViewGroup.class);
         assertThat(adapter.onCreateViewHolder(parent, MealsAdapter.bottomSpaceLayout),
                 instanceOf(EmptyMealItemHolder.class));
         assertThat(adapter.onCreateViewHolder(parent, MealsAdapter.mealItemLayout),
                 instanceOf(MealItemHolder.class));
-        testVerifyNoMoreInteractions();
+        testVerifyNoMoreInteractions(parent);
     }
 
     @Test
@@ -293,7 +288,7 @@ public class MealsAdapterTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("has meal "+ meal);
+                description.appendText("has meal " + meal);
 
             }
         };
@@ -467,8 +462,9 @@ public class MealsAdapterTest {
         testVerifyNoMoreInteractions();
     }
 
-    private void testVerifyNoMoreInteractions() {
+    private void testVerifyNoMoreInteractions(Object... additional) {
         verifyNoMoreInteractions(view, databaseModel, picasso, quantityModel, commands, viewModel,
                 permissionsHelper);
+        if (additional.length > 0) verifyNoMoreInteractions(additional);
     }
 }

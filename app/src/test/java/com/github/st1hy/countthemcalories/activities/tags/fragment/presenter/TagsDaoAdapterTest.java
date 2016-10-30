@@ -4,20 +4,18 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.TestError;
 
 import org.junit.Before;
@@ -26,8 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 
@@ -50,8 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class TagsDaoAdapterTest {
 
     @Mock

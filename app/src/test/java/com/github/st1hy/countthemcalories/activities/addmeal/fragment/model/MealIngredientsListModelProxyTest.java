@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -13,7 +12,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 import com.github.st1hy.countthemcalories.testutils.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.testutils.TimberUtils;
 
@@ -26,8 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -47,10 +44,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class MealIngredientsListModelProxyTest {
-    final IngredientTemplate[] exampleIngredientTemplate = new IngredientTemplate[]{
+    private final IngredientTemplate[] exampleIngredientTemplate = new IngredientTemplate[]{
             new IngredientTemplate(1L, "Ingredient 1", Uri.parse("http://example.com"),
                     DateTime.now(), AmountUnitType.MASS, new BigDecimal("329.7")),
             new IngredientTemplate(2L, "Ingredient 2", Uri.parse("http://example.com"),
@@ -58,16 +54,16 @@ public class MealIngredientsListModelProxyTest {
             new IngredientTemplate(3L, "Ingredient 3", Uri.EMPTY,
                     DateTime.now(), AmountUnitType.VOLUME, new BigDecimal("60")),
     };
-    final BigDecimal[] amounts = new BigDecimal[]{
+    private final BigDecimal[] amounts = new BigDecimal[]{
             new BigDecimal("32.5"),
             new BigDecimal("42.50"),
             new BigDecimal("52.0"),
     };
 
     @Mock
-    RxIngredientsDatabaseModel ingredientTypesModel;
+    private RxIngredientsDatabaseModel ingredientTypesModel;
     @Mock
-    RxMealsDatabaseModel rxMealsDatabaseModel;
+    private RxMealsDatabaseModel rxMealsDatabaseModel;
     private MealIngredientsListModel model;
 
     @Before
@@ -148,6 +144,7 @@ public class MealIngredientsListModelProxyTest {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testModifyItemsException() throws Exception {
         model.modifyIngredient(-5, null, null);

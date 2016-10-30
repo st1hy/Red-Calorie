@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
@@ -12,7 +11,6 @@ import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHold
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -20,8 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -40,8 +37,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static rx.Observable.just;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class MealDetailPresenterImplTest {
 
     MealDetailPresenterImpl presenter;

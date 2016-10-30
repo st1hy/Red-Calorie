@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
+import android.content.Context;
+
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
@@ -10,16 +10,13 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
-import com.github.st1hy.countthemcalories.testutils.RobolectricConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,20 +34,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = RobolectricConfig.sdk, packageName = RobolectricConfig.packageName)
+@RunWith(MockitoJUnitRunner.class)
 public class PhysicalQuantitiesModelTest {
 
     @Mock
-    SettingsModel settingsModel;
+    private SettingsModel settingsModel;
+    @Mock
+    private Context context;
 
     private PhysicalQuantitiesModel model;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        CaloriesCounterApplication application = (CaloriesCounterApplication) RuntimeEnvironment.application;
-        model = new PhysicalQuantitiesModel(settingsModel, application.getApplicationContext());
+        model = new PhysicalQuantitiesModel(settingsModel, context);
 
     }
 
