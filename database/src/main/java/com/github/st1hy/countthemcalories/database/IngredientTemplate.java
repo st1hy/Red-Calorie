@@ -18,45 +18,47 @@ import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.joda.time.DateTime;
+import org.parceler.Parcel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity(active = true, nameInDb = "INGREDIENTS_TEMPLATE")
+@Parcel
 public class IngredientTemplate {
 
     @Id(autoincrement = true)
     @Index(unique = true)
-    private Long id;
+    Long id;
 
     @NotNull
     @Index
-    private String name;
+    String name;
 
     @Convert(converter = UriPropertyConverter.class, columnType = String.class)
-    private Uri imageUri;
+    Uri imageUri;
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
     @NotNull
-    private DateTime creationDate;
+    DateTime creationDate;
 
     @Convert(converter = AmountUnitTypePropertyConverter.class, columnType = int.class)
     @NotNull
-    private AmountUnitType amountType;
+    AmountUnitType amountType;
 
     @Convert(converter = BigDecimalPropertyConverter.class, columnType = String.class)
     @NotNull
-    private BigDecimal energyDensityAmount;
+    BigDecimal energyDensityAmount;
 
     @ToMany(joinProperties = {
         @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
-    private List<Ingredient> childIngredients;
+    List<Ingredient> childIngredients;
 
     @ToMany(joinProperties = {
         @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
-    private List<JointIngredientTag> tags;
+    List<JointIngredientTag> tags;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)

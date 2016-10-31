@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.inj
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
@@ -17,9 +18,14 @@ import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
+import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -34,6 +40,7 @@ public class AddIngredientFragmentModule {
     public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
     public static final String ARG_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
     public static final String ARG_EXTRA_NAME = "extra ingredient name";
+
 
     private final AddIngredientFragment fragment;
     private final Bundle savedState;
@@ -62,7 +69,13 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState) {
-        return new IngredientTagsModel(savedState);
+
+        if (savedState != null) {
+            Parcelable parcelable = savedState.getParcelable(IngredientTagsModel.SAVED_TAGS_MODEL);
+            return Parcels.unwrap(parcelable);
+        } else {
+            return new IngredientTagsModel(new ArrayList<Tag>(5));
+        }
     }
 
     @Provides

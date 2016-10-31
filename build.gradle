@@ -11,8 +11,8 @@ buildscript {
 
 ext {
     minSdkVersion = 16
-    targetSdkVersion = 25
-    compileSdkVersion = 25
+    targetSdkVersion = 24
+    compileSdkVersion = 24
     buildToolsVersion = '24.0.2'
 
     supportLibraryVersion = '25.0.0'
@@ -28,6 +28,7 @@ ext {
     jUnitVersion = '4.12'
     mockitoVersion = '1.10.19'
     powerMockVersion = '1.6.4'
+    parcelerVersion = '1.1.6'
 }
 
 allprojects {

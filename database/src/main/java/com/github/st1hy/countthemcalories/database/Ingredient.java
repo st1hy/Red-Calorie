@@ -2,35 +2,37 @@ package com.github.st1hy.countthemcalories.database;
 
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
+import org.parceler.Parcel;
 
 import java.math.BigDecimal;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "INGREDIENTS")
+@Parcel
 public class Ingredient {
 
     @Id(autoincrement = true)
     @Index(unique =  true)
-    private Long id;
+    Long id;
 
     @Convert(converter = BigDecimalPropertyConverter.class, columnType = String.class)
     @NotNull
-    private BigDecimal amount;
-    private long partOfMealId;
-    private long ingredientTypeId;
+    BigDecimal amount;
+    long partOfMealId;
+    long ingredientTypeId;
 
     @ToOne(joinProperty = "partOfMealId")
-    private Meal partOfMeal;
+    Meal partOfMeal;
 
     @ToOne(joinProperty = "ingredientTypeId")
-    private IngredientTemplate ingredientType;
+    IngredientTemplate ingredientType;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)

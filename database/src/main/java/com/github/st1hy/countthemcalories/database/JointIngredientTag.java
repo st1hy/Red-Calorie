@@ -1,31 +1,33 @@
 package com.github.st1hy.countthemcalories.database;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.ToOne;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.NotNull;
+import org.greenrobot.greendao.annotation.ToOne;
+import org.parceler.Parcel;
 
 @Entity(active = true, nameInDb = "INGREDIENT_TAG_JOINTS")
+@Parcel
 public class JointIngredientTag {
 
     @Id(autoincrement = true)
     @Index(unique = true)
-    private Long id;
+    Long id;
 
     @Index
-    private long tagId;
+    long tagId;
 
     @Index
-    private long ingredientTypeId;
+    long ingredientTypeId;
 
     @ToOne(joinProperty = "tagId")
-    private Tag tag;
+    Tag tag;
 
     @ToOne(joinProperty = "ingredientTypeId")
-    private IngredientTemplate ingredientType;
+    IngredientTemplate ingredientType;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)

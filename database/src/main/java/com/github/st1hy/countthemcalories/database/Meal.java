@@ -5,40 +5,42 @@ import android.net.Uri;
 import com.github.st1hy.countthemcalories.database.property.JodaTimePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.UriPropertyConverter;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.joda.time.DateTime;
+import org.parceler.Parcel;
 
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "MEALS")
+@Parcel
 public class Meal {
 
     @Id(autoincrement = true)
     @Index(unique = true)
-    private Long id;
+    Long id;
 
     @Index
-    private String name;
+    String name;
 
     @Convert(converter = UriPropertyConverter.class, columnType = String.class)
-    private Uri imageUri;
+    Uri imageUri;
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
     @NotNull
-    private DateTime creationDate;
+    DateTime creationDate;
 
     @ToMany(joinProperties = {
         @JoinProperty(name = "id", referencedName = "partOfMealId")
     })
-    private List<Ingredient> ingredients;
+    List<Ingredient> ingredients;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)

@@ -1,16 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
-import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel.ParcelableProxy;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +13,9 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel.ParcelableProxy.CREATOR;
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -36,69 +28,13 @@ public class IngredientTagsTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
 
-        model = new IngredientTagsModel(null);
+        ArrayList<Tag> tags = new ArrayList<>(2);
+        tags.add(new Tag(1L, "Tag 1"));
+        tags.add(new Tag(2L, "Tag 2"));
 
-        model.addTag(1L, "Tag 1");
-        model.addTag(2L, "Tag 2");
+        model = new IngredientTagsModel(tags);
     }
-
-    @Test
-    public void testOnSavedState() throws Exception {
-        Bundle bundle = new Bundle();
-
-        model.onSaveState(bundle);
-
-        IngredientTagsModel restoredModel = new IngredientTagsModel(bundle);
-
-        assertThat(restoredModel.tags, hasSize(2));
-        Tag tag0 = restoredModel.tags.get(0);
-        Tag tag1 = restoredModel.tags.get(1);
-        assertThat(tag0.getId(), equalTo(1L));
-        assertThat(tag0.getName(), equalTo("Tag 1"));
-        assertThat(tag1.getId(), equalTo(2L));
-        assertThat(tag1.getName(), equalTo("Tag 2"));
-    }
-
-    @Test
-    public void testToParcel() throws Exception {
-        Parcel parcel = Parcel.obtain();
-        model.parcelableProxy.snapshot(model).writeToParcel(parcel, 0);
-
-        parcel.setDataPosition(0);
-        ParcelableProxy fromParcel = CREATOR.createFromParcel(parcel);
-
-        assertThat(fromParcel.tags, hasSize(2));
-        Tag tag0 = fromParcel.tags.get(0);
-        Tag tag1 = fromParcel.tags.get(1);
-        assertThat(tag0.getId(), equalTo(1L));
-        assertThat(tag0.getName(), equalTo("Tag 1"));
-        assertThat(tag1.getId(), equalTo(2L));
-        assertThat(tag1.getName(), equalTo("Tag 2"));
-        parcel.recycle();
-    }
-
-    @Test
-    public void testSnapshot() throws Exception {
-        model.parcelableProxy.snapshot(model);
-
-        assertThat(model.parcelableProxy.tags, hasSize(2));
-        Tag tag0 = model.parcelableProxy.tags.get(0);
-        Tag tag1 = model.parcelableProxy.tags.get(1);
-        assertThat(tag0.getId(), equalTo(1L));
-        assertThat(tag0.getName(), equalTo("Tag 1"));
-        assertThat(tag1.getId(), equalTo(2L));
-        assertThat(tag1.getName(), equalTo("Tag 2"));
-    }
-
-    @Test
-    public void testProxyOther() throws Exception {
-        MatcherAssert.assertThat(model.parcelableProxy.describeContents(), Matchers.equalTo(0));
-        assertThat(IngredientTagsModel.ParcelableProxy.CREATOR.newArray(4),
-                allOf(instanceOf(IngredientTagsModel.ParcelableProxy[].class), arrayWithSize(4)));
-    }
-
 
     @Test
     public void testGetTag() throws Exception {
@@ -146,7 +82,6 @@ public class IngredientTagsTest {
             }
         };
     }
-
 
     @NonNull
     private static Matcher<Tag> hasValues(@NonNull final Long id, @NonNull final String name) {

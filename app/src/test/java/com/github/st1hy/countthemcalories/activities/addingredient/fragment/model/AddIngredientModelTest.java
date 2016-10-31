@@ -39,7 +39,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -102,7 +101,6 @@ public class AddIngredientModelTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
 
         when(settingsModel.getEnergyUnit()).thenReturn(expectedEnergy);
         when(settingsModel.getMassUnit()).thenReturn(expectedMass);

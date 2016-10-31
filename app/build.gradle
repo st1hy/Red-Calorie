@@ -111,6 +111,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.4.0'
     compile 'com.google.guava:guava:19.0'
     compile "com.splitwise:tokenautocomplete:2.0.8@aar"
+    compile "org.parceler:parceler-api:$parcelerVersion"
+    apt "org.parceler:parceler:$parcelerVersion"
 
     devtoolsDebugCompile 'com.facebook.stetho:stetho:1.4.1'
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"

@@ -16,17 +16,19 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.database.Tag;
 
+import org.parceler.Parcels;
+
 import javax.inject.Inject;
 
 import rx.functions.Action1;
 
 public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Tag> {
-    static final int TAG = R.layout.add_ingredient_tag;
-    static final int ADD_TAG = R.layout.add_ingredient_add_tag;
-    static final int ADD_CATEGORY_FIELDS_SIZE = 1;
+    private static final int TAG = R.layout.add_ingredient_tag;
+    private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
+    private static final int ADD_CATEGORY_FIELDS_SIZE = 1;
 
-    final IngredientTagsModel model;
-    final AddIngredientView view;
+    private final IngredientTagsModel model;
+    private final AddIngredientView view;
 
     @Override
     public int getItemViewType(int position) {
@@ -103,6 +105,6 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     }
 
     public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
+        outState.putParcelable(IngredientTagsModel.SAVED_TAGS_MODEL, Parcels.wrap(model));
     }
 }
