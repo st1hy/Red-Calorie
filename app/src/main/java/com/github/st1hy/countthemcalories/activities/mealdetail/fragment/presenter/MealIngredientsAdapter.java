@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -20,27 +19,26 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewHolder> {
 
-    final MealDetailModel model;
-    final PhysicalQuantitiesModel quantitiesModel;
+    private final Meal meal;
+    private final PhysicalQuantitiesModel quantitiesModel;
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    List<Ingredient> ingredients = Collections.emptyList();
+    private List<Ingredient> ingredients = Collections.emptyList();
 
-    public MealIngredientsAdapter(@NonNull MealDetailModel model,
+    public MealIngredientsAdapter(@NonNull Meal meal,
                                   @NonNull PhysicalQuantitiesModel quantitiesModel) {
-        this.model = model;
+        this.meal = meal;
         this.quantitiesModel = quantitiesModel;
     }
 
     public void onStart() {
-        subscriptions.add(model.getMealObservable()
-                .subscribe(onMealLoaded()));
+        ingredients = meal.getIngredients();
+        notifyDataSetChanged();
     }
 
     public void onStop() {
@@ -68,17 +66,6 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
 
         BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
         holder.setAmount(quantitiesModel.format(displayedAmount, amountUnit));
-    }
-
-    @NonNull
-    private Action1<Meal> onMealLoaded() {
-        return new Action1<Meal>() {
-            @Override
-            public void call(Meal meal) {
-                ingredients = meal.getIngredients();
-                notifyDataSetChanged();
-            }
-        };
     }
 
     @Override

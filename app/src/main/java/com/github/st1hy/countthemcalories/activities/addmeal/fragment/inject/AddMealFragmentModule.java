@@ -20,8 +20,6 @@ import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 

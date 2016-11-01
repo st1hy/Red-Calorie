@@ -7,7 +7,7 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
 
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public interface AddMealScreen extends WithPictureView {
     void openAddIngredient();
 
     void showIngredientDetails(long requestId,
-                               @NonNull IngredientTypeParcel ingredientParcel,
+                               @NonNull IngredientTemplate ingredientTemplate,
                                @NonNull BigDecimal amount,
                                @NonNull List<Pair<View, String>> sharedElements);
 

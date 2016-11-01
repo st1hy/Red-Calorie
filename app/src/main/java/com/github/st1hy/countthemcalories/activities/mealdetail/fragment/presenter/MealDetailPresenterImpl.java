@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
+
+import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 
@@ -21,20 +22,23 @@ import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.Im
 
 public class MealDetailPresenterImpl implements MealDetailPresenter {
 
-    final MealDetailView view;
-    final MealDetailModel model;
-    final MealIngredientsAdapter adapter;
-    final PhysicalQuantitiesModel quantitiesModel;
-    final ImageHolderDelegate imageHolderDelegate;
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    public static final String SAVED_MEAL_STATE = "meal details model";
+
+    private final Meal meal;
+    private final MealDetailView view;
+    private final MealIngredientsAdapter adapter;
+    private final PhysicalQuantitiesModel quantitiesModel;
+    private final ImageHolderDelegate imageHolderDelegate;
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public MealDetailPresenterImpl(@NonNull MealDetailView view, @NonNull MealDetailModel model,
+    public MealDetailPresenterImpl(@NonNull MealDetailView view,
+                                   @NonNull Meal meal,
                                    @NonNull MealIngredientsAdapter adapter,
                                    @NonNull PhysicalQuantitiesModel quantitiesModel,
                                    @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.view = view;
-        this.model = model;
+        this.meal = meal;
         this.adapter = adapter;
         this.quantitiesModel = quantitiesModel;
         this.imageHolderDelegate = imageHolderDelegate;
@@ -43,7 +47,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
-        subscriptions.add(model.getMealObservable().subscribe(onMealLoaded()));
+        setupView(meal);
         subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
         subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
         adapter.onStart();
@@ -58,7 +62,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
 
     @Override
     public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
+        outState.putParcelable(SAVED_MEAL_STATE, Parcels.wrap(meal));
     }
 
     @NonNull
@@ -96,7 +100,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.editMealWithId(model.getMeal().getId());
+                view.editMealWithId(meal.getId());
             }
         };
     }
@@ -106,7 +110,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         return new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.deleteMealWithId(model.getMeal().getId());
+                view.deleteMealWithId(meal.getId());
             }
         };
     }

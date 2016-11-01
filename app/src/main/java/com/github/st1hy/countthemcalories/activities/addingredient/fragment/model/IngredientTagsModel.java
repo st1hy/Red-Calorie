@@ -53,12 +53,6 @@ public class IngredientTagsModel {
         return tags.size() - 1;
     }
 
-    //Called only when loading tags from existing Ingredient
-    void replaceTags(@NonNull Collection<Tag> tags) {
-        this.tags.clear();
-        this.tags.addAll(tags);
-    }
-
     public int remove(@NonNull Tag tag) {
         int index = tags.indexOf(tag);
         tags.remove(tag);

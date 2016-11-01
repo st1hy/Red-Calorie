@@ -11,7 +11,6 @@ import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.CursorQuery;
@@ -41,11 +40,6 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
                 return session().getMealDao();
             }
         });
-    }
-
-    @NonNull
-    public Observable<Meal> unParcel(MealParcel mealParcel) {
-        return mealParcel.getWhenReady().get(session());
     }
 
     private MealDao dao() {

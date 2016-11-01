@@ -21,7 +21,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.i
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -172,9 +172,9 @@ public class IngredientDetailFragment extends BaseFragment implements Ingredient
 
     @Override
     public void commitEditedIngredientChanges(long ingredientId,
-                                              @NonNull IngredientTypeParcel parcel,
+                                              @NonNull IngredientTemplate ingredientTemplate,
                                               @NonNull BigDecimal amount) {
-        screen.commitEditedIngredientChanges(ingredientId, parcel, amount);
+        screen.commitEditedIngredientChanges(ingredientId, ingredientTemplate, amount);
     }
 
     @Override
@@ -182,8 +182,4 @@ public class IngredientDetailFragment extends BaseFragment implements Ingredient
         screen.removeIngredient(ingredientId);
     }
 
-//    @Override
-//    public void resumeEnterTransition() {
-//        screen.resumeEnterTransition();
-//    }
 }

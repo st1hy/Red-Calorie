@@ -96,7 +96,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getSelectTypeObservable()).thenReturn(Observable.<Void>empty());
         when(imageHolderDelegate.getLoadingObservable()).thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, imageHolderDelegate);
+        presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, imageHolderDelegate, modelHelper);
     }
 
     @After

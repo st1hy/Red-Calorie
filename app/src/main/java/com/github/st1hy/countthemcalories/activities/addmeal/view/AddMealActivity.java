@@ -29,10 +29,12 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
+
+import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -162,7 +164,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
 
     @Override
     public final void showIngredientDetails(long requestId,
-                                            @NonNull IngredientTypeParcel ingredientParcel,
+                                            @NonNull IngredientTemplate ingredientTemplate,
                                             @NonNull BigDecimal amount,
                                             @NonNull List<Pair<View, String>> sharedElements) {
         Bundle startOptions = null;
@@ -174,7 +176,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
         }
         Intent intent = new Intent(this, IngredientDetailActivity.class);
         intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG, requestId);
-        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL, ingredientParcel);
+        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL, Parcels.wrap(ingredientTemplate));
         intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
         startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
     }
@@ -243,10 +245,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     private boolean handlePickIngredientResult(int resultCode, @Nullable Intent data) {
         if (resultCode == IngredientsActivity.RESULT_OK) {
             if (data == null) return false;
-            IngredientTypeParcel typeParcel = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
-            if (typeParcel == null) return false;
+            IngredientTemplate ingredientTemplate = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
+            if (ingredientTemplate == null) return false;
             ingredientActionSubject.onNext(IngredientAction.valueOf(Type.NEW, -1L,
-                    Optional.of(EditData.valueOf(typeParcel, BigDecimal.ZERO))));
+                    Optional.of(EditData.valueOf(ingredientTemplate, BigDecimal.ZERO))));
         }
         return true;
     }
@@ -263,12 +265,12 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
                         Optional.<EditData>absent());
                 break;
             case EDIT:
-                IngredientTypeParcel parcel = data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
+                IngredientTemplate ingredientTemplate = Parcels.unwrap(data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL));
                 String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-                if (parcel == null || stringExtra == null) return IngredientAction.CANCELED;
+                if (ingredientTemplate == null || stringExtra == null) return IngredientAction.CANCELED;
                 BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
                 ingredientAction = IngredientAction.valueOf(Type.EDIT, requestId,
-                        Optional.of(EditData.valueOf(parcel, amount)));
+                        Optional.of(EditData.valueOf(ingredientTemplate, amount)));
                 break;
             case UNKNOWN:
             default:

@@ -9,20 +9,20 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealIngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import javax.inject.Provider;
 
@@ -52,19 +52,12 @@ public class MealDetailsModule {
         return fragment;
     }
 
-    @Provides
-    @PerFragment
-    public MealDetailModel provideModel(@NonNull RxMealsDatabaseModel databaseModel,
-                                        @Nullable MealParcel mealSource,
-                                        @Nullable Bundle savedState) {
-        return new MealDetailModel(databaseModel, mealSource, savedState);
-    }
 
     @Provides
     @PerFragment
-    public MealIngredientsAdapter provideAdapter(MealDetailModel model,
+    public MealIngredientsAdapter provideAdapter(Meal meal,
                                                  PhysicalQuantitiesModel quantitiesModel) {
-        return new MealIngredientsAdapter(model, quantitiesModel);
+        return new MealIngredientsAdapter(meal, quantitiesModel);
     }
 
     @Provides
@@ -73,8 +66,9 @@ public class MealDetailsModule {
     }
 
     @Provides
-    public MealParcel provideMealParcel() {
-        return fragment.getArguments().getParcelable(MealDetailFragment.ARG_MEAL_PARCEL);
+    @PerFragment
+    public Meal provideMeal() {
+        return Parcels.unwrap(fragment.getArguments().getParcelable(MealDetailFragment.ARG_MEAL_PARCEL));
     }
 
     @Provides

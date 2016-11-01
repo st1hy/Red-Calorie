@@ -12,11 +12,12 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+
+import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 
@@ -39,7 +40,6 @@ public class IngredientDetailModel {
     final Resources resources;
 
     private final Ingredient ingredient;
-    private final Observable<Ingredient> ingredientObservable;
 
     @Inject
     public IngredientDetailModel(@NonNull RxIngredientsDatabaseModel ingredientTypesModel,
@@ -54,22 +54,17 @@ public class IngredientDetailModel {
         }
         if (parcelableProxy != null) {
             ingredient = parcelableProxy.ingredient;
-            if (parcelableProxy.isReCreated) {
-                ingredientObservable = loadItem(ingredient);
-            } else {
-                ingredientObservable = Observable.just(ingredient);
-            }
         } else {
             parcelableProxy = new ParcelableProxy();
-            IngredientTypeParcel typeParcel = arguments.getParcelable(EXTRA_INGREDIENT_TEMPLATE_PARCEL);
-            Preconditions.checkNotNull(typeParcel, "Missing ingredient!");
+            IngredientTemplate ingredientTemplate = Parcels.unwrap(arguments.getParcelable(EXTRA_INGREDIENT_TEMPLATE_PARCEL));
+            Preconditions.checkNotNull(ingredientTemplate, "Missing ingredient!");
             String valueAsString = arguments.getString(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
             Preconditions.checkNotNull(valueAsString, "Missing amount!");
             long id = arguments.getLong(EXTRA_INGREDIENT_ID_LONG, -1L);
             ingredient = new Ingredient();
             ingredient.setId(id);
             ingredient.setAmount(new BigDecimal(valueAsString));
-            ingredientObservable = loadFromParcel(typeParcel);
+            ingredient.setIngredientType(ingredientTemplate);
         }
         this.parcelableProxy = parcelableProxy;
     }
@@ -80,11 +75,6 @@ public class IngredientDetailModel {
     @NonNull
     public Ingredient getIngredient() {
         return ingredient;
-    }
-
-    @NonNull
-    public Observable<Ingredient> getIngredientObservable() {
-        return ingredientObservable;
     }
 
     public void onSaveState(@NonNull Bundle savedState) {
@@ -107,19 +97,6 @@ public class IngredientDetailModel {
         return observable;
     }
 
-    private Observable<Ingredient> loadFromParcel(@NonNull IngredientTypeParcel typeParcel) {
-        Observable<Ingredient> observable = ingredientTypesModel.unParcel(typeParcel)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<IngredientTemplate, Ingredient>() {
-                    @Override
-                    public Ingredient call(IngredientTemplate template) {
-                        ingredient.setIngredientType(template);
-                        return ingredient;
-                    }
-                }).replay().autoConnect().share();
-        observable.subscribe(new IngredientLoader());
-        return observable;
-    }
 
     @Nullable
     public String getErrorString(@NonNull String ingredientAmount) {

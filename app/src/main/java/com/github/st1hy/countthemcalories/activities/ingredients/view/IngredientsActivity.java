@@ -25,8 +25,10 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Searc
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.jakewharton.rxbinding.view.RxView;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -39,7 +41,7 @@ import rx.Observable;
 public class IngredientsActivity extends UndoDrawerActivity implements IngredientsScreen, SearchSuggestionsView {
 
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
-    public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient type parcel";
+    public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient template";
     public static final String EXTRA_TAG_FILTER_STRING = "extra filter by tag string";
 
     public static final int REQUEST_SELECT_TYPE = 0x127;
@@ -116,17 +118,17 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void onIngredientSelected(@NonNull IngredientTypeParcel ingredientTypeParcel) {
+    public void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate) {
         Intent result = new Intent();
-        result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, ingredientTypeParcel);
+        result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
         setResult(RESULT_OK, result);
         finish();
     }
 
     @Override
-    public void openNewMealScreen(@NonNull IngredientTypeParcel parcel) {
+    public void openNewMealScreen(@NonNull IngredientTemplate ingredientTemplate) {
         Intent intent = new Intent(this, AddMealActivity.class);
-        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, parcel);
+        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
         startActivity(intent);
     }
 
@@ -136,10 +138,10 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     }
 
     @Override
-    public void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel) {
+    public void openEditIngredientScreen(long requestID, @NonNull IngredientTemplate ingredientTemplate) {
         Intent intent = new Intent(this, EditIngredientActivity.class);
         intent.putExtra(AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG, requestID);
-        intent.putExtra(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL, ingredientParcel);
+        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
         startActivityForResult(intent, REQUEST_EDIT);
     }
 

@@ -25,7 +25,7 @@ import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
@@ -153,13 +153,13 @@ public class IngredientsFragment extends BaseFragment implements IngredientsView
     }
 
     @Override
-    public void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel) {
-        screen.openEditIngredientScreen(requestID, ingredientParcel);
+    public void openEditIngredientScreen(long requestID, IngredientTemplate ingredientTemplate) {
+        screen.openEditIngredientScreen(requestID, ingredientTemplate);
     }
 
     @Override
-    public void onIngredientSelected(@NonNull IngredientTypeParcel ingredientTypeParcel) {
-        screen.onIngredientSelected(ingredientTypeParcel);
+    public void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate) {
+        screen.onIngredientSelected(ingredientTemplate);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class IngredientsFragment extends BaseFragment implements IngredientsView
     }
 
     @Override
-    public void openNewMealScreen(@NonNull IngredientTypeParcel parcel) {
-        screen.openNewMealScreen(parcel);
+    public void openNewMealScreen(@NonNull IngredientTemplate ingredientTemplate) {
+        screen.openNewMealScreen(ingredientTemplate);
     }
 }

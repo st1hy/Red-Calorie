@@ -27,6 +27,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -174,10 +175,10 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
 
     @Override
     public final void showIngredientDetails(long requestId,
-                                            @NonNull IngredientTypeParcel ingredientParcel,
+                                            @NonNull IngredientTemplate ingredientTemplate,
                                             @NonNull BigDecimal amount,
                                             @NonNull List<Pair<View, String>> sharedElements) {
-        screen.showIngredientDetails(requestId, ingredientParcel, amount, sharedElements);
+        screen.showIngredientDetails(requestId, ingredientTemplate, amount, sharedElements);
     }
 
     @Override

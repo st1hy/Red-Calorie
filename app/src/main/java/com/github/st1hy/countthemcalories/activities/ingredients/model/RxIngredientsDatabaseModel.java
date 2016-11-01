@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
@@ -86,14 +85,9 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
 
     @NonNull
-    public Observable<IngredientTemplate> update(@NonNull final IngredientTemplate ingredientTemplate,
-                                                 @NonNull final Collection<Long> tagIds) {
-        return fromDatabaseTask(updateCall(ingredientTemplate, tagIds));
-    }
-
-    @NonNull
-    public Observable<IngredientTemplate> unParcel(@NonNull IngredientTypeParcel typeParcel) {
-        return typeParcel.getWhenReady().get(session());
+    public Observable<IngredientTemplate> insertOrUpdate(@NonNull final IngredientTemplate ingredientTemplate,
+                                                         @NonNull final Collection<Long> tagIds) {
+        return fromDatabaseTask(insertOrUpdateCall(ingredientTemplate, tagIds));
     }
 
     @Override
@@ -126,18 +120,14 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         return data;
     }
 
-    @NonNull
-    public Observable<IngredientTemplate> addNew(@NonNull final IngredientTemplate data,
-                                                 @NonNull final Collection<Long> tagIds) {
-        return fromDatabaseTask(insertNewCall(data, tagIds));
-    }
-
 
     @NonNull
-    private Callable<IngredientTemplate> updateCall(@NonNull final IngredientTemplate ingredientTemplate, @NonNull final Collection<Long> tagIds) {
+    private Callable<IngredientTemplate> insertOrUpdateCall(@NonNull final IngredientTemplate ingredientTemplate,
+                                                            @NonNull final Collection<Long> tagIds) {
         return new Callable<IngredientTemplate>() {
             @Override
             public IngredientTemplate call() throws Exception {
+                dao().insertOrReplace(ingredientTemplate);
                 List<JointIngredientTag> jTags = ingredientTemplate.getTags();
                 for (JointIngredientTag jTag : jTags) {
                     if (!tagIds.contains(jTag.getTagId())) {
@@ -154,24 +144,6 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                 ingredientTemplate.resetTags();
                 ingredientTemplate.getTags();
                 return ingredientTemplate;
-            }
-        };
-    }
-
-    @NonNull
-    private Callable<IngredientTemplate> insertNewCall(@NonNull final IngredientTemplate data,
-                                                       @NonNull final Collection<Long> tagIds) {
-        return new Callable<IngredientTemplate>() {
-            @Override
-            public IngredientTemplate call() throws Exception {
-                IngredientTemplate template = performInsert(data);
-                for (Long tagId : tagIds) {
-                    addJointTagWithIngredientTemplate(template, tagId);
-                }
-                template.refresh();
-                template.resetTags();
-                template.getTags();
-                return template;
             }
         };
     }

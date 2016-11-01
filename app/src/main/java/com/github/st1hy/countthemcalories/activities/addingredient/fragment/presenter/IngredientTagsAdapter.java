@@ -65,7 +65,6 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
                 onBindTag((ItemTagViewHolder) holder, position);
                 break;
             case ADD_TAG:
-                //noinspection ConstantConditions
                 onBindAddTag((AddNewTagViewHolder) holder);
                 break;
             default:
@@ -73,7 +72,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         }
     }
 
-    void onBindTag(@NonNull ItemTagViewHolder viewHolder, int position) {
+    private void onBindTag(@NonNull ItemTagViewHolder viewHolder, int position) {
         Tag tag = model.getTagAt(position);
         viewHolder.setCategoryName(tag.getName());
         viewHolder.setTag(tag);

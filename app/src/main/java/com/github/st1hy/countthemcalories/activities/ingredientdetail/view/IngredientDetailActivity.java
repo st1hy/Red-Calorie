@@ -11,7 +11,9 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.Dag
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+
+import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 
@@ -55,11 +57,11 @@ public class IngredientDetailActivity extends BaseActivity implements Ingredient
 
     @Override
     public void commitEditedIngredientChanges(long ingredientId,
-                                              @NonNull IngredientTypeParcel parcel,
+                                              @NonNull IngredientTemplate ingredientTemplate,
                                               @NonNull BigDecimal amount) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
-        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, parcel);
+        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, Parcels.wrap(ingredientTemplate));
         intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
         setResult(RESULT_OK, intent);
         ActivityCompat.finishAfterTransition(this);

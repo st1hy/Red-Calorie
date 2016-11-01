@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.core.baseview.DialogView;
 import com.github.st1hy.countthemcalories.core.command.view.UndoView;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import rx.Observable;
 
@@ -18,9 +18,9 @@ public interface IngredientsScreen extends UndoView, SearchableView, DialogView 
 
     void openNewIngredientScreen(@NonNull AddIngredientType type, @NonNull String extraName);
 
-    void openEditIngredientScreen(long requestID, IngredientTypeParcel ingredientParcel);
+    void openEditIngredientScreen(long requestID, IngredientTemplate ingredientTemplate);
 
-    void onIngredientSelected(@NonNull IngredientTypeParcel ingredientTypeParcel);
+    void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate);
 
-    void openNewMealScreen(@NonNull IngredientTypeParcel parcel);
+    void openNewMealScreen(@NonNull IngredientTemplate ingredientTemplate);
 }

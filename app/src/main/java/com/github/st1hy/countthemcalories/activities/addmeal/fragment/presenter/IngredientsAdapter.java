@@ -161,11 +161,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 switch (ingredientAction.getType()) {
                     case NEW:
                         editData = ingredientAction.getDataOptional().get();
-                        onIngredientReceived(editData.getParcel());
+                        onIngredientReceived(editData.getIngredientTemplate());
                         break;
                     case EDIT:
                         editData = ingredientAction.getDataOptional().get();
-                        onIngredientEditFinished(ingredientAction.getId(), editData.getParcel(),
+                        onIngredientEditFinished(ingredientAction.getId(), editData.getIngredientTemplate(),
                                 editData.getValue());
                         break;
                     case REMOVE:

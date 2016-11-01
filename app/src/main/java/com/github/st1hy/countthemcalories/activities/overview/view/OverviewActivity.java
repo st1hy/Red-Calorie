@@ -24,8 +24,11 @@ import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewAct
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
+
+import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
@@ -115,19 +118,19 @@ public class OverviewActivity extends UndoDrawerActivity implements OverviewScre
     }
 
     @Override
-    public void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView) {
+    public void openMealDetails(@NonNull Meal meal, @NonNull View sharedView) {
         Bundle startOptions = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(this, sharedView, "overview-shared-view-image")
                 .toBundle();
         Intent intent = new Intent(this, MealDetailActivity.class);
-        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, mealParcel);
+        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
         startActivityForResult(intent, REQUEST_MEAL_DETAIL, startOptions);
     }
 
     @Override
-    public void openEditMealScreen(@NonNull MealParcel mealParcel) {
+    public void openEditMealScreen(@NonNull Meal meal) {
         Intent intent = new Intent(this, EditMealActivity.class);
-        intent.putExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL, mealParcel);
+        intent.putExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
         startActivity(intent);
     }
 

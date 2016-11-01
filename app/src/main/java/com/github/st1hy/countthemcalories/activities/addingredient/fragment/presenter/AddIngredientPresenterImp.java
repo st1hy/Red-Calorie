@@ -8,8 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModelHelper;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
@@ -21,6 +22,8 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+
+import org.parceler.Parcels;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,52 +38,34 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_NAME;
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.NO_VALUE;
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_VALUE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
 public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
-    private final AddIngredientView view;
-    private final AddIngredientModel model;
+    @NonNull private final AddIngredientView view;
+    @NonNull private final AddIngredientModel model;
+    @NonNull private final AddIngredientModelHelper modelHelper;
 
     @Inject
     public AddIngredientPresenterImp(@NonNull AddIngredientView view,
                                      @NonNull PermissionsHelper permissionsHelper,
                                      @NonNull AddIngredientModel model,
-                                     @NonNull ImageHolderDelegate imageHolderDelegate) {
+                                     @NonNull ImageHolderDelegate imageHolderDelegate,
+                                     @NonNull AddIngredientModelHelper modelHelper) {
         super(view, permissionsHelper, model, imageHolderDelegate);
         this.view = view;
         this.model = model;
+        this.modelHelper = modelHelper;
     }
 
     @Override
     public void onStart() {
-        subscriptions.add(model.getLoading()
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        onIngredientModelReady();
-                    }
-                }));
-    }
-
-    @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
-    }
-
-    @Override
-    protected void onImageUriChanged(@NonNull Uri uri) {
-        super.onImageUriChanged(uri);
-        model.setImageUri(uri);
-    }
-
-    private void onIngredientModelReady() {
         super.onStart();
         loadImageUri(model.getImageUri());
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());
-        view.setSelectedUnitName(model.getEnergyDensityUnit());
+        view.setSelectedUnitName(modelHelper.getEnergyDensityUnit());
 
         final Observable<CharSequence> nameObservable = view.getNameObservable();
         subscriptions.add(nameObservable.subscribe(setNameToModel()));
@@ -105,6 +90,17 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                 .subscribe(onUnitSelected()));
     }
 
+    @Override
+    public void onSaveState(@NonNull Bundle outState) {
+        outState.putParcelable(AddIngredientModel.SAVED_INGREDIENT_MODEL, Parcels.wrap(model));
+    }
+
+    @Override
+    protected void onImageUriChanged(@NonNull Uri uri) {
+        super.onImageUriChanged(uri);
+        model.setImageUri(uri);
+    }
+
     @NonNull
     private Subscriber<? super Void> onSearchForIngredientClicked() {
         return new SimpleSubscriber<Void>() {
@@ -112,7 +108,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             public void onNext(Void aVoid) {
                 String name = model.getName();
                 if (!name.trim().isEmpty())
-                    view.showInWebBrowser(model.getSearchIngredientQuery(name));
+                    view.showInWebBrowser(modelHelper.getSearchIngredientQuery(name));
             }
         };
     }
@@ -122,7 +118,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         return new Func1<Void, Observable<IngredientTemplate>>() {
             @Override
             public Observable<IngredientTemplate> call(Void aVoid) {
-                return model.saveIntoDatabase();
+                return modelHelper.saveIntoDatabase();
             }
         };
     }
@@ -216,7 +212,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         return new Func2<CharSequence, CharSequence, Void>() {
             @Override
             public Void call(CharSequence name, CharSequence energyValue) {
-                onCreateIngredientResult(model.canCreateIngredient(name.toString(), energyValue.toString()));
+                onCreateIngredientResult(modelHelper.canCreateIngredient(name.toString(), energyValue.toString()));
                 return null;
             }
         };
@@ -227,7 +223,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         return new Func1<Void, Observable<AmountUnit>>() {
             @Override
             public Observable<AmountUnit> call(Void aVoid) {
-                final List<Pair<AmountUnit, CharSequence>> optionsList = model.getSelectTypeDialogOptions();
+                final List<Pair<AmountUnit, CharSequence>> optionsList = modelHelper.getSelectTypeDialogOptions();
                 CharSequence[] options = Collections2.transform(optionsList, intoCharSequence())
                         .toArray(new CharSequence[optionsList.size()]);
                 return view.showAlertDialog(model.getSelectTypeDialogTitle(), options)
@@ -263,7 +259,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             @Override
             public void onNext(AmountUnit amountUnit) {
                 model.setAmountType(amountUnit.getType());
-                view.setSelectedUnitName(model.getEnergyDensityUnit());
+                view.setSelectedUnitName(modelHelper.getEnergyDensityUnit());
             }
         };
     }

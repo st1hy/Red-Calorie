@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
 
 import java.math.BigDecimal;
@@ -46,22 +46,22 @@ public class IngredientAction {
 
     public static class EditData {
         @NonNull
-        final IngredientTypeParcel parcel;
+        final IngredientTemplate ingredientTemplate;
         @NonNull
         final BigDecimal value;
 
-        EditData(@NonNull IngredientTypeParcel parcel, @NonNull BigDecimal value) {
-            this.parcel = parcel;
+        EditData(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal value) {
+            this.ingredientTemplate = ingredientTemplate;
             this.value = value;
         }
 
-        public static EditData valueOf(@NonNull IngredientTypeParcel parcel, @NonNull BigDecimal value) {
-            return new EditData(parcel, value);
+        public static EditData valueOf(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal value) {
+            return new EditData(ingredientTemplate, value);
         }
 
         @NonNull
-        public IngredientTypeParcel getParcel() {
-            return parcel;
+        public IngredientTemplate getIngredientTemplate() {
+            return ingredientTemplate;
         }
 
         @NonNull

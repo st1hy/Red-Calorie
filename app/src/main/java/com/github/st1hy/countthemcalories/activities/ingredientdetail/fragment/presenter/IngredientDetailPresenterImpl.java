@@ -6,12 +6,10 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.IngredientLoader;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -21,7 +19,6 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
@@ -51,29 +48,8 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
     @Override
     public void onStart() {
-        subscriptions.add(model.getIngredientObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new IngredientLoader() {
-                    @Override
-                    public void onNext(Ingredient ingredient) {
-                        bindViews(ingredient);
-                    }
-                }));
-    }
-
-    @Override
-    public void onStop() {
-        subscriptions.clear();
-        imageHolderDelegate.onDetached();
-    }
-
-    @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
-    }
-
-    private void bindViews(Ingredient ingredient) {
         imageHolderDelegate.onAttached();
+        Ingredient ingredient = model.getIngredient();
         IngredientTemplate type = ingredient.getIngredientType();
         view.setName(type.getName());
         energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
@@ -95,6 +71,18 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 .subscribe(onAcceptClicked()));
         bindImage(type);
     }
+
+    @Override
+    public void onStop() {
+        subscriptions.clear();
+        imageHolderDelegate.onDetached();
+    }
+
+    @Override
+    public void onSaveState(@NonNull Bundle outState) {
+        model.onSaveState(outState);
+    }
+
 
     private void bindImage(@NonNull IngredientTemplate type) {
         imageHolderDelegate.setImagePlaceholder(type.getAmountType() == AmountUnitType.VOLUME ?
@@ -144,7 +132,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 view.hideSoftKeyboard();
                 Ingredient ingredient = model.getIngredient();
                 view.commitEditedIngredientChanges(ingredient.getId(),
-                        new IngredientTypeParcel(ingredient.getIngredientType()),
+                        ingredient.getIngredientType(),
                         ingredient.getAmount());
             }
         };

@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAc
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
 
@@ -105,13 +106,13 @@ public class OverviewFragment extends BaseFragment implements OverviewView {
     }
 
     @Override
-    public void openMealDetails(@NonNull MealParcel mealParcel, @NonNull View sharedView) {
-        overviewScreen.openMealDetails(mealParcel, sharedView);
+    public void openMealDetails(@NonNull Meal meal, @NonNull View sharedView) {
+        overviewScreen.openMealDetails(meal, sharedView);
     }
 
     @Override
-    public void openEditMealScreen(@NonNull MealParcel mealParcel) {
-        overviewScreen.openEditMealScreen(mealParcel);
+    public void openEditMealScreen(@NonNull Meal meal) {
+        overviewScreen.openEditMealScreen(meal);
     }
 
     @Override

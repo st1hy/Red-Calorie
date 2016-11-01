@@ -28,7 +28,6 @@ import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -53,13 +52,13 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
 
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    final RxMealsDatabaseModel databaseModel;
-    final Picasso picasso;
-    final PhysicalQuantitiesModel quantityModel;
-    final OverviewView view;
-    final MealsDatabaseCommands commands;
-    final MealsViewModel viewModel;
-    final PermissionsHelper permissionsHelper;
+    private final RxMealsDatabaseModel databaseModel;
+    private final Picasso picasso;
+    private final PhysicalQuantitiesModel quantityModel;
+    private final OverviewView view;
+    private final MealsDatabaseCommands commands;
+    private final MealsViewModel viewModel;
+    private final PermissionsHelper permissionsHelper;
 
     List<Meal> list = Collections.emptyList();
 
@@ -143,7 +142,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     public void onMealClicked(@NonNull final MealItemHolder holder) {
         holder.setEnabled(false);
         enableAfterMealDetailReturns(holder);
-        view.openMealDetails(new MealParcel(holder.getMeal()), holder.getImage());
+        view.openMealDetails(holder.getMeal(), holder.getImage());
     }
 
     private void enableAfterMealDetailReturns(@NonNull final MealItemHolder holder) {
@@ -208,7 +207,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     private void openEditScreen(@NonNull Meal meal) {
-        view.openEditMealScreen(new MealParcel(meal));
+        view.openEditMealScreen(meal);
     }
 
     private void loadTodayMeals() {

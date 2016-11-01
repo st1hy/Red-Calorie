@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
-import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;
@@ -28,10 +27,10 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.squareup.picasso.Picasso;
@@ -147,7 +146,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     public void onIngredientClicked(@NonNull final IngredientTemplate ingredientTemplate,
                                     int position) {
         if (model.isInSelectMode()) {
-            view.onIngredientSelected(new IngredientTypeParcel(ingredientTemplate));
+            view.onIngredientSelected(ingredientTemplate);
         } else {
             view.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -169,7 +168,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
 
     @Override
     public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
-        view.openEditIngredientScreen(position, new IngredientTypeParcel(ingredientTemplate));
+        view.openEditIngredientScreen(position, ingredientTemplate);
     }
 
     @NonNull
@@ -211,7 +210,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 IngredientOptions selectedOption = from(selectedOptionPosition);
                 switch (selectedOption) {
                     case ADD_TO_NEW:
-                        view.openNewMealScreen(new IngredientTypeParcel(ingredient));
+                        view.openNewMealScreen(ingredient);
                         break;
                     case EDIT:
                         onEditClicked(ingredient, position);
