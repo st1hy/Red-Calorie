@@ -1,11 +1,14 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenterImp;
@@ -14,14 +17,20 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
+import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Provider;
 
@@ -29,6 +38,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSubclass;
+import static org.parceler.Parcels.unwrap;
 
 @Module
 public class AddMealFragmentModule {
@@ -63,13 +73,21 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public MealIngredientsListModel provideListModel(RxIngredientsDatabaseModel model,
-                                                     RxMealsDatabaseModel databaseModel,
-                                                     @Nullable MealParcel mealParcel,
-                                                     @Nullable IngredientTypeParcel ingredientsParcel,
-                                                     @Nullable Bundle savedState) {
-        return new MealIngredientsListModel(model, databaseModel, mealParcel, ingredientsParcel,
-                savedState);
+    public MealIngredientsListModel provideListModel(@NonNull Meal meal, @Nullable IngredientTemplate extraIngredient) {
+
+        if (savedState != null) {
+            MealIngredientsListModel listModel = Parcels.unwrap(savedState.getParcelable(MealIngredientsListModel.SAVED_INGREDIENTS));
+            listModel.setExtraIngredient(extraIngredient);
+            return listModel;
+        } else {
+            List<Ingredient> ingredients;
+            if (meal.hasIngredients()) {
+                ingredients = meal.getIngredients();
+            } else {
+                ingredients = new ArrayList<>(5);
+            }
+            return new MealIngredientsListModel(ingredients, extraIngredient);
+        }
     }
 
     @Provides
@@ -86,28 +104,33 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    @Nullable
     @PerFragment
-    public MealParcel provideMealParcel() {
-        Bundle arguments = fragment.getArguments();
-        Preconditions.checkNotNull(arguments);
-        return arguments.getParcelable(EXTRA_MEAL_PARCEL);
+    public Meal provideMeal() {
+        if (savedState != null) {
+            return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
+        } else {
+            Bundle arguments = fragment.getArguments();
+            Preconditions.checkNotNull(arguments);
+            Meal editedMeal = Parcels.unwrap(arguments.getParcelable(EXTRA_MEAL_PARCEL));
+            if (editedMeal != null) {
+                return editedMeal;
+            } else {
+                editedMeal = new Meal();
+                editedMeal.setName("");
+                editedMeal.setImageUri(Uri.EMPTY);
+                return editedMeal;
+            }
+        }
     }
 
     @Provides
     @Nullable
-    public Bundle provideSavedState() {
-        return savedState;
-    }
-
-    @Provides
-    @Nullable
-    public IngredientTypeParcel provideIngredientsParcel() {
+    public IngredientTemplate provideExtraIngredientTemplate() {
         Bundle arguments = fragment.getArguments();
         Preconditions.checkNotNull(arguments);
-        IngredientTypeParcel parcel = arguments.getParcelable(EXTRA_INGREDIENT_PARCEL);
+        IngredientTemplate ingredientTemplate = unwrap(arguments.getParcelable(EXTRA_INGREDIENT_PARCEL));
         arguments.remove(EXTRA_INGREDIENT_PARCEL);
-        return parcel;
+        return ingredientTemplate;
     }
 
     @Provides

@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModelHelper;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.EnergyConverter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
@@ -34,6 +34,7 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.inject.Named;
@@ -155,9 +156,9 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public AddIngredientModel provideIngredientModel(@Nullable IngredientTemplate templateSource,
-                                                     @NonNull AddIngredientModelHelper modelHelper,
                                                      @NonNull String name,
-                                                     @NonNull AmountUnitType amountUnitType) {
+                                                     @NonNull AmountUnitType amountUnitType,
+                                                     @NonNull EnergyConverter energyConverter) {
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(AddIngredientModel.SAVED_INGREDIENT_MODEL);
             return Parcels.unwrap(parcelable);
@@ -168,7 +169,9 @@ public class AddIngredientFragmentModule {
             if (templateSource != null) {
                 name = templateSource.getName();
                 amountUnitType = templateSource.getAmountType();
-                energyValue = modelHelper.convertEnergyDensityToEnergyValueString(amountUnitType, templateSource.getEnergyDensityAmount());
+                final BigDecimal energyDensityAmount = templateSource.getEnergyDensityAmount();
+                energyValue = energyConverter.fromDatabaseToCurrent(amountUnitType, energyDensityAmount)
+                        .toPlainString();
                 imageUri = templateSource.getImageUri();
                 creationDate = templateSource.getCreationDate();
             } else {

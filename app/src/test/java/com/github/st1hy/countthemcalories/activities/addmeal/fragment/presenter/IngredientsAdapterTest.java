@@ -63,7 +63,7 @@ public class IngredientsAdapterTest {
         TestRxPlugins.registerImmediateMainThreadHook();
 
         when(model.getItemsLoadedObservable()).thenReturn(Observable.<Void>just(null));
-        when(model.getExtraIngredient()).thenReturn(Optional.<IngredientTypeParcel>absent());
+        when(model.removeExtraIngredient()).thenReturn(Optional.<IngredientTypeParcel>absent());
 
         Func1<?, BigDecimal> anyDecimal = Functions.into(BigDecimal.TEN);
         when(quantityModel.mapToEnergy()).thenReturn((Func1<Ingredient, BigDecimal>) anyDecimal);
@@ -101,7 +101,7 @@ public class IngredientsAdapterTest {
         verify(quantityModel).mapToEnergy();
         verify(quantityModel).sumAll();
         verify(quantityModel).energyAsString();
-        verify(model).getExtraIngredient();
+        verify(model).removeExtraIngredient();
         verify(view).setEmptyIngredientsVisibility(Visibility.VISIBLE);
         verify(view).getIngredientActionObservable();
     }
@@ -111,7 +111,7 @@ public class IngredientsAdapterTest {
         when(model.getItemsCount()).thenReturn(0);
         when(model.getIngredients()).thenReturn(Collections.<Ingredient>emptyList());
         IngredientTypeParcel parcel = mock(IngredientTypeParcel.class);
-        when(model.getExtraIngredient()).thenReturn(Optional.of(parcel));
+        when(model.removeExtraIngredient()).thenReturn(Optional.of(parcel));
 
         adapter.onStart();
 

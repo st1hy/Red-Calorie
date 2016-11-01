@@ -245,10 +245,10 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
     private boolean handlePickIngredientResult(int resultCode, @Nullable Intent data) {
         if (resultCode == IngredientsActivity.RESULT_OK) {
             if (data == null) return false;
-            IngredientTemplate ingredientTemplate = data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL);
+            IngredientTemplate ingredientTemplate = Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
             if (ingredientTemplate == null) return false;
             ingredientActionSubject.onNext(IngredientAction.valueOf(Type.NEW, -1L,
-                    Optional.of(EditData.valueOf(ingredientTemplate, BigDecimal.ZERO))));
+                    EditData.valueOf(ingredientTemplate, BigDecimal.ZERO)));
         }
         return true;
     }
@@ -261,8 +261,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
         IngredientAction ingredientAction;
         switch (result) {
             case REMOVE:
-                ingredientAction = IngredientAction.valueOf(Type.REMOVE, requestId,
-                        Optional.<EditData>absent());
+                ingredientAction = IngredientAction.valueOf(Type.REMOVE, requestId, null);
                 break;
             case EDIT:
                 IngredientTemplate ingredientTemplate = Parcels.unwrap(data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL));
@@ -270,7 +269,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
                 if (ingredientTemplate == null || stringExtra == null) return IngredientAction.CANCELED;
                 BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
                 ingredientAction = IngredientAction.valueOf(Type.EDIT, requestId,
-                        Optional.of(EditData.valueOf(ingredientTemplate, amount)));
+                        EditData.valueOf(ingredientTemplate, amount));
                 break;
             case UNKNOWN:
             default:

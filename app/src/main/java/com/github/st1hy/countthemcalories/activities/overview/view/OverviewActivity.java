@@ -25,7 +25,6 @@ import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAc
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;

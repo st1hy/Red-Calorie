@@ -19,7 +19,6 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -48,7 +47,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    public IngredientsAdapter(@NonNull AddMealView view, @NonNull MealIngredientsListModel model,
+    public IngredientsAdapter(@NonNull AddMealView view,
+                              @NonNull MealIngredientsListModel model,
                               @NonNull PhysicalQuantitiesModel quantityModel,
                               @NonNull Picasso picasso,
                               @NonNull PermissionsHelper permissionsHelper) {
@@ -60,8 +60,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     public void onStart() {
-        subscribe(model.getItemsLoadedObservable()
-                .subscribe(onInitialLoading()));
+        notifyDataSetChanged();
+        onDataSetChanged();
+        subscribe(view.getIngredientActionObservable()
+                .subscribe(onIngredientAction()));
+        IngredientTemplate extraIngredient = model.removeExtraIngredient();
+        if (extraIngredient != null) {
+            onIngredientReceived(extraIngredient);
+        }
     }
 
     public void onStop() {
@@ -80,10 +86,9 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     @Override
     public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
-        IngredientTypeParcel typeParcel = new IngredientTypeParcel(ingredient.getIngredientType());
-        BigDecimal amount = ingredient.getAmount();
-        int position = model.indexOf(ingredient);
-        List<Pair<View, String>> sharedViews = ImmutableList.of(
+        final BigDecimal amount = ingredient.getAmount();
+        final int position = model.indexOf(ingredient);
+        final List<Pair<View, String>> sharedViews = ImmutableList.of(
                 pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
 //                pairOf(viewHolder.getRoot(), "ingredient-shared-view")
 //                pairOf(viewHolder.getName(), "ingredient-shared-view-name")
@@ -92,7 +97,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         );
         viewHolder.setEnabled(false);
         enableOnNextIngredientAction(viewHolder);
-        view.showIngredientDetails(position, typeParcel, amount, sharedViews);
+        view.showIngredientDetails(position, ingredient.getIngredientType(), amount, sharedViews);
     }
 
     @Override
@@ -130,7 +135,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         holder.onDetached();
     }
 
-    void onBindImage(@NonNull IngredientTemplate ingredient,
+    private void onBindImage(@NonNull IngredientTemplate ingredient,
                      @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
@@ -160,11 +165,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
                 IngredientAction.EditData editData;
                 switch (ingredientAction.getType()) {
                     case NEW:
-                        editData = ingredientAction.getDataOptional().get();
+                        editData = ingredientAction.getData();
                         onIngredientReceived(editData.getIngredientTemplate());
                         break;
                     case EDIT:
-                        editData = ingredientAction.getDataOptional().get();
+                        editData = ingredientAction.getData();
                         onIngredientEditFinished(ingredientAction.getId(), editData.getIngredientTemplate(),
                                 editData.getValue());
                         break;
@@ -178,79 +183,49 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         };
     }
 
-    void onIngredientRemoved(long requestId) {
+    private void onIngredientRemoved(long requestId) {
         if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
         notifyDataSetChanged();
         onDataSetChanged();
     }
 
-    void onIngredientEditFinished(long requestId, @NonNull IngredientTypeParcel typeParcel,
+    private void onIngredientEditFinished(long requestId, @NonNull IngredientTemplate ingredientTemplate,
                                   @NonNull BigDecimal amount) {
         if (requestId == -1) {
-            onIngredientAdded(typeParcel, amount);
+            onIngredientAdded(ingredientTemplate, amount);
         } else {
-            onIngredientEdited(requestId, typeParcel, amount);
+            onIngredientEdited(requestId, ingredientTemplate, amount);
         }
     }
 
-    void onIngredientEdited(long requestId, @NonNull IngredientTypeParcel typeParcel,
+    private void onIngredientEdited(long requestId, @NonNull IngredientTemplate ingredientTemplate,
                             @NonNull BigDecimal amount) {
-        subscribe(model.modifyIngredient((int) requestId, typeParcel, amount)
-                .subscribe(notifyChanged()));
+        int position = model.modifyIngredient((int) requestId, ingredientTemplate, amount);
+        notifyChanged(position);
     }
 
-    void onIngredientAdded(@NonNull IngredientTypeParcel typeParcel,
+    private void onIngredientAdded(@NonNull IngredientTemplate ingredientTemplate,
                            @NonNull BigDecimal amount) {
-        subscribe(model.addIngredientOfType(typeParcel, amount)
-                .subscribe(notifyInserted()));
+        int position = model.addIngredientOfType(ingredientTemplate, amount);
+        notifyInserted(position);
     }
 
-    void onIngredientReceived(@NonNull IngredientTypeParcel typeParcel) {
-        view.showIngredientDetails(-1L, typeParcel, BigDecimal.ZERO,
+    private void onIngredientReceived(@NonNull IngredientTemplate ingredientTemplate) {
+        view.showIngredientDetails(-1L, ingredientTemplate, BigDecimal.ZERO,
                 Collections.<Pair<View, String>>emptyList());
     }
 
-    @NonNull
-    private Subscriber<Void> onInitialLoading() {
-        return new SimpleSubscriber<Void>() {
-            @Override
-            public void onCompleted() {
-                notifyDataSetChanged();
-                onDataSetChanged();
-                Optional<IngredientTypeParcel> extraIngredient = model.getExtraIngredient();
-                if (extraIngredient.isPresent()) {
-                    onIngredientReceived(extraIngredient.get());
-                }
-                subscribe(view.getIngredientActionObservable()
-                        .subscribe(onIngredientAction()));
-            }
-        };
+    private void notifyInserted(int position) {
+        notifyItemInserted(position);
+        view.scrollTo(position);
+        view.showSnackbarError(Optional.<String>absent());
+        onDataSetChanged();
     }
 
-    @NonNull
-    private Subscriber<Integer> notifyInserted() {
-        return new SimpleSubscriber<Integer>() {
-            @Override
-            public void onNext(Integer itemPosition) {
-                notifyItemInserted(itemPosition);
-                view.scrollTo(itemPosition);
-                view.showSnackbarError(Optional.<String>absent());
-                onDataSetChanged();
-            }
-        };
-    }
-
-    @NonNull
-    private Subscriber<Integer> notifyChanged() {
-        return new SimpleSubscriber<Integer>() {
-            @Override
-            public void onNext(Integer itemPosition) {
-                super.onNext(itemPosition);
-                notifyItemChanged(itemPosition);
-                onDataSetChanged();
-            }
-        };
+    private void notifyChanged(int position) {
+        notifyItemChanged(position);
+        onDataSetChanged();
     }
 
     private void onDataSetChanged() {

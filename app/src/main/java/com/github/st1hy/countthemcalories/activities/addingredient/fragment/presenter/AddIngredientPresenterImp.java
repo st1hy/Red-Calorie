@@ -65,7 +65,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
         loadImageUri(model.getImageUri());
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());
-        view.setSelectedUnitName(modelHelper.getEnergyDensityUnit());
+        view.setSelectedUnitName(modelHelper.getEnergyDensityUnitName());
 
         final Observable<CharSequence> nameObservable = view.getNameObservable();
         subscriptions.add(nameObservable.subscribe(setNameToModel()));
@@ -259,7 +259,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
             @Override
             public void onNext(AmountUnit amountUnit) {
                 model.setAmountType(amountUnit.getType());
-                view.setSelectedUnitName(modelHelper.getEnergyDensityUnit());
+                view.setSelectedUnitName(modelHelper.getEnergyDensityUnitName());
             }
         };
     }

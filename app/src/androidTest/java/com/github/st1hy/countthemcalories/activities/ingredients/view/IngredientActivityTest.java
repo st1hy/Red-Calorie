@@ -21,7 +21,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
-import com.github.st1hy.countthemcalories.database.parcel.IngredientTypeParcel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
@@ -48,6 +47,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -59,7 +59,6 @@ import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivi
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static com.github.st1hy.countthemcalories.matchers.EditTextMatchers.hasNoError;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -287,11 +286,8 @@ public class IngredientActivityTest {
         onView(withText(R.string.ingredients_item_add_to_new_meal))
                 .perform(click());
         intended(allOf(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)),
-                hasExtra(
-                        equalTo(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL),
-                        any(IngredientTypeParcel.class))
-                )
-        );
+                hasExtraWithKey(equalTo(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL))
+        ));
     }
 
     @Test
@@ -304,11 +300,8 @@ public class IngredientActivityTest {
                 .perform(click());
 
         intended(allOf(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)),
-                hasExtra(
-                        equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL),
-                        any(IngredientTypeParcel.class))
-                )
-        );
+                hasExtraWithKey(equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL))
+        ));
     }
 
     @Test

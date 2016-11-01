@@ -22,7 +22,6 @@ import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScree
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.database.parcel.MealParcel;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;

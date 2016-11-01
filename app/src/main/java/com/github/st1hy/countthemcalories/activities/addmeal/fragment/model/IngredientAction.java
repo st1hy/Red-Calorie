@@ -1,23 +1,21 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.google.common.base.Optional;
 
 import java.math.BigDecimal;
 
 public class IngredientAction {
-    public static final IngredientAction CANCELED = new IngredientAction(Type.CANCELED, -1L,
-            Optional.<EditData>absent());
+    public static final IngredientAction CANCELED = new IngredientAction(Type.CANCELED, -1L, null);
     @NonNull
-    final Type type;
-    final long id;
-    @NonNull
-    final Optional<EditData> dataOptional;
+    private final Type type;
+    private final long id;
+    private final EditData dataOptional;
 
-    IngredientAction(@NonNull Type type, long id,
-                     @NonNull Optional<EditData> dataOptional) {
+    private IngredientAction(@NonNull Type type, long id,
+                     EditData dataOptional) {
         this.type = type;
         this.id = id;
         this.dataOptional = dataOptional;
@@ -33,15 +31,15 @@ public class IngredientAction {
     }
 
     @NonNull
-    public Optional<EditData> getDataOptional() {
+    public EditData getData() {
         return dataOptional;
     }
 
     @NonNull
     public static IngredientAction valueOf(@NonNull Type type, long id,
-                                           @NonNull Optional<EditData> dataOptional) {
+                                           @Nullable EditData editData) {
         if (type == Type.CANCELED) return CANCELED;
-        return new IngredientAction(type, id, dataOptional);
+        return new IngredientAction(type, id, editData);
     }
 
     public static class EditData {

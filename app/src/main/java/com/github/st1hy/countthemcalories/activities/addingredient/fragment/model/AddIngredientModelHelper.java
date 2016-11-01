@@ -8,7 +8,6 @@ import android.support.v4.util.Pair;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
@@ -18,6 +17,8 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.google.common.collect.Lists;
+
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class AddIngredientModelHelper {
     private final AddIngredientModel model;
 
     @Inject
-    @PerFragment
     public AddIngredientModelHelper(@NonNull SettingsModel settingsModel,
                                     @NonNull IngredientTagsModel tagsModel,
                                     @NonNull RxIngredientsDatabaseModel databaseModel,
@@ -51,7 +51,7 @@ public class AddIngredientModelHelper {
     }
 
     @NonNull
-    public String getEnergyDensityUnit() {
+    public String getEnergyDensityUnitName() {
         String energy = settingsModel.getUnitName(getEnergyUnit());
         String amount = settingsModel.getUnitName(getAmountUnit());
         return energyDensityUnitOf(energy, amount);
@@ -112,7 +112,8 @@ public class AddIngredientModelHelper {
         IngredientTemplate template = new IngredientTemplate();
         template.setName(model.getName());
         template.setImageUri(model.getImageUri());
-        template.setCreationDate(model.getCreationDate());
+        if (template.getCreationDate() == null)
+            template.setCreationDate(DateTime.now());
         template.setAmountType(model.getAmountType());
         template.setEnergyDensityAmount(getEnergyDensity().convertToDatabaseFormat().getValue());
         return template;
@@ -130,7 +131,7 @@ public class AddIngredientModelHelper {
     }
 
     @NonNull
-    List<IngredientTypeCreateException.ErrorType> canCreateIngredient() {
+    private List<IngredientTypeCreateException.ErrorType> canCreateIngredient() {
         return canCreateIngredient(model.getName(), model.getEnergyValue());
     }
 
@@ -153,15 +154,6 @@ public class AddIngredientModelHelper {
         return getEnergyDensity(value).getValue().compareTo(BigDecimal.ZERO) > 0;
     }
 
-    @NonNull
-    public String convertEnergyDensityToEnergyValueString(@NonNull AmountUnitType amountUnitType, @NonNull BigDecimal energyDensityAmount) {
-        return EnergyDensity.fromDatabaseValue(amountUnitType, energyDensityAmount)
-                .convertTo(getEnergyUnit(), getAmountUnit())
-                .getValue()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString();
-    }
 
     public Uri getSearchIngredientQuery(@NonNull String name) {
         String search = (name.trim() + "+" + resources.getString(R.string.add_ingredient_default_search_keywords))
