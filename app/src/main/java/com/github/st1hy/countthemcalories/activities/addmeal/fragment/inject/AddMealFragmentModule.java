@@ -20,7 +20,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -31,8 +31,6 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -139,10 +137,8 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
-                                                          PermissionsHelper permissionsHelper,
-                                                          Provider<ImageView> image) {
-        return new NewImageHolderDelegate(picasso, permissionsHelper, image);
+    public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
+        return imageHolderDelegate;
     }
 
     @Provides

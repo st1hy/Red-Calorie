@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject;
 
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,13 +10,13 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealIngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.squareup.picasso.Picasso;
@@ -28,7 +27,6 @@ import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
-import rx.Observable;
 
 @Module
 public class MealDetailsModule {
@@ -86,17 +84,7 @@ public class MealDetailsModule {
     public ImageHolderDelegate provideImageHolder(Picasso picasso,
                                                   PermissionsHelper permissionsHelper,
                                                   Provider<ImageView> imageViewProvider) {
-        return new ImageHolderDelegate(picasso, permissionsHelper, imageViewProvider) {
-            @NonNull
-            @Override
-            protected Observable<RxPicasso.PicassoEvent> loadImage(@NonNull Uri uri) {
-                return RxPicasso.Builder.with(picasso, uri)
-                        .centerCrop()
-                        .fit()
-                        .into(imageViewProvider.get())
-                        .asObservable();
-            }
-        };
+        return new WithoutPlaceholderImageHolderDelegate(picasso, permissionsHelper, imageViewProvider);
     }
 
     @Provides
@@ -108,4 +96,5 @@ public class MealDetailsModule {
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
     }
+
 }

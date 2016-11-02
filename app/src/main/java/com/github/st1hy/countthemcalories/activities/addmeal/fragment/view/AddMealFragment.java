@@ -27,13 +27,12 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -174,10 +173,9 @@ public class AddMealFragment extends BaseFragment implements AddMealView {
 
     @Override
     public final void showIngredientDetails(long requestId,
-                                            @NonNull IngredientTemplate ingredientTemplate,
-                                            @NonNull BigDecimal amount,
+                                            @NonNull Ingredient ingredient,
                                             @NonNull List<Pair<View, String>> sharedElements) {
-        screen.showIngredientDetails(requestId, ingredientTemplate, amount, sharedElements);
+        screen.showIngredientDetails(requestId, ingredient, sharedElements);
     }
 
     @Override

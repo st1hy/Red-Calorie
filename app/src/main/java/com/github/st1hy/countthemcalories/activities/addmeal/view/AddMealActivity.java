@@ -16,7 +16,6 @@ import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction.EditData;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction.Type;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
@@ -29,8 +28,8 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -48,9 +47,8 @@ import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class AddMealActivity extends WithPictureActivity implements AddMealScreen {
 
@@ -164,8 +162,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
 
     @Override
     public final void showIngredientDetails(long requestId,
-                                            @NonNull IngredientTemplate ingredientTemplate,
-                                            @NonNull BigDecimal amount,
+                                            @NonNull Ingredient ingredient,
                                             @NonNull List<Pair<View, String>> sharedElements) {
         Bundle startOptions = null;
         if (!sharedElements.isEmpty()) {
@@ -176,8 +173,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
         }
         Intent intent = new Intent(this, IngredientDetailActivity.class);
         intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG, requestId);
-        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL, Parcels.wrap(ingredientTemplate));
-        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT, Parcels.wrap(ingredient));
         startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
     }
 
@@ -247,8 +243,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
             if (data == null) return false;
             IngredientTemplate ingredientTemplate = Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
             if (ingredientTemplate == null) return false;
-            ingredientActionSubject.onNext(IngredientAction.valueOf(Type.NEW, -1L,
-                    EditData.valueOf(ingredientTemplate, BigDecimal.ZERO)));
+            ingredientActionSubject.onNext(IngredientAction.valueOf(Type.NEW, -1L, new Ingredient(ingredientTemplate, BigDecimal.ZERO)));
         }
         return true;
     }
@@ -264,12 +259,9 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
                 ingredientAction = IngredientAction.valueOf(Type.REMOVE, requestId, null);
                 break;
             case EDIT:
-                IngredientTemplate ingredientTemplate = Parcels.unwrap(data.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL));
-                String stringExtra = data.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL);
-                if (ingredientTemplate == null || stringExtra == null) return IngredientAction.CANCELED;
-                BigDecimal amount = EnergyDensityUtils.getOrZero(stringExtra);
-                ingredientAction = IngredientAction.valueOf(Type.EDIT, requestId,
-                        EditData.valueOf(ingredientTemplate, amount));
+                Ingredient ingredient = Parcels.unwrap(data.getParcelableExtra(EXTRA_INGREDIENT));
+                if (ingredient == null) return IngredientAction.CANCELED;
+                ingredientAction = IngredientAction.valueOf(Type.EDIT, requestId,ingredient);
                 break;
             case UNKNOWN:
             default:

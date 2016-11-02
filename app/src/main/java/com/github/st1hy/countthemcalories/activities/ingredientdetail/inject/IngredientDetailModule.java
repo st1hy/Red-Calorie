@@ -13,9 +13,8 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.Ingre
 import dagger.Module;
 import dagger.Provides;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 @Module
 public class IngredientDetailModule {
@@ -57,12 +56,10 @@ public class IngredientDetailModule {
     @Provides
     public Bundle provideArguments(Intent intent) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_INGREDIENT_TEMPLATE_PARCEL,
-                intent.getParcelableExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL));
+        bundle.putParcelable(EXTRA_INGREDIENT,
+                intent.getParcelableExtra(EXTRA_INGREDIENT));
         bundle.putLong(EXTRA_INGREDIENT_ID_LONG,
                 intent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -1L));
-        bundle.putString(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL,
-                intent.getStringExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL));
         return bundle;
     }
 }

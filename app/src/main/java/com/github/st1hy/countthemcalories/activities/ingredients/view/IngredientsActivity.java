@@ -10,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
@@ -37,6 +36,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
 
 public class IngredientsActivity extends UndoDrawerActivity implements IngredientsScreen, SearchSuggestionsView {
 
@@ -140,8 +142,8 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     @Override
     public void openEditIngredientScreen(long requestID, @NonNull IngredientTemplate ingredientTemplate) {
         Intent intent = new Intent(this, EditIngredientActivity.class);
-        intent.putExtra(AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG, requestID);
-        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
+        intent.putExtra(ARG_EDIT_REQUEST_ID_LONG, requestID);
+        intent.putExtra(ARG_EDIT_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
         startActivityForResult(intent, REQUEST_EDIT);
     }
 

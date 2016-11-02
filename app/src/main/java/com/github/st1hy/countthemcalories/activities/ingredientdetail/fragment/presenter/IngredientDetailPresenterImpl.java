@@ -15,6 +15,8 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
+import org.parceler.Parcels;
+
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
@@ -27,32 +29,36 @@ import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.Im
 
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
-    private final PhysicalQuantitiesModel quantityModel;
     private final IngredientDetailView view;
     private final ImageHolderDelegate imageHolderDelegate;
+    private final Ingredient ingredient;
+    private final PhysicalQuantitiesModel quantityModel;
+    private final long ingredientID;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    private EnergyDensity energyDensity;
 
     @Inject
     public IngredientDetailPresenterImpl(@NonNull IngredientDetailModel model,
                                          @NonNull PhysicalQuantitiesModel quantityModel,
                                          @NonNull IngredientDetailView view,
-                                         @NonNull ImageHolderDelegate imageHolderDelegate) {
+                                         @NonNull ImageHolderDelegate imageHolderDelegate,
+                                         @NonNull Ingredient ingredient,
+                                         long ingredientID) {
         this.model = model;
+        this.ingredient = ingredient;
         this.quantityModel = quantityModel;
         this.view = view;
         this.imageHolderDelegate = imageHolderDelegate;
+        this.ingredientID = ingredientID;
     }
 
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
-        Ingredient ingredient = model.getIngredient();
-        IngredientTemplate type = ingredient.getIngredientType();
-        view.setName(type.getName());
-        energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
+        IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
+        view.setName(ingredientTemplate.getName());
+        final EnergyDensity energyDensity = getEnergyDensity();
         view.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
         final BigDecimal amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
@@ -67,9 +73,12 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 .subscribe(onAmountChanged()));
         subscriptions.add(view.getRemoveObservable().subscribe(onRemoveClicked()));
         subscriptions.add(view.getAcceptObservable()
-                .filter(formCompleted())
+                .filter(fromCompleted())
                 .subscribe(onAcceptClicked()));
-        bindImage(type);
+
+        imageHolderDelegate.setImagePlaceholder(ingredientTemplate.getAmountType() == AmountUnitType.VOLUME ?
+                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
+        imageHolderDelegate.setImageUri(from(ingredientTemplate.getImageUri()));
     }
 
     @Override
@@ -80,14 +89,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
     @Override
     public void onSaveState(@NonNull Bundle outState) {
-        model.onSaveState(outState);
-    }
-
-
-    private void bindImage(@NonNull IngredientTemplate type) {
-        imageHolderDelegate.setImagePlaceholder(type.getAmountType() == AmountUnitType.VOLUME ?
-                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
-        imageHolderDelegate.setImageUri(from(type.getImageUri()));
+        outState.putParcelable(IngredientDetailModel.SAVED_INGREDIENT_MODEL, Parcels.wrap(ingredient));
     }
 
     private boolean checkAmountCorrect(@NonNull String amount) {
@@ -109,9 +111,16 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     private void onAmountChanges(@NonNull String amountString) {
         checkAmountCorrect(amountString);
         final BigDecimal amount = EnergyDensityUtils.getOrZero(amountString);
+        final EnergyDensity energyDensity = getEnergyDensity();
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        model.setIngredientAmount(quantityModel.convertAmountToDatabase(amount, amountUnit));
+        ingredient.setAmount(quantityModel.convertAmountToDatabase(amount, amountUnit));
         view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
+    }
+
+
+    @NonNull
+    private EnergyDensity getEnergyDensity() {
+        return quantityModel.convertToPreferred(EnergyDensity.from(ingredient.getIngredientTypeOrNull()));
     }
 
     @NonNull
@@ -120,7 +129,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             @Override
             public void call(Void aVoid) {
                 view.hideSoftKeyboard();
-                view.removeIngredient(model.getIngredient().getId());
+                view.removeIngredient(ingredientID);
             }
         };
     }
@@ -130,17 +139,13 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             @Override
             public void call(Void aVoid) {
                 view.hideSoftKeyboard();
-                Ingredient ingredient = model.getIngredient();
-                view.commitEditedIngredientChanges(ingredient.getId(),
-                        ingredient.getIngredientType(),
-                        ingredient.getAmount());
+                view.commitEditedIngredientChanges(ingredientID, ingredient);
             }
         };
     }
 
-
     @NonNull
-    private Func1<? super Void, Boolean> formCompleted() {
+    private Func1<? super Void, Boolean> fromCompleted() {
         return new Func1<Void, Boolean>() {
             @Override
             public Boolean call(Void aVoid) {

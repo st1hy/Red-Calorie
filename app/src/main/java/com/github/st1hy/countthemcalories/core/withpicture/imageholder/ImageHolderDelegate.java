@@ -42,14 +42,14 @@ public class ImageHolderDelegate {
     protected final PermissionsHelper permissionsHelper;
     protected final Provider<ImageView> imageViewProvider;
 
-    final Subject<Optional<Uri>, Optional<Uri>> imageUriSubject = BehaviorSubject.create();
-    final Subject<LoadedSource, LoadedSource> loadedSourceSubject = PublishSubject.create();
-    final Observable<LoadedSource> loadedSourceObservable = loadedSourceSubject.asObservable();
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final Subject<Optional<Uri>, Optional<Uri>> imageUriSubject = BehaviorSubject.create();
+    private final Subject<LoadedSource, LoadedSource> loadedSourceSubject = PublishSubject.create();
+    private final Observable<LoadedSource> loadedSourceObservable = loadedSourceSubject.asObservable();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
 
     @DrawableRes
-    int placeholderResId = R.drawable.ic_fork_and_knife_wide;
+    private int placeholderResId = R.drawable.ic_fork_and_knife_wide;
     //Lazy
     private Func1<Optional<Uri>, Observable<PicassoEvent>> imageViewLoader;
     //Lazy

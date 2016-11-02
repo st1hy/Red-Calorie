@@ -19,9 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.core.FragmentDepends;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.NewImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -29,7 +28,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
@@ -38,18 +36,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
 
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_AMOUNT_UNIT;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EXTRA_NAME;
+
 @Module
 public class AddIngredientFragmentModule {
 
-    public static final String ARG_AMOUNT_UNIT = "amount unit type";
-    public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
-    public static final String ARG_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
-    public static final String ARG_EXTRA_NAME = "extra ingredient name";
     private static final Function<JointIngredientTag, Tag> JOINT_INGREDIENT_TO_TAG_FUNCTION = new Function<JointIngredientTag, Tag>() {
         @Nullable
         @Override
@@ -127,7 +124,7 @@ public class AddIngredientFragmentModule {
     @Provides
     @Nullable
     public IngredientTemplate provideIngredientTemplate(@Named("arguments") Bundle arguments) {
-        return arguments.getParcelable(ARG_EDIT_INGREDIENT_PARCEL);
+        return Parcels.unwrap(arguments.getParcelable(ARG_EDIT_INGREDIENT_PARCEL));
     }
 
     @Provides
@@ -136,12 +133,9 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public ImageHolderDelegate provideImageHolderDelegate(Picasso picasso,
-                                                          PermissionsHelper permissionsHelper,
-                                                          Provider<ImageView> image) {
-        return new NewImageHolderDelegate(picasso, permissionsHelper, image);
+    public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
+        return imageHolderDelegate;
     }
-
 
     @Provides
     public ImageView provideImageViewProvider() {

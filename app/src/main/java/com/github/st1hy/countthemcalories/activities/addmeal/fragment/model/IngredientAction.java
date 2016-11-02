@@ -3,22 +3,20 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-
-import java.math.BigDecimal;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 
 public class IngredientAction {
     public static final IngredientAction CANCELED = new IngredientAction(Type.CANCELED, -1L, null);
     @NonNull
     private final Type type;
     private final long id;
-    private final EditData dataOptional;
+    private final Ingredient ingredient;
 
     private IngredientAction(@NonNull Type type, long id,
-                     EditData dataOptional) {
+                             Ingredient ingredient) {
         this.type = type;
         this.id = id;
-        this.dataOptional = dataOptional;
+        this.ingredient = ingredient;
     }
 
     @NonNull
@@ -31,41 +29,15 @@ public class IngredientAction {
     }
 
     @NonNull
-    public EditData getData() {
-        return dataOptional;
+    public Ingredient getIngredient() {
+        return ingredient;
     }
 
     @NonNull
     public static IngredientAction valueOf(@NonNull Type type, long id,
-                                           @Nullable EditData editData) {
+                                           @Nullable Ingredient ingredient) {
         if (type == Type.CANCELED) return CANCELED;
-        return new IngredientAction(type, id, editData);
-    }
-
-    public static class EditData {
-        @NonNull
-        final IngredientTemplate ingredientTemplate;
-        @NonNull
-        final BigDecimal value;
-
-        EditData(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal value) {
-            this.ingredientTemplate = ingredientTemplate;
-            this.value = value;
-        }
-
-        public static EditData valueOf(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal value) {
-            return new EditData(ingredientTemplate, value);
-        }
-
-        @NonNull
-        public IngredientTemplate getIngredientTemplate() {
-            return ingredientTemplate;
-        }
-
-        @NonNull
-        public BigDecimal getValue() {
-            return value;
-        }
+        return new IngredientAction(type, id, ingredient);
     }
 
     public enum Type {

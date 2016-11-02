@@ -16,10 +16,11 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_AMOUNT_UNIT;
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL;
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EDIT_REQUEST_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule.ARG_EXTRA_NAME;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_AMOUNT_UNIT;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EXTRA_NAME;
+
 
 @Module
 public class AddIngredientModule {

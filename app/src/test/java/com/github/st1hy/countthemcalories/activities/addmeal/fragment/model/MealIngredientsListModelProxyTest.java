@@ -179,7 +179,7 @@ public class MealIngredientsListModelProxyTest {
     public void testGetExtraIngredient() throws Exception {
         IngredientTypeParcel mock = mock(IngredientTypeParcel.class);
         model.extraStartingIngredient =  mock;
-        assertThat(model.removeExtraIngredient(), OptionalMatchers.equalTo(mock));
-        assertThat(model.removeExtraIngredient(), OptionalMatchers.<IngredientTypeParcel>isAbsent());
+        assertThat(model.removeExtraIngredientType(), OptionalMatchers.equalTo(mock));
+        assertThat(model.removeExtraIngredientType(), OptionalMatchers.<IngredientTypeParcel>isAbsent());
     }
 }

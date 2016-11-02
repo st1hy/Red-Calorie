@@ -21,12 +21,10 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.i
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -172,9 +170,8 @@ public class IngredientDetailFragment extends BaseFragment implements Ingredient
 
     @Override
     public void commitEditedIngredientChanges(long ingredientId,
-                                              @NonNull IngredientTemplate ingredientTemplate,
-                                              @NonNull BigDecimal amount) {
-        screen.commitEditedIngredientChanges(ingredientId, ingredientTemplate, amount);
+                                              @NonNull Ingredient ingredient) {
+        screen.commitEditedIngredientChanges(ingredientId, ingredient);
     }
 
     @Override

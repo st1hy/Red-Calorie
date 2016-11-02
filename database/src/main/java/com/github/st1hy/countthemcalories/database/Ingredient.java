@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.database;
 
+import android.support.annotation.NonNull;
+
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 
 import org.greenrobot.greendao.DaoException;
@@ -63,6 +65,11 @@ public class Ingredient {
 
     @Generated(hash = 1584798654)
     public Ingredient() {
+    }
+
+    public Ingredient(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal amount) {
+        setIngredientType(ingredientTemplate);
+        setAmount(amount);
     }
 
     public Long getId() {
@@ -148,6 +155,11 @@ public class Ingredient {
                 ingredientType__resolvedKey = __key;
             }
         }
+        return ingredientType;
+    }
+
+    /** Not-resolved on access. */
+    public IngredientTemplate getIngredientTypeOrNull() {
         return ingredientType;
     }
 

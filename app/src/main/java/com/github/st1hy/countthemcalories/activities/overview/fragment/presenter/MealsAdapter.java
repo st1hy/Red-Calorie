@@ -334,7 +334,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         return new Func1<Ingredient, String>() {
             @Override
             public String call(Ingredient ingredient) {
-                return ingredient.getIngredientType().getName();
+                return ingredient.getIngredientTypeOrNull().getName();
             }
         };
     }

@@ -7,7 +7,6 @@ import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
@@ -55,6 +54,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
+import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static com.github.st1hy.countthemcalories.matchers.EditTextMatchers.hasNoError;
@@ -300,7 +300,7 @@ public class IngredientActivityTest {
                 .perform(click());
 
         intended(allOf(hasComponent(new ComponentName(getTargetContext(), EditIngredientActivity.class)),
-                hasExtraWithKey(equalTo(AddIngredientFragmentModule.ARG_EDIT_INGREDIENT_PARCEL))
+                hasExtraWithKey(equalTo(ARG_EDIT_INGREDIENT_PARCEL))
         ));
     }
 

@@ -11,20 +11,17 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.Dag
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailComponent;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.IngredientDetailModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Ingredient;
 
 import org.parceler.Parcels;
-
-import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_TEMPLATE_PARCEL;
 
 public class IngredientDetailActivity extends BaseActivity implements IngredientDetailScreen {
 
@@ -57,12 +54,10 @@ public class IngredientDetailActivity extends BaseActivity implements Ingredient
 
     @Override
     public void commitEditedIngredientChanges(long ingredientId,
-                                              @NonNull IngredientTemplate ingredientTemplate,
-                                              @NonNull BigDecimal amount) {
+                                              @NonNull Ingredient ingredient) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
-        intent.putExtra(EXTRA_INGREDIENT_TEMPLATE_PARCEL, Parcels.wrap(ingredientTemplate));
-        intent.putExtra(EXTRA_INGREDIENT_AMOUNT_BIGDECIMAL, amount.toPlainString());
+        intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(ingredient));
         setResult(RESULT_OK, intent);
         ActivityCompat.finishAfterTransition(this);
     }

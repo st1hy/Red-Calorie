@@ -9,7 +9,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Parcel(Parcel.Serialization.BEAN)
@@ -39,29 +38,17 @@ public class MealIngredientsListModel {
     /**
      * @return position of added item
      */
-    public int addIngredientOfType(@NonNull final IngredientTemplate ingredientTemplate,
-                                   @NonNull final BigDecimal amount) {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setIngredientType(ingredientTemplate);
-        ingredient.setAmount(amount);
+    public int addIngredient(@NonNull Ingredient ingredient) {
         ingredients.add(ingredient);
         return ingredients.size() - 1;
     }
 
-    public int modifyIngredient(final int position,
-                                @NonNull IngredientTemplate ingredientTemplate,
-                                @NonNull final BigDecimal amount) {
-        if (position >= ingredients.size() || position < 0)
-            throw new ArrayIndexOutOfBoundsException("Cannot modify non-existing ingredient");
-        final Ingredient source = ingredients.get(position);
-        source.setIngredientType(ingredientTemplate);
-        source.setAmount(amount);
-        return position;
+    public void modifyIngredient(final int position,
+                                @NonNull Ingredient ingredient) {
+        ingredients.set(position, ingredient);
     }
 
     public void removeIngredient(int position) {
-        if (position >= ingredients.size() || position < 0)
-            throw new ArrayIndexOutOfBoundsException("Cannot remove non-existing ingredient");
         ingredients.remove(position);
     }
 
@@ -79,7 +66,7 @@ public class MealIngredientsListModel {
     }
 
     @Nullable
-    public IngredientTemplate removeExtraIngredient() {
+    public IngredientTemplate removeExtraIngredientType() {
         IngredientTemplate extra = extraIngredient;
         extraIngredient = null;
         return extra;

@@ -166,7 +166,7 @@ public class PhysicalQuantitiesModel {
             ingredientToEnergy = new Func1<Ingredient, BigDecimal>() {
                 @Override
                 public BigDecimal call(Ingredient ingredient) {
-                    IngredientTemplate ingredientTemplate = ingredient.getIngredientType();
+                    IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
                     EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientTemplate);
                     EnergyDensity energyDensity = convertToPreferred(databaseEnergyDensity);
                     AmountUnit amountUnit = EnergyDensityUtils.getDefaultAmountUnit(ingredientTemplate.getAmountType());

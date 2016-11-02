@@ -64,9 +64,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         onDataSetChanged();
         subscribe(view.getIngredientActionObservable()
                 .subscribe(onIngredientAction()));
-        IngredientTemplate extraIngredient = model.removeExtraIngredient();
-        if (extraIngredient != null) {
-            onIngredientReceived(extraIngredient);
+        handleExtraIngredient();
+    }
+
+    private void handleExtraIngredient() {
+        IngredientTemplate ingredientType = model.removeExtraIngredientType();
+        if (ingredientType != null) {
+            onIngredientReceived(new Ingredient(ingredientType, BigDecimal.ZERO));
         }
     }
 
@@ -86,7 +90,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     @Override
     public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
-        final BigDecimal amount = ingredient.getAmount();
         final int position = model.indexOf(ingredient);
         final List<Pair<View, String>> sharedViews = ImmutableList.of(
                 pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
@@ -97,7 +100,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         );
         viewHolder.setEnabled(false);
         enableOnNextIngredientAction(viewHolder);
-        view.showIngredientDetails(position, ingredient.getIngredientType(), amount, sharedViews);
+        view.showIngredientDetails(position, ingredient, sharedViews);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     public void onBindViewHolder(IngredientItemViewHolder holder, int position) {
         final Ingredient ingredient = model.getItemAt(position);
         holder.setIngredient(ingredient);
-        IngredientTemplate type = ingredient.getIngredientType();
+        IngredientTemplate type = ingredient.getIngredientTypeOrNull();
         holder.setName(type.getName());
         final EnergyDensity energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
         holder.setEnergyDensity(quantityModel.format(energyDensity));
@@ -162,16 +165,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         return new SimpleSubscriber<IngredientAction>() {
             @Override
             public void onNext(IngredientAction ingredientAction) {
-                IngredientAction.EditData editData;
                 switch (ingredientAction.getType()) {
                     case NEW:
-                        editData = ingredientAction.getData();
-                        onIngredientReceived(editData.getIngredientTemplate());
+                        onIngredientReceived(ingredientAction.getIngredient());
                         break;
                     case EDIT:
-                        editData = ingredientAction.getData();
-                        onIngredientEditFinished(ingredientAction.getId(), editData.getIngredientTemplate(),
-                                editData.getValue());
+                        onIngredientEditFinished(ingredientAction.getId(), ingredientAction.getIngredient());
                         break;
                     case REMOVE:
                         onIngredientRemoved(ingredientAction.getId());
@@ -190,30 +189,27 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         onDataSetChanged();
     }
 
-    private void onIngredientEditFinished(long requestId, @NonNull IngredientTemplate ingredientTemplate,
-                                  @NonNull BigDecimal amount) {
+    private void onIngredientEditFinished(long requestId, @NonNull Ingredient ingredient) {
         if (requestId == -1) {
-            onIngredientAdded(ingredientTemplate, amount);
+            onIngredientAdded(ingredient);
         } else {
-            onIngredientEdited(requestId, ingredientTemplate, amount);
+            onIngredientEdited(requestId, ingredient);
         }
     }
 
-    private void onIngredientEdited(long requestId, @NonNull IngredientTemplate ingredientTemplate,
-                            @NonNull BigDecimal amount) {
-        int position = model.modifyIngredient((int) requestId, ingredientTemplate, amount);
+    private void onIngredientEdited(long requestId, @NonNull Ingredient ingredient) {
+        int position = (int) requestId;
+        model.modifyIngredient(position, ingredient);
         notifyChanged(position);
     }
 
-    private void onIngredientAdded(@NonNull IngredientTemplate ingredientTemplate,
-                           @NonNull BigDecimal amount) {
-        int position = model.addIngredientOfType(ingredientTemplate, amount);
+    private void onIngredientAdded(@NonNull Ingredient ingredient) {
+        int position = model.addIngredient(ingredient);
         notifyInserted(position);
     }
 
-    private void onIngredientReceived(@NonNull IngredientTemplate ingredientTemplate) {
-        view.showIngredientDetails(-1L, ingredientTemplate, BigDecimal.ZERO,
-                Collections.<Pair<View, String>>emptyList());
+    private void onIngredientReceived(@NonNull Ingredient ingredient) {
+        view.showIngredientDetails(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
     }
 
     private void notifyInserted(int position) {
