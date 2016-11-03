@@ -52,22 +52,22 @@ import static com.github.st1hy.countthemcalories.activities.ingredients.fragment
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
         implements IngredientItemViewHolder.Callback {
 
-    static final int bottomSpaceItem = 1;
+    private static final int bottomSpaceItem = 1;
     @LayoutRes
-    static final int item_layout = R.layout.ingredients_item_scrolling;
+    private static final int item_layout = R.layout.ingredients_item_scrolling;
     @LayoutRes
-    static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
+    private static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
-    final IngredientsView view;
-    final IngredientsFragmentModel model;
-    final RxIngredientsDatabaseModel databaseModel;
-    final IngredientsDatabaseCommands commands;
-    final Picasso picasso;
-    final PermissionsHelper permissionsHelper;
+    private final IngredientsView view;
+    private final IngredientsFragmentModel model;
+    private final RxIngredientsDatabaseModel databaseModel;
+    private final IngredientsDatabaseCommands commands;
+    private final Picasso picasso;
+    private final PermissionsHelper permissionsHelper;
 
-    final Queue<Long> addedItems = new LinkedList<>();
+    private final Queue<Long> addedItems = new LinkedList<>();
 
-    final LastSearchResult recentSearchResult;
+    private final LastSearchResult recentSearchResult;
 
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
                                  @NonNull IngredientsFragmentModel model,
@@ -167,8 +167,16 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @Override
-    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position) {
-        view.openEditIngredientScreen(position, ingredientTemplate);
+    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
+        //Ingredient template here is not attached to database and is missing tags
+        databaseModel.getByIdRecursive(ingredientTemplate.getId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<IngredientTemplate>() {
+                    @Override
+                    public void call(IngredientTemplate ingredientTemplate) {
+                        view.openEditIngredientScreen(position, ingredientTemplate);
+                    }
+                });
     }
 
     @NonNull
@@ -386,7 +394,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         };
     }
 
-    void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
+    private void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
@@ -408,11 +416,11 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
     }
 
-    static class QueryFinished {
+    private static class QueryFinished {
         final Cursor cursor;
         final SearchResult searchingFor;
 
-        public QueryFinished(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+        QueryFinished(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
             this.cursor = cursor;
             this.searchingFor = searchingFor;
         }
@@ -423,7 +431,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         }
 
         @NonNull
-        public SearchResult getSearchingFor() {
+        SearchResult getSearchingFor() {
             return searchingFor;
         }
     }

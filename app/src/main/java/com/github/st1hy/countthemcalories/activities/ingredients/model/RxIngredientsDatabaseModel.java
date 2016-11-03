@@ -273,4 +273,20 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                 : new ArrayList<>(tags);
     }
 
+    /**
+     * Loads ingredient template by id and then loads all tags in this ingredient template.
+     */
+    @NonNull
+    public Observable<IngredientTemplate> getByIdRecursive(final long id) {
+        return fromDatabaseTask(new Callable<IngredientTemplate>() {
+            @Override
+            public IngredientTemplate call() throws Exception {
+                IngredientTemplate ingredientTemplate = performGetById(id);
+                for (JointIngredientTag jointIngredientTag : ingredientTemplate.getTags()) {
+                    jointIngredientTag.getTag();
+                }
+                return ingredientTemplate;
+            }
+        });
+    }
 }

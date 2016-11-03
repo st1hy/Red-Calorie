@@ -122,6 +122,14 @@ public class IngredientTemplate {
         this.creationDate = creationDate;
     }
 
+    public boolean hasReadTags() {
+        return tags != null;
+    }
+
+    public boolean isAttachedToSession() {
+        return daoSession != null;
+    }
+
     @NotNull
     public AmountUnitType getAmountType() {
         return amountType;

@@ -110,6 +110,7 @@ public class AddIngredientModelHelper {
     @NonNull
     private IngredientTemplate intoTemplate() {
         IngredientTemplate template = new IngredientTemplate();
+        template.setId(model.getId());
         template.setName(model.getName());
         template.setImageUri(model.getImageUri());
         if (template.getCreationDate() == null)

@@ -19,8 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.core.FragmentDepends;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.withpicture.imageholder.HeaderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -51,7 +51,7 @@ public class AddIngredientFragmentModule {
         @Nullable
         @Override
         public Tag apply(JointIngredientTag input) {
-            return input.getTag();
+            return input.getTagOrNull();
         }
     };
 
@@ -157,10 +157,12 @@ public class AddIngredientFragmentModule {
             Parcelable parcelable = savedState.getParcelable(AddIngredientModel.SAVED_INGREDIENT_MODEL);
             return Parcels.unwrap(parcelable);
         } else {
+            Long id;
             String energyValue;
             Uri imageUri;
             DateTime creationDate;
             if (templateSource != null) {
+                id = templateSource.getId();
                 name = templateSource.getName();
                 amountUnitType = templateSource.getAmountType();
                 final BigDecimal energyDensityAmount = templateSource.getEnergyDensityAmount();
@@ -169,11 +171,12 @@ public class AddIngredientFragmentModule {
                 imageUri = templateSource.getImageUri();
                 creationDate = templateSource.getCreationDate();
             } else {
+                id = null;
                 energyValue = "";
                 imageUri = Uri.EMPTY;
                 creationDate = null;
             }
-            return new AddIngredientModel(name, amountUnitType, energyValue, imageUri, creationDate);
+            return new AddIngredientModel(name, amountUnitType, energyValue, imageUri, creationDate, id);
         }
     }
 }

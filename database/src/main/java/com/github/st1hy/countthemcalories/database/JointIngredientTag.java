@@ -101,6 +101,10 @@ public class JointIngredientTag {
         return tag;
     }
 
+    public Tag getTagOrNull() {
+        return tag;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1728988431)
     public void setTag(@NotNull Tag tag) {

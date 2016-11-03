@@ -18,6 +18,8 @@ public class AddIngredientModel extends WithPictureModel {
 
     public static final String SAVED_INGREDIENT_MODEL = "add ingredient model";
 
+    @Nullable
+    private Long id;
     @NonNull
     private AmountUnitType amountType;
     @NonNull
@@ -34,12 +36,14 @@ public class AddIngredientModel extends WithPictureModel {
                               @NonNull AmountUnitType amountType,
                               @NonNull String energyValue,
                               @NonNull Uri imageUri,
-                              @Nullable DateTime creationDate) {
+                              @Nullable DateTime creationDate,
+                              @Nullable Long id) {
         this.amountType = amountType;
         this.name = name;
         this.energyValue = energyValue;
         this.imageUri = imageUri;
         this.creationDate = creationDate;
+        this.id = id;
     }
 
     @Override
@@ -106,5 +110,9 @@ public class AddIngredientModel extends WithPictureModel {
     @Nullable
     public DateTime getCreationDate() {
         return creationDate;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
