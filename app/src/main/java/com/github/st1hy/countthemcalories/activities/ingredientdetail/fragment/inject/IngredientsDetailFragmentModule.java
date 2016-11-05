@@ -14,8 +14,8 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.v
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.WithoutPlaceholderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Preconditions;
 
@@ -26,7 +26,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSubclass;
+import static com.github.st1hy.countthemcalories.core.Utils.checkIsSubclass;
 
 @Module
 public class IngredientsDetailFragmentModule {

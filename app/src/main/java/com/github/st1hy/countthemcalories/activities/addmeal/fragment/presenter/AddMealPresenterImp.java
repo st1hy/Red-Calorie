@@ -9,8 +9,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.Meal
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.PicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Optional;
 
@@ -22,7 +22,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class AddMealPresenterImp extends WithPicturePresenterImp implements AddMealPresenter {
+public class AddMealPresenterImp extends PicturePresenterImp implements AddMealPresenter {
 
     private final AddMealView view;
     private final AddMealModel model;
@@ -35,7 +35,7 @@ public class AddMealPresenterImp extends WithPicturePresenterImp implements AddM
                                @NonNull AddMealModel model,
                                @NonNull ImageHolderDelegate imageHolderDelegate,
                                @NonNull Meal meal, MealIngredientsListModel ingredientsListModel) {
-        super(view, permissionsHelper, model, imageHolderDelegate);
+        super(view, permissionsHelper, dialogView, pictureController, model, imageHolderDelegate);
         this.view = view;
         this.model = model;
         this.meal = meal;

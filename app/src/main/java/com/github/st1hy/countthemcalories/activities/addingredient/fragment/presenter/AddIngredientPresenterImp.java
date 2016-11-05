@@ -15,8 +15,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.presenter.WithPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.PicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.google.common.base.Function;
@@ -42,7 +42,7 @@ import static com.github.st1hy.countthemcalories.activities.addingredient.fragme
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_VALUE;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
-public class AddIngredientPresenterImp extends WithPicturePresenterImp implements AddIngredientPresenter {
+public class AddIngredientPresenterImp extends PicturePresenterImp implements AddIngredientPresenter {
     @NonNull private final AddIngredientView view;
     @NonNull private final AddIngredientModel model;
     @NonNull private final AddIngredientModelHelper modelHelper;
@@ -53,7 +53,7 @@ public class AddIngredientPresenterImp extends WithPicturePresenterImp implement
                                      @NonNull AddIngredientModel model,
                                      @NonNull ImageHolderDelegate imageHolderDelegate,
                                      @NonNull AddIngredientModelHelper modelHelper) {
-        super(view, permissionsHelper, model, imageHolderDelegate);
+        super(view, permissionsHelper, dialogView, pictureController, model, imageHolderDelegate);
         this.view = view;
         this.model = model;
         this.modelHelper = modelHelper;

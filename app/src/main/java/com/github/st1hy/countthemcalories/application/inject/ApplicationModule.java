@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.permissions.PersistentPermissionCache;
+import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
 import com.squareup.picasso.MediaStoreRequestHandlerNext;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +45,12 @@ public class ApplicationModule {
     @Singleton
     public PersistentPermissionCache providePermissionCache() {
         return new PersistentPermissionCache();
+    }
+
+    @Provides
+    @Singleton
+    public RxActivityResult rxActivityResult(Context context) {
+        return new RxActivityResult(context.getPackageName());
     }
 
 }

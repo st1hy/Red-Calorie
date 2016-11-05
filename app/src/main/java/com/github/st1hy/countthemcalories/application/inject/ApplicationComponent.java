@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsMode
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.permissions.PersistentPermissionCache;
+import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +37,8 @@ public interface ApplicationComponent {
     RxMealsDatabaseModel getMealsModel();
 
     PersistentPermissionCache getPermissionCache();
+
+    RxActivityResult getRxActivityResult();
 
     void inject(CaloriesCounterApplication application);
 

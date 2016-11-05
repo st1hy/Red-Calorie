@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.core.baseview;
 
+import com.github.st1hy.countthemcalories.core.Utils;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -12,12 +14,12 @@ public class BaseActivityTest {
     @Test
     public void testAssertNotNull() {
         final Object expected = new Object();
-        Object output = BaseActivity.assertNotNull(expected);
+        Object output = Utils.assertNotNull(expected);
         Assert.assertEquals(expected, output);
     }
 
     @Test(expected = NullPointerException.class)
     public void testAssertThrowsException() {
-        BaseActivity.assertNotNull(null);
+        Utils.assertNotNull(null);
     }
 }

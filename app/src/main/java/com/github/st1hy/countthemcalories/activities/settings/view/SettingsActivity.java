@@ -7,7 +7,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerActivity;
 
 import butterknife.ButterKnife;
 

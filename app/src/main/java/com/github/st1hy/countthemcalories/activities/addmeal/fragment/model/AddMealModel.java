@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
+import com.github.st1hy.countthemcalories.core.picture.PictureModel;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Optional;
 
@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class AddMealModel extends WithPictureModel {
+public class AddMealModel extends PictureModel {
     public static final String SAVED_MEAL_STATE = "add meal model";
 
     private final MealIngredientsListModel ingredientsListModel;

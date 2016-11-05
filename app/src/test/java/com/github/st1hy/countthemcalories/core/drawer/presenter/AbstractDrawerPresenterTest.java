@@ -3,8 +3,10 @@ package com.github.st1hy.countthemcalories.core.drawer.presenter;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerView;
 
 import org.junit.Before;
 import org.junit.Test;

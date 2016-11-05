@@ -55,7 +55,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest.exampleIngredients;
-import static com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivityTestUtils.injectUriOnMatch;
+import static com.github.st1hy.countthemcalories.core.picture.view.WithPictureActivityTestUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;

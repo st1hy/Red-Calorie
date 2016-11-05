@@ -15,7 +15,7 @@ import com.github.st1hy.countthemcalories.activities.settings.fragment.inject.Se
 import com.github.st1hy.countthemcalories.activities.settings.fragment.inject.SettingsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.core.baseview.DialogView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 
 import javax.inject.Inject;
 import javax.inject.Named;

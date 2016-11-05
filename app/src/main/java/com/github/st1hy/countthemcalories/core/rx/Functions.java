@@ -24,6 +24,12 @@ public class Functions {
             return true;
         }
     };
+    public static final Func1<Object, Boolean> NOT_NULL = new Func1<Object, Boolean>() {
+        @Override
+        public Boolean call(Object o) {
+            return o != null;
+        }
+    };
 
     public static <T> Func1<Object, T> into(final T t) {
         return new Func1<Object, T>() {

@@ -17,10 +17,10 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
-import com.github.st1hy.countthemcalories.core.FragmentDepends;
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.HeaderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.HeaderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -71,7 +71,7 @@ public class AddIngredientFragmentModule {
 
     @Provides
     public AddIngredientScreen provideScreen() {
-        return FragmentDepends.checkIsSubclass(fragment.getActivity(), AddIngredientScreen.class);
+        return Utils.checkIsSubclass(fragment.getActivity(), AddIngredientScreen.class);
     }
 
     @Provides

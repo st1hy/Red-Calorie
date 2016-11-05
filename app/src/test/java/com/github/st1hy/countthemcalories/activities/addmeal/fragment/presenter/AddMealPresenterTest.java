@@ -8,8 +8,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.google.common.base.Optional;
 
@@ -93,7 +93,7 @@ public class AddMealPresenterTest {
 
     private void testVerifyOnStart() {
         testVerifyOnStartNoImage();
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.<Uri>isAbsent()));
     }
 
     private void testVerifyOnStartNoImage() {
@@ -121,7 +121,7 @@ public class AddMealPresenterTest {
         presenter.onStart();
 
         testVerifyOnStartNoImage();
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.equalTo(uri)));
         verify(view).showImageOverlay();
 
         testVerifyNoMoreInteraction();

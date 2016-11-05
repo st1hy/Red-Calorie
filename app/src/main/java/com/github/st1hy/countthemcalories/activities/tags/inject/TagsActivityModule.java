@@ -10,9 +10,9 @@ import android.support.v4.app.FragmentTransaction;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenterImpl;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;

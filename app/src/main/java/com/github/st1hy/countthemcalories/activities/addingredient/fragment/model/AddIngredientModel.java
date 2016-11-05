@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.withpicture.model.WithPictureModel;
+import com.github.st1hy.countthemcalories.core.picture.PictureModel;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import org.joda.time.DateTime;
@@ -14,7 +14,7 @@ import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
 @Parcel(Parcel.Serialization.BEAN)
-public class AddIngredientModel extends WithPictureModel {
+public class AddIngredientModel extends PictureModel {
 
     public static final String SAVED_INGREDIENT_MODEL = "add ingredient model";
 

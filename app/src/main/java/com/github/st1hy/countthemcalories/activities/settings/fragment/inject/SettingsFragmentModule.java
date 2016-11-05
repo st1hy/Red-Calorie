@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.settings.fragment.view.Sele
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsView;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.UnitsViewHolder;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.baseview.DialogView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.google.common.base.Preconditions;
 

@@ -19,8 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.HeaderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -35,7 +35,7 @@ import java.util.List;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.github.st1hy.countthemcalories.core.FragmentDepends.checkIsSubclass;
+import static com.github.st1hy.countthemcalories.core.Utils.checkIsSubclass;
 import static org.parceler.Parcels.unwrap;
 
 @Module

@@ -6,7 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerActivity;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxSnackbar;
 
 import rx.Observable;

@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
@@ -97,7 +97,7 @@ public class MealDetailPresenterImplTest {
         verify(quantityModel).sumAll();
         verify(quantityModel).energyAsString();
         verify(quantityModel).formatTime(any(DateTime.class));
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.equalTo(uri)));
 
         testVerifyNoMoreInteraction();
     }
@@ -181,7 +181,7 @@ public class MealDetailPresenterImplTest {
         presenter.bindImage(meal);
 
         verify(meal).getImageUri();
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.<Uri>isAbsent()));
 
         testVerifyNoMoreInteraction();
         verifyNoMoreInteractions(meal, imageView);

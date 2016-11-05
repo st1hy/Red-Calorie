@@ -7,7 +7,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -25,7 +25,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
+import static com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate.from;
 
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
@@ -78,7 +78,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
         imageHolderDelegate.setImagePlaceholder(ingredientTemplate.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
-        imageHolderDelegate.setImageUri(from(ingredientTemplate.getImageUri()));
+        imageHolderDelegate.displayImage(from(ingredientTemplate.getImageUri()));
     }
 
     @Override

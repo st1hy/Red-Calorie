@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
-import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
+import com.github.st1hy.countthemcalories.core.picture.PictureViewController;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Optional;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 import rx.Observable;
 
-public interface AddMealScreen extends WithPictureView {
+public interface AddMealScreen extends PictureViewController {
 
     @NonNull
     Observable<Void> getAddIngredientObservable();

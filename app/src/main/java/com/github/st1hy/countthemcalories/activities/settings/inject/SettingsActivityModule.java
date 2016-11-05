@@ -3,10 +3,10 @@ package com.github.st1hy.countthemcalories.activities.settings.inject;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
-import com.github.st1hy.countthemcalories.core.drawer.model.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.presenter.DrawerPresenterImpl;
-import com.github.st1hy.countthemcalories.core.drawer.view.DrawerView;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerView;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;

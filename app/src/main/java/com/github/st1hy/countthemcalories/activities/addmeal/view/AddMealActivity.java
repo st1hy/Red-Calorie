@@ -26,8 +26,9 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.i
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
-import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.core.picture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
@@ -96,7 +97,7 @@ public class AddMealActivity extends WithPictureActivity implements AddMealScree
         ButterKnife.bind(this);
         getComponent().inject(this);
         setSupportActionBar(toolbar);
-        assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Utils.assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

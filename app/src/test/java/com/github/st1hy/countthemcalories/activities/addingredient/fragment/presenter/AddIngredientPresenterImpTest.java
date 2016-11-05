@@ -14,8 +14,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.LoadedSource;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
@@ -249,7 +249,7 @@ public class AddIngredientPresenterImpTest {
         presenter.onStart();
 
         testVerifyStartNoImage();
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.equalTo(uri)));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.equalTo(uri)));
         verify(view).showImageOverlay();
 
         testVerifyNoMoreInteraction();
@@ -257,7 +257,7 @@ public class AddIngredientPresenterImpTest {
 
     private void testVerifyStart() {
         testVerifyStartNoImage();
-        verify(imageHolderDelegate).setImageUri(argThat(OptionalMatchers.<Uri>isAbsent()));
+        verify(imageHolderDelegate).displayImage(argThat(OptionalMatchers.<Uri>isAbsent()));
     }
 
     private void testVerifyStartNoImage() {

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 
 import org.parceler.Parcels;
@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.withpicture.imageholder.ImageHolderDelegate.from;
+import static com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate.from;
 
 public class MealDetailPresenterImpl implements MealDetailPresenter {
 
@@ -93,7 +93,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     }
 
     void bindImage(@NonNull Meal meal) {
-        imageHolderDelegate.setImageUri(from(meal.getImageUri()));
+        imageHolderDelegate.displayImage(from(meal.getImageUri()));
     }
 
     private Action1<Void> onEditClicked() {

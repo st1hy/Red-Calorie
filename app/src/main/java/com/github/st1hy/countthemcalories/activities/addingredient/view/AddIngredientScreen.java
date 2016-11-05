@@ -5,13 +5,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureView;
+import com.github.st1hy.countthemcalories.core.picture.PictureViewController;
 
 import java.util.Collection;
 
 import rx.Observable;
 
-public interface AddIngredientScreen extends WithPictureView {
+public interface AddIngredientScreen extends PictureViewController {
 
     void setResultAndFinish(@NonNull Intent intent);
 

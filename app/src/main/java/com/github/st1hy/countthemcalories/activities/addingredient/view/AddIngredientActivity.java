@@ -17,7 +17,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.withpicture.view.WithPictureActivity;
+import com.github.st1hy.countthemcalories.core.Utils;
+import com.github.st1hy.countthemcalories.core.picture.view.WithPictureActivity;
 import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class AddIngredientActivity extends WithPictureActivity implements AddIngredientScreen {
+public class AddIngredientActivity extends WithPictureActivity {
 
     public static final String ARG_AMOUNT_UNIT = "amount unit type";
     public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
@@ -73,7 +74,7 @@ public class AddIngredientActivity extends WithPictureActivity implements AddIng
         ButterKnife.bind(this);
         getComponent().inject(this);
         setSupportActionBar(toolbar);
-        assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Utils.assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
