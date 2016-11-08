@@ -1,8 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +11,17 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.database.Tag;
-
-import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
 import rx.functions.Action1;
 
-public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> implements OnItemClicked<Tag> {
+public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdapterWrapper<TagViewHolder> {
+
     private static final int TAG = R.layout.add_ingredient_tag;
     private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     private static final int ADD_CATEGORY_FIELDS_SIZE = 1;
@@ -30,19 +29,16 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
     private final IngredientTagsModel model;
     private final AddIngredientView view;
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position < model.getSize()) {
-            return TAG;
-        } else {
-            return ADD_TAG;
-        }
-    }
+    private RecyclerViewNotifier notifier;
 
     @Inject
-    public IngredientTagsAdapter(@NonNull IngredientTagsModel model, @NonNull AddIngredientView view) {
+    public IngredientTagsPresenter(@NonNull IngredientTagsModel model, @NonNull AddIngredientView view) {
         this.model = model;
         this.view = view;
+    }
+
+    public void setNotifier(@NonNull RecyclerViewNotifier notifier) {
+        this.notifier = notifier;
     }
 
     @Override
@@ -92,18 +88,22 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> i
         return model.getSize() + ADD_CATEGORY_FIELDS_SIZE;
     }
 
+    private int getItemViewType(int position) {
+        if (position < model.getSize()) {
+            return TAG;
+        } else {
+            return ADD_TAG;
+        }
+    }
+
     public void onNewTagAdded(long tagId, @NonNull String tagName) {
         int position = model.addTag(tagId, tagName);
-        notifyItemInserted(position);
+        notifier.notifyItemInserted(position);
     }
 
     @Override
     public void onItemClicked(@NonNull Tag tag) {
         int position = model.remove(tag);
-        notifyItemRemoved(position);
-    }
-
-    public void onSaveState(@NonNull Bundle outState) {
-        outState.putParcelable(IngredientTagsModel.SAVED_TAGS_MODEL, Parcels.wrap(model));
+        notifier.notifyItemRemoved(position);
     }
 }

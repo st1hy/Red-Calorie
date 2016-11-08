@@ -74,7 +74,7 @@
             android:label="@string/contribute_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".core.rx.activityresult.ShadowActivity"
+        <activity android:name=".core.rx.activityresult.IntentHandlerActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     </application>
 

@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.picture.PictureViewController;
 import com.google.common.base.Optional;
 
 import rx.Observable;
 
-public interface AddMealView extends PictureViewController, AddMealScreen {
+public interface AddMealView extends AddMealScreen {
 
     void onMealSaved();
 

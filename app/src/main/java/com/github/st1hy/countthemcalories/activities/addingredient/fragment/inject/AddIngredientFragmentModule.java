@@ -7,8 +7,11 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ImageView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.EnergyConverter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
@@ -16,6 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
@@ -65,8 +70,11 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public AddIngredientView provideView() {
-        return fragment;
+    @PerFragment
+    public AddIngredientView provideView(View rootView,
+                                         @NonNull Resources resources,
+                                         @NonNull AddIngredientScreen screen) {
+        return new AddIngredientViewController(rootView, resources, screen);
     }
 
     @Provides
@@ -138,11 +146,6 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public ImageView provideImageViewProvider() {
-        return fragment.getImageView();
-    }
-
-    @Provides
     public String provideInitialName(@Named("arguments") Bundle arguments) {
         return arguments.getString(ARG_EXTRA_NAME, "");
     }
@@ -178,5 +181,21 @@ public class AddIngredientFragmentModule {
             }
             return new AddIngredientModel(name, amountUnitType, energyValue, imageUri, creationDate, id);
         }
+    }
+
+    @Provides
+    @PerFragment
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    @PerFragment
+    public RecyclerView recyclerView(View rootView, IngredientTagsAdapter tagsPresenter) {
+        RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(R.id.add_ingredient_categories_recycler);
+        tagsRecycler.setAdapter(tagsPresenter);
+        tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
+        tagsRecycler.setNestedScrollingEnabled(false);
+        return tagsRecycler;
     }
 }

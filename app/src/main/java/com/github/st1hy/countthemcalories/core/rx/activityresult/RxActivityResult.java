@@ -57,7 +57,7 @@ public class RxActivityResult {
 
     private Intent prepareIntent(final Intent intent, final int requestCode, @Nullable final Bundle options) {
         Intent shadowIntent = new Intent();
-        shadowIntent.setComponent(new ComponentName(packageName, ShadowActivity.class.getName()));
+        shadowIntent.setComponent(new ComponentName(packageName, IntentHandlerActivity.class.getName()));
         shadowIntent.putExtra(INTENT, intent);
         shadowIntent.putExtra(REQUEST_CODE, requestCode);
         if (options != null)

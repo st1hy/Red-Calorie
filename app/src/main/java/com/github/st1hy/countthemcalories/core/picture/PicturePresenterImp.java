@@ -13,6 +13,8 @@ import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -23,17 +25,18 @@ import rx.subscriptions.CompositeSubscription;
 import static com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate.from;
 import static com.github.st1hy.countthemcalories.core.picture.ImageSource.intoImageSource;
 
-public class PicturePresenterImp implements PicturePresenter {
+public final class PicturePresenterImp implements PicturePresenter {
 
-    protected final PermissionsHelper permissionsHelper;
-    protected final PictureView view;
-    protected final DialogView dialogView;
-    protected final PictureViewController pictureController;
-    protected final PictureModel model;
-    protected final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final PermissionsHelper permissionsHelper;
+    private final PictureView view;
+    private final DialogView dialogView;
+    private final PictureViewController pictureController;
+    private final PictureModel model;
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final ImageHolderDelegate imageHolderDelegate;
     private final Subject<Uri, Uri> internalUriSource = PublishSubject.create();
 
+    @Inject
     public PicturePresenterImp(@NonNull PictureView pictureView,
                                @NonNull PermissionsHelper permissionsHelper,
                                @NonNull DialogView dialogView,
@@ -134,6 +137,7 @@ public class PicturePresenterImp implements PicturePresenter {
      *
      * @param uri uri of the image. Null or Uri#EMPTY results in loading placeholder instead.
      */
+    @Override
     public void loadImageUri(@Nullable final Uri uri) {
         internalUriSource.onNext(uri);
     }

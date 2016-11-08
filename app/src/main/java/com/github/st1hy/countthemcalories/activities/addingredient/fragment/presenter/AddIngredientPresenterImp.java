@@ -1,8 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
@@ -12,18 +9,14 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.picture.PicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.PicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
-
-import org.parceler.Parcels;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,33 +29,40 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_NAME;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_VALUE;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
-public class AddIngredientPresenterImp extends PicturePresenterImp implements AddIngredientPresenter {
+public class AddIngredientPresenterImp implements AddIngredientPresenter {
+
     @NonNull private final AddIngredientView view;
     @NonNull private final AddIngredientModel model;
     @NonNull private final AddIngredientModelHelper modelHelper;
+    @NonNull private final PicturePresenter picturePresenter;
+    @NonNull private final DialogView dialogView;
+
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public AddIngredientPresenterImp(@NonNull AddIngredientView view,
-                                     @NonNull PermissionsHelper permissionsHelper,
                                      @NonNull AddIngredientModel model,
-                                     @NonNull ImageHolderDelegate imageHolderDelegate,
-                                     @NonNull AddIngredientModelHelper modelHelper) {
-        super(view, permissionsHelper, dialogView, pictureController, model, imageHolderDelegate);
+                                     @NonNull AddIngredientModelHelper modelHelper,
+                                     @NonNull DialogView dialogView,
+                                     @NonNull PicturePresenter picturePresenter) {
         this.view = view;
         this.model = model;
         this.modelHelper = modelHelper;
+        this.picturePresenter = picturePresenter;
+        this.dialogView = dialogView;
     }
 
     @Override
     public void onStart() {
-        super.onStart();
-        loadImageUri(model.getImageUri());
+        picturePresenter.onStart();
+        picturePresenter.loadImageUri(model.getImageUri());
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());
         view.setSelectedUnitName(modelHelper.getEnergyDensityUnitName());
@@ -91,14 +91,8 @@ public class AddIngredientPresenterImp extends PicturePresenterImp implements Ad
     }
 
     @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        outState.putParcelable(AddIngredientModel.SAVED_INGREDIENT_MODEL, Parcels.wrap(model));
-    }
-
-    @Override
-    protected void onImageUriChanged(@NonNull Uri uri) {
-        super.onImageUriChanged(uri);
-        model.setImageUri(uri);
+    public void onStop() {
+        //NOOP
     }
 
     @NonNull
@@ -149,9 +143,7 @@ public class AddIngredientPresenterImp extends PicturePresenterImp implements Ad
             @Override
             public void onNext(IngredientTemplate template) {
                 onCreateIngredientResult(Collections.<ErrorType>emptyList());
-                Intent intent = new Intent();
-                intent.putExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, template.getId());
-                view.setResultAndFinish(intent);
+                view.onIngredientTemplateCreated(template);
             }
         };
     }
@@ -226,7 +218,7 @@ public class AddIngredientPresenterImp extends PicturePresenterImp implements Ad
                 final List<Pair<AmountUnit, CharSequence>> optionsList = modelHelper.getSelectTypeDialogOptions();
                 CharSequence[] options = Collections2.transform(optionsList, intoCharSequence())
                         .toArray(new CharSequence[optionsList.size()]);
-                return view.showAlertDialog(model.getSelectTypeDialogTitle(), options)
+                return dialogView.showAlertDialog(model.getSelectTypeDialogTitle(), options)
                         .map(intoAmountUnit(optionsList));
             }
         };

@@ -1,8 +1,11 @@
 package com.github.st1hy.countthemcalories.core.picture;
 
-public interface PicturePresenter {
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
-    void onStart();
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 
-    void onStop();
+public interface PicturePresenter extends BasicLifecycle {
+
+    void loadImageUri(@NonNull Uri uri);
 }

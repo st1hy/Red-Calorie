@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
@@ -29,7 +29,6 @@ public class PictureViewControllerImpl implements PictureViewController {
     private final Context context;
     private final RxActivityResult rxActivityResult;
 
-    @Inject
     public PictureViewControllerImpl(Context context, RxActivityResult rxActivityResult,
                                      @Named("pictureTempUri") Uri uri) {
         this.context = context;
@@ -37,7 +36,8 @@ public class PictureViewControllerImpl implements PictureViewController {
         this.tempImageUri = uri;
     }
 
-    public void onSaveInstanceState(Bundle outState) {
+    @Override
+    public void onSaveState(@NonNull Bundle outState) {
         outState.putParcelable(SAVE_TEMP_URI, tempImageUri);
     }
 

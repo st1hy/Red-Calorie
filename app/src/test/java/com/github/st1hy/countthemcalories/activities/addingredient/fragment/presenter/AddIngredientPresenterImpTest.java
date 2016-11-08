@@ -137,7 +137,7 @@ public class AddIngredientPresenterImpTest {
         verify(model).saveIntoDatabase();
         verify(view).showNameError(Optional.<Integer>absent());
         verify(view).showValueError(Optional.<Integer>absent());
-        verify(view).setResultAndFinish(argThat(hasExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, 1L)));
+        verify(view).onIngredientTemplateCreated(argThat(hasExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, 1L)));
 
         testVerifyNoMoreInteraction();
     }

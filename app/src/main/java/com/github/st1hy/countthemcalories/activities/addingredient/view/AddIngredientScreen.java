@@ -1,19 +1,18 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.core.picture.PictureViewController;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import java.util.Collection;
 
 import rx.Observable;
 
-public interface AddIngredientScreen extends PictureViewController {
+public interface AddIngredientScreen {
 
-    void setResultAndFinish(@NonNull Intent intent);
+    void onIngredientTemplateCreated(IngredientTemplate template);
 
     /**
      * @param tagNames add to be excluded

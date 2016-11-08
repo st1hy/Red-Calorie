@@ -13,7 +13,7 @@ import javax.inject.Inject;
 /**
  * Wrapper for onActivityResult
  */
-public class ShadowActivity extends BaseActivity {
+public class IntentHandlerActivity extends BaseActivity {
 
     @Inject
     RxActivityResult rxActivityResult;
