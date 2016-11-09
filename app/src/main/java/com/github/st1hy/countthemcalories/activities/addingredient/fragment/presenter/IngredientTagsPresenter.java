@@ -78,7 +78,7 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
         holder.addNewObservable().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.openSelectTagScreen(model.getTagNames());
+                view.selectTag(model.getTagNames());
             }
         });
     }

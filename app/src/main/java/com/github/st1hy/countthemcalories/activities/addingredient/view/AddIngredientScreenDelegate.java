@@ -2,9 +2,9 @@ package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Tag;
 
 import java.util.Collection;
 
@@ -20,8 +20,9 @@ public abstract class AddIngredientScreenDelegate implements AddIngredientScreen
     }
 
     @Override
-    public void openSelectTagScreen(@NonNull Collection<String> tagNames) {
-        getDelegate().openSelectTagScreen(tagNames);
+    @NonNull
+    public Observable<Tag> selectTag(@NonNull Collection<String> excludedTagNames) {
+        return getDelegate().selectTag(excludedTagNames);
     }
 
     @Override
@@ -33,11 +34,6 @@ public abstract class AddIngredientScreenDelegate implements AddIngredientScreen
     @Override
     public void showInWebBrowser(@NonNull Uri address) {
         getDelegate().showInWebBrowser(address);
-    }
-
-    @Override
-    public ImageView getImageView() {
-        return getDelegate().getImageView();
     }
 
 }

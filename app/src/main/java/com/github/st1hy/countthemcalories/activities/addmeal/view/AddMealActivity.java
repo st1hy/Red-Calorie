@@ -27,6 +27,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.Ingre
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.Utils;
+import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import com.github.st1hy.countthemcalories.core.picture.view.WithPictureActivity;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -51,7 +52,7 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
 
-public class AddMealActivity extends WithPictureActivity implements AddMealScreen {
+public class AddMealActivity extends BaseActivity {
 
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
     public static final int REQUEST_EDIT_INGREDIENT = 0x3904;

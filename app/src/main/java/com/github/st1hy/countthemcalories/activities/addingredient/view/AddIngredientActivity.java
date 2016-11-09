@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
@@ -8,21 +7,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.BuildConfig;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.core.rx.Transformers;
+import com.jakewharton.rxbinding.view.RxMenuItem;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
+import rx.subjects.PublishSubject;
 
 public class AddIngredientActivity extends BaseActivity {
 
@@ -32,12 +31,12 @@ public class AddIngredientActivity extends BaseActivity {
     public static final String ARG_EXTRA_NAME = "extra ingredient name";
     public static final String RESULT_INGREDIENT_ID_LONG = "ingredient result id";
 
-    private static final int REQUEST_PICK_TAG = 0x2010;
     private AddIngredientComponent component;
-    private MenuItem saveMenuItem;
 
     @BindView(R.id.add_ingredient_toolbar)
     Toolbar toolbar;
+    @Inject
+    PublishSubject<AddIngredientMenuAction> menuActions;
 
     @NonNull
     protected AddIngredientComponent getComponent() {
@@ -69,25 +68,12 @@ public class AddIngredientActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_ingredient_menu, menu);
-        saveMenuItem = menu.findItem(R.id.action_save);
+        MenuItem saveMenuItem = menu.findItem(R.id.action_save);
+        RxMenuItem.clicks(saveMenuItem)
+                .map(Functions.into(AddIngredientMenuAction.SAVE))
+                .compose(Transformers.channel(menuActions))
+                .subscribe();
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_PICK_TAG) {
-            if (resultCode == RESULT_OK) {
-                long tagId = data.getLongExtra(TagsActivity.EXTRA_TAG_ID, -1);
-                String tagName = data.getStringExtra(TagsActivity.EXTRA_TAG_NAME);
-                if (tagId != -1 && tagName != null) {
-                    content.onNewTagAddedToIngredient(tagId, tagName);
-                } else if (BuildConfig.DEBUG)
-                    Timber.d("Tag intent returned but with wrong data; id: %s, name: '%s'",
-                            tagId, tagName);
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
 }

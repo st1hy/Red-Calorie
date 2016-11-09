@@ -16,7 +16,10 @@ import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityMod
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
+import com.github.st1hy.countthemcalories.database.Tag;
 import com.jakewharton.rxbinding.view.RxView;
+
+import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
@@ -24,11 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
+import static android.R.attr.tag;
+
 public class TagsActivity extends UndoDrawerActivity implements TagsScreen {
     public static final String ACTION_PICK_TAG = "pick tag";
-    public static final String EXTRA_EXCLUDE_TAG_STRING_ARRAY = "exclude tag id";
-    public static final String EXTRA_TAG_ID = "extra tag id";
-    public static final String EXTRA_TAG_NAME = "extra tag name";
+    public static final String EXTRA_EXCLUDE_TAG_STRING_ARRAY = "exclude tag ids";
+    public static final String EXTRA_TAG = "extra tag";
 
     protected TagsActivityComponent component;
 
@@ -89,10 +93,9 @@ public class TagsActivity extends UndoDrawerActivity implements TagsScreen {
     }
 
     @Override
-    public void onTagSelected(long tagId, @NonNull String tagName) {
+    public void onTagSelected(@NonNull Tag tag) {
         Intent data = new Intent();
-        data.putExtra(EXTRA_TAG_ID, tagId);
-        data.putExtra(EXTRA_TAG_NAME, tagName);
+        data.putExtra(EXTRA_TAG, Parcels.wrap(tag));
         setResult(RESULT_OK, data);
         finish();
     }

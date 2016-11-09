@@ -11,10 +11,17 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.PictureViewImpl;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.picture.PictureView;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subjects.PublishSubject;
 
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_AMOUNT_UNIT;
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
@@ -80,6 +87,24 @@ public class AddIngredientModule {
             return AmountUnitType.MASS;
         }
         return AmountUnitType.MASS;
+    }
+
+    @PerActivity
+    @Provides
+    public PublishSubject<AddIngredientMenuAction> menuActions() {
+        return PublishSubject.create();
+    }
+
+    @PerActivity
+    @Provides
+    public DialogView dialogView() {
+        return new DialogViewController(activity);
+    }
+
+    @PerActivity
+    @Provides
+    public PictureView pictureView() {
+        return new PictureViewImpl(activity);
     }
 
 }

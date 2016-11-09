@@ -14,7 +14,7 @@ import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
 @Parcel(Parcel.Serialization.BEAN)
-public class AddIngredientModel extends PictureModel {
+public class AddIngredientModel implements PictureModel {
 
     public static final String SAVED_INGREDIENT_MODEL = "add ingredient model";
 

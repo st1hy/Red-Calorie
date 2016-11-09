@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.view;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,10 @@ public class PictureViewImpl implements PictureView {
 
     public PictureViewImpl(@NonNull View rootView) {
         ButterKnife.bind(this, rootView);
+    }
+
+    public PictureViewImpl(@NonNull Activity activity) {
+        ButterKnife.bind(this, activity);
     }
 
     @Override

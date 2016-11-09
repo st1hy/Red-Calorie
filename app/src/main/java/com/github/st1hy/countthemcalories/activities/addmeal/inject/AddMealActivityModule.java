@@ -7,13 +7,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subjects.PublishSubject;
 
 @Module
 public class AddMealActivityModule {
@@ -61,4 +64,5 @@ public class AddMealActivityModule {
     public Intent provideIntent() {
         return activity.getIntent();
     }
+
 }

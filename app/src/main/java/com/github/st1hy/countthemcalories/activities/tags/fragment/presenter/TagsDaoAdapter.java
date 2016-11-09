@@ -135,7 +135,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onTagClicked(int position, @NonNull Tag tag) {
         if (fragmentModel.isInSelectMode()) {
-            view.onTagSelected(tag.getId(), tag.getName());
+            view.onTagSelected(tag);
         } else {
             view.openIngredientsFilteredBy(tag.getName());
         }

@@ -25,6 +25,7 @@ import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -188,8 +189,8 @@ public class TagsFragment extends BaseFragment implements TagsView {
     }
 
     @Override
-    public void onTagSelected(long tagId, @NonNull String tagName) {
-        screen.onTagSelected(tagId, tagName);
+    public void onTagSelected(@NonNull Tag tag) {
+        screen.onTagSelected(tag);
     }
 
     @Override
