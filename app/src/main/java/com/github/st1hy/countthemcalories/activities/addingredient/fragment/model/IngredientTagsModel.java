@@ -48,8 +48,8 @@ public class IngredientTagsModel {
         return tags.get(position);
     }
 
-    public int addTag(long tagId, @NonNull String tagName) {
-        tags.add(new Tag(tagId, tagName));
+    public int addTag(@NonNull Tag tag) {
+        tags.add(tag);
         return tags.size() - 1;
     }
 

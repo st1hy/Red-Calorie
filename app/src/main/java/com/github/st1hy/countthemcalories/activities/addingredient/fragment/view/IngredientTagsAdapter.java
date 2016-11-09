@@ -7,13 +7,10 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewAdapter;
 
-import javax.inject.Inject;
-
 public class IngredientTagsAdapter extends RecyclerViewAdapter<TagViewHolder> {
 
     @NonNull private final IngredientTagsPresenter presenter;
 
-    @Inject
     public IngredientTagsAdapter(@NonNull IngredientTagsPresenter presenter) {
         this.presenter = presenter;
     }
@@ -26,6 +23,16 @@ public class IngredientTagsAdapter extends RecyclerViewAdapter<TagViewHolder> {
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
         presenter.onBindViewHolder(holder, position);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(TagViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(TagViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
     }
 
     @Override

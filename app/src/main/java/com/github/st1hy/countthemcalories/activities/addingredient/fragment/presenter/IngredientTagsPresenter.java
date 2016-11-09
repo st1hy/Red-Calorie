@@ -14,11 +14,13 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdapterWrapper<TagViewHolder> {
 
@@ -26,8 +28,8 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
     private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     private static final int ADD_CATEGORY_FIELDS_SIZE = 1;
 
-    private final IngredientTagsModel model;
-    private final AddIngredientView view;
+    @NonNull private final IngredientTagsModel model;
+    @NonNull private final AddIngredientView view;
 
     private RecyclerViewNotifier notifier;
 
@@ -75,12 +77,19 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
     }
 
     private void onBindAddTag(@NonNull AddNewTagViewHolder holder) {
-        holder.addNewObservable().subscribe(new Action1<Void>() {
+        holder.addNewObservable().flatMap(new Func1<Void, Observable<Tag>>() {
             @Override
-            public void call(Void aVoid) {
-                view.selectTag(model.getTagNames());
+            public Observable<Tag> call(Void aVoid) {
+                return view.selectTag(model.getTagNames());
+            }
+        }).subscribe(new SimpleSubscriber<Tag>() {
+            @Override
+            public void onNext(Tag tag) {
+                int position = model.addTag(tag);
+                notifier.notifyItemInserted(position);
             }
         });
+
     }
 
     @Override
@@ -94,11 +103,6 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
         } else {
             return ADD_TAG;
         }
-    }
-
-    public void onNewTagAdded(long tagId, @NonNull String tagName) {
-        int position = model.addTag(tagId, tagName);
-        notifier.notifyItemInserted(position);
     }
 
     @Override

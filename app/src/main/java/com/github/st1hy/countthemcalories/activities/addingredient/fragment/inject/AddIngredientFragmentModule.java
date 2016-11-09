@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
@@ -191,11 +192,19 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(View rootView, IngredientTagsAdapter tagsPresenter) {
+    public RecyclerView recyclerView(View rootView, IngredientTagsAdapter adapter) {
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(R.id.add_ingredient_categories_recycler);
-        tagsRecycler.setAdapter(tagsPresenter);
+        tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
         tagsRecycler.setNestedScrollingEnabled(false);
         return tagsRecycler;
+    }
+
+    @Provides
+    @PerFragment
+    public IngredientTagsAdapter ingredientTagsAdapter(IngredientTagsPresenter presenter) {
+        IngredientTagsAdapter ingredientTagsAdapter = new IngredientTagsAdapter(presenter);
+        presenter.setNotifier(ingredientTagsAdapter);
+        return ingredientTagsAdapter;
     }
 }

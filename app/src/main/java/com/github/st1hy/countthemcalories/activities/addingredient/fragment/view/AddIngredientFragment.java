@@ -30,7 +30,7 @@ public class AddIngredientFragment extends BaseFragment {
     @Inject
     AddIngredientStateSaver saver;
     @Inject
-    RecyclerView tagsRecycler;
+    RecyclerView tagsRecycler; //Injects tags adapter into recycler
 
     @Nullable
     @Override
