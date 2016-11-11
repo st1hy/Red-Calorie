@@ -1,12 +1,12 @@
-package com.github.st1hy.countthemcalories.core.picture.presenter;
+package com.github.st1hy.countthemcalories.core.headerpicture.presenter;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.github.st1hy.countthemcalories.core.picture.ImageSource.CAMERA;
-import static com.github.st1hy.countthemcalories.core.picture.ImageSource.GALLERY;
-import static com.github.st1hy.countthemcalories.core.picture.ImageSource.fromItemPos;
+import static com.github.st1hy.countthemcalories.core.headerpicture.ImageSource.CAMERA;
+import static com.github.st1hy.countthemcalories.core.headerpicture.ImageSource.GALLERY;
+import static com.github.st1hy.countthemcalories.core.headerpicture.ImageSource.fromItemPos;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(JUnit4.class)

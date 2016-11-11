@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;

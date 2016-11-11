@@ -44,7 +44,7 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate.from;
+import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
 public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> implements MealItemHolder.Callback {
     static final int mealItemLayout = R.layout.overview_item_scrolling;

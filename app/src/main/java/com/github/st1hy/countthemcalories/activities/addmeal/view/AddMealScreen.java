@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.view;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -15,24 +15,23 @@ import rx.Observable;
 
 public interface AddMealScreen {
 
-    @NonNull
-    Observable<Void> getAddIngredientObservable();
-
-    @NonNull
-    Observable<Void> getSaveClickedObservable();
-
     void showSnackbarError(@NonNull Optional<String> ingredientsError);
 
     void onMealSaved();
 
-    void openAddIngredient();
-
-    void showIngredientDetails(long requestId,
-                               @NonNull Ingredient ingredient,
-                               @NonNull List<Pair<View, String>> sharedElements);
-
-    ImageView getImageView();
+    @CheckResult
+    @NonNull
+    Observable<IngredientAction> showIngredientDetails(long requestId,
+                                                        @NonNull Ingredient ingredient,
+                                                        @NonNull List<Pair<View, String>> sharedElements);
 
     @NonNull
-    Observable<IngredientAction> getIngredientActionObservable();
+    @CheckResult
+    Observable<Ingredient> addIngredient();
+
+    @NonNull
+    @CheckResult
+    Observable<Void> getAddIngredientButtonObservable();
+
+
 }

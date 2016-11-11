@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
@@ -15,12 +14,13 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -34,8 +34,9 @@ import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-import static com.github.st1hy.countthemcalories.core.Utils.checkIsSubclass;
 import static org.parceler.Parcels.unwrap;
 
 @Module
@@ -58,15 +59,10 @@ public class AddMealFragmentModule {
         return presenter;
     }
 
-
     @Provides
-    public AddMealView provideView() {
-        return fragment;
-    }
-
-    @Provides
-    public AddMealScreen provideScreen() {
-        return checkIsSubclass(fragment.getActivity(), AddMealScreen.class);
+    @PerFragment
+    public AddMealView provideView(AddMealViewController addMealViewController) {
+        return addMealViewController;
     }
 
     @Provides
@@ -142,7 +138,7 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public ImageView provideImageView() {
-        return fragment.getImageView();
+    public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> actionPublishSubject) {
+        return actionPublishSubject.asObservable();
     }
 }

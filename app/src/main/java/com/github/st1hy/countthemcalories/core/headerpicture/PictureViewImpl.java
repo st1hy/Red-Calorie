@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addingredient.view;
+package com.github.st1hy.countthemcalories.core.headerpicture;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.picture.PictureView;
 import com.jakewharton.rxbinding.view.RxView;
 
 import butterknife.BindView;
@@ -15,11 +14,11 @@ import rx.Observable;
 
 public class PictureViewImpl implements PictureView {
 
-    @BindView(R.id.add_ingredient_image)
+    @BindView(R.id.image_header_image_view)
     ImageView ingredientImage;
-    @BindView(R.id.add_ingredient_image_overlay_top)
+    @BindView(R.id.image_header_overlay_top)
     View imageOverlayTop;
-    @BindView(R.id.add_ingredient_image_overlay_bottom)
+    @BindView(R.id.image_header_overlay_bottom)
     View imageOverlayBottom;
 
     public PictureViewImpl(@NonNull View rootView) {

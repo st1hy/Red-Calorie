@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.picture;
+package com.github.st1hy.countthemcalories.core.headerpicture;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,7 +18,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class PictureViewControllerImpl implements PictureViewController {
+public class PicturePickerImpl implements PicturePicker {
 
     public static final String SAVE_TEMP_URI = "with picture temp uri";
     private static final int REQUEST_CAMERA = 0x3901;
@@ -29,8 +29,8 @@ public class PictureViewControllerImpl implements PictureViewController {
     private final Context context;
     private final RxActivityResult rxActivityResult;
 
-    public PictureViewControllerImpl(Context context, RxActivityResult rxActivityResult,
-                                     @Named("pictureTempUri") Uri uri) {
+    public PicturePickerImpl(Context context, RxActivityResult rxActivityResult,
+                             @Named("pictureTempUri") Uri uri) {
         this.context = context;
         this.rxActivityResult = rxActivityResult;
         this.tempImageUri = uri;

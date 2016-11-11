@@ -23,10 +23,11 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.HeaderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -45,6 +46,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_AMOUNT_UNIT;
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
@@ -206,5 +209,10 @@ public class AddIngredientFragmentModule {
         IngredientTagsAdapter ingredientTagsAdapter = new IngredientTagsAdapter(presenter);
         presenter.setNotifier(ingredientTagsAdapter);
         return ingredientTagsAdapter;
+    }
+
+    @Provides
+    public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> subject) {
+        return subject.asObservable();
     }
 }

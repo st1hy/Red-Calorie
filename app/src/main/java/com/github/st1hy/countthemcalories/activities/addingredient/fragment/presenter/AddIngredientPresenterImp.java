@@ -9,8 +9,11 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.picture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.rx.Filters;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -25,6 +28,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -38,11 +42,18 @@ import static com.github.st1hy.countthemcalories.activities.addingredient.fragme
 
 public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
-    @NonNull private final AddIngredientView view;
-    @NonNull private final AddIngredientModel model;
-    @NonNull private final AddIngredientModelHelper modelHelper;
-    @NonNull private final PicturePresenter picturePresenter;
-    @NonNull private final DialogView dialogView;
+    @NonNull
+    private final AddIngredientView view;
+    @NonNull
+    private final AddIngredientModel model;
+    @NonNull
+    private final AddIngredientModelHelper modelHelper;
+    @NonNull
+    private final PicturePresenter picturePresenter;
+    @NonNull
+    private final DialogView dialogView;
+    @NonNull
+    private final Observable<AddMealMenuAction> menuActionObservable;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -51,12 +62,14 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                                      @NonNull AddIngredientModel model,
                                      @NonNull AddIngredientModelHelper modelHelper,
                                      @NonNull DialogView dialogView,
-                                     @NonNull PicturePresenter picturePresenter) {
+                                     @NonNull PicturePresenter picturePresenter,
+                                     @NonNull Observable<AddMealMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;
         this.modelHelper = modelHelper;
         this.picturePresenter = picturePresenter;
         this.dialogView = dialogView;
+        this.menuActionObservable = menuActionObservable;
     }
 
     @Override
@@ -68,26 +81,39 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
         view.setSelectedUnitName(modelHelper.getEnergyDensityUnitName());
 
         final Observable<CharSequence> nameObservable = view.getNameObservable();
-        subscriptions.add(nameObservable.subscribe(setNameToModel()));
+        subscribe(
+                nameObservable.subscribe(setNameToModel())
+        );
         final Observable<CharSequence> valueObservable = view.getValueObservable();
-        subscriptions.add(valueObservable.subscribe(setValueToModel()));
+        subscribe(
+                valueObservable.subscribe(setValueToModel())
+        );
 
-        subscriptions.add(Observable.combineLatest(nameObservable, valueObservable,
-                combineCheckCanCreateIngredient())
-                .subscribe());
+        subscribe(
+                Observable.combineLatest(nameObservable, valueObservable,
+                        combineCheckCanCreateIngredient())
+                        .subscribe()
+        );
 
-        subscriptions.add(view.getSaveObservable()
-                .flatMap(saveToDatabase())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(onSaveError())
-                .subscribe(onAddedIngredientToDatabase()));
-        subscriptions.add(view.getSearchObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onSearchForIngredientClicked()));
-        subscriptions.add(view.getSelectTypeObservable()
-                .flatMap(onSelectUnitClicked())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onUnitSelected()));
+        subscribe(
+                menuActionObservable.filter(Filters.equalTo(AddMealMenuAction.SAVE))
+                        .map(Functions.INTO_VOID)
+                        .flatMap(saveToDatabase())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(onSaveError())
+                        .subscribe(onAddedIngredientToDatabase())
+        );
+        subscribe(
+                view.getSearchObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onSearchForIngredientClicked())
+        );
+        subscribe(
+                view.getSelectTypeObservable()
+                        .flatMap(onSelectUnitClicked())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onUnitSelected())
+        );
     }
 
     @Override
@@ -256,4 +282,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
         };
     }
 
+    private void subscribe(@NonNull Subscription subscription) {
+        subscriptions.add(subscription);
+    }
 }

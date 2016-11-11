@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.rx.Filters;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -21,7 +19,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -31,15 +28,12 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
 
     @NonNull private final Activity activity;
     @NonNull private final RxActivityResult rxActivityResult;
-    @NonNull private final PublishSubject<AddIngredientMenuAction> menuActions;
 
     @Inject
     public AddIngredientScreenImpl(@NonNull Activity activity,
-                                   @NonNull RxActivityResult rxActivityResult,
-                                   @NonNull PublishSubject<AddIngredientMenuAction> menuActions) {
+                                   @NonNull RxActivityResult rxActivityResult) {
         this.activity = activity;
         this.rxActivityResult = rxActivityResult;
-        this.menuActions = menuActions;
     }
 
     @Override
@@ -70,15 +64,6 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
                         return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
                     }
                 });
-    }
-
-
-    @NonNull
-    @Override
-    public Observable<Void> getSaveObservable() {
-        return menuActions
-                .filter(Filters.equalTo(AddIngredientMenuAction.SAVE))
-                .map(Functions.INTO_VOID);
     }
 
     @Override

@@ -1,66 +1,76 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.rx.Filters;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.PicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Optional;
-
-import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subscriptions.CompositeSubscription;
 
-public class AddMealPresenterImp extends PicturePresenterImp implements AddMealPresenter {
+public class AddMealPresenterImp implements AddMealPresenter {
 
+    @NonNull
     private final AddMealView view;
+    @NonNull
     private final AddMealModel model;
+    @NonNull
     private final Meal meal;
-    private final MealIngredientsListModel ingredientsListModel;
+    @NonNull
+    private final PicturePresenter picturePresenter;
+    @NonNull
+    private final Observable<AddMealMenuAction> menuActionObservable;
+
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public AddMealPresenterImp(@NonNull AddMealView view,
-                               @NonNull PermissionsHelper permissionsHelper,
                                @NonNull AddMealModel model,
-                               @NonNull ImageHolderDelegate imageHolderDelegate,
-                               @NonNull Meal meal, MealIngredientsListModel ingredientsListModel) {
-        super(view, permissionsHelper, dialogView, pictureController, model, imageHolderDelegate);
+                               @NonNull Meal meal,
+                               @NonNull PicturePresenter picturePresenter,
+                               @NonNull Observable<AddMealMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;
         this.meal = meal;
-        this.ingredientsListModel = ingredientsListModel;
+        this.picturePresenter = picturePresenter;
+        this.menuActionObservable = menuActionObservable;
     }
 
     @Override
     public void onStart() {
-        super.onStart();
-        loadImageUri(meal.getImageUri());
+        picturePresenter.onStart();
+        picturePresenter.loadImageUri(meal.getImageUri());
+
         view.setName(meal.getName());
-
-        subscriptions.add(view.getNameObservable().skip(1).subscribe(setNameToModel()));
-        subscriptions.add(view.getAddIngredientObservable().subscribe(onAddNewIngredient()));
-
-        subscriptions.add(view.getSaveClickedObservable()
-                .filter(whenMealValid())
-                .flatMap(saveMealToDatabase())
-                .subscribe(closeView()));
+        subscribe(
+                view.getNameObservable()
+                        .skip(1)
+                        .subscribe(setNameToModel())
+        );
+        subscribe(
+                menuActionObservable.filter(Filters.equalTo(AddMealMenuAction.SAVE))
+                        .map(Functions.INTO_VOID)
+                        .filter(whenMealValid())
+                        .flatMap(saveMealToDatabase())
+                        .subscribe(closeView())
+        );
     }
 
     @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        outState.putParcelable(AddMealModel.SAVED_MEAL_STATE, Parcels.wrap(meal));
-        outState.putParcelable(MealIngredientsListModel.SAVED_INGREDIENTS, Parcels.wrap(ingredientsListModel));
+    public void onStop() {
+        picturePresenter.onStop();
     }
 
     @NonNull
@@ -94,12 +104,6 @@ public class AddMealPresenterImp extends PicturePresenterImp implements AddMealP
         };
     }
 
-    @Override
-    public void onImageUriChanged(@NonNull Uri uri) {
-        super.onImageUriChanged(uri);
-        meal.setImageUri(uri);
-    }
-
     private boolean validateMeal() {
         return validateName() & validateIngredients();
     }
@@ -127,14 +131,8 @@ public class AddMealPresenterImp extends PicturePresenterImp implements AddMealP
         };
     }
 
-    @NonNull
-    private Action1<Void> onAddNewIngredient() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.openAddIngredient();
-            }
-        };
+    private void subscribe(@NonNull Subscription subscription) {
+        subscriptions.add(subscription);
     }
 
 }

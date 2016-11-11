@@ -26,12 +26,6 @@ public abstract class AddIngredientScreenDelegate implements AddIngredientScreen
     }
 
     @Override
-    @NonNull
-    public Observable<Void> getSaveObservable() {
-        return getDelegate().getSaveObservable();
-    }
-
-    @Override
     public void showInWebBrowser(@NonNull Uri address) {
         getDelegate().showInWebBrowser(address);
     }

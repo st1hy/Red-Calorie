@@ -41,6 +41,6 @@ public class IngredientAction {
     }
 
     public enum Type {
-        NEW, EDIT, REMOVE, CANCELED
+        EDIT, REMOVE, CANCELED
     }
 }

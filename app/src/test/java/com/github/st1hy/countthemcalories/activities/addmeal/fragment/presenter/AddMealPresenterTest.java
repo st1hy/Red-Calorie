@@ -8,8 +8,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 import com.google.common.base.Optional;
 
@@ -59,11 +59,11 @@ public class AddMealPresenterTest {
         when(view.getPictureSelectedObservable()).thenReturn(Observable.<Uri>empty());
         when(view.getSelectPictureObservable()).thenReturn(Observable.<Void>empty());
         when(view.getNameObservable()).thenReturn(Observable.<CharSequence>empty());
-        when(view.getAddIngredientObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getAddIngredientButtonObservable()).thenReturn(Observable.<Void>empty());
         when(view.getSaveClickedObservable()).thenReturn(Observable.<Void>empty());
         when(imageHolderDelegate.getLoadingObservable()).thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new AddMealPresenterImp(view, permissionsHelper, model, imageHolderDelegate);
+        presenter = new AddMealPresenterImp(view, permissionsHelper, model, imageHolderDelegate, picturePresenter);
     }
 
     @After
@@ -102,7 +102,7 @@ public class AddMealPresenterTest {
         verify(model).getName();
         verify(view).setName("Name");
         verify(view).getNameObservable();
-        verify(view).getAddIngredientObservable();
+        verify(view).getAddIngredientButtonObservable();
         verify(view).getSaveClickedObservable();
         verify(view).getSelectPictureObservable();
         verify(view).getPictureSelectedObservable();
@@ -144,7 +144,7 @@ public class AddMealPresenterTest {
 
     @Test
     public void testAddIngredientClicked() throws Exception {
-        when(view.getAddIngredientObservable()).thenReturn(Observable.<Void>just(null));
+        when(view.getAddIngredientButtonObservable()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
 

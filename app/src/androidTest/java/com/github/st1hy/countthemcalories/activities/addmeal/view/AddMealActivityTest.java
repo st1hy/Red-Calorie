@@ -55,7 +55,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest.exampleIngredients;
-import static com.github.st1hy.countthemcalories.core.picture.view.WithPictureActivityTestUtils.injectUriOnMatch;
+import static com.github.st1hy.countthemcalories.core.headerpicture.view.WithPictureActivityTestUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
@@ -87,7 +87,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testDisplaysTitle() {
-        onView(allOf(withChild(ViewMatchers.withText(R.string.add_meal_title)), withId(R.id.add_meal_toolbar)))
+        onView(allOf(withChild(ViewMatchers.withText(R.string.add_meal_title)), withId(R.id.image_header_toolbar)))
                 .check(matches(isDisplayed()));
     }
 
@@ -117,7 +117,7 @@ public class AddMealActivityTest {
         intent.setData(resourceToUri(getContext(), android.R.drawable.ic_input_add));
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, intent));
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
@@ -128,7 +128,7 @@ public class AddMealActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
         intended(galleryIntentMatcher);
-        onView(withId(R.id.add_meal_image))
+        onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
         rxPicassoIdlingResource.unregister();
@@ -137,7 +137,7 @@ public class AddMealActivityTest {
     @Test
     public void testSelectImageFromGalleryUserCanceled() {
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_gallery))
@@ -151,16 +151,16 @@ public class AddMealActivityTest {
     public void testRemoveImage() throws Exception {
         testSelectImageFromGallery();
 
-        onView(withId(R.id.add_meal_image_overlay_bottom)).check(matches(isDisplayed()));
-        onView(withId(R.id.add_meal_image_overlay_top)).check(matches(isDisplayed()));
-        onView(withId(R.id.add_meal_image)).perform(click());
+        onView(withId(R.id.image_header_overlay_bottom)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_overlay_top)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_remove)).perform(click());
-        onView(withId(R.id.add_meal_image))
+        onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(not(any(BitmapDrawable.class)))));
-        onView(withId(R.id.add_meal_image_overlay_bottom)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.add_meal_image_overlay_top)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.image_header_overlay_bottom)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.image_header_overlay_top)).check(matches(not(isDisplayed())));
     }
 
     @Test
@@ -174,14 +174,14 @@ public class AddMealActivityTest {
         );
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, null));
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
         intended(cameraIntentMatcher);
-        onView(withId(R.id.add_meal_image))
+        onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
         rxPicassoIdlingResource.unregister();
@@ -192,7 +192,7 @@ public class AddMealActivityTest {
         onView(withHint(R.string.add_meal_name_hint)).perform(closeSoftKeyboard());
         final Matcher<Intent> cameraIntentMatcher = hasAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
@@ -244,7 +244,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
         onView(withText("42.6 g")).check(doesNotExist());
@@ -261,7 +261,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("42.6 g")).check(matches(isDisplayed()));
@@ -276,7 +276,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("8"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withText("8 ml")).check(matches(isDisplayed()));
@@ -293,7 +293,7 @@ public class AddMealActivityTest {
                 .perform(typeTextIntoFocusedView("12.06"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("12.06 g")).check(matches(isDisplayed()));
@@ -307,7 +307,7 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
     }
 
@@ -332,7 +332,7 @@ public class AddMealActivityTest {
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(withId(R.id.add_meal_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("1 g")).check(matches(isDisplayed()));

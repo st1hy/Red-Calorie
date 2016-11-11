@@ -1,15 +1,15 @@
-package com.github.st1hy.countthemcalories.core.picture.presenter;
+package com.github.st1hy.countthemcalories.core.headerpicture.presenter;
 
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.picture.PicturePresenterImp;
-import com.github.st1hy.countthemcalories.core.picture.PictureViewController;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
-import com.github.st1hy.countthemcalories.core.picture.PictureModel;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
+import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.testutils.OptionalMatchers;
 
 import org.junit.After;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 public class WithPicturePresenterImpTest {
 
     @Mock
-    private PictureViewController view;
+    private PicturePicker view;
     @Mock
     private PermissionsHelper permissionsHelper;
     @Mock

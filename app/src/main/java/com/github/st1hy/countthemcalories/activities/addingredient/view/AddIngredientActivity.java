@@ -33,7 +33,7 @@ public class AddIngredientActivity extends BaseActivity {
 
     private AddIngredientComponent component;
 
-    @BindView(R.id.add_ingredient_toolbar)
+    @BindView(R.id.image_header_toolbar)
     Toolbar toolbar;
     @Inject
     PublishSubject<AddIngredientMenuAction> menuActions;

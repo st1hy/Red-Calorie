@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.picture.imageholder;
+package com.github.st1hy.countthemcalories.core.headerpicture.imageholder;
 
 import android.Manifest;
 import android.net.Uri;

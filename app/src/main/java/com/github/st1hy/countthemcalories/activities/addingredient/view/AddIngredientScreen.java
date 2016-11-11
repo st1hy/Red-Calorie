@@ -17,9 +17,6 @@ public interface AddIngredientScreen {
     @NonNull
     Observable<Tag> selectTag(@NonNull Collection<String> excludedTagNames);
 
-    @NonNull
-    Observable<Void> getSaveObservable();
-
     void showInWebBrowser(@NonNull Uri address);
 
 }

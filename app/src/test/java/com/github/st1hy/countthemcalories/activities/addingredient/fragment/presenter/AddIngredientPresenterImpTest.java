@@ -14,8 +14,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.LoadedSource;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
@@ -96,7 +96,7 @@ public class AddIngredientPresenterImpTest {
         when(view.getSelectTypeObservable()).thenReturn(Observable.<Void>empty());
         when(imageHolderDelegate.getLoadingObservable()).thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, imageHolderDelegate, modelHelper);
+        presenter = new AddIngredientPresenterImp(view, permissionsHelper, model, imageHolderDelegate, modelHelper, menuActionObservable);
     }
 
     @After

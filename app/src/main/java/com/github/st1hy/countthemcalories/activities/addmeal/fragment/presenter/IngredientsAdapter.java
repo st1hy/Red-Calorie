@@ -14,9 +14,10 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.picture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -35,6 +36,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements
@@ -62,16 +64,31 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     public void onStart() {
         notifyDataSetChanged();
         onDataSetChanged();
-        subscribe(view.getIngredientActionObservable()
-                .subscribe(onIngredientAction()));
-        handleExtraIngredient();
-    }
-
-    private void handleExtraIngredient() {
-        IngredientTemplate ingredientType = model.removeExtraIngredientType();
-        if (ingredientType != null) {
-            onIngredientReceived(new Ingredient(ingredientType, BigDecimal.ZERO));
-        }
+        subscribe(
+                Observable.just(model.removeExtraIngredientType())
+                        .filter(Functions.NOT_NULL)
+                        .map(new Func1<IngredientTemplate, Ingredient>() {
+                            @Override
+                            public Ingredient call(IngredientTemplate ingredientTemplate) {
+                                return new Ingredient(ingredientTemplate, BigDecimal.ZERO);
+                            }
+                        })
+                        .mergeWith(
+                                view.getAddIngredientButtonObservable()
+                                        .flatMap(new Func1<Void, Observable<Ingredient>>() {
+                                            @Override
+                                            public Observable<Ingredient> call(Void aVoid) {
+                                                return view.addIngredient();
+                                            }
+                                        })
+                        )
+                        .flatMap(new Func1<Ingredient, Observable<IngredientAction>>() {
+                            @Override
+                            public Observable<IngredientAction> call(Ingredient ingredient) {
+                                return view.showIngredientDetails(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
+                            }
+                        }).subscribe(onIngredientAction())
+        );
     }
 
     public void onStop() {
@@ -99,8 +116,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 //                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
         );
         viewHolder.setEnabled(false);
-        enableOnNextIngredientAction(viewHolder);
-        view.showIngredientDetails(position, ingredient, sharedViews);
+        subscribe(
+                view.showIngredientDetails(position, ingredient, sharedViews)
+                        .first()
+                        .doOnNext(new Action1<IngredientAction>() {
+                            @Override
+                            public void call(IngredientAction ingredientAction) {
+                                viewHolder.setEnabled(true);
+                            }
+                        })
+                        .subscribe(onIngredientAction())
+        );
     }
 
     @Override
@@ -139,21 +165,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     private void onBindImage(@NonNull IngredientTemplate ingredient,
-                     @NonNull IngredientItemViewHolder holder) {
+                             @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
-    }
-
-    private void enableOnNextIngredientAction(@NonNull final IngredientItemViewHolder viewHolder) {
-        subscribe(view.getIngredientActionObservable()
-                .first()
-                .subscribe(new Action1<IngredientAction>() {
-                    @Override
-                    public void call(IngredientAction ingredientAction) {
-                        viewHolder.setEnabled(true);
-                    }
-                }));
     }
 
     private void subscribe(Subscription subscribe) {
@@ -166,9 +181,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
             @Override
             public void onNext(IngredientAction ingredientAction) {
                 switch (ingredientAction.getType()) {
-                    case NEW:
-                        onIngredientReceived(ingredientAction.getIngredient());
-                        break;
                     case EDIT:
                         onIngredientEditFinished(ingredientAction.getId(), ingredientAction.getIngredient());
                         break;
@@ -206,10 +218,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     private void onIngredientAdded(@NonNull Ingredient ingredient) {
         int position = model.addIngredient(ingredient);
         notifyInserted(position);
-    }
-
-    private void onIngredientReceived(@NonNull Ingredient ingredient) {
-        view.showIngredientDetails(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
     }
 
     private void notifyInserted(int position) {

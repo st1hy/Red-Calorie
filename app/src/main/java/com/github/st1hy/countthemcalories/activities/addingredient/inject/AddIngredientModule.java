@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,11 +13,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.PictureViewImpl;
-import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.picture.PictureView;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
 import dagger.Module;
@@ -36,6 +33,11 @@ public class AddIngredientModule {
 
     public AddIngredientModule(@NonNull AddIngredientActivity activity) {
         this.activity = activity;
+    }
+
+    @Provides
+    public Activity activity() {
+        return activity;
     }
 
     @Provides
@@ -95,16 +97,5 @@ public class AddIngredientModule {
         return PublishSubject.create();
     }
 
-    @PerActivity
-    @Provides
-    public DialogView dialogView() {
-        return new DialogViewController(activity);
-    }
-
-    @PerActivity
-    @Provides
-    public PictureView pictureView() {
-        return new PictureViewImpl(activity);
-    }
 
 }
