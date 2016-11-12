@@ -38,6 +38,7 @@ import dagger.internal.DoubleCheck;
 import rx.Observable;
 
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
+
     private final Lazy<IngredientTemplateDao> dao;
     private Collection<String> lastTagsFilter = Collections.emptyList();
 

@@ -4,12 +4,12 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
-import com.github.st1hy.countthemcalories.core.command.view.UndoView;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.database.Meal;
 
 import rx.Observable;
 
-public interface OverviewScreen extends UndoView {
+public interface OverviewScreen extends UndoViewImpl {
 
     @NonNull
     Observable<Void> getOpenMealScreenObservable();

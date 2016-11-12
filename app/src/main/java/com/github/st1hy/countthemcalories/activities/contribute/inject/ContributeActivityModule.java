@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,6 +26,11 @@ public class ContributeActivityModule {
     @Provides
     public Activity activity() {
         return activity;
+    }
+
+    @Provides
+    public DrawerMenuItem currentItem() {
+        return DrawerMenuItem.CONTRIBUTE;
     }
 
 }

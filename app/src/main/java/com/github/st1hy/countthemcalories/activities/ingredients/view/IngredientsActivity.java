@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIn
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
+import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
@@ -40,7 +41,7 @@ import rx.Observable;
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
 
-public class IngredientsActivity extends UndoDrawerActivity implements IngredientsScreen, SearchSuggestionsView {
+public class IngredientsActivity extends BaseActivity {
 
     public static final String ACTION_SELECT_INGREDIENT = "Select ingredient";
     public static final String EXTRA_INGREDIENT_TYPE_PARCEL = "extra ingredient template";
@@ -51,19 +52,9 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     public static final int REQUEST_ADD_INGREDIENT = 0x129;
 
     @Inject
-    SearchSuggestionsAdapter suggestionsAdapter;
-    @Inject
     IngredientsFragment content;
     @Inject
-    Observable<SearchResult> searchResultObservable;
-
-    @BindView(R.id.ingredients_fab)
-    FloatingActionButton fab;
-    @BindView(R.id.ingredients_search_view)
-    TokenSearchView searchView;
-
-    @BindView(R.id.ingredients_root)
-    CoordinatorLayout root;
+    SearchSuggestionsAdapter suggestionsAdapter;
 
     IngredientsActivityComponent component;
 
@@ -82,128 +73,20 @@ public class IngredientsActivity extends UndoDrawerActivity implements Ingredien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredients_activity);
-        ButterKnife.bind(this);
         getComponent().inject(this);
-        onBind();
     }
 
-    @Override
-    protected void onBind() {
-        super.onBind();
-        searchView.setSuggestionsAdapter(suggestionsAdapter);
-    }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         suggestionsAdapter.onStart();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         suggestionsAdapter.onStop();
     }
 
-    @Override
-    public void openNewIngredientScreen(@NonNull AddIngredientType type, @NonNull String extraName) {
-        Intent intent = new Intent(this, AddIngredientActivity.class);
-        intent.setAction(type.getAction());
-        intent.putExtra(AddIngredientModule.EXTRA_NAME, extraName);
-        startActivityForResult(intent, REQUEST_ADD_INGREDIENT);
-    }
-
-    @NonNull
-    @Override
-    public Observable<Void> getOnAddIngredientClickedObservable() {
-        return RxView.clicks(fab);
-    }
-
-    @Override
-    public void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate) {
-        Intent result = new Intent();
-        result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
-        setResult(RESULT_OK, result);
-        finish();
-    }
-
-    @Override
-    public void openNewMealScreen(@NonNull IngredientTemplate ingredientTemplate) {
-        Intent intent = new Intent(this, AddMealActivity.class);
-        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
-        startActivity(intent);
-    }
-
-    @Override
-    public void selectIngredientType() {
-        startActivityForResult(new Intent(this, SelectIngredientTypeActivity.class), REQUEST_SELECT_TYPE);
-    }
-
-    @Override
-    public void openEditIngredientScreen(long requestID, @NonNull IngredientTemplate ingredientTemplate) {
-        Intent intent = new Intent(this, EditIngredientActivity.class);
-        intent.putExtra(ARG_EDIT_REQUEST_ID_LONG, requestID);
-        intent.putExtra(ARG_EDIT_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
-        startActivityForResult(intent, REQUEST_EDIT);
-    }
-
-    @Override
-    public void expandSearchBar() {
-        searchView.expand(false);
-    }
-
-    @NonNull
-    @Override
-    public Observable<SearchResult> getSearchObservable() {
-        return searchResultObservable;
-    }
-
-    @Override
-    public void setSearchQuery(@NonNull String query, @NonNull List<String> tokens) {
-        searchView.setQuery(query, tokens);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_SELECT_TYPE:
-                onSelectIngredientTypeResult(resultCode);
-                break;
-            case REQUEST_ADD_INGREDIENT:
-                onIngredientAddedResult(resultCode, data);
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    void onIngredientAddedResult(int resultCode, @Nullable Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            long addedIngredientId = data.getLongExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, -1L);
-            if (addedIngredientId != -1L)
-                content.onIngredientAdded(addedIngredientId);
-        }
-    }
-
-    void onSelectIngredientTypeResult(int resultCode) {
-        switch (resultCode) {
-            case SelectIngredientTypeActivity.RESULT_DRINK:
-                content.onSelectedNewIngredientType(AddIngredientType.DRINK);
-                break;
-            case SelectIngredientTypeActivity.RESULT_MEAL:
-                content.onSelectedNewIngredientType(AddIngredientType.MEAL);
-                break;
-        }
-    }
-
-    @NonNull
-    @Override
-    protected View getUndoRoot() {
-        return root;
-    }
-
-    @NonNull
-    public TokenSearchView getSearchView() {
-        return searchView;
-    }
 }

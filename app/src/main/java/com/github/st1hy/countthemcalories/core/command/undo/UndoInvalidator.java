@@ -1,6 +1,8 @@
-package com.github.st1hy.countthemcalories.core.command;
+package com.github.st1hy.countthemcalories.core.command.undo;
 
 import android.support.annotation.NonNull;
+
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 
 import java.util.concurrent.atomic.AtomicReference;
 

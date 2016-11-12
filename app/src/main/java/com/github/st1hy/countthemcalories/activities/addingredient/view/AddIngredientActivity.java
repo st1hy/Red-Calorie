@@ -29,7 +29,7 @@ public class AddIngredientActivity extends BaseActivity {
     public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
     public static final String ARG_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
     public static final String ARG_EXTRA_NAME = "extra ingredient name";
-    public static final String RESULT_INGREDIENT_ID_LONG = "ingredient result id";
+    public static final String RESULT_INGREDIENT_TEMPLATE = "ingredient result";
 
     private AddIngredientComponent component;
 

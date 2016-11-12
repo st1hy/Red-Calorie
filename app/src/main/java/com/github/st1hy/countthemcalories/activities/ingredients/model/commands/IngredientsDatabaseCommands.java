@@ -7,7 +7,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.RemovalEf
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.UndoInvalidator;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoInvalidator;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import java.util.concurrent.atomic.AtomicReference;

@@ -34,7 +34,7 @@ public class IngredientsPresenterTest {
     @Before
     public void setUp() throws Exception {
         when(lastSearchResult.get()).thenReturn(SearchResult.EMPTY);
-        presenter = new IngredientsPresenterImpl(view, lastSearchResult);
+        presenter = new IngredientsPresenterImpl(view, lastSearchResult, adapter);
     }
 
     @Test
@@ -66,12 +66,12 @@ public class IngredientsPresenterTest {
     @Test
     public void testOpenNewIngredients() throws Exception {
         presenter.onSelectedNewIngredientType(AddIngredientType.MEAL);
-        verify(view).openNewIngredientScreen(AddIngredientType.MEAL, "");
+        verify(view).addNewIngredient(AddIngredientType.MEAL, "");
         verify(lastSearchResult).get();
 
         when(lastSearchResult.get()).thenReturn(new SearchResult("test", Collections.<String>emptyList()));
         presenter.onSelectedNewIngredientType(AddIngredientType.DRINK);
-        verify(view).openNewIngredientScreen(AddIngredientType.DRINK, "test");
+        verify(view).addNewIngredient(AddIngredientType.DRINK, "test");
         verify(lastSearchResult, times(2)).get();
 
         testVerifyNoMoreInteractions();

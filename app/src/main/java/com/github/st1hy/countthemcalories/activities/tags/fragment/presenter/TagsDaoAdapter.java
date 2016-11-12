@@ -21,7 +21,7 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;

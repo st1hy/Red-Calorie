@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.UndoInvalidator;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoInvalidator;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 

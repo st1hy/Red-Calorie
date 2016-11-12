@@ -8,6 +8,7 @@ import android.widget.SimpleCursorAdapter;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.ForwardingAdapter;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
@@ -16,25 +17,33 @@ import com.google.common.base.Optional;
 
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
-public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
+public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> implements BasicLifecycle {
 
-    static final String COLUMN = TagDao.Properties.Name.columnName;
+    private static final String COLUMN = TagDao.Properties.Name.columnName;
 
-    final RxTagsDatabaseModel databaseModel;
-    Optional<String> filter;
-    final SearchSuggestionsView view;
+    @NonNull
+    private final RxTagsDatabaseModel databaseModel;
+    @NonNull
+    private final SearchSuggestionsView view;
+    @NonNull
+    private final Observable<SearchResult> searchResultObservable;
+    private Optional<String> filter;
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+    @Inject
     public SearchSuggestionsAdapter(@NonNull Context context,
                                     @NonNull RxTagsDatabaseModel databaseModel,
                                     @NonNull SearchSuggestionsView view,
+                                    @NonNull Observable<SearchResult> searchResultObservable,
                                     @NonNull Optional<String> filter) {
         super(new SimpleCursorAdapter(context,
                 android.R.layout.simple_list_item_1,
@@ -44,11 +53,13 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
                 0));
         this.databaseModel = databaseModel;
         this.view = view;
+        this.searchResultObservable = searchResultObservable;
         this.filter = filter;
     }
 
+    @Override
     public void onStart() {
-        subscriptions.add(makeSuggestions(view.getSearchObservable()));
+        subscriptions.add(makeSuggestions(searchResultObservable));
         if (filter.isPresent()) {
             view.setSearchQuery("", Collections.singletonList(filter.get()));
             view.expandSearchBar();
@@ -56,6 +67,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> {
         }
     }
 
+    @Override
     public void onStop() {
         subscriptions.clear();
         getParent().changeCursor(null);

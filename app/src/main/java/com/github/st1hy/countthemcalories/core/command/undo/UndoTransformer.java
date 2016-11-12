@@ -1,7 +1,9 @@
-package com.github.st1hy.countthemcalories.core.command;
+package com.github.st1hy.countthemcalories.core.command.undo;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 
 import rx.Observable;
@@ -12,10 +14,10 @@ public class UndoTransformer<Response, UndoResponse> implements Observable.Trans
     @NonNull
     final CommandResponse<Response, UndoResponse> response;
     @NonNull
-    final Func1<Boolean, Observable<Void>> selectUndoCall;
+    final Func1<Boolean, Observable<UndoAction>> selectUndoCall;
 
     public UndoTransformer(@NonNull CommandResponse<Response, UndoResponse> response,
-                           @NonNull Func1<Boolean, Observable<Void>> selectUndoCall) {
+                           @NonNull Func1<Boolean, Observable<UndoAction>> selectUndoCall) {
         this.response = response;
         this.selectUndoCall = selectUndoCall;
     }
@@ -25,16 +27,17 @@ public class UndoTransformer<Response, UndoResponse> implements Observable.Trans
         return availability
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(selectUndoCall)
+                .filter(Filters.equalTo(UndoAction.UNDO))
                 .flatMap(onActionUndo())
                 .map(Functions.<UndoResponse>intoResponse())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull
-    private Func1<Void, Observable<CommandResponse<UndoResponse, Response>>> onActionUndo() {
-        return new Func1<Void, Observable<CommandResponse<UndoResponse, Response>>>() {
+    private Func1<UndoAction, Observable<CommandResponse<UndoResponse, Response>>> onActionUndo() {
+        return new Func1<UndoAction, Observable<CommandResponse<UndoResponse, Response>>>() {
             @Override
-            public Observable<CommandResponse<UndoResponse, Response>> call(Void aVoid) {
+            public Observable<CommandResponse<UndoResponse, Response>> call(UndoAction action) {
                 return response.undo();
             }
         };

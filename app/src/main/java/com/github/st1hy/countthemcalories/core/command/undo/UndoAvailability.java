@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.command;
+package com.github.st1hy.countthemcalories.core.command.undo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -6,10 +6,10 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class UndoAvailability implements Observable.OnSubscribe<Boolean> {
-    AtomicBoolean isUndoAvailable;
-    Subscriber<? super Boolean> subscriber;
+    private AtomicBoolean isUndoAvailable;
+    private Subscriber<? super Boolean> subscriber;
 
-    UndoAvailability(boolean isUndoAvailable) {
+    public UndoAvailability(boolean isUndoAvailable) {
         this.isUndoAvailable = new AtomicBoolean(isUndoAvailable);
     }
 

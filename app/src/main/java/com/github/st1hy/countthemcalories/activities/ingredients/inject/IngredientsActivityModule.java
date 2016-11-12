@@ -1,28 +1,39 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionViewController;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionsView;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.google.common.base.Optional;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
+
+import butterknife.ButterKnife;
 import dagger.Module;
 import dagger.Provides;
 import rx.Observable;
@@ -39,30 +50,33 @@ public class IngredientsActivityModule {
 
     public IngredientsActivityModule(@NonNull IngredientsActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    public IngredientsScreen provideView() {
-        return activity;
-    }
-
-    @PerActivity
-    @Provides
-    public DrawerPresenter provideDrawerPresenter() {
-        return new DrawerPresenterImpl(activity, DrawerMenuItem.INGREDIENTS);
+        ButterKnife.bind(this, activity);
     }
 
     @Provides
     @PerActivity
-    public SearchSuggestionsAdapter provideSuggestionsAdapter(RxTagsDatabaseModel databaseModel,
-                                                              SearchSuggestionsView view,
-                                                              Optional<String> filter) {
-        return new SearchSuggestionsAdapter(activity, databaseModel, view, filter);
+    public IngredientsScreen provideView(IngredientsScreenImpl ingredientsScreen) {
+        return ingredientsScreen;
     }
 
     @Provides
-    public SearchSuggestionsView provideSearchView() {
+    public Activity activity() {
         return activity;
+    }
+
+    @Provides
+    public AppCompatActivity appCompatActivity() {
+        return activity;
+    }
+
+    @Provides
+    public DrawerMenuItem currentItem() {
+        return DrawerMenuItem.INGREDIENTS;
+    }
+
+    @Provides
+    public SearchSuggestionsView provideSearchView(SearchSuggestionViewController controller) {
+        return controller;
     }
 
     @Provides
@@ -96,7 +110,7 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
+    public FragmentManager provideFragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
@@ -110,14 +124,29 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public Intent provideIntent() {
+    public Intent provideIntent(Activity activity) {
         return activity.getIntent();
+    }
+
+
+    @Provides
+    @PerActivity
+    public TokenSearchTextView tokenSearchTextView(Activity activity) {
+        return (TokenSearchTextView) activity.findViewById(R.id.ingredients_search_view);
     }
 
     @Provides
     @PerActivity
-    public Observable<SearchResult> provideSearchResults() {
-        Observable<SearchResult> sequenceObservable = RxSearchable.create(activity.getSearchView())
+    public TokenSearchView tokenSearchView(Activity activity, SearchSuggestionsAdapter suggestionsAdapter) {
+        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
+        searchView.setSuggestionsAdapter(suggestionsAdapter);
+        return searchView;
+    }
+
+    @Provides
+    @PerActivity
+    public Observable<SearchResult> provideSearchResults(TokenSearchTextView tokenSearchTextView) {
+        Observable<SearchResult> sequenceObservable = RxSearchable.create(tokenSearchTextView)
                 .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {
             sequenceObservable = sequenceObservable
@@ -139,4 +168,21 @@ public class IngredientsActivityModule {
         return sequenceObservable;
     }
 
+    @Provides
+    @Named("undoViewRoot")
+    public View undoRootView(Activity activity) {
+        return activity.findViewById(R.id.ingredients_root);
+    }
+
+    @Provides
+    @PerActivity
+    public UndoView undoView(@Named("undoViewRoot") View rootView) {
+        return new UndoViewImpl(rootView);
+    }
+
+    @Provides
+    @PerActivity
+    public DialogView dialogView(DialogViewController dialogViewController) {
+        return dialogViewController;
+    }
 }

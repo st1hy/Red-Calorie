@@ -2,6 +2,8 @@ package com.github.st1hy.countthemcalories.core.command;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.core.command.undo.UndoAvailability;
+
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;

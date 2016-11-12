@@ -20,7 +20,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholde
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
-import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;

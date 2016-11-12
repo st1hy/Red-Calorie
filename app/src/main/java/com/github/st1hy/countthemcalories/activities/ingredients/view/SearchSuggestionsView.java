@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public interface SearchSuggestionsView extends SearchableView {
+public interface SearchSuggestionsView {
 
     void expandSearchBar();
 

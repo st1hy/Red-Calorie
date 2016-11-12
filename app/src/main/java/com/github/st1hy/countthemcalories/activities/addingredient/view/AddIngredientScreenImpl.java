@@ -39,7 +39,7 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @Override
     public void onIngredientTemplateCreated(@NonNull IngredientTemplate template) {
         Intent intent = new Intent();
-        intent.putExtra(AddIngredientActivity.RESULT_INGREDIENT_ID_LONG, template.getId());
+        intent.putExtra(AddIngredientActivity.RESULT_INGREDIENT_TEMPLATE, Parcels.wrap(template));
         activity.setResult(RESULT_OK, intent);
         activity.finish();
     }

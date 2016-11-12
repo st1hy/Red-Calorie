@@ -121,7 +121,7 @@ public class IngredientsDaoAdapterTest {
                                          @NonNull Picasso picasso,
                                          @NonNull PermissionsHelper permissionsHelper,
                                          @NonNull LastSearchResult recentSearchResult) {
-            super(view, model, databaseModel, commands, picasso, permissionsHelper, recentSearchResult);
+            super(view, model, databaseModel, commands, picasso, permissionsHelper, recentSearchResult, searchResultObservable, dialogView);
         }
 
         @Override
@@ -425,7 +425,7 @@ public class IngredientsDaoAdapterTest {
         adapter.onEditClicked(ingredient, 10);
 
         verify(ingredient).getId();
-        verify(view).openEditIngredientScreen(eq(10L), argThat(hasIngredient(ingredient)));
+        verify(view).editIngredientTemplate(eq(10L), argThat(hasIngredient(ingredient)));
 
         verifyNoMoreInteractions(view, model, daoModel, commands, cursor, picasso,
                 ingredient);
@@ -485,7 +485,7 @@ public class IngredientsDaoAdapterTest {
         adapter.onIngredientClicked(ingredient, 0);
 
         testVerifyOpenOptions();
-        verify(view).openNewMealScreen(argThat(hasIngredient(ingredient)));
+        verify(view).addToNewMeal(argThat(hasIngredient(ingredient)));
 
         testVerifyNoMoreInteraction();
     }
@@ -499,7 +499,7 @@ public class IngredientsDaoAdapterTest {
         adapter.onIngredientClicked(ingredient, 0);
 
         testVerifyOpenOptions();
-        verify(view).openEditIngredientScreen(eq(0L), argThat(hasIngredient(ingredient)));
+        verify(view).editIngredientTemplate(eq(0L), argThat(hasIngredient(ingredient)));
 
         testVerifyNoMoreInteraction();
     }

@@ -21,7 +21,10 @@ import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -39,6 +42,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -49,6 +54,7 @@ import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
 
+@PerFragment
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
         implements IngredientItemViewHolder.Callback {
 
@@ -58,24 +64,37 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @LayoutRes
     private static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
+    @NonNull
     private final IngredientsView view;
+    @NonNull
     private final IngredientsFragmentModel model;
+    @NonNull
     private final RxIngredientsDatabaseModel databaseModel;
+    @NonNull
     private final IngredientsDatabaseCommands commands;
+    @NonNull
     private final Picasso picasso;
+    @NonNull
     private final PermissionsHelper permissionsHelper;
+    @NonNull
+    private final LastSearchResult recentSearchResult;
+    @NonNull
+    private final Observable<SearchResult> searchResultObservable;
+    @NonNull
+    private final DialogView dialogView;
 
     private final Queue<Long> addedItems = new LinkedList<>();
 
-    private final LastSearchResult recentSearchResult;
-
+    @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
                                  @NonNull IngredientsFragmentModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
                                  @NonNull Picasso picasso,
                                  @NonNull PermissionsHelper permissionsHelper,
-                                 @NonNull LastSearchResult recentSearchResult) {
+                                 @NonNull LastSearchResult recentSearchResult,
+                                 @NonNull Observable<SearchResult> searchResultObservable,
+                                 @NonNull DialogView dialogView) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
@@ -83,12 +102,14 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         this.picasso = picasso;
         this.permissionsHelper = permissionsHelper;
         this.recentSearchResult = recentSearchResult;
+        this.searchResultObservable = searchResultObservable;
+        this.dialogView = dialogView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        addSubscription(searchIngredients(view.getSearchObservable()));
+        addSubscription(searchIngredients(searchResultObservable));
     }
 
     @Override
@@ -148,7 +169,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         if (model.isInSelectMode()) {
             view.onIngredientSelected(ingredientTemplate);
         } else {
-            view.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
+            dialogView.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(onAddToNewMealClicked(ingredientTemplate, position));
         }
@@ -174,7 +195,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 .subscribe(new Action1<IngredientTemplate>() {
                     @Override
                     public void call(IngredientTemplate ingredientTemplate) {
-                        view.openEditIngredientScreen(position, ingredientTemplate);
+                        view.editIngredientTemplate(position, ingredientTemplate);
                     }
                 });
     }
@@ -218,7 +239,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 IngredientOptions selectedOption = from(selectedOptionPosition);
                 switch (selectedOption) {
                     case ADD_TO_NEW:
-                        view.openNewMealScreen(ingredient);
+                        view.addToNewMeal(ingredient);
                         break;
                     case EDIT:
                         onEditClicked(ingredient, position);
@@ -244,7 +265,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
 
 
     @NonNull
-    protected Observable<Cursor> getAllWithFilter(@NonNull SearchResult searchResult) {
+    private Observable<Cursor> getAllWithFilter(@NonNull SearchResult searchResult) {
         return databaseModel.getAllFilteredBy(searchResult.getQuery(), searchResult.getTokens());
     }
 
@@ -259,7 +280,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         };
     }
 
-    protected void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+    private void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
         onCursorUpdate(cursor);
         boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
         view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
@@ -295,7 +316,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         addedItems.offer(addedIngredientId);
     }
 
-    protected void onSearchFinished() {
+    private void onSearchFinished() {
         final Long newItemId = addedItems.poll();
         if (newItemId != null) {
             addSubscription(Observable.fromCallable(findInCursor(newItemId))
@@ -363,10 +384,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     }
 
     @NonNull
-    Func1<Boolean, Observable<Void>> showUndoMessage(@StringRes final int undoMessage) {
-        return new Func1<Boolean, Observable<Void>>() {
+    Func1<Boolean, Observable<UndoAction>> showUndoMessage(@StringRes final int undoMessage) {
+        return new Func1<Boolean, Observable<UndoAction>>() {
             @Override
-            public Observable<Void> call(Boolean isAvailable) {
+            public Observable<UndoAction> call(Boolean isAvailable) {
                 if (isAvailable)
                     return view.showUndoMessage(undoMessage);
                 else {
@@ -410,7 +431,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         }
     }
 
-    void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
+    private void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
