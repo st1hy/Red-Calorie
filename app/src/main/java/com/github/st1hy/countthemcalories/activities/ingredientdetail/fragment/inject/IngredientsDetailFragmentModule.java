@@ -1,10 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
@@ -12,10 +14,11 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.p
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailViewImpl;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Preconditions;
 
@@ -25,8 +28,6 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-
-import static com.github.st1hy.countthemcalories.core.Utils.checkIsSubclass;
 
 @Module
 public class IngredientsDetailFragmentModule {
@@ -51,11 +52,6 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    public IngredientDetailView provideView() {
-        return fragment;
-    }
-
-    @Provides
     public Resources provideResources() {
         return fragment.getResources();
     }
@@ -74,14 +70,10 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    public IngredientDetailScreen provideScreen() {
-        return checkIsSubclass(fragment.getActivity(), IngredientDetailScreen.class);
-    }
-
-    @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
     }
+
 
     @Provides
     public ImageView provideImageView(IngredientDetailView view) {
@@ -111,4 +103,15 @@ public class IngredientsDetailFragmentModule {
         return holderDelegate;
     }
 
+    @Provides
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    @PerFragment
+    public IngredientDetailView provideView(View rootView, IngredientDetailScreen screen,
+                                            Context context) {
+        return new IngredientDetailViewImpl(rootView, screen, context);
+    }
 }

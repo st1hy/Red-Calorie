@@ -32,4 +32,5 @@ public class ContributeFragment extends BaseFragment {
         ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
         link.setMovementMethod(LinkMovementMethod.getInstance());
     }
+
 }

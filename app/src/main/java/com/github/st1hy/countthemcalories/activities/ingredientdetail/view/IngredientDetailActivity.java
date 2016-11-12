@@ -23,14 +23,14 @@ import butterknife.OnClick;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
 
-public class IngredientDetailActivity extends BaseActivity implements IngredientDetailScreen {
+public class IngredientDetailActivity extends BaseActivity {
 
     public static final int RESULT_REMOVE = 0x200;
 
     IngredientDetailComponent component;
 
     @Inject
-    IngredientDetailFragment content;
+    IngredientDetailFragment content; //adds fragment to view hierarchy
 
     @NonNull
     protected IngredientDetailComponent getComponent() {
@@ -47,32 +47,9 @@ public class IngredientDetailActivity extends BaseActivity implements Ingredient
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredient_detail_activity);
-        ButterKnife.bind(this);
         getComponent().inject(this);
     }
 
 
-    @Override
-    public void commitEditedIngredientChanges(long ingredientId,
-                                              @NonNull Ingredient ingredient) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
-        intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(ingredient));
-        setResult(RESULT_OK, intent);
-        ActivityCompat.finishAfterTransition(this);
-    }
-
-    @Override
-    public void removeIngredient(long ingredientId) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
-        setResult(RESULT_REMOVE, intent);
-        ActivityCompat.finishAfterTransition(this);
-    }
-
-    @OnClick(R.id.ingredient_detail_root)
-    void onClickedOutside() {
-        ActivityCompat.finishAfterTransition(this);
-    }
 
 }

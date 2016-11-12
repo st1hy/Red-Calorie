@@ -1,12 +1,10 @@
 package com.github.st1hy.countthemcalories.activities.contribute.inject;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.activities.contribute.view.ContributeActivity;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,9 +18,13 @@ public class ContributeActivityModule {
     }
 
     @Provides
-    @PerActivity
-    public DrawerPresenter provideDrawerPresenter() {
-        return new DrawerPresenterImpl(activity, DrawerMenuItem.CONTRIBUTE);
+    public AppCompatActivity appCompatActivity() {
+        return activity;
+    }
+
+    @Provides
+    public Activity activity() {
+        return activity;
     }
 
 }

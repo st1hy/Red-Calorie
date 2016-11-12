@@ -10,5 +10,4 @@ public interface IngredientDetailScreen {
                                        @NonNull Ingredient ingredient);
 
     void removeIngredient(long ingredientId);
-
 }

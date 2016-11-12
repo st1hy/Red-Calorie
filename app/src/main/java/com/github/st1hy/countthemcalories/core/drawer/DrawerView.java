@@ -1,23 +1,82 @@
 package com.github.st1hy.countthemcalories.core.drawer;
 
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
-import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.state.Selection;
 
-public interface DrawerView {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    void invokeActionBack();
+public final class DrawerView {
 
-    boolean isDrawerOpen();
+    @NonNull
+    private final AppCompatActivity activity;
 
-    void closeDrawer();
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
-    void setMenuItemSelection(@IdRes int menuId, @NonNull Selection selected);
+    public DrawerView(@NonNull AppCompatActivity activity) {
+        this.activity = activity;
+        ButterKnife.bind(this, activity);
+        activity.setSupportActionBar(toolbar);
+    }
 
-    void openDrawerActivity(@NonNull DrawerMenuItem item);
+    public void setNavigationItemSelectedListener(@Nullable OnNavigationItemSelectedListener listener) {
+        navigationView.setNavigationItemSelectedListener(listener);
+    }
 
-    void showNavigationAsUp();
+    public void showNavigationAsUp() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onBackPressed();
+            }
+        });
+        Utils.assertNotNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    public void registerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {
+        drawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+    }
+
+    public void unregisterDrawerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {
+        drawer.removeDrawerListener(drawerToggle);
+    }
+
+    public boolean isDrawerOpen() {
+        return drawer.isDrawerOpen(GravityCompat.START);
+    }
+
+    public void closeDrawer() {
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void openDrawerActivity(@NonNull DrawerMenuItem item) {
+        Intent intent = new Intent(activity, item.getActivityClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+    }
+
+    public void setMenuItemSelection(@IdRes int menuId, @NonNull Selection selected) {
+        navigationView.getMenu().findItem(menuId).setChecked(selected.is());
+    }
 
 }

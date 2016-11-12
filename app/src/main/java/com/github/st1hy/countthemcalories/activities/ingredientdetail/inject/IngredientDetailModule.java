@@ -9,6 +9,9 @@ import android.support.v4.app.FragmentTransaction;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenImpl;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,5 +64,11 @@ public class IngredientDetailModule {
         bundle.putLong(EXTRA_INGREDIENT_ID_LONG,
                 intent.getLongExtra(EXTRA_INGREDIENT_ID_LONG, -1L));
         return bundle;
+    }
+
+    @Provides
+    @PerActivity
+    public IngredientDetailScreen ingredientDetailScreen() {
+        return new IngredientDetailScreenImpl(activity);
     }
 }

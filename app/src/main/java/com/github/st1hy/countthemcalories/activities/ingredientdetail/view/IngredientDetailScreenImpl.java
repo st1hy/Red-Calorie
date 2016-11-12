@@ -1,0 +1,57 @@
+package com.github.st1hy.countthemcalories.activities.ingredientdetail.view;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.database.Ingredient;
+
+import org.parceler.Parcels;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static android.app.Activity.RESULT_OK;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity.RESULT_REMOVE;
+
+public class IngredientDetailScreenImpl implements IngredientDetailScreen {
+
+    @NonNull
+    private final Activity activity;
+
+    public IngredientDetailScreenImpl(@NonNull Activity activity) {
+        this.activity = activity;
+        ButterKnife.bind(this, activity);
+    }
+
+    @Override
+    public void commitEditedIngredientChanges(long ingredientId,
+                                              @NonNull Ingredient ingredient) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
+        intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(ingredient));
+        activity.setResult(RESULT_OK, intent);
+        finishActivity();
+    }
+
+    @Override
+    public void removeIngredient(long ingredientId) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_INGREDIENT_ID_LONG, ingredientId);
+        activity.setResult(RESULT_REMOVE, intent);
+        finishActivity();
+    }
+
+    @OnClick(R.id.ingredient_detail_root)
+    void onClickedOutside() {
+        finishActivity();
+    }
+
+    private void finishActivity() {
+        ActivityCompat.finishAfterTransition(activity);
+    }
+}
