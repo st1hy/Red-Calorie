@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.core.headerpicture.inject.PictureModule;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
@@ -12,4 +13,6 @@ import dagger.Subcomponent;
 public interface AddMealFragmentComponent {
 
     void inject(AddMealFragment fragment);
+
+    void inject(AddMealViewController controller);
 }

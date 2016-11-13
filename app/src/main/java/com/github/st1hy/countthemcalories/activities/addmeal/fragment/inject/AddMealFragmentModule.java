@@ -17,7 +17,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddM
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsAdapter;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
@@ -150,7 +151,15 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public RecyclerView recyclerView(View rootView, IngredientsAdapter adapter, Activity activity) {
+    @PerFragment
+    public IngredientsListAdapter ingredientsAdapter(IngredientsListPresenter listPresenter) {
+        IngredientsListAdapter adapter = new IngredientsListAdapter(listPresenter);
+        listPresenter.setNotifier(adapter);
+        return adapter;
+    }
+
+    @Provides
+    public RecyclerView recyclerView(View rootView, IngredientsListAdapter adapter, Activity activity) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));

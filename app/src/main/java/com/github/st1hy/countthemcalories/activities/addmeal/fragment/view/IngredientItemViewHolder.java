@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.view;
 
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
@@ -33,13 +33,13 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     TextView calorieCount;
     @BindView(R.id.add_meal_ingredient_image)
     ImageView image;
-
     @BindView(R.id.add_meal_ingredient_compact)
     ViewGroup compatView;
     @BindView(R.id.add_meal_ingredient_root)
     ViewGroup root;
-    final Callback callback;
-    Ingredient ingredient;
+
+    private final Callback callback;
+    private Ingredient ingredient;
 
     final ImageHolderDelegate imageHolderDelegate;
 

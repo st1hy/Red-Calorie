@@ -7,6 +7,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -55,7 +56,7 @@ public class IngredientsAdapterTest {
     @Mock
     private PermissionsHelper permissionsHelper;
 
-    private IngredientsAdapter adapter;
+    private IngredientsListAdapter adapter;
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +74,7 @@ public class IngredientsAdapterTest {
         when(quantityModel.energyAsString()).thenReturn((Func1<BigDecimal, String>) anyString);
         when(view.getIngredientActionObservable()).thenReturn(Observable.<IngredientAction>empty());
 
-        adapter = new IngredientsAdapter(view, model, quantityModel, picasso, permissionsHelper);
+        adapter = new IngredientsListAdapter(view, model, quantityModel, picasso, permissionsHelper);
     }
 
     @After

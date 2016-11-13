@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,17 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -43,22 +45,31 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements
-        IngredientItemViewHolder.Callback {
+public class IngredientsListPresenter implements IngredientItemViewHolder.Callback, BasicLifecycle,
+        RecyclerAdapterWrapper<IngredientItemViewHolder>  {
+
+    @NonNull
     private final AddMealView view;
+    @NonNull
     private final MealIngredientsListModel model;
+    @NonNull
     private final PhysicalQuantitiesModel quantityModel;
+    @NonNull
     private final Picasso picasso;
+    @NonNull
     private final PermissionsHelper permissionsHelper;
+
+    private  RecyclerViewNotifier notifier;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+
     @Inject
-    public IngredientsAdapter(@NonNull AddMealView view,
-                              @NonNull MealIngredientsListModel model,
-                              @NonNull PhysicalQuantitiesModel quantityModel,
-                              @NonNull Picasso picasso,
-                              @NonNull PermissionsHelper permissionsHelper) {
+    public IngredientsListPresenter(@NonNull AddMealView view,
+                                    @NonNull MealIngredientsListModel model,
+                                    @NonNull PhysicalQuantitiesModel quantityModel,
+                                    @NonNull Picasso picasso,
+                                    @NonNull PermissionsHelper permissionsHelper) {
         this.view = view;
         this.model = model;
         this.quantityModel = quantityModel;
@@ -66,8 +77,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         this.permissionsHelper = permissionsHelper;
     }
 
+    @Override
+    public void setNotifier(@NonNull RecyclerViewNotifier viewNotifier) {
+        this.notifier = viewNotifier;
+    }
+
+    @Override
     public void onStart() {
-        notifyDataSetChanged();
+        notifier.notifyDataSetChanged();
         onDataSetChanged();
         subscribe(
                 Observable.just(model.removeExtraIngredientType())
@@ -96,11 +113,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         );
     }
 
+    @Override
     public void onStop() {
         subscriptions.clear();
     }
 
-    @Override
     public int getItemViewType(int position) {
         return R.layout.add_meal_ingredient_item;
     }
@@ -157,18 +174,6 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
         onBindImage(type, holder);
     }
 
-    @Override
-    public void onViewAttachedToWindow(IngredientItemViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        holder.onAttached();
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(IngredientItemViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        holder.onDetached();
-    }
-
     private void onBindImage(@NonNull IngredientTemplate ingredient,
                              @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
@@ -202,7 +207,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     private void onIngredientRemoved(long requestId) {
         if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
-        notifyDataSetChanged();
+        notifier.notifyDataSetChanged();
         onDataSetChanged();
     }
 
@@ -226,14 +231,14 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     }
 
     private void notifyInserted(int position) {
-        notifyItemInserted(position);
+        notifier.notifyItemInserted(position);
         view.scrollTo(position);
         view.showSnackbarError(Optional.<String>absent());
         onDataSetChanged();
     }
 
     private void notifyChanged(int position) {
-        notifyItemChanged(position);
+        notifier.notifyItemChanged(position);
         onDataSetChanged();
     }
 
@@ -264,5 +269,4 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
     private static Pair<View, String> pairOf(@NonNull View view, @NonNull String string) {
         return Pair.create(view, string);
     }
-
 }

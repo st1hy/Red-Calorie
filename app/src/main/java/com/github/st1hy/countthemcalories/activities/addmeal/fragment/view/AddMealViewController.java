@@ -22,11 +22,10 @@ import rx.Observable;
 
 public class AddMealViewController extends AddMealScreenDelegate implements AddMealView {
 
-
-    @BindView(R.id.add_meal_name)
-    EditText name;
     @BindView(R.id.add_meal_ingredients_list)
     RecyclerView ingredientList;
+    @BindView(R.id.add_meal_name)
+    EditText name;
     @BindView(R.id.add_meal_empty_ingredients)
     View emptyIngredients;
     @BindView(R.id.add_meal_button_add_ingredient)

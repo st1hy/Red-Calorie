@@ -12,9 +12,8 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealLifecycleController;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealSaver;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 
 import javax.inject.Inject;
@@ -25,13 +24,11 @@ public class AddMealFragment extends BaseFragment {
     private AddMealFragmentComponent component;
 
     @Inject
-    AddMealPresenter presenter;
-    @Inject
-    IngredientsAdapter adapter;
+    AddMealLifecycleController controller;
     @Inject
     AddMealSaver saver;
     @Inject
-    RecyclerView ingredientList;
+    RecyclerView ingredientList; //inject adapter
 
     public void setComponentFactory(@NonNull AddMealFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
@@ -60,15 +57,13 @@ public class AddMealFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        presenter.onStart();
-        adapter.onStart();
+        controller.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
-        adapter.onStop();
+        controller.onStop();
     }
 
     @Override
