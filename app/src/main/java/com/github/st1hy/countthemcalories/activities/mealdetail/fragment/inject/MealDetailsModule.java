@@ -1,29 +1,29 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealIngredientsAdapter;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealIngredientsAdapter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailViewImpl;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
-
-import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,16 +46,8 @@ public class MealDetailsModule {
     }
 
     @Provides
-    public MealDetailView provideView() {
-        return fragment;
-    }
-
-
-    @Provides
-    @PerFragment
-    public MealIngredientsAdapter provideAdapter(Meal meal,
-                                                 PhysicalQuantitiesModel quantitiesModel) {
-        return new MealIngredientsAdapter(meal, quantitiesModel);
+    public MealDetailView provideView(MealDetailViewImpl mealDetailView) {
+        return mealDetailView;
     }
 
     @Provides
@@ -75,26 +67,34 @@ public class MealDetailsModule {
     }
 
     @Provides
-    public MealDetailScreen provideMealDetailScreen() {
-        return (MealDetailScreen) fragment.getActivity();
+    @PerFragment
+    public ImageHolderDelegate provideImageHolder(WithoutPlaceholderImageHolderDelegate imageHolderDelegate) {
+        return imageHolderDelegate;
     }
 
     @Provides
     @PerFragment
-    public ImageHolderDelegate provideImageHolder(Picasso picasso,
-                                                  PermissionsHelper permissionsHelper,
-                                                  Provider<ImageView> imageViewProvider) {
-        return new WithoutPlaceholderImageHolderDelegate(picasso, permissionsHelper, imageViewProvider);
-    }
-
-    @Provides
-    public ImageView provideImageViewProvider() {
-        return fragment.getImageView();
+    public ImageView provideImageViewProvider(View rootView) {
+        return (ImageView) rootView.findViewById(R.id.meal_detail_image);
     }
 
     @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
+    }
+
+    @Provides
+    public View rooView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    @PerFragment
+    public RecyclerView recyclerView(Context context, View rootView, MealIngredientsAdapter adapter) {
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        return recyclerView;
     }
 
 }

@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MealDetailActivity extends BaseActivity implements MealDetailScreen {
+public class MealDetailActivity extends BaseActivity {
 
     public static final String EXTRA_MEAL_PARCEL = "meal detail parcel";
     public static final int RESULT_EDIT = 0x51;
@@ -27,7 +27,7 @@ public class MealDetailActivity extends BaseActivity implements MealDetailScreen
     MealDetailActivityComponent component;
 
     @Inject
-    MealDetailFragment content;
+    MealDetailFragment content; //injects fragment
 
     @NonNull
     protected MealDetailActivityComponent getComponent() {
@@ -45,27 +45,5 @@ public class MealDetailActivity extends BaseActivity implements MealDetailScreen
         setContentView(R.layout.meal_detail_activity);
         ButterKnife.bind(this);
         getComponent().inject(this);
-    }
-
-    @Override
-    public void editMealWithId(long mealId) {
-        setResultAndFinish(RESULT_EDIT, mealId);
-    }
-
-    @Override
-    public void deleteMealWithId(long mealId) {
-        setResultAndFinish(RESULT_DELETE, mealId);
-    }
-
-    public void setResultAndFinish(int resultCode, long mealId) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_RESULT_MEAL_ID_LONG, mealId);
-        setResult(resultCode, intent);
-        ActivityCompat.finishAfterTransition(this);
-    }
-
-    @OnClick(R.id.meal_detail_root)
-    public void onClickedOutside() {
-        ActivityCompat.finishAfterTransition(this);
     }
 }

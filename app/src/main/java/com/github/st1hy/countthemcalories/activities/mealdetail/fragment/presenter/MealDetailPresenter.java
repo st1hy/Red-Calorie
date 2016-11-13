@@ -1,13 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 
-public interface MealDetailPresenter {
+public interface MealDetailPresenter extends BasicLifecycle {
 
-    void onStart();
-
-    void onStop();
-
-    void onSaveState(@NonNull Bundle outState);
 }

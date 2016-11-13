@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,10 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -19,28 +22,42 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.subscriptions.CompositeSubscription;
 
-public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewHolder> {
+@PerFragment
+public class MealIngredientsPresenter implements RecyclerAdapterWrapper<IngredientViewHolder>, BasicLifecycle {
 
+
+    @NonNull
     private final Meal meal;
+    @NonNull
     private final PhysicalQuantitiesModel quantitiesModel;
+    private RecyclerViewNotifier notifier;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
-
     private List<Ingredient> ingredients = Collections.emptyList();
 
-    public MealIngredientsAdapter(@NonNull Meal meal,
-                                  @NonNull PhysicalQuantitiesModel quantitiesModel) {
+    @Inject
+    public MealIngredientsPresenter(@NonNull Meal meal,
+                                    @NonNull PhysicalQuantitiesModel quantitiesModel) {
         this.meal = meal;
         this.quantitiesModel = quantitiesModel;
     }
 
-    public void onStart() {
-        ingredients = meal.getIngredients();
-        notifyDataSetChanged();
+    @Override
+    public void setNotifier(@NonNull RecyclerViewNotifier notifier) {
+        this.notifier = notifier;
     }
 
+    @Override
+    public void onStart() {
+        ingredients = meal.getIngredients();
+        notifier.notifyDataSetChanged();
+    }
+
+    @Override
     public void onStop() {
         subscriptions.clear();
     }

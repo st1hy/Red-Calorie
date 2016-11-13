@@ -39,6 +39,7 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
         this.view = view;
     }
 
+    @NonNull
     public void setNotifier(@NonNull RecyclerViewNotifier notifier) {
         this.notifier = notifier;
     }

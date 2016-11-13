@@ -1,14 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Meal;
-
-import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 
@@ -20,13 +18,11 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
+@PerFragment
 public class MealDetailPresenterImpl implements MealDetailPresenter {
-
-    public static final String SAVED_MEAL_STATE = "meal details model";
 
     private final Meal meal;
     private final MealDetailView view;
-    private final MealIngredientsAdapter adapter;
     private final PhysicalQuantitiesModel quantitiesModel;
     private final ImageHolderDelegate imageHolderDelegate;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -34,12 +30,10 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     @Inject
     public MealDetailPresenterImpl(@NonNull MealDetailView view,
                                    @NonNull Meal meal,
-                                   @NonNull MealIngredientsAdapter adapter,
                                    @NonNull PhysicalQuantitiesModel quantitiesModel,
                                    @NonNull ImageHolderDelegate imageHolderDelegate) {
         this.view = view;
         this.meal = meal;
-        this.adapter = adapter;
         this.quantitiesModel = quantitiesModel;
         this.imageHolderDelegate = imageHolderDelegate;
     }
@@ -50,29 +44,12 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         setupView(meal);
         subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
         subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
-        adapter.onStart();
     }
 
     @Override
     public void onStop() {
         imageHolderDelegate.onDetached();
         subscriptions.clear();
-        adapter.onStop();
-    }
-
-    @Override
-    public void onSaveState(@NonNull Bundle outState) {
-        outState.putParcelable(SAVED_MEAL_STATE, Parcels.wrap(meal));
-    }
-
-    @NonNull
-    private Action1<Meal> onMealLoaded() {
-        return new Action1<Meal>() {
-            @Override
-            public void call(Meal meal) {
-                setupView(meal);
-            }
-        };
     }
 
     private void setupView(@NonNull Meal meal) {
