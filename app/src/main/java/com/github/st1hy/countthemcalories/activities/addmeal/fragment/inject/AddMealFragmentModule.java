@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
@@ -21,6 +22,11 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMe
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.headerpicture.PictureView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
@@ -33,6 +39,8 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -148,5 +156,33 @@ public class AddMealFragmentModule {
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setNestedScrollingEnabled(false);
         return recyclerView;
+    }
+
+    @Provides
+    @PerFragment
+    public PicturePresenter picturePresenter(PicturePresenterImp presenter) {
+        return presenter;
+    }
+
+
+    @Provides
+    @Nullable
+    @Named("pictureTempUri")
+    public Uri tempPictureUri() {
+        if (savedState != null) {
+            return savedState.getParcelable(PicturePicker.SAVE_TEMP_URI);
+        } else {
+            return null;
+        }
+    }
+
+    @Provides
+    public PictureModel pictureModel(AddMealModel model) {
+        return model;
+    }
+
+    @Provides
+    public ImageView imageViewProvider(PictureView view) {
+        return view.getImageView();
     }
 }

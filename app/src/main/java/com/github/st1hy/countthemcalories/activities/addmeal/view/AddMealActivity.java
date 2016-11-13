@@ -36,7 +36,7 @@ public class AddMealActivity extends BaseActivity {
     PublishSubject<AddMealMenuAction> menuActionPublishSubject;
 
     @NonNull
-    protected AddMealActivityComponent getComponent() {
+    public AddMealActivityComponent getComponent() {
         if (component == null) {
             component = DaggerAddMealActivityComponent.builder()
                     .applicationComponent(getAppComponent())

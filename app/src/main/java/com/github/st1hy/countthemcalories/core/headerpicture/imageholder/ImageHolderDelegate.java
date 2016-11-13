@@ -38,8 +38,11 @@ import static com.github.st1hy.countthemcalories.core.permissions.Permission.GRA
  */
 public class ImageHolderDelegate {
 
+    @NonNull
     protected final Picasso picasso;
+    @NonNull
     protected final PermissionsHelper permissionsHelper;
+    @NonNull
     protected final Provider<ImageView> imageViewProvider;
 
     private final Subject<Optional<Uri>, Optional<Uri>> imageUriSubject = BehaviorSubject.create();

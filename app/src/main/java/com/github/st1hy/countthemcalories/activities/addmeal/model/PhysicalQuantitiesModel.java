@@ -22,19 +22,20 @@ import org.joda.time.format.DateTimeFormat;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.functions.Func1;
 
 public class PhysicalQuantitiesModel {
-    final SettingsModel settingsModel;
-    final Resources resources;
-    final Context context;
-    Func1<Ingredient, BigDecimal> ingredientToEnergy;
-    Func1<BigDecimal, String> energyAsString;
+    private final SettingsModel settingsModel;
+    private final Resources resources;
+    private final Context context;
+    private Func1<Ingredient, BigDecimal> ingredientToEnergy;
+    private Func1<BigDecimal, String> energyAsString;
 
     @Inject
     public PhysicalQuantitiesModel(@NonNull final SettingsModel settingsModel,
-                                   @NonNull Context context) {
+                                   @NonNull @Named("appContext") Context context) {
         this.settingsModel = settingsModel;
         this.context = context;
         this.resources = context.getResources();

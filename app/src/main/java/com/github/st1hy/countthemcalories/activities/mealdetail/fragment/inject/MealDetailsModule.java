@@ -25,6 +25,8 @@ import com.github.st1hy.countthemcalories.database.Meal;
 
 import org.parceler.Parcels;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -90,7 +92,7 @@ public class MealDetailsModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(Context context, View rootView, MealIngredientsAdapter adapter) {
+    public RecyclerView recyclerView(@Named("activityContext") Context context, View rootView, MealIngredientsAdapter adapter) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

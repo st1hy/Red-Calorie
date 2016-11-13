@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.core.permissions;
 
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import dagger.Module;
@@ -21,10 +20,5 @@ public class PermissionModule {
             fragmentManager.executePendingTransactions();
         }
         return fragment;
-    }
-
-    @Provides
-    public FragmentManager provideFragmentManager(FragmentActivity fragmentActivity) {
-        return fragmentActivity.getSupportFragmentManager();
     }
 }

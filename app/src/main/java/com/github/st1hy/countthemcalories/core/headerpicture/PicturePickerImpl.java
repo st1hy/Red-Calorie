@@ -7,30 +7,38 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Func1;
 
+@PerFragment
 public class PicturePickerImpl implements PicturePicker {
 
-    public static final String SAVE_TEMP_URI = "with picture temp uri";
     private static final int REQUEST_CAMERA = 0x3901;
     private static final int REQUEST_PICK_IMAGE = 0x3902;
 
+    @Nullable
     private Uri tempImageUri;
 
+    @NonNull
     private final Context context;
+    @NonNull
     private final RxActivityResult rxActivityResult;
 
-    public PicturePickerImpl(Context context, RxActivityResult rxActivityResult,
-                             @Named("pictureTempUri") Uri uri) {
+    @Inject
+    public PicturePickerImpl(@NonNull @Named("activityContext") Context context,
+                             @NonNull RxActivityResult rxActivityResult,
+                             @Nullable @Named("pictureTempUri") Uri uri) {
         this.context = context;
         this.rxActivityResult = rxActivityResult;
         this.tempImageUri = uri;

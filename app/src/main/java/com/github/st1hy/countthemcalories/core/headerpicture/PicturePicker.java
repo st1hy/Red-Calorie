@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface PicturePicker extends WithState {
 
+    String SAVE_TEMP_URI = "with picture temp uri";
+
     @CheckResult
     Observable<Uri> openCameraAndGetPicture();
 

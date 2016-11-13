@@ -20,9 +20,9 @@ import rx.Observable;
 public class WithoutPlaceholderImageHolderDelegate extends ImageHolderDelegate {
 
     @Inject
-    public WithoutPlaceholderImageHolderDelegate(Picasso picasso,
-                                                 PermissionsHelper permissionsHelper,
-                                                 Provider<ImageView> imageViewProvider) {
+    public WithoutPlaceholderImageHolderDelegate(@NonNull Picasso picasso,
+                                                 @NonNull PermissionsHelper permissionsHelper,
+                                                 @NonNull Provider<ImageView> imageViewProvider) {
         super(picasso, permissionsHelper, imageViewProvider);
     }
 

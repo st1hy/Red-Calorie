@@ -1,9 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
@@ -15,7 +13,6 @@ import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MealDetailActivity extends BaseActivity {
 
@@ -30,7 +27,7 @@ public class MealDetailActivity extends BaseActivity {
     MealDetailFragment content; //injects fragment
 
     @NonNull
-    protected MealDetailActivityComponent getComponent() {
+    public MealDetailActivityComponent getComponent() {
         if (component == null) {
             component = DaggerMealDetailActivityComponent.builder()
                     .mealDetailActivityModel(new MealDetailActivityModel(this))

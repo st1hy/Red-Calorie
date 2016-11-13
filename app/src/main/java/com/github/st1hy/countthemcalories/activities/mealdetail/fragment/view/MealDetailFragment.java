@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.DaggerMealDetailComponent;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailComponent;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailsModule;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.LifecycleController;
+import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.google.common.base.Preconditions;
 
@@ -39,10 +39,9 @@ public class MealDetailFragment extends BaseFragment {
     @NonNull
     protected MealDetailComponent getComponent(@Nullable Bundle savedInstanceState) {
         if (component == null) {
-            component = DaggerMealDetailComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .mealDetailsModule(new MealDetailsModule(this, savedInstanceState))
-                    .build();
+            MealDetailActivity activity = (MealDetailActivity) getActivity();
+            component = activity.getComponent()
+                    .mealDetailComponent(new MealDetailsModule(this, savedInstanceState));
         }
         return component;
     }

@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenI
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import rx.subjects.PublishSubject;
@@ -31,6 +34,12 @@ public class AddMealActivityModule {
 
     @Provides
     public Activity activity() {
+        return activity;
+    }
+
+    @Provides
+    @Named("activityContext")
+    public Context context() {
         return activity;
     }
 
@@ -84,4 +93,6 @@ public class AddMealActivityModule {
     public AddMealScreen addMealScreen(AddMealScreenImpl screen) {
         return screen;
     }
+
+
 }
