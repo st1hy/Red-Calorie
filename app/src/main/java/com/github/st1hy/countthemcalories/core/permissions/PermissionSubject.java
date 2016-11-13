@@ -13,10 +13,8 @@ public interface PermissionSubject {
      * Determine whether <em>you</em> have been granted a particular permission.
      *
      * @param permission The name of the permission being checked.
-     *
      * @return {@link PackageManager#PERMISSION_GRANTED} if you have the
      * permission, or {@link PackageManager#PERMISSION_DENIED} if not.
-     *
      * @see Context#checkSelfPermission(String)
      */
     int checkSelfPermission(@NonNull String permission);
@@ -37,7 +35,6 @@ public interface PermissionSubject {
      *
      * @param permission A permission your app wants to request.
      * @return Whether you can show permission rationale UI.
-     *
      * @see #checkSelfPermission(String)
      * @see Activity#shouldShowRequestPermissionRationale(String)
      */
@@ -46,15 +43,15 @@ public interface PermissionSubject {
 
     /**
      * Performs permission request. Will require user response to continue.
-     *
+     * <p>
      * Realization of this functionality can be done by calling {@link Activity#requestPermissions(String[], int)}
      * and waiting for the response in callback {@link Activity#onRequestPermissionsResult(int, String[], int[])}
-     *
+     * <p>
      * Implementation must wrap this async call into observable.
      *
      * @param permissions array of permissions app requests
      * @return observable permission result.
-     * @see Activity#requestPermissions(String[],int)
+     * @see Activity#requestPermissions(String[], int)
      */
     @NonNull
     Observable<Permission[]> requestPermission(@NonNull String[] permissions);

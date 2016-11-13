@@ -21,8 +21,10 @@ import rx.Observable;
 
 public class AddIngredientViewController extends AddIngredientScreenDelegate implements AddIngredientView {
 
-    @NonNull private final Resources resources;
-    @NonNull private final AddIngredientScreen screen;
+    @NonNull
+    private final Resources resources;
+    @NonNull
+    private final AddIngredientScreen screen;
 
     @BindView(R.id.add_ingredient_name)
     EditText name;
@@ -46,7 +48,6 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     protected AddIngredientScreen getDelegate() {
         return screen;
     }
-
 
 
     @Override

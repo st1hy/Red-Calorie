@@ -58,7 +58,7 @@ public class PermissionsHelper {
      * <p>
      * For use when permission is required by direct user action.
      *
-     * @param permissionName       name of the permission
+     * @param permissionName   name of the permission
      * @param requestRationale optional rationale about this permission, may be null
      * @return observable on permission
      */

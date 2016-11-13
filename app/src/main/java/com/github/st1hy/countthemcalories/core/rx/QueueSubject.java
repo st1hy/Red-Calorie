@@ -94,7 +94,7 @@ public class QueueSubject<T> extends Subject<T, T> {
             if (!hasObservers()) {
                 queue.add(Notification.createOnNext(t));
             } else {
-                for (Subscriber<? super T> s: subscribers) {
+                for (Subscriber<? super T> s : subscribers) {
                     if (!s.isUnsubscribed())
                         s.onNext(t);
                     else
@@ -107,7 +107,7 @@ public class QueueSubject<T> extends Subject<T, T> {
             if (!hasObservers()) {
                 queue.add(Notification.<T>createOnError(e));
             } else {
-                for (Subscriber<? super T> s: subscribers) {
+                for (Subscriber<? super T> s : subscribers) {
                     if (!s.isUnsubscribed())
                         s.onError(e);
                     else
@@ -124,7 +124,7 @@ public class QueueSubject<T> extends Subject<T, T> {
             if (!hasObservers()) {
                 queue.add(Notification.<T>createOnCompleted());
             } else {
-                for (Subscriber<? super T> s: subscribers) {
+                for (Subscriber<? super T> s : subscribers) {
                     if (!s.isUnsubscribed())
                         s.onCompleted();
                     else

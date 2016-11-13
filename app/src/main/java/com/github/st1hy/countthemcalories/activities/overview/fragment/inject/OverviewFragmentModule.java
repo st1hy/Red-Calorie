@@ -3,8 +3,8 @@ package com.github.st1hy.countthemcalories.activities.overview.fragment.inject;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 
-import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.MealsAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.OverviewPresenterImp;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
@@ -31,8 +31,8 @@ public class OverviewFragmentModule {
 
     @PerFragment
     @Provides
-    public OverviewPresenter provideDrawerPresenter(OverviewView view, MealsAdapter adapter) {
-        return new OverviewPresenterImp(view, adapter);
+    public OverviewPresenter provideDrawerPresenter(OverviewPresenterImp presenter) {
+        return presenter;
     }
 
     @PerFragment
@@ -44,5 +44,10 @@ public class OverviewFragmentModule {
     @Provides
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
+    }
+
+    @Provides
+    public View rootView() {
+        return fragment.getView();
     }
 }

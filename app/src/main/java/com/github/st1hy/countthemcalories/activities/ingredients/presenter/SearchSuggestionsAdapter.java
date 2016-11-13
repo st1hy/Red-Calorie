@@ -6,18 +6,20 @@ import android.support.annotation.NonNull;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.ForwardingAdapter;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.google.common.base.Optional;
 
 import java.util.Collections;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.Subscription;
@@ -25,6 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
+@PerActivity
 public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> implements BasicLifecycle {
 
     private static final String COLUMN = TagDao.Properties.Name.columnName;
@@ -32,7 +35,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     @NonNull
     private final RxTagsDatabaseModel databaseModel;
     @NonNull
-    private final SearchSuggestionsView view;
+    private final TokenSearchView view;
     @NonNull
     private final Observable<SearchResult> searchResultObservable;
     private Optional<String> filter;
@@ -40,9 +43,9 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public SearchSuggestionsAdapter(@NonNull Context context,
+    public SearchSuggestionsAdapter(@NonNull @Named("activityContext") Context context,
                                     @NonNull RxTagsDatabaseModel databaseModel,
-                                    @NonNull SearchSuggestionsView view,
+                                    @NonNull TokenSearchView view,
                                     @NonNull Observable<SearchResult> searchResultObservable,
                                     @NonNull Optional<String> filter) {
         super(new SimpleCursorAdapter(context,
@@ -61,8 +64,8 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     public void onStart() {
         subscriptions.add(makeSuggestions(searchResultObservable));
         if (filter.isPresent()) {
-            view.setSearchQuery("", Collections.singletonList(filter.get()));
-            view.expandSearchBar();
+            view.setQuery("", Collections.singletonList(filter.get()));
+            view.expand(false);
             filter = Optional.absent();
         }
     }

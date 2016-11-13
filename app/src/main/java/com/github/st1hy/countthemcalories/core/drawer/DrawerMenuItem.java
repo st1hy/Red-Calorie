@@ -17,8 +17,7 @@ public enum DrawerMenuItem {
     INGREDIENTS(IngredientsActivity.class, R.id.nav_ingredients),
     CATEGORIES(TagsActivity.class, R.id.nav_tags),
     SETTINGS(SettingsActivity.class, R.id.nav_settings),
-    CONTRIBUTE(ContributeActivity.class, R.id.nav_contribute)
-    ;
+    CONTRIBUTE(ContributeActivity.class, R.id.nav_contribute);
     private final Class<? extends BaseActivity> activityClass;
     @IdRes
     private final int menuItemId;

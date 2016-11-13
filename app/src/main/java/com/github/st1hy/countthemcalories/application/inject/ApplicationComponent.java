@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResul
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -21,6 +22,7 @@ import dagger.Component;
 @Component(modules = {ApplicationModule.class, DatabaseModule.class, SettingsModule.class, DbModelsModule.class})
 public interface ApplicationComponent {
 
+    @Named("appContext")
     Context getContext();
 
     @Singleton

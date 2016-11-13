@@ -9,10 +9,14 @@ public enum IngredientOptions {
     @NonNull
     public static IngredientOptions from(int selectedItemPosition) {
         switch (selectedItemPosition) {
-            case 0: return ADD_TO_NEW;
-            case 1: return EDIT;
-            case 2: return REMOVE;
-            default: return UNKNOWN;
+            case 0:
+                return ADD_TO_NEW;
+            case 1:
+                return EDIT;
+            case 2:
+                return REMOVE;
+            default:
+                return UNKNOWN;
         }
     }
 }

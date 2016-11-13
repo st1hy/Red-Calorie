@@ -71,6 +71,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
         public InsertResponse(@NonNull InsertResult result) {
             super(result, false);
         }
+
         @NonNull
         @Override
         protected Observable<CommandResponse<Cursor, InsertResult>> reverseCommand() {

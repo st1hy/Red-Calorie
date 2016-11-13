@@ -7,6 +7,8 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
@@ -54,5 +56,10 @@ public class OverviewActivityModule {
     @Provides
     public DrawerMenuItem drawerMenuItem() {
         return DrawerMenuItem.OVERVIEW;
+    }
+
+    @Provides
+    public OverviewScreen overviewScreen(OverviewScreenImpl screen) {
+        return screen;
     }
 }

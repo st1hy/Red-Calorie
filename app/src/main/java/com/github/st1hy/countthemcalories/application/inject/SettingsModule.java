@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -17,13 +18,13 @@ public class SettingsModule {
 
     @Provides
     @Singleton
-    public SharedPreferences providePreferences(Context context) {
+    public SharedPreferences providePreferences(@Named("appContext") Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Provides
     @Singleton
-    public Resources provideResources(Context context) {
+    public Resources provideResources(@Named("appContext") Context context) {
         return context.getResources();
     }
 

@@ -140,7 +140,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     public Pair<Meal, List<Ingredient>> performRemoveRaw(@NonNull Meal data) {
         List<Ingredient> ingredients = data.getIngredients();
         data.delete();
-        for (Ingredient ingredient: ingredients) {
+        for (Ingredient ingredient : ingredients) {
             ingredient.delete();
         }
         return new Pair<>(data, ingredients);

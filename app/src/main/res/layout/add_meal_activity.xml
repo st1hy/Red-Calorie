@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorBackground"
-        app:layout_anchor="@id/image_header_app_bar"
+        app:layout_anchor="@+id/image_header_app_bar"
         app:layout_anchorGravity="bottom|right|end"
         app:srcCompat="@drawable/ic_add_48px_no_padding" />
 

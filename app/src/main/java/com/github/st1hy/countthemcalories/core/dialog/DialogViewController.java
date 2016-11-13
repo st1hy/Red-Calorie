@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.core.dialog;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
@@ -8,6 +7,7 @@ import android.support.annotation.StringRes;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 
@@ -16,7 +16,7 @@ public class DialogViewController implements DialogView {
     private final Context context;
 
     @Inject
-    public DialogViewController(Activity context) {
+    public DialogViewController(@Named("activityContext") Context context) {
         this.context = context;
     }
 

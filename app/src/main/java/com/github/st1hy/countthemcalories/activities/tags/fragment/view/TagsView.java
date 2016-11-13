@@ -15,7 +15,7 @@ public interface TagsView extends TagsScreen {
     @NonNull
     Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText);
 
-    void setNoTagsVisibility(@NonNull  Visibility visibility);
+    void setNoTagsVisibility(@NonNull Visibility visibility);
 
     /**
      * @return observable emitting onNext when user clicks ok to remove

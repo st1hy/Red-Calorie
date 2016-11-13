@@ -44,7 +44,7 @@ public class MealIngredientsListModel {
     }
 
     public void modifyIngredient(final int position,
-                                @NonNull Ingredient ingredient) {
+                                 @NonNull Ingredient ingredient) {
         ingredients.set(position, ingredient);
     }
 

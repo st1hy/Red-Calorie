@@ -51,8 +51,7 @@ public class AddMealFragment extends BaseFragment {
     IngredientsAdapter adapter;
     @Inject
     AddMealSaver saver;
-
-    @BindView(R.id.add_meal_ingredients_list)
+    @Inject
     RecyclerView ingredientList;
 
     @Nullable
@@ -66,10 +65,6 @@ public class AddMealFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
         getComponent(savedInstanceState).inject(this);
-
-        ingredientList.setAdapter(adapter);
-        ingredientList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        ingredientList.setNestedScrollingEnabled(false);
     }
 
     @NonNull

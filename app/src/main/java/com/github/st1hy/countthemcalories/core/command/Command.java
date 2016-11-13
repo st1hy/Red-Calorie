@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import rx.Observable;
 
-public interface Command<Response,UndoResponse> extends Callable<CommandResponse<Response,UndoResponse>> {
+public interface Command<Response, UndoResponse> extends Callable<CommandResponse<Response, UndoResponse>> {
 
-    Observable<CommandResponse<Response,UndoResponse>> executeInTx();
+    Observable<CommandResponse<Response, UndoResponse>> executeInTx();
 }

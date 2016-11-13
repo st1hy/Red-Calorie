@@ -22,8 +22,8 @@ public interface AddMealScreen {
     @CheckResult
     @NonNull
     Observable<IngredientAction> showIngredientDetails(long requestId,
-                                                        @NonNull Ingredient ingredient,
-                                                        @NonNull List<Pair<View, String>> sharedElements);
+                                                       @NonNull Ingredient ingredient,
+                                                       @NonNull List<Pair<View, String>> sharedElements);
 
     @NonNull
     @CheckResult

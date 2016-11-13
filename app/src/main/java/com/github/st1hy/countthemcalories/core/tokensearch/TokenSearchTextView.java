@@ -91,7 +91,7 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
         addTextChangedListener(getTextWatcher());
     }
 
-    public void addAll(Collection<String>tokens) {
+    public void addAll(Collection<String> tokens) {
         for (String token : tokens) {
             addObject(token);
         }

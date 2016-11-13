@@ -28,8 +28,10 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
     private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
     private static final int ADD_CATEGORY_FIELDS_SIZE = 1;
 
-    @NonNull private final IngredientTagsModel model;
-    @NonNull private final AddIngredientView view;
+    @NonNull
+    private final IngredientTagsModel model;
+    @NonNull
+    private final AddIngredientView view;
 
     private RecyclerViewNotifier notifier;
 

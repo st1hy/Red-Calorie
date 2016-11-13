@@ -1,6 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailComponent;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailFragment;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogViewModule;
 import com.github.st1hy.countthemcalories.core.headerpicture.inject.PictureModule;
@@ -14,4 +16,5 @@ import dagger.Component;
 public interface AddMealActivityComponent {
 
     void inject(AddMealActivity activity);
+
 }

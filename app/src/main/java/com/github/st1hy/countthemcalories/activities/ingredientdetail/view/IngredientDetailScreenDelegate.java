@@ -6,7 +6,8 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 
 public class IngredientDetailScreenDelegate implements IngredientDetailScreen {
 
-    @NonNull private final IngredientDetailScreen screen;
+    @NonNull
+    private final IngredientDetailScreen screen;
 
     public IngredientDetailScreenDelegate(@NonNull IngredientDetailScreen screen) {
         this.screen = screen;

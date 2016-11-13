@@ -9,7 +9,8 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewAdapter;
 
 public class IngredientTagsAdapter extends RecyclerViewAdapter<TagViewHolder> {
 
-    @NonNull private final IngredientTagsPresenter presenter;
+    @NonNull
+    private final IngredientTagsPresenter presenter;
 
     public IngredientTagsAdapter(@NonNull IngredientTagsPresenter presenter) {
         this.presenter = presenter;

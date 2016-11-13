@@ -6,8 +6,10 @@ public interface SettingsView {
 
     @NonNull
     SelectUnitViewHolder getEnergyHolder();
+
     @NonNull
     SelectUnitViewHolder getMassHolder();
+
     @NonNull
     SelectUnitViewHolder getVolumeHolder();
 }

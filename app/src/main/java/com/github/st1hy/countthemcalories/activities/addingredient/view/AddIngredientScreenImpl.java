@@ -26,8 +26,10 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
 
     private static final int REQUEST_PICK_TAG = 0x2010;
 
-    @NonNull private final Activity activity;
-    @NonNull private final RxActivityResult rxActivityResult;
+    @NonNull
+    private final Activity activity;
+    @NonNull
+    private final RxActivityResult rxActivityResult;
 
     @Inject
     public AddIngredientScreenImpl(@NonNull Activity activity,

@@ -34,7 +34,7 @@ public class EnergyConverter {
 
     @NonNull
     public BigDecimal fromDatabaseToCurrent(@NonNull AmountUnitType type,
-                                        @NonNull BigDecimal energyDensityAmount) {
+                                            @NonNull BigDecimal energyDensityAmount) {
         return EnergyDensity.fromDatabaseValue(type, energyDensityAmount)
                 .convertTo(getDefaultEnergyUnit(), getDefaultAmountUnitOf(type))
                 .getValue()

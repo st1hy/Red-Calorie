@@ -23,7 +23,8 @@ import rx.Observable;
 
 public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate implements IngredientDetailView {
 
-    @NonNull private final Context context;
+    @NonNull
+    private final Context context;
 
     @BindView(R.id.add_meal_ingredient_accept)
     ImageButton accept;

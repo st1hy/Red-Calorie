@@ -36,7 +36,7 @@ public class MealsDatabaseCommands {
 
     @NonNull
     public Observable<CommandResponse<Meal, Void>> insert(@NonNull Meal meal,
-                                                                    @NonNull List<Ingredient> ingredients) {
+                                                          @NonNull List<Ingredient> ingredients) {
         return new InsertCommand(databaseModel, this, meal, ingredients)
                 .executeInTx()
                 .compose(insertInvalidator);

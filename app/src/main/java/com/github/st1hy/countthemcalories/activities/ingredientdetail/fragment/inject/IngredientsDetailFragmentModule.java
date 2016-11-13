@@ -32,7 +32,7 @@ import dagger.Provides;
 @Module
 public class IngredientsDetailFragmentModule {
 
-    public static final String EXTRA_INGREDIENT= "ingredient details ingredient";
+    public static final String EXTRA_INGREDIENT = "ingredient details ingredient";
     public static final String EXTRA_INGREDIENT_ID_LONG = "ingredient details extra id long";
 
     private final IngredientDetailFragment fragment;

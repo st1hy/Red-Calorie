@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.i
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivity;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
@@ -31,6 +32,8 @@ import org.parceler.Parcels;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
@@ -40,6 +43,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
 
+@PerActivity
 public class AddMealScreenImpl implements AddMealScreen {
 
     public static final int REQUEST_PICK_INGREDIENT = 0x3903;
@@ -55,6 +59,7 @@ public class AddMealScreenImpl implements AddMealScreen {
     @NonNull
     private final RxActivityResult rxActivityResult;
 
+    @Inject
     public AddMealScreenImpl(@NonNull Activity activity,
                              @NonNull RxActivityResult rxActivityResult) {
         this.activity = activity;

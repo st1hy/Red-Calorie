@@ -23,10 +23,14 @@ public enum ImageSource {
      */
     public static ImageSource fromItemPos(int arrayItemPosition) {
         switch (arrayItemPosition) {
-            case 0: return GALLERY;
-            case 1: return CAMERA;
-            case 2: return REMOVE_SOURCE;
-            default: throw new IllegalArgumentException("This position doesn't match any ImageSource item!");
+            case 0:
+                return GALLERY;
+            case 1:
+                return CAMERA;
+            case 2:
+                return REMOVE_SOURCE;
+            default:
+                throw new IllegalArgumentException("This position doesn't match any ImageSource item!");
         }
     }
 

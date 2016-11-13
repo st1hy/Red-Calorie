@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.production.DatabaseMigrationHelper;
 import com.github.st1hy.countthemcalories.database.production.ProductionOpenHelper;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -24,7 +25,8 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public DaoMaster.OpenHelper provideDbOpenHelper(@NonNull Context context, @NonNull DatabaseMigrationHelper migrationHelper) {
+    public DaoMaster.OpenHelper provideDbOpenHelper(@NonNull @Named("appContext") Context context,
+                                                    @NonNull DatabaseMigrationHelper migrationHelper) {
         return new ProductionOpenHelper(context, "database.db", null, migrationHelper);
     }
 

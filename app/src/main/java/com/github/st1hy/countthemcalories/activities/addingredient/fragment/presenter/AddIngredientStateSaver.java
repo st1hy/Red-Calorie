@@ -13,8 +13,10 @@ import javax.inject.Inject;
 
 public class AddIngredientStateSaver implements WithState {
 
-    @NonNull private final IngredientTagsModel tagsModel;
-    @NonNull private final AddIngredientModel ingredientModel;
+    @NonNull
+    private final IngredientTagsModel tagsModel;
+    @NonNull
+    private final AddIngredientModel ingredientModel;
 
     @Inject
     public AddIngredientStateSaver(@NonNull IngredientTagsModel tagsModel,

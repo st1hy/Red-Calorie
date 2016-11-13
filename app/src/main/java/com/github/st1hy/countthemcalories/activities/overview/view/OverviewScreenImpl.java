@@ -23,6 +23,8 @@ import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
@@ -30,7 +32,6 @@ import rx.functions.Func1;
 
 @PerActivity
 public class OverviewScreenImpl implements OverviewScreen {
-
 
     public static final int REQUEST_MEAL_DETAIL = 0x300;
 
@@ -44,6 +45,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     @BindView(R.id.overview_total_energy)
     TextView totalEnergy;
 
+    @Inject
     public OverviewScreenImpl(@NonNull Activity activity,
                               @NonNull RxActivityResult rxActivityResult) {
         this.activity = activity;

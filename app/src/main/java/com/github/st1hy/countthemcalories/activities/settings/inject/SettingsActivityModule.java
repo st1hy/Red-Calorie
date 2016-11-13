@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 
 import dagger.Module;
@@ -32,5 +34,10 @@ public class SettingsActivityModule {
     @Provides
     public DrawerMenuItem drawerMenuItem() {
         return DrawerMenuItem.SETTINGS;
+    }
+
+    @Provides
+    public DialogView dialogView(DialogViewController dialogViewController) {
+        return dialogViewController;
     }
 }

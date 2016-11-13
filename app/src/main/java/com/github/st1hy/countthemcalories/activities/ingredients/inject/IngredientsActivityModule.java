@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,8 +16,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.presenter.Searc
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionViewController;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.SearchSuggestionsView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
@@ -72,11 +71,6 @@ public class IngredientsActivityModule {
     @Provides
     public DrawerMenuItem currentItem() {
         return DrawerMenuItem.INGREDIENTS;
-    }
-
-    @Provides
-    public SearchSuggestionsView provideSearchView(SearchSuggestionViewController controller) {
-        return controller;
     }
 
     @Provides
@@ -137,10 +131,15 @@ public class IngredientsActivityModule {
 
     @Provides
     @PerActivity
-    public TokenSearchView tokenSearchView(Activity activity, SearchSuggestionsAdapter suggestionsAdapter) {
-        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
-        searchView.setSuggestionsAdapter(suggestionsAdapter);
-        return searchView;
+    public TokenSearchView tokenSearchView(Activity activity) {
+        return (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
+    }
+
+    @Provides
+    @Named("suggestions")
+    public SearchSuggestionsAdapter suggestionsAdapter(SearchSuggestionsAdapter adapter, TokenSearchTextView searchView) {
+        searchView.setAdapter(adapter);
+        return adapter;
     }
 
     @Provides
@@ -187,7 +186,8 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public DrawerMenuItem drawerMenuItem() {
-        return DrawerMenuItem.INGREDIENTS;
+    @Named("activityContext")
+    public Context context() {
+        return activity;
     }
 }

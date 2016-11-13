@@ -7,20 +7,26 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Meal;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
+@PerFragment
 public class OverviewViewImpl implements OverviewView {
 
-    @NonNull private final OverviewScreen screen;
+    @NonNull
+    private final OverviewScreen screen;
 
     @BindView(R.id.overview_empty)
     View emptyView;
 
+    @Inject
     public OverviewViewImpl(@NonNull OverviewScreen screen,
                             @NonNull View rootView) {
         this.screen = screen;

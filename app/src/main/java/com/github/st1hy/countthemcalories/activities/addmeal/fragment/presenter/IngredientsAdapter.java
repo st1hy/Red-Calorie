@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.Meal
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -31,6 +32,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import dagger.internal.Preconditions;
 import rx.Observable;
 import rx.Subscriber;
@@ -39,6 +42,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
+@PerFragment
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements
         IngredientItemViewHolder.Callback {
     private final AddMealView view;
@@ -49,6 +53,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientItemViewH
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+    @Inject
     public IngredientsAdapter(@NonNull AddMealView view,
                               @NonNull MealIngredientsListModel model,
                               @NonNull PhysicalQuantitiesModel quantityModel,

@@ -17,6 +17,7 @@ public abstract class UnitChangedEvent extends SettingsChangedEvent {
 
     public static class Energy extends UnitChangedEvent {
         private final EnergyUnit unit;
+
         public Energy(@NonNull EnergyUnit unit) {
             this.unit = unit;
         }
@@ -32,12 +33,14 @@ public abstract class UnitChangedEvent extends SettingsChangedEvent {
             return SettingUnit.ENERGY;
         }
     }
+
     public static class Mass extends UnitChangedEvent {
         private final MassUnit unit;
 
         public Mass(@NonNull MassUnit unit) {
             this.unit = unit;
         }
+
         @NonNull
         public MassUnit getUnit() {
             return unit;
@@ -50,12 +53,14 @@ public abstract class UnitChangedEvent extends SettingsChangedEvent {
         }
 
     }
+
     public static class Volume extends UnitChangedEvent {
         private final VolumeUnit unit;
 
         public Volume(@NonNull VolumeUnit unit) {
             this.unit = unit;
         }
+
         @NonNull
         public VolumeUnit getUnit() {
             return unit;

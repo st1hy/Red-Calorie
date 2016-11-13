@@ -9,12 +9,9 @@ import com.github.st1hy.countthemcalories.activities.contribute.inject.Contribut
 import com.github.st1hy.countthemcalories.activities.contribute.inject.ContributeActivityModule;
 import com.github.st1hy.countthemcalories.activities.contribute.inject.DaggerContributeActivityComponent;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
 
 public class ContributeActivity extends BaseActivity {
 

@@ -1,12 +1,17 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
@@ -15,17 +20,14 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.google.common.base.Preconditions;
-import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
@@ -85,14 +87,6 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    public IngredientsAdapter provideListAdapter(AddMealView view, MealIngredientsListModel model,
-                                                 PhysicalQuantitiesModel namesModel, Picasso picasso,
-                                                 PermissionsHelper permissionsHelper) {
-        return new IngredientsAdapter(view, model, namesModel, picasso, permissionsHelper);
-    }
-
-    @Provides
     public Resources provideResources() {
         return fragment.getResources();
     }
@@ -140,5 +134,19 @@ public class AddMealFragmentModule {
     @Provides
     public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> actionPublishSubject) {
         return actionPublishSubject.asObservable();
+    }
+
+    @Provides
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    public RecyclerView recyclerView(View rootView, IngredientsAdapter adapter, Activity activity) {
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setNestedScrollingEnabled(false);
+        return recyclerView;
     }
 }

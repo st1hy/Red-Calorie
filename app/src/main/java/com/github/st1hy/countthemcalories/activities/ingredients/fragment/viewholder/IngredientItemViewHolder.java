@@ -117,7 +117,7 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
         imageHolderDelegate.onDetached();
     }
 
-    public void setImageUri(@NonNull Optional<Uri>uri) {
+    public void setImageUri(@NonNull Optional<Uri> uri) {
         imageHolderDelegate.displayImage(uri);
     }
 

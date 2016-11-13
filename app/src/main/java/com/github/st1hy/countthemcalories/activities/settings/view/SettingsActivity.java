@@ -8,12 +8,9 @@ import com.github.st1hy.countthemcalories.activities.settings.inject.DaggerSetti
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponent;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
 
 public class SettingsActivity extends BaseActivity {
 

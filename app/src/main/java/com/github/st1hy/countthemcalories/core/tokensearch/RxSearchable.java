@@ -51,7 +51,6 @@ public class RxSearchable implements Observable.OnSubscribe<SearchResult> {
     }
 
 
-
     @NonNull
     public static Func1<SearchResult, CharSequence> intoQuery() {
         if (INTO_QUERY == null) {

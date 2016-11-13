@@ -14,8 +14,10 @@ import javax.inject.Inject;
 
 public class AddMealSaver implements WithState {
 
-    @NonNull private final Meal meal;
-    @NonNull private final MealIngredientsListModel ingredientsListModel;
+    @NonNull
+    private final Meal meal;
+    @NonNull
+    private final MealIngredientsListModel ingredientsListModel;
 
     @Inject
     public AddMealSaver(@NonNull Meal meal, @NonNull MealIngredientsListModel ingredientsListModel) {

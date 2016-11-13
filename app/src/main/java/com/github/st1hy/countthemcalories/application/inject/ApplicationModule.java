@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResul
 import com.squareup.picasso.MediaStoreRequestHandlerNext;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -24,6 +25,7 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Named("appContext")
     public Context provideContext() {
         return application.getBaseContext();
     }
@@ -35,7 +37,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public Picasso providePicasso(Context context) {
+    public Picasso providePicasso(@Named("appContext") Context context) {
         return new Picasso.Builder(context)
                 .addRequestHandler(new MediaStoreRequestHandlerNext(context))
                 .build();
@@ -49,7 +51,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public RxActivityResult rxActivityResult(Context context) {
+    public RxActivityResult rxActivityResult(@Named("appContext") Context context) {
         return new RxActivityResult(context.getPackageName());
     }
 

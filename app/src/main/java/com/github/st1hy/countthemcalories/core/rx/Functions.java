@@ -12,13 +12,13 @@ public class Functions {
             return null;
         }
     };
-    public static final Func1<Object,Boolean> ALWAYS_FALSE = new Func1<Object, Boolean>() {
+    public static final Func1<Object, Boolean> ALWAYS_FALSE = new Func1<Object, Boolean>() {
         @Override
         public Boolean call(Object o) {
             return false;
         }
     };
-    public static final Func1<Object,Boolean> ALWAYS_TRUE = new Func1<Object, Boolean>() {
+    public static final Func1<Object, Boolean> ALWAYS_TRUE = new Func1<Object, Boolean>() {
         @Override
         public Boolean call(Object o) {
             return true;

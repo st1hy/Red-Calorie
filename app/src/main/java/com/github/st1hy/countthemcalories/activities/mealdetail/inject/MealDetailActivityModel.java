@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.inject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,8 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailA
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreenImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -70,5 +73,11 @@ public class MealDetailActivityModel {
     @PerActivity
     public MealDetailScreen mealDetailScreen(MealDetailScreenImpl screen) {
         return screen;
+    }
+
+    @Provides
+    @Named("activityContext")
+    public Context context() {
+        return activity;
     }
 }
