@@ -22,19 +22,13 @@ import javax.inject.Named;
 
 import rx.Observable;
 
-public class SettingsFragment extends BaseFragment implements SettingsView {
+public class SettingsFragment extends BaseFragment {
 
     SettingsFragmentComponent component;
 
     @Inject
     SettingsPresenter presenter;
-    @Inject
-    DialogView dialogView;
 
-    @Inject @Named("energy")
-    SelectUnitViewHolder energyHolder;
-    @Inject @Named("mass") SelectUnitViewHolder massHolder;
-    @Inject @Named("volume") SelectUnitViewHolder volumeHolder;
 
     @Nullable
     @Override
@@ -71,28 +65,4 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         presenter.onStop();
     }
 
-    @NonNull
-    public SelectUnitViewHolder getEnergyHolder() {
-        return energyHolder;
-    }
-
-    @NonNull
-    public SelectUnitViewHolder getMassHolder() {
-        return massHolder;
-    }
-
-    @NonNull
-    public SelectUnitViewHolder getVolumeHolder() {
-        return volumeHolder;
-    }
-
-    @Override
-    public Observable<Integer> showAlertDialog(@StringRes int titleRes, @ArrayRes int optionsRes) {
-        return dialogView.showAlertDialog(titleRes, optionsRes);
-    }
-
-    @Override
-    public Observable<Integer> showAlertDialog(@StringRes int titleRes, CharSequence[] options) {
-        return dialogView.showAlertDialog(titleRes, options);
-    }
 }

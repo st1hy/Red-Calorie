@@ -45,7 +45,7 @@ public class SettingsPresenterImplTest {
 
     @Before
     public void setup() {
-        presenter = new SettingsPresenterImpl(view, preferencesModel);
+        presenter = new SettingsPresenterImpl(view, preferencesModel, dialogView);
         when(placeHolder.clickObservable()).thenReturn(Observable.<Void>empty());
         when(activeHolder.clickObservable()).thenReturn(Observable.<Void>just(null));
         when(view.getEnergyHolder()).thenReturn(placeHolder);

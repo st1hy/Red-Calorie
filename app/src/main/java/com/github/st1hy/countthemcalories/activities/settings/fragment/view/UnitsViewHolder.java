@@ -4,10 +4,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@PerFragment
 public class UnitsViewHolder {
 
     @BindView(R.id.settings_unit_energy)
@@ -17,6 +21,7 @@ public class UnitsViewHolder {
     @BindView(R.id.settings_unit_volume)
     View volume;
 
+    @Inject
     public UnitsViewHolder(@NonNull View root) {
         ButterKnife.bind(this, root);
     }

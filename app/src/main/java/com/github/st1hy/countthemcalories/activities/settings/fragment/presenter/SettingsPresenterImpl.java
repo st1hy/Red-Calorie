@@ -8,6 +8,8 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingUnit;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChangedEvent;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
+import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 
 import javax.inject.Inject;
@@ -18,17 +20,25 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
+@PerFragment
 public class SettingsPresenterImpl implements SettingsPresenter {
-    final SettingsView view;
-    final SettingsModel model;
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    @NonNull
+    private final SettingsView view;
+    @NonNull
+    private final SettingsModel model;
+    @NonNull
+    private final DialogView dialogView;
+
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public SettingsPresenterImpl(@NonNull SettingsView view,
-                                 @NonNull SettingsModel model) {
+                                 @NonNull SettingsModel model,
+                                 @NonNull DialogView dialogView) {
         this.view = view;
         this.model = model;
+        this.dialogView = dialogView;
     }
 
     @Override
@@ -44,7 +54,7 @@ public class SettingsPresenterImpl implements SettingsPresenter {
         subscriptions.clear();
     }
 
-    void setupView() {
+    private void setupView() {
         for (SettingUnit setting : SettingUnit.values()) {
             SelectUnitViewHolder viewHolder = getViewHolder(setting);
             subscriptions.add(viewHolder.clickObservable()
@@ -82,7 +92,7 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                 for (int i = 0; i < units.length; i++) {
                     values[i] = model.getUnitName(units[i]);
                 }
-                return view.showAlertDialog(model.getPreferredUnitDialogTitle(), values);
+                return dialogView.showAlertDialog(model.getPreferredUnitDialogTitle(), values);
             }
         };
     }
