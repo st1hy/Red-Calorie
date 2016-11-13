@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ import static com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem.OVER
 import static com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem.SETTINGS;
 import static com.github.st1hy.countthemcalories.core.state.Selection.SELECTED;
 
+@PerActivity
 public final class DrawerPresenter implements BasicLifecycle, NavigationView.OnNavigationItemSelectedListener {
 
     private final DrawerView view;

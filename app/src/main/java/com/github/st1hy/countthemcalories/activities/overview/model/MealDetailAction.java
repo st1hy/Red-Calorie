@@ -5,8 +5,9 @@ import android.support.annotation.NonNull;
 public class MealDetailAction {
     public static final MealDetailAction CANCELED = create(Type.CANCELED, -1L);
 
-    final Type type;
-    final long id;
+    @NonNull
+    private final Type type;
+    private final long id;
 
     private MealDetailAction(@NonNull Type type, long id) {
         this.type = type;

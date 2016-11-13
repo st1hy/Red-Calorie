@@ -20,7 +20,10 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholde
 import com.github.st1hy.countthemcalories.activities.overview.fragment.viewholder.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -36,6 +39,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import dagger.internal.Preconditions;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,29 +51,41 @@ import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
+@PerFragment
 public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> implements MealItemHolder.Callback {
     static final int mealItemLayout = R.layout.overview_item_scrolling;
     static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
 
     final CompositeSubscription subscriptions = new CompositeSubscription();
 
+    @NonNull
     private final RxMealsDatabaseModel databaseModel;
+    @NonNull
     private final Picasso picasso;
+    @NonNull
     private final PhysicalQuantitiesModel quantityModel;
+    @NonNull
     private final OverviewView view;
+    @NonNull
     private final MealsDatabaseCommands commands;
+    @NonNull
     private final MealsViewModel viewModel;
+    @NonNull
     private final PermissionsHelper permissionsHelper;
+    @NonNull
+    private final UndoView undoView;
 
-    List<Meal> list = Collections.emptyList();
+    private List<Meal> list = Collections.emptyList();
 
+    @Inject
     public MealsAdapter(@NonNull OverviewView view,
                         @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Picasso picasso,
                         @NonNull PhysicalQuantitiesModel quantityModel,
                         @NonNull MealsDatabaseCommands commands,
                         @NonNull MealsViewModel viewModel,
-                        @NonNull PermissionsHelper permissionsHelper) {
+                        @NonNull PermissionsHelper permissionsHelper,
+                        @NonNull UndoView undoView) {
         this.view = view;
         this.commands = commands;
         this.databaseModel = databaseModel;
@@ -76,12 +93,11 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
         this.quantityModel = quantityModel;
         this.viewModel = viewModel;
         this.permissionsHelper = permissionsHelper;
+        this.undoView = undoView;
     }
 
     public void onStart() {
         loadTodayMeals();
-        subscriptions.add(view.getDetailScreenActionObservable()
-                .subscribe(onDetailScreenAction()));
     }
 
     public void onStop() {
@@ -141,19 +157,14 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     @Override
     public void onMealClicked(@NonNull final MealItemHolder holder) {
         holder.setEnabled(false);
-        enableAfterMealDetailReturns(holder);
-        view.openMealDetails(holder.getMeal(), holder.getImage());
-    }
-
-    private void enableAfterMealDetailReturns(@NonNull final MealItemHolder holder) {
-        subscriptions.add(view.getDetailScreenActionObservable()
+        view.openMealDetails(holder.getMeal(), holder.getImage())
                 .first()
-                .subscribe(new Action1<MealDetailAction>() {
+                .doOnNext(new Action1<MealDetailAction>() {
                     @Override
                     public void call(MealDetailAction mealDetailAction) {
                         holder.setEnabled(true);
                     }
-                }));
+                }).subscribe(onDetailScreenAction());
     }
 
     @Override
@@ -174,7 +185,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
             @Override
             public void call(MealDetailAction mealDetailAction) {
                 long mealId = mealDetailAction.getId();
-                switch (mealDetailAction.getType())  {
+                switch (mealDetailAction.getType()) {
                     case DELETE:
                         deleteMealWithId(mealId);
                         break;
@@ -207,7 +218,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     private void openEditScreen(@NonNull Meal meal) {
-        view.openEditMealScreen(meal);
+        view.editMeal(meal);
     }
 
     private void loadTodayMeals() {
@@ -373,14 +384,14 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> i
     }
 
     @NonNull
-    Func1<Boolean, Observable<Void>> showUndoMessage(@StringRes final int undoMessage) {
-        return new Func1<Boolean, Observable<Void>>() {
+    Func1<Boolean, Observable<UndoAction>> showUndoMessage(@StringRes final int undoMessage) {
+        return new Func1<Boolean, Observable<UndoAction>>() {
             @Override
-            public Observable<Void> call(Boolean isAvailable) {
+            public Observable<UndoAction> call(Boolean isAvailable) {
                 if (isAvailable)
-                    return view.showUndoMessage(undoMessage);
+                    return undoView.showUndoMessage(undoMessage);
                 else {
-                    view.hideUndoMessage();
+                    undoView.hideUndoMessage();
                     return Observable.empty();
                 }
             }

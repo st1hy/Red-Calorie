@@ -97,7 +97,7 @@ public class MealsAdapterTest {
             }
         });
         MockitoAnnotations.initMocks(this);
-        adapter = new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel, permissionsHelper);
+        adapter = new MealsAdapter(view, databaseModel, picasso, quantityModel, commands, viewModel, permissionsHelper, undoView);
 
         Func1<?, BigDecimal> anyDecimal = Functions.into(BigDecimal.TEN);
         when(quantityModel.mapToEnergy()).thenReturn((Func1<Ingredient, BigDecimal>) anyDecimal);
@@ -334,7 +334,7 @@ public class MealsAdapterTest {
         adapter.editMealWithId(1L);
 
         verify(meal, times(2)).getId();
-        verify(view).openEditMealScreen(argThat(hasMeal(meal)));
+        verify(view).editMeal(argThat(hasMeal(meal)));
 
         testVerifyNoMoreInteractions();
         verifyNoMoreInteractions(meal);

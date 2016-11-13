@@ -15,11 +15,15 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.Utils;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.state.Selection;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@PerActivity
 public final class DrawerView {
 
     @NonNull
@@ -32,6 +36,7 @@ public final class DrawerView {
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    @Inject
     public DrawerView(@NonNull AppCompatActivity activity) {
         this.activity = activity;
         ButterKnife.bind(this, activity);

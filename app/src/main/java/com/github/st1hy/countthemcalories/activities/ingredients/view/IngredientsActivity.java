@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.inject.Ingredie
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.command.view.UndoDrawerActivity;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -55,6 +56,8 @@ public class IngredientsActivity extends BaseActivity {
     IngredientsFragment content;
     @Inject
     SearchSuggestionsAdapter suggestionsAdapter;
+    @Inject
+    DrawerPresenter drawerPresenter;
 
     IngredientsActivityComponent component;
 
@@ -81,12 +84,18 @@ public class IngredientsActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         suggestionsAdapter.onStart();
+        drawerPresenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         suggestionsAdapter.onStop();
+        drawerPresenter.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!drawerPresenter.onBackPressed()) super.onBackPressed();
+    }
 }

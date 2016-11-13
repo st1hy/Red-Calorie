@@ -31,24 +31,24 @@ public class OverviewPresenterTest {
 
     @Test
     public void testStart() throws Exception {
-        when(view.getOpenMealScreenObservable()).thenReturn(Observable.<Void>empty());
+        when(view.getAddNewMealObservable()).thenReturn(Observable.<Void>empty());
 
         presenter.onStart();
 
         verify(adapter).onStart();
-        verify(view).getOpenMealScreenObservable();
+        verify(view).getAddNewMealObservable();
     }
 
     @Test
     public void testAddMeal() throws Exception {
-        when(view.getOpenMealScreenObservable()).thenReturn(Observable.<Void>just(null));
+        when(view.getAddNewMealObservable()).thenReturn(Observable.<Void>just(null));
 
         presenter.onStart();
 
         verify(adapter).onStart();
-        verify(view).getOpenMealScreenObservable();
+        verify(view).getAddNewMealObservable();
 
-        verify(view).openAddMealScreen();
+        verify(view).addNewMeal();
     }
 
     @Test

@@ -185,4 +185,9 @@ public class IngredientsActivityModule {
     public DialogView dialogView(DialogViewController dialogViewController) {
         return dialogViewController;
     }
+
+    @Provides
+    public DrawerMenuItem drawerMenuItem() {
+        return DrawerMenuItem.INGREDIENTS;
+    }
 }

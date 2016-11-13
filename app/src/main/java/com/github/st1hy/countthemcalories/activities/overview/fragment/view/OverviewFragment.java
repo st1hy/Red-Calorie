@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-public class OverviewFragment extends BaseFragment implements OverviewView {
+public class OverviewFragment extends BaseFragment {
 
     @Inject
     OverviewPresenter presenter;
@@ -42,8 +42,6 @@ public class OverviewFragment extends BaseFragment implements OverviewView {
     @BindView(R.id.overview_recycler_view)
     RecyclerView recyclerView;
 
-    @BindView(R.id.overview_empty)
-    View emptyView;
 
     OverviewFragmentComponent component;
 
@@ -85,54 +83,5 @@ public class OverviewFragment extends BaseFragment implements OverviewView {
     public void onStop() {
         super.onStop();
         presenter.onStop();
-    }
-
-    @Override
-    public void setEmptyListVisibility(@NonNull Visibility visibility) {
-        //noinspection WrongConstant
-        emptyView.setVisibility(visibility.getVisibility());
-    }
-
-    @Override
-    @NonNull
-    public Observable<Void> getOpenMealScreenObservable() {
-        return overviewScreen.getOpenMealScreenObservable();
-    }
-
-    @Override
-    public void openAddMealScreen() {
-        overviewScreen.openAddMealScreen();
-    }
-
-    @Override
-    public void openMealDetails(@NonNull Meal meal, @NonNull View sharedView) {
-        overviewScreen.openMealDetails(meal, sharedView);
-    }
-
-    @Override
-    public void openEditMealScreen(@NonNull Meal meal) {
-        overviewScreen.openEditMealScreen(meal);
-    }
-
-    @Override
-    @NonNull
-    public Observable<Void> showUndoMessage(@StringRes int undoMessageResId) {
-        return overviewScreen.showUndoMessage(undoMessageResId);
-    }
-
-    @Override
-    public void hideUndoMessage() {
-        overviewScreen.hideUndoMessage();
-    }
-
-    @Override
-    public void setTotalEnergy(@NonNull String energy) {
-        overviewScreen.setTotalEnergy(energy);
-    }
-
-    @NonNull
-    @Override
-    public Observable<MealDetailAction> getDetailScreenActionObservable() {
-        return overviewScreen.getDetailScreenActionObservable();
     }
 }

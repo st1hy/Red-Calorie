@@ -3,16 +3,21 @@ package com.github.st1hy.countthemcalories.activities.overview.fragment.presente
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+
+import javax.inject.Inject;
 
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
+@PerFragment
 public class OverviewPresenterImp implements OverviewPresenter {
 
-    final OverviewView view;
-    final MealsAdapter adapter;
-    final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final OverviewView view;
+    private final MealsAdapter adapter;
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
+    @Inject
     public OverviewPresenterImp(@NonNull OverviewView view, @NonNull MealsAdapter adapter) {
         this.view = view;
         this.adapter = adapter;
@@ -21,24 +26,19 @@ public class OverviewPresenterImp implements OverviewPresenter {
     @Override
     public void onStart() {
         adapter.onStart();
-        subscriptions.add(view.getOpenMealScreenObservable()
-                .subscribe(onNewMealClicked()));
+        subscriptions.add(view.getAddNewMealObservable()
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        view.addNewMeal();
+                    }
+                }));
     }
 
     @Override
     public void onStop() {
         adapter.onStop();
         subscriptions.clear();
-    }
-
-    @NonNull
-    private Action1<Void> onNewMealClicked() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.openAddMealScreen();
-            }
-        };
     }
 
 }
