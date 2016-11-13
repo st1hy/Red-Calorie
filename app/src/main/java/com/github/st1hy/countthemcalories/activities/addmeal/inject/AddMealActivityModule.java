@@ -44,7 +44,9 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    public AddMealFragment provideContent(FragmentManager fragmentManager, Bundle arguments) {
+    public AddMealFragment provideContent(FragmentManager fragmentManager,
+                                          Bundle arguments,
+                                          AddMealActivityComponent component) {
         final String tag = "add meal content";
 
         AddMealFragment fragment = (AddMealFragment) fragmentManager.findFragmentByTag(tag);
@@ -58,6 +60,7 @@ public class AddMealActivityModule {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
+        fragment.setComponentFactory(component);
         return fragment;
     }
 

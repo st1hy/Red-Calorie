@@ -29,7 +29,9 @@ public class MealDetailActivityModel {
     }
 
     @Provides
-    public MealDetailFragment provideDetailFragment(Bundle arguments, FragmentManager fragmentManager) {
+    public MealDetailFragment provideDetailFragment(Bundle arguments,
+                                                    FragmentManager fragmentManager,
+                                                    MealDetailActivityComponent component) {
         final String tag = "meal detail content";
 
         MealDetailFragment fragment = (MealDetailFragment) fragmentManager.findFragmentByTag(tag);
@@ -43,6 +45,7 @@ public class MealDetailActivityModel {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
+        fragment.setComponentFactory(component);
         return fragment;
     }
 

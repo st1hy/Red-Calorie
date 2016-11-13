@@ -10,18 +10,19 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponent;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealSaver;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsAdapter;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 
 import javax.inject.Inject;
 
 public class AddMealFragment extends BaseFragment {
 
-    AddMealFragmentComponent component;
+    private AddMealFragmentComponentFactory componentFactory;
+    private AddMealFragmentComponent component;
 
     @Inject
     AddMealPresenter presenter;
@@ -31,6 +32,10 @@ public class AddMealFragment extends BaseFragment {
     AddMealSaver saver;
     @Inject
     RecyclerView ingredientList;
+
+    public void setComponentFactory(@NonNull AddMealFragmentComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
+    }
 
     @Nullable
     @Override
@@ -47,9 +52,7 @@ public class AddMealFragment extends BaseFragment {
     @NonNull
     protected AddMealFragmentComponent getComponent(@Nullable Bundle savedState) {
         if (component == null) {
-            AddMealActivity activity = (AddMealActivity) getActivity();
-            component = activity.getComponent()
-                    .addMealFragmentComponent(new AddMealFragmentModule(this, savedState));
+            component = componentFactory.newAddMealFragmentComponent(new AddMealFragmentModule(this, savedState));
         }
         return component;
     }

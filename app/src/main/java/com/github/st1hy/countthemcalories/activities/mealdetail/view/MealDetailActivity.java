@@ -12,8 +12,6 @@ import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-
 public class MealDetailActivity extends BaseActivity {
 
     public static final String EXTRA_MEAL_PARCEL = "meal detail parcel";
@@ -21,13 +19,13 @@ public class MealDetailActivity extends BaseActivity {
     public static final int RESULT_DELETE = 0x52;
     public static final String EXTRA_RESULT_MEAL_ID_LONG = "extra result meal id";
 
-    MealDetailActivityComponent component;
+    private MealDetailActivityComponent component;
 
     @Inject
     MealDetailFragment content; //injects fragment
 
     @NonNull
-    public MealDetailActivityComponent getComponent() {
+    private MealDetailActivityComponent getComponent() {
         if (component == null) {
             component = DaggerMealDetailActivityComponent.builder()
                     .mealDetailActivityModel(new MealDetailActivityModel(this))
@@ -40,7 +38,6 @@ public class MealDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meal_detail_activity);
-        ButterKnife.bind(this);
         getComponent().inject(this);
     }
 }
