@@ -21,7 +21,10 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -38,30 +41,40 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
+@PerFragment
 public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction {
 
-    static final int bottomSpaceItem = 1;
-    static final int item_layout = R.layout.tags_item_scrolling;
-    static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
+    private static final int bottomSpaceItem = 1;
+    private static final int item_layout = R.layout.tags_item_scrolling;
+    private static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
 
-    final TagsView view;
-    final RxTagsDatabaseModel databaseModel;
-    final TagsFragmentModel fragmentModel;
-    final TagsViewModel viewModel;
-    final TagsDatabaseCommands commands;
+    @NonNull
+    private final TagsView view;
+    @NonNull
+    private final RxTagsDatabaseModel databaseModel;
+    @NonNull
+    private final TagsFragmentModel fragmentModel;
+    @NonNull
+    private final TagsViewModel viewModel;
+    @NonNull
+    private final TagsDatabaseCommands commands;
+    @NonNull
+    private final UndoView undoView;
 
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
                           @NonNull RxTagsDatabaseModel databaseModel,
                           @NonNull TagsFragmentModel fragmentModel,
                           @NonNull TagsViewModel viewModel,
-                          @NonNull TagsDatabaseCommands commands) {
+                          @NonNull TagsDatabaseCommands commands,
+                          @NonNull UndoView undoView) {
         super(databaseModel);
         this.view = view;
         this.databaseModel = databaseModel;
         this.fragmentModel = fragmentModel;
         this.viewModel = viewModel;
         this.commands = commands;
+        this.undoView = undoView;
     }
 
     @Override
@@ -351,7 +364,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    Func1<Void, Observable<String>> showNewTagDialog() {
+    private Func1<Void, Observable<String>> showNewTagDialog() {
         return new Func1<Void, Observable<String>>() {
             @Override
             public Observable<String> call(Void aVoid) {
@@ -361,7 +374,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    Func1<String, Boolean> notEmpty() {
+    private Func1<String, Boolean> notEmpty() {
         return new Func1<String, Boolean>() {
             @Override
             public Boolean call(String s) {
@@ -371,7 +384,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    Func1<String, String> trim() {
+    private Func1<String, String> trim() {
         return new Func1<String, String>() {
             @Override
             public String call(String s) {
@@ -381,14 +394,14 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    private Func1<Boolean, Observable<Void>> showUndoMessage(@StringRes final int undoMessage) {
-        return new Func1<Boolean, Observable<Void>>() {
+    private Func1<Boolean, Observable<UndoAction>> showUndoMessage(@StringRes final int undoMessage) {
+        return new Func1<Boolean, Observable<UndoAction>>() {
             @Override
-            public Observable<Void> call(Boolean isAvailable) {
+            public Observable<UndoAction> call(Boolean isAvailable) {
                 if (isAvailable)
-                    return view.showUndoMessage(undoMessage);
+                    return undoView.showUndoMessage(undoMessage);
                 else {
-                    view.hideUndoMessage();
+                    undoView.hideUndoMessage();
                     return Observable.empty();
                 }
             }

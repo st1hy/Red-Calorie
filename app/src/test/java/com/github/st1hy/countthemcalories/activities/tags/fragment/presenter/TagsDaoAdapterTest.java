@@ -88,7 +88,7 @@ public class TagsDaoAdapterTest {
                                  @NonNull TagsFragmentModel activityModel,
                                  @NonNull TagsViewModel viewModel,
                                  @NonNull TagsDatabaseCommands commands) {
-            super(view, model, activityModel, viewModel, commands);
+            super(view, model, activityModel, viewModel, commands, undoView);
         }
 
         @Override

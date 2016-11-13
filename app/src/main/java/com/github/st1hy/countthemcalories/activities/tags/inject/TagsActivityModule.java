@@ -1,19 +1,23 @@
 package com.github.st1hy.countthemcalories.activities.tags.inject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
+import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenterImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,12 +28,6 @@ public class TagsActivityModule {
 
     public TagsActivityModule(@NonNull TagsActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    @PerActivity
-    public DrawerPresenter provideDrawerPresenter() {
-        return new DrawerPresenterImpl(activity, DrawerMenuItem.CATEGORIES);
     }
 
     @Provides
@@ -80,7 +78,41 @@ public class TagsActivityModule {
     }
 
     @Provides
-    FragmentManager provideFragmentManager() {
+    public FragmentManager provideFragmentManager() {
         return activity.getSupportFragmentManager();
+    }
+
+    @Provides
+    @PerActivity
+    public View undoRootView() {
+        return activity.findViewById(R.id.tags_root);
+    }
+
+    @Provides
+    public AppCompatActivity appCompatActivity() {
+        return activity;
+    }
+
+    @Provides
+    public Activity activity() {
+        return activity;
+    }
+
+    @Provides
+    public DrawerMenuItem drawerMenuItem() {
+        return DrawerMenuItem.CATEGORIES;
+    }
+
+    @Provides
+    @PerActivity
+    public TokenSearchView settingsView(Activity activity) {
+        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.tags_search_view);
+        searchView.getSearchTextView().setSplitChar(new char[]{0xAD});
+        return searchView;
+    }
+
+    @Provides
+    public TagsScreen tagsScreen(TagsScreenImpl screen) {
+        return screen;
     }
 }

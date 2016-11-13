@@ -1,17 +1,17 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.inject;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsViewImpl;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.google.common.base.Preconditions;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,17 +25,8 @@ public class TagsFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    public TagsDaoAdapter providePresentedAdapter(TagsView view, RxTagsDatabaseModel model,
-                                                  TagsFragmentModel fragmentModel,
-                                                  TagsViewModel viewModel,
-                                                  TagsDatabaseCommands commands) {
-        return new TagsDaoAdapter(view, model, fragmentModel, viewModel, commands);
-    }
-
-    @Provides
-    public TagsView provideView() {
-        return fragment;
+    public TagsView provideView(TagsViewImpl view) {
+        return view;
     }
 
     @Provides
@@ -45,10 +36,13 @@ public class TagsFragmentModule {
     }
 
     @Provides
-    public TagsScreen provideTagsScreen() {
-        FragmentActivity activity = fragment.getActivity();
-        Preconditions.checkState(activity instanceof TagsScreen,
-                "activity must implement " + TagsScreen.class.getSimpleName());
-        return (TagsScreen) activity;
+    @PerFragment
+    public RecyclerView recyclerView(View rootView, Context context, TagsDaoAdapter adapter) {
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        return recyclerView;
     }
+
+
 }
