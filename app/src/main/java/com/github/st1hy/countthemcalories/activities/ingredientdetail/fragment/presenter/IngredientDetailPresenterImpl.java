@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -27,6 +28,7 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
+@PerFragment
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
     private final IngredientDetailView view;
@@ -129,7 +131,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             @Override
             public void call(Void aVoid) {
                 view.hideSoftKeyboard();
-                view.removeIngredient(ingredientID);
+                view.finishRemove(ingredientID);
             }
         };
     }
@@ -139,7 +141,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
             @Override
             public void call(Void aVoid) {
                 view.hideSoftKeyboard();
-                view.commitEditedIngredientChanges(ingredientID, ingredient);
+                view.finishEdit(ingredientID, ingredient);
             }
         };
     }

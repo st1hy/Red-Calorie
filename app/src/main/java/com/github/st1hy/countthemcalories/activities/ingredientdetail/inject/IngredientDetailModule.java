@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.inject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,6 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.v
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenImpl;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,7 +34,9 @@ public class IngredientDetailModule {
     }
 
     @Provides
-    public IngredientDetailFragment provideContent(FragmentManager fragmentManager, Bundle arguments) {
+    public IngredientDetailFragment provideContent(FragmentManager fragmentManager,
+                                                   Bundle arguments,
+                                                   IngredientDetailComponent component) {
         final String tag = "ingredient detail content";
 
         IngredientDetailFragment fragment = (IngredientDetailFragment) fragmentManager.findFragmentByTag(tag);
@@ -48,7 +50,13 @@ public class IngredientDetailModule {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
+        fragment.setComponentFactory(component);
         return fragment;
+    }
+
+    @Provides
+    public Activity activity() {
+        return activity;
     }
 
     @Provides
@@ -67,8 +75,7 @@ public class IngredientDetailModule {
     }
 
     @Provides
-    @PerActivity
-    public IngredientDetailScreen ingredientDetailScreen() {
-        return new IngredientDetailScreenImpl(activity);
+    public IngredientDetailScreen ingredientDetailScreen(IngredientDetailScreenImpl screen) {
+        return screen;
     }
 }

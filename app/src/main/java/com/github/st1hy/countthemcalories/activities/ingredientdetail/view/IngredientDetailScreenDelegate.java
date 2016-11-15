@@ -19,12 +19,12 @@ public class IngredientDetailScreenDelegate implements IngredientDetailScreen {
     }
 
     @Override
-    public void commitEditedIngredientChanges(long ingredientId, @NonNull Ingredient ingredient) {
-        getScreen().commitEditedIngredientChanges(ingredientId, ingredient);
+    public void finishEdit(long ingredientId, @NonNull Ingredient ingredient) {
+        getScreen().finishEdit(ingredientId, ingredient);
     }
 
     @Override
-    public void removeIngredient(long ingredientId) {
-        getScreen().removeIngredient(ingredientId);
+    public void finishRemove(long ingredientId) {
+        getScreen().finishRemove(ingredientId);
     }
 }

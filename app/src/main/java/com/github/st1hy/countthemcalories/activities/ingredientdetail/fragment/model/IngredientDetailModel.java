@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.google.common.base.Optional;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
+@PerFragment
 public class IngredientDetailModel {
 
     public static final String SAVED_INGREDIENT_MODEL = "saved ingredient model";

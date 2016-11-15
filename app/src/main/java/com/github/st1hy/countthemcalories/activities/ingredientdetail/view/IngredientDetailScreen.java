@@ -6,8 +6,8 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 
 public interface IngredientDetailScreen {
 
-    void commitEditedIngredientChanges(long ingredientId,
-                                       @NonNull Ingredient ingredient);
+    void finishEdit(long ingredientId,
+                    @NonNull Ingredient ingredient);
 
-    void removeIngredient(long ingredientId);
+    void finishRemove(long ingredientId);
 }

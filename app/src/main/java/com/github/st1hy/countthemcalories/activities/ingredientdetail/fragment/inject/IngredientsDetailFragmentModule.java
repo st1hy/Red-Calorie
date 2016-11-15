@@ -1,12 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.p
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailViewImpl;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
@@ -52,11 +51,6 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    public Resources provideResources() {
-        return fragment.getResources();
-    }
-
-    @Provides
     @Named("savedState")
     @Nullable
     public Bundle provideSavedState() {
@@ -73,7 +67,6 @@ public class IngredientsDetailFragmentModule {
     public FragmentActivity provideFragmentActivity() {
         return fragment.getActivity();
     }
-
 
     @Provides
     public ImageView provideImageView(IngredientDetailView view) {
@@ -109,9 +102,12 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    public IngredientDetailView provideView(View rootView, IngredientDetailScreen screen,
-                                            Context context) {
-        return new IngredientDetailViewImpl(rootView, screen, context);
+    public IngredientDetailView provideView(IngredientDetailViewImpl detailView) {
+        return detailView;
+    }
+
+    @Provides
+    public InputMethodManager inputMethodManager(@Named("appContext") Context context) {
+        return (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

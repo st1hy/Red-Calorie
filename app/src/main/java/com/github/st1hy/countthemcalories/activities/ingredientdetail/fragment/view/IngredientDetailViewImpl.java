@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -14,17 +13,21 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
+@PerFragment
 public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate implements IngredientDetailView {
 
     @NonNull
-    private final Context context;
+    private final InputMethodManager inputMethodManager;
 
     @BindView(R.id.add_meal_ingredient_accept)
     ImageButton accept;
@@ -43,11 +46,12 @@ public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate imp
     @BindView(R.id.add_meal_ingredient_unit)
     TextView unit;
 
+    @Inject
     public IngredientDetailViewImpl(@NonNull View rootView,
                                     @NonNull IngredientDetailScreen screen,
-                                    @NonNull Context context) {
+                                    @NonNull InputMethodManager inputMethodManager) {
         super(screen);
-        this.context = context;
+        this.inputMethodManager = inputMethodManager;
         ButterKnife.bind(this, rootView);
     }
 
@@ -87,9 +91,7 @@ public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate imp
 
     @Override
     public void hideSoftKeyboard() {
-        InputMethodManager imm = (InputMethodManager) context
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(editAmount.getWindowToken(), 0);
     }
 
     @NonNull
