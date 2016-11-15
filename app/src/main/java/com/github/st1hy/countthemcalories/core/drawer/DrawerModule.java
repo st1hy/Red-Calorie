@@ -11,7 +11,6 @@ import dagger.Provides;
 @Module
 public class DrawerModule {
 
-
     @Provides
     public ActionBarDrawerToggle createToggle(Activity activity, DrawerView drawerView) {
         return new ActionBarDrawerToggle(activity, drawerView.drawer, drawerView.toolbar,

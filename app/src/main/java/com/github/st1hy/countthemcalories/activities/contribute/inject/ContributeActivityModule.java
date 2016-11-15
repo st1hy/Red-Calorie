@@ -1,6 +1,5 @@
 package com.github.st1hy.countthemcalories.activities.contribute.inject;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -20,11 +19,6 @@ public class ContributeActivityModule {
 
     @Provides
     public AppCompatActivity appCompatActivity() {
-        return activity;
-    }
-
-    @Provides
-    public Activity activity() {
         return activity;
     }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenDelegate;
+import com.github.st1hy.countthemcalories.core.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import rx.Observable;
 
+@PerFragment
 public class AddMealViewController extends AddMealScreenDelegate implements AddMealView {
 
     @BindView(R.id.add_meal_ingredients_list)

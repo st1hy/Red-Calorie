@@ -14,9 +14,11 @@ import com.github.st1hy.countthemcalories.database.unit.Unit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Observable;
 
+@Singleton
 public class SettingsModel {
     static final String PREFERRED_ENERGY_UNIT = "setting preferred energy unit";
     static final String PREFERRED_MASS_UNIT = "setting preferred mass unit";

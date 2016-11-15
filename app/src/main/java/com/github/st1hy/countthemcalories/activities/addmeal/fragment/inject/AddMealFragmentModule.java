@@ -70,7 +70,6 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    @PerFragment
     public AddMealView provideView(AddMealViewController addMealViewController) {
         return addMealViewController;
     }

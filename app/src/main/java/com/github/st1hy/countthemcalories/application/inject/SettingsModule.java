@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
-import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -26,11 +24,5 @@ public class SettingsModule {
     @Singleton
     public Resources provideResources(@Named("appContext") Context context) {
         return context.getResources();
-    }
-
-    @Provides
-    @Singleton
-    public SettingsModel provideSettingsModel(SharedPreferences preferences, Resources resources) {
-        return new SettingsModel(preferences, resources);
     }
 }

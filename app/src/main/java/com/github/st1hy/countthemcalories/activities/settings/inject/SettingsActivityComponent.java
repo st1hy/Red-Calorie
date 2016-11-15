@@ -1,15 +1,14 @@
 package com.github.st1hy.countthemcalories.activities.settings.inject;
 
+import com.github.st1hy.countthemcalories.activities.settings.fragment.inject.SettingsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.settings.view.SettingsActivity;
-import com.github.st1hy.countthemcalories.core.dialog.DialogViewModule;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 @PerActivity
-@Component(modules = {SettingsActivityModule.class, DrawerModule.class, DialogViewModule.class})
-public interface SettingsActivityComponent {
+@Subcomponent(modules = SettingsActivityModule.class)
+public interface SettingsActivityComponent extends SettingsFragmentComponentFactory {
 
     void inject(SettingsActivity activity);
 }
