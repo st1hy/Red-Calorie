@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -29,7 +29,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
     @NonNull
     private final Meal meal;
     @NonNull
-    private final PicturePresenter picturePresenter;
+    private final SelectPicturePresenter picturePresenter;
     @NonNull
     private final Observable<AddMealMenuAction> menuActionObservable;
 
@@ -39,7 +39,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
     public AddMealPresenterImp(@NonNull AddMealView view,
                                @NonNull AddMealModel model,
                                @NonNull Meal meal,
-                               @NonNull PicturePresenter picturePresenter,
+                               @NonNull SelectPicturePresenter picturePresenter,
                                @NonNull Observable<AddMealMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;

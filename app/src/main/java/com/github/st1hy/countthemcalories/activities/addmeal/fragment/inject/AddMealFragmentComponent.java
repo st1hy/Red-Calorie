@@ -10,7 +10,7 @@ import dagger.Subcomponent;
 
 @PerFragment
 @Subcomponent(modules = {AddMealFragmentModule.class, PictureModule.class, PermissionModule.class})
-public interface AddMealFragmentComponent {
+public interface AddMealFragmentComponent extends IngredientListComponentFactory {
 
     void inject(AddMealFragment fragment);
 

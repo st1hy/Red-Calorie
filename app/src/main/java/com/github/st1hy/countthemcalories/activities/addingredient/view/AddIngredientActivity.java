@@ -11,10 +11,10 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientComponent;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.inject.DaggerAddIngredientComponent;
-import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
+import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxMenuItem;
 
 import javax.inject.Inject;
@@ -56,7 +56,7 @@ public class AddIngredientActivity extends BaseActivity {
         ButterKnife.bind(this);
         getComponent().inject(this);
         setSupportActionBar(toolbar);
-        Utils.assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Preconditions.checkNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

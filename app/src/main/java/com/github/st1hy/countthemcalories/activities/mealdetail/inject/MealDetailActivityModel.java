@@ -12,7 +12,6 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.Me
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreenImpl;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import javax.inject.Named;
 
@@ -73,7 +72,6 @@ public class MealDetailActivityModel {
     }
 
     @Provides
-    @PerActivity
     public MealDetailScreen mealDetailScreen(MealDetailScreenImpl screen) {
         return screen;
     }

@@ -7,13 +7,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -22,10 +23,10 @@ import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 import static com.github.st1hy.countthemcalories.core.headerpicture.ImageSource.intoImageSource;
+import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
-public final class PicturePresenterImp implements PicturePresenter {
+public final class SelectPicturePresenterImp implements SelectPicturePresenter {
 
     private final PermissionsHelper permissionsHelper;
     private final PictureView view;
@@ -37,12 +38,12 @@ public final class PicturePresenterImp implements PicturePresenter {
     private final Subject<Uri, Uri> internalUriSource = PublishSubject.create();
 
     @Inject
-    public PicturePresenterImp(@NonNull PictureView pictureView,
-                               @NonNull PermissionsHelper permissionsHelper,
-                               @NonNull DialogView dialogView,
-                               @NonNull PicturePicker pictureController,
-                               @NonNull PictureModel model,
-                               @NonNull ImageHolderDelegate imageHolderDelegate) {
+    public SelectPicturePresenterImp(@NonNull PictureView pictureView,
+                                     @NonNull PermissionsHelper permissionsHelper,
+                                     @NonNull DialogView dialogView,
+                                     @NonNull PicturePicker pictureController,
+                                     @NonNull PictureModel model,
+                                     @NonNull @Named("header") ImageHolderDelegate imageHolderDelegate) {
         this.permissionsHelper = permissionsHelper;
         this.view = pictureView;
         this.dialogView = dialogView;

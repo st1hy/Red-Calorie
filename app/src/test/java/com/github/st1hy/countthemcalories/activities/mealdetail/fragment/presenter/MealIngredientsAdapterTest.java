@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.model.MealDetailModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealIngredientsAdapter;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;

@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
-import android.app.Activity;
-import android.content.res.Resources;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,16 +16,16 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddM
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
@@ -96,11 +95,6 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public Resources provideResources() {
-        return fragment.getResources();
-    }
-
-    @Provides
     @PerFragment
     public Meal provideMeal() {
         if (savedState != null) {
@@ -136,6 +130,7 @@ public class AddMealFragmentModule {
     }
 
     @Provides
+    @Named("header")
     public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
         return imageHolderDelegate;
     }
@@ -145,6 +140,7 @@ public class AddMealFragmentModule {
         return actionPublishSubject.asObservable();
     }
 
+    @Named("fragmentRootView")
     @Provides
     public View rootView() {
         return fragment.getView();
@@ -159,17 +155,19 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public RecyclerView recyclerView(View rootView, IngredientsListAdapter adapter, Activity activity) {
+    public RecyclerView recyclerView(@Named("fragmentRootView")View rootView,
+                                     IngredientsListAdapter adapter,
+                                     @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setNestedScrollingEnabled(false);
         return recyclerView;
     }
 
     @Provides
     @PerFragment
-    public PicturePresenter picturePresenter(PicturePresenterImp presenter) {
+    public SelectPicturePresenter picturePresenter(SelectPicturePresenterImp presenter) {
         return presenter;
     }
 
@@ -193,5 +191,10 @@ public class AddMealFragmentModule {
     @Provides
     public ImageView imageViewProvider(PictureView view) {
         return view.getImageView();
+    }
+
+    @Provides
+    public IngredientListComponentFactory ingredientListComponentFactory(AddMealFragmentComponent component) {
+        return component;
     }
 }

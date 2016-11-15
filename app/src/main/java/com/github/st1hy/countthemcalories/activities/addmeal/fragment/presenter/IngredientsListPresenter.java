@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.IngredientListComponentFactory;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.IngredientListModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
@@ -17,7 +19,6 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -28,7 +29,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -55,9 +55,7 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     @NonNull
     private final PhysicalQuantitiesModel quantityModel;
     @NonNull
-    private final Picasso picasso;
-    @NonNull
-    private final PermissionsHelper permissionsHelper;
+    private final IngredientListComponentFactory factory;
 
     private  RecyclerViewNotifier notifier;
 
@@ -68,13 +66,11 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     public IngredientsListPresenter(@NonNull AddMealView view,
                                     @NonNull MealIngredientsListModel model,
                                     @NonNull PhysicalQuantitiesModel quantityModel,
-                                    @NonNull Picasso picasso,
-                                    @NonNull PermissionsHelper permissionsHelper) {
+                                    @NonNull IngredientListComponentFactory factory) {
         this.view = view;
         this.model = model;
         this.quantityModel = quantityModel;
-        this.picasso = picasso;
-        this.permissionsHelper = permissionsHelper;
+        this.factory = factory;
     }
 
     @Override
@@ -155,7 +151,8 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
-        return new IngredientItemViewHolder(view, this, picasso, permissionsHelper);
+        return factory.newAddMealFragmentComponent(new IngredientListModule(view, this))
+                .getHolder();
     }
 
     @Override

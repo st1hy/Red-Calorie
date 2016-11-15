@@ -14,9 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.state.Selection;
+import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
 
@@ -54,7 +54,7 @@ public final class DrawerView {
                 activity.onBackPressed();
             }
         });
-        Utils.assertNotNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Preconditions.checkNotNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     public void registerToggle(@NonNull ActionBarDrawerToggle drawerToggle) {

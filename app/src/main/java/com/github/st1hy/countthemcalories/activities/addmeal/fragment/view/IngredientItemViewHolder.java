@@ -10,17 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.PerIngredientRow;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Optional;
-import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dagger.internal.InstanceFactory;
 
+@PerIngredientRow
 public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.add_meal_ingredient_item_name)
@@ -31,27 +33,30 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     TextView amount;
     @BindView(R.id.add_meal_ingredient_calorie_count)
     TextView calorieCount;
-    @BindView(R.id.add_meal_ingredient_image)
-    ImageView image;
     @BindView(R.id.add_meal_ingredient_compact)
     ViewGroup compatView;
     @BindView(R.id.add_meal_ingredient_root)
     ViewGroup root;
 
-    private final Callback callback;
     private Ingredient ingredient;
 
-    final ImageHolderDelegate imageHolderDelegate;
+    @NonNull
+    private final ImageHolderDelegate imageHolderDelegate;
+    @NonNull
+    private final Callback callback;
+    @NonNull
+    private final ImageView image;
 
-    public IngredientItemViewHolder(@NonNull View itemView,
-                                    @NonNull final Callback callback,
-                                    @NonNull Picasso picasso,
-                                    @NonNull PermissionsHelper permissionsHelper) {
+    @Inject
+    public IngredientItemViewHolder(@NonNull @Named("ingredientListRow") View itemView,
+                                    @NonNull Callback callback,
+                                    @NonNull @Named("ingredientImageHolder") ImageHolderDelegate imageHolderDelegate,
+                                    @NonNull @Named("ingredientImage") ImageView image) {
         super(itemView);
-        this.callback = callback;
         ButterKnife.bind(this, itemView);
-        imageHolderDelegate = new ImageHolderDelegate(picasso, permissionsHelper,
-                InstanceFactory.create(image));
+        this.callback = callback;
+        this.imageHolderDelegate =  imageHolderDelegate;
+        this.image = image;
     }
 
     public void setName(@NonNull String name) {

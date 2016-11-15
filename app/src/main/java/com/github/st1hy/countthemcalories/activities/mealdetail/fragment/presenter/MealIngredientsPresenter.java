@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;

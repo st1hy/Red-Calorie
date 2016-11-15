@@ -92,7 +92,6 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    @PerActivity
     public AddMealScreen addMealScreen(AddMealScreenImpl screen) {
         return screen;
     }

@@ -3,7 +3,9 @@ package com.github.st1hy.countthemcalories.application.inject;
 import android.app.Application;
 import android.content.Context;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponentFactory;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.mealdetail.inject.MealDetailActivityComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
@@ -20,7 +22,8 @@ import dagger.Component;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, DatabaseModule.class, SettingsModule.class, DbModelsModule.class})
-public interface ApplicationComponent {
+public interface ApplicationComponent extends AddMealActivityComponentFactory,
+        MealDetailActivityComponentFactory {
 
     @Named("appContext")
     Context getContext();

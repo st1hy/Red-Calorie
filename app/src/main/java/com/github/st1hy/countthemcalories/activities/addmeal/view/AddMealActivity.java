@@ -1,20 +1,17 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.view;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealFragment;
-import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
 import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityModule;
-import com.github.st1hy.countthemcalories.activities.addmeal.inject.DaggerAddMealActivityComponent;
-import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
+import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxMenuItem;
 
 import javax.inject.Inject;
@@ -28,32 +25,21 @@ public class AddMealActivity extends BaseActivity {
     @BindView(R.id.image_header_toolbar)
     Toolbar toolbar;
 
-    AddMealActivityComponent component;
-
     @Inject
     AddMealFragment content; //adds fragment to stack
     @Inject
     PublishSubject<AddMealMenuAction> menuActionPublishSubject;
 
-    @NonNull
-    public AddMealActivityComponent getComponent() {
-        if (component == null) {
-            component = DaggerAddMealActivityComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .addMealActivityModule(new AddMealActivityModule(this))
-                    .build();
-        }
-        return component;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_meal_activity);
         ButterKnife.bind(this);
-        getComponent().inject(this);
+        getAppComponent().newAddMealActivityComponent(new AddMealActivityModule(this))
+                .inject(this);
         setSupportActionBar(toolbar);
-        Utils.assertNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        Preconditions.checkNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
@@ -49,7 +49,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
     @NonNull
     private final AddIngredientModelHelper modelHelper;
     @NonNull
-    private final PicturePresenter picturePresenter;
+    private final SelectPicturePresenter picturePresenter;
     @NonNull
     private final DialogView dialogView;
     @NonNull
@@ -62,7 +62,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                                      @NonNull AddIngredientModel model,
                                      @NonNull AddIngredientModelHelper modelHelper,
                                      @NonNull DialogView dialogView,
-                                     @NonNull PicturePresenter picturePresenter,
+                                     @NonNull SelectPicturePresenter picturePresenter,
                                      @NonNull Observable<AddMealMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;

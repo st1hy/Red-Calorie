@@ -23,9 +23,11 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import rx.functions.Func1;
 
+@Singleton
 public class PhysicalQuantitiesModel {
     private final SettingsModel settingsModel;
     private final Resources resources;

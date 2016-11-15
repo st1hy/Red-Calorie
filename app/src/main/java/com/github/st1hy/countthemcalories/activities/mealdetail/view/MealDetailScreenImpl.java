@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.inject.PerActivity;
 
 import javax.inject.Inject;
 
@@ -16,6 +17,7 @@ import static com.github.st1hy.countthemcalories.activities.mealdetail.view.Meal
 import static com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity.RESULT_DELETE;
 import static com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity.RESULT_EDIT;
 
+@PerActivity
 public class MealDetailScreenImpl implements MealDetailScreen {
 
     @NonNull

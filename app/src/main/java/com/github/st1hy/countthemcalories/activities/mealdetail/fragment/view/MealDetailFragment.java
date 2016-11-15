@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailComponent;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailComponentFactory;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailsModule;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.LifecycleController;
@@ -20,7 +19,6 @@ public class MealDetailFragment extends BaseFragment {
 
     public static final String ARG_MEAL_PARCEL = "meal detail parcel";
 
-    private MealDetailComponent component;
     private MealDetailComponentFactory componentFactory;
 
     @Inject
@@ -38,18 +36,12 @@ public class MealDetailFragment extends BaseFragment {
         return inflater.inflate(R.layout.meal_detail_content, container, false);
     }
 
-    @NonNull
-    protected MealDetailComponent getComponent(@Nullable Bundle savedInstanceState) {
-        if (component == null) {
-            component = componentFactory.newMealDetailComponent(new MealDetailsModule(this, savedInstanceState));
-        }
-        return component;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getComponent(savedInstanceState).inject(this);
+        componentFactory.newMealDetailComponent(new MealDetailsModule(this, savedInstanceState))
+                .inject(this);
+        componentFactory = null;
     }
 
     @Override

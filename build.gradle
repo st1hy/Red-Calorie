@@ -15,7 +15,7 @@ ext {
     compileSdkVersion = 24
     buildToolsVersion = '24.0.2'
 
-    supportLibraryVersion = '25.0.0'
+    supportLibraryVersion = '25.0.1'
 
     daggerVersion = '2.7'
     butterknifeVersion = '8.4.0'

@@ -2,10 +2,10 @@ package com.github.st1hy.countthemcalories.core.headerpicture.presenter;
 
 import android.net.Uri;
 
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.permissions.RequestRationale;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePresenterImp;
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
@@ -45,7 +45,7 @@ public class WithPicturePresenterImpTest {
     private PictureModel model;
     @Mock
     private ImageHolderDelegate imageHolderDelegate;
-    private PicturePresenterImp presenter;
+    private SelectPicturePresenterImp presenter;
 
 
     @Before
@@ -61,7 +61,7 @@ public class WithPicturePresenterImpTest {
         when(imageHolderDelegate.getLoadingObservable())
                 .thenReturn(Observable.<LoadedSource>empty());
 
-        presenter = new PicturePresenterImp(view, permissionsHelper, dialogView, pictureController, model,imageHolderDelegate);
+        presenter = new SelectPicturePresenterImp(view, permissionsHelper, dialogView, pictureController, model,imageHolderDelegate);
     }
 
     @After

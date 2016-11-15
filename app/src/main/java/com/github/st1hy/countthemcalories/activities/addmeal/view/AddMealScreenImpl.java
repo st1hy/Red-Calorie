@@ -46,8 +46,8 @@ import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fra
 @PerActivity
 public class AddMealScreenImpl implements AddMealScreen {
 
-    public static final int REQUEST_PICK_INGREDIENT = 0x3903;
-    public static final int REQUEST_EDIT_INGREDIENT = 0x3904;
+    private static final int REQUEST_PICK_INGREDIENT = 0x3903;
+    private static final int REQUEST_EDIT_INGREDIENT = 0x3904;
 
     @NonNull
     private final Activity activity;
