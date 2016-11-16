@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:name=".application.CaloriesCounterApplication">
         <activity
-            android:name=".activities.overview.view.OverviewActivity"
+            android:name=".activities.overview.OverviewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -24,12 +24,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ingredients.view.IngredientsActivity"
+            android:name=".activities.ingredients.IngredientsActivity"
             android:label="@string/ingredients_title"
             android:theme="@style/AppTheme.NoActionBar.Ingredients"
             />
         <activity
-            android:name=".activities.addmeal.view.AddMealActivity"
+            android:name=".activities.addmeal.AddMealActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -38,7 +38,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.addingredient.view.AddIngredientActivity"
+            android:name=".activities.addingredient.AddIngredientActivity"
             android:label="@string/add_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -48,7 +48,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.settings.view.SettingsActivity"
+            android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -58,7 +58,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.ingredientdetail.view.IngredientDetailActivity"
+            android:name=".activities.ingredientdetail.IngredientDetailActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.Semitransparent"
             />
@@ -66,15 +66,15 @@
             android:label="@string/select_ingredient_type_title"
             android:theme="@style/AppTheme.Dialog"
             />
-        <activity android:name=".activities.mealdetail.view.MealDetailActivity"
+        <activity android:name=".activities.mealdetail.MealDetailActivity"
             android:label="@string/meal_details_title"
             android:theme="@style/AppTheme.Semitransparent"
             />
-        <activity android:name=".activities.contribute.view.ContributeActivity"
+        <activity android:name=".activities.contribute.ContributeActivity"
             android:label="@string/contribute_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".core.rx.activityresult.IntentHandlerActivity"
+        <activity android:name=".core.activityresult.IntentHandlerActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     </application>
 

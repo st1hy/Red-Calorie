@@ -8,14 +8,14 @@ import android.support.design.widget.FloatingActionButton;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
-import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientModule;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
+import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.SelectIngredientTypeActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -29,12 +29,12 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
-import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
-import static com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.REQUEST_ADD_INGREDIENT;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.REQUEST_EDIT;
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.REQUEST_SELECT_TYPE;
+import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL;
+import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_ADD_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_EDIT;
+import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_SELECT_TYPE;
 
 public class IngredientsScreenImpl implements IngredientsScreen {
 

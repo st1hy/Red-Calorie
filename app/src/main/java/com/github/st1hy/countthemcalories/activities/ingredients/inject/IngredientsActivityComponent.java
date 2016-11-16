@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
+import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import dagger.Component;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 
 import javax.inject.Inject;

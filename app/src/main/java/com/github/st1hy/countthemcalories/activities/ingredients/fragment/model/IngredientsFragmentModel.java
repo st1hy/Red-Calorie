@@ -7,8 +7,8 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 
 import javax.inject.Inject;

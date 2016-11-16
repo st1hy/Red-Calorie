@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.activities.overview.fragment.presente
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
@@ -14,11 +14,11 @@ import rx.subscriptions.CompositeSubscription;
 public class OverviewPresenterImp implements OverviewPresenter {
 
     private final OverviewView view;
-    private final MealsAdapter adapter;
+    private final MealsPresenter adapter;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public OverviewPresenterImp(@NonNull OverviewView view, @NonNull MealsAdapter adapter) {
+    public OverviewPresenterImp(@NonNull OverviewView view, @NonNull MealsPresenter adapter) {
         this.view = view;
         this.adapter = adapter;
     }

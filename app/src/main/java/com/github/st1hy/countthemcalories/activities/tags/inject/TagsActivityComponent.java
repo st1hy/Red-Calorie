@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
+import com.github.st1hy.countthemcalories.inject.core.DrawerModule;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import dagger.Component;
 

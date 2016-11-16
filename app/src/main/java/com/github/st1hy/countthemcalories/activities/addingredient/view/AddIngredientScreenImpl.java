@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
 

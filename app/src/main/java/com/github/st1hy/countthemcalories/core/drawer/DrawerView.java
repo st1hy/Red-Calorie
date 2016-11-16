@@ -14,7 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.state.Selection;
 import com.google.common.base.Preconditions;
 
@@ -84,4 +84,11 @@ public final class DrawerView {
         navigationView.getMenu().findItem(menuId).setChecked(selected.is());
     }
 
+    public DrawerLayout getDrawer() {
+        return drawer;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 }

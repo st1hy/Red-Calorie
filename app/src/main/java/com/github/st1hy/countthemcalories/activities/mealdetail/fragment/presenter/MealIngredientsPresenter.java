@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.In
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;

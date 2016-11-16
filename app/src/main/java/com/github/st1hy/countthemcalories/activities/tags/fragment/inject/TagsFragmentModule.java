@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.Tag
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsViewImpl;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import dagger.Module;
 import dagger.Provides;

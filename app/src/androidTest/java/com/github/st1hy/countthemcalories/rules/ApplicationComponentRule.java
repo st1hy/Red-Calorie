@@ -5,7 +5,7 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
 import com.github.st1hy.countthemcalories.inject.DaggerApplicationTestComponent;
 
 import org.junit.rules.TestRule;

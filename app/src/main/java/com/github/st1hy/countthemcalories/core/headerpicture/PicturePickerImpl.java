@@ -10,10 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 
 import javax.inject.Inject;
 import javax.inject.Named;

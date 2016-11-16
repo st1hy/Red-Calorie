@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.inject;
 
-import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
-import com.github.st1hy.countthemcalories.application.inject.DbModelsModule;
-import com.github.st1hy.countthemcalories.application.inject.SettingsModule;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
+import com.github.st1hy.countthemcalories.inject.application.DbModelsModule;
+import com.github.st1hy.countthemcalories.inject.application.SettingsModule;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 

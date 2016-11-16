@@ -11,9 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
@@ -21,7 +21,7 @@ import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
@@ -38,7 +38,7 @@ import dagger.Provides;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsActivity.ACTION_SELECT_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.ACTION_SELECT_INGREDIENT;
 
 @Module
 public class IngredientsActivityModule {

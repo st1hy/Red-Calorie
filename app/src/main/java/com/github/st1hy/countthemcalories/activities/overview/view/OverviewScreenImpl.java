@@ -10,14 +10,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
-import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailActivity;
+import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.rx.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -33,7 +33,7 @@ import rx.functions.Func1;
 @PerActivity
 public class OverviewScreenImpl implements OverviewScreen {
 
-    public static final int REQUEST_MEAL_DETAIL = 0x300;
+    private static final int REQUEST_MEAL_DETAIL = 0x300;
 
     @NonNull
     private final Activity activity;

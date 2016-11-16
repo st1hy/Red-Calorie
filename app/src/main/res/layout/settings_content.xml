@@ -7,7 +7,7 @@
     android:orientation="vertical"
     style="@style/ActivityContent"
     tools:showIn="@layout/settings_app_bar"
-    tools:context=".activities.settings.view.SettingsActivity">
+    tools:context=".activities.settings.SettingsActivity">
 
     <include layout="@layout/settings_select_unit"
         android:id="@+id/settings_unit_energy"/>

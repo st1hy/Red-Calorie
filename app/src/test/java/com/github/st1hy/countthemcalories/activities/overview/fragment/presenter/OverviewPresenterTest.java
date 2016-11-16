@@ -21,7 +21,7 @@ public class OverviewPresenterTest {
     @Mock
     private OverviewView view;
     @Mock
-    private MealsAdapter adapter;
+    private MealsPresenter adapter;
     private OverviewPresenterImp presenter;
 
     @Before

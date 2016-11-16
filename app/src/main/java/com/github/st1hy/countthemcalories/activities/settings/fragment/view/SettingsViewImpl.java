@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.settings.fragment.view;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 import javax.inject.Named;

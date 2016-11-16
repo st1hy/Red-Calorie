@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.settings.model.SettingsChan
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.UnitChangedEvent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 
 import javax.inject.Inject;

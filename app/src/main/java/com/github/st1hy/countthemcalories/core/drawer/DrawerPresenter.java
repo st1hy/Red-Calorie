@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;

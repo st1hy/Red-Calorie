@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
 
 import org.junit.Before;
 import org.junit.Test;

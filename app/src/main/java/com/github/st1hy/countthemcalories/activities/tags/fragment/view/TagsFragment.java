@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.DaggerTagsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;

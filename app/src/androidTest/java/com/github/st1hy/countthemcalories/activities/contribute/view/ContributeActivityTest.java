@@ -7,6 +7,7 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 
+import com.github.st1hy.countthemcalories.activities.contribute.ContributeActivity;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.junit.Rule;

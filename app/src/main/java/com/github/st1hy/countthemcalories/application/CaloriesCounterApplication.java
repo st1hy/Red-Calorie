@@ -3,26 +3,24 @@ package com.github.st1hy.countthemcalories.application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
-import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
+import com.github.st1hy.countthemcalories.inject.application.DaggerApplicationComponent;
 
 public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;
 
-    @Override
-    protected void init() {
-        super.init();
-        getComponent().inject(this);
-    }
-
     @NonNull
     public ApplicationComponent getComponent() {
         if (component == null) {
-            component = DaggerApplicationComponent.builder()
-                    .applicationModule(new ApplicationModule(this))
-                    .build();
+            synchronized (CaloriesCounterApplication.class) {
+                if (component == null) {
+                    component = DaggerApplicationComponent.builder()
+                            .applicationModule(new ApplicationModule(this))
+                            .build();
+                }
+            }
         }
         return component;
     }

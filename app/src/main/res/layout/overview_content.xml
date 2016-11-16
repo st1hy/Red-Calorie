@@ -5,7 +5,7 @@
     style="@style/ActivityContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.overview.view.OverviewActivity"
+    tools:context=".activities.overview.OverviewActivity"
     tools:showIn="@layout/overview_app_bar">
 
     <android.support.v7.widget.RecyclerView

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.contribute.view.ContributeActivity">
+    tools:context=".activities.contribute.ContributeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
 
     <fragment
-        class="com.github.st1hy.countthemcalories.activities.contribute.fragment.view.ContributeFragment"
+        class="com.github.st1hy.countthemcalories.activities.contribute.ContributeFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:tag="contribute_content_fragment"

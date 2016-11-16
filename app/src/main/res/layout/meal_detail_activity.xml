@@ -13,7 +13,7 @@
         app:cardCornerRadius="4dp"
         app:cardElevation="24dp"
         android:layout_gravity="center"
-        tools:context=".activities.mealdetail.view.MealDetailActivity"
+        tools:context=".activities.mealdetail.MealDetailActivity"
         app:cardUseCompatPadding="true">
 
         <!--<include android:layout="@layout/meal_detail_content" />-->

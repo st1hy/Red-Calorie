@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject;
 
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsFragment;
-import com.github.st1hy.countthemcalories.core.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
 
 import dagger.Subcomponent;
 

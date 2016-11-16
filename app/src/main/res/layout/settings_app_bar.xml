@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.settings.view.SettingsActivity">
+    tools:context=".activities.settings.SettingsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/settings_content"
         android:tag="settings_content_fragment"
-        class="com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsFragment"
+        class="com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
