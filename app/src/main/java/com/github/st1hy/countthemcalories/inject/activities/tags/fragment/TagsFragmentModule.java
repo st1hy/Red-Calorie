@@ -13,6 +13,8 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsViewImpl;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -30,16 +32,30 @@ public class TagsFragmentModule {
     }
 
     @Provides
+    @Named("tagsAdapter")
+    public TagsDaoAdapter tagsDaoAdapter(TagsDaoAdapter adapter,
+                                         RecyclerView recyclerView) {
+        recyclerView.setAdapter(adapter);
+        return adapter;
+    }
+
+    @Provides
     @PerFragment
     public TagsFragmentModel provideFragmentModel() {
         return new TagsFragmentModel(fragment.getArguments());
     }
 
     @Provides
+    @Named("fragmentRootView")
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
     @PerFragment
-    public RecyclerView recyclerView(View rootView, Context context, TagsDaoAdapter adapter) {
+    public RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
+                                     @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;
     }

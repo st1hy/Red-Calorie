@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +46,8 @@ public class TagsViewImpl implements TagsView {
 
     @Inject
     public TagsViewImpl(@NonNull TagsScreen screen,
-                        @NonNull View rootView,
-                        @NonNull Context context,
+                        @NonNull @Named("fragmentRootView") View rootView,
+                        @NonNull @Named("activityContext") Context context,
                         @NonNull RecyclerView recyclerView) {
         this.screen = screen;
         this.context = context;

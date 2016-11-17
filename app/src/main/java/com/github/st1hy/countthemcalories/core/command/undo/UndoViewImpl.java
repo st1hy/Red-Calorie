@@ -8,9 +8,14 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxSnackbar;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 
+@PerActivity
 public final class UndoViewImpl implements UndoView {
 
     @NonNull
@@ -18,7 +23,8 @@ public final class UndoViewImpl implements UndoView {
 
     private Snackbar undo;
 
-    public UndoViewImpl(@NonNull View rootView) {
+    @Inject
+    public UndoViewImpl(@NonNull @Named("undoViewRoot") View rootView) {
         this.rootView = rootView;
     }
 

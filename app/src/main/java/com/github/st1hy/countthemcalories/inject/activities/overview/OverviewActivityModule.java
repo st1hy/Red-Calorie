@@ -7,15 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
 
 import javax.inject.Named;
 
@@ -46,7 +44,7 @@ public class OverviewActivityModule {
 
     @Provides
     @PerActivity
-    @Named("undoRootView")
+    @Named("undoViewRoot")
     public View rootUndoView(Activity activity) {
         return activity.findViewById(R.id.overview_root);
     }
@@ -55,12 +53,6 @@ public class OverviewActivityModule {
     @Named("activityContext")
     public Context activityContext() {
         return activity;
-    }
-
-    @PerActivity
-    @Provides
-    public UndoView undoView(@Named("undoRootView") View rootUndoView) {
-        return new UndoViewImpl(rootUndoView);
     }
 
     @Provides

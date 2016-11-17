@@ -1,21 +1,21 @@
 package com.github.st1hy.countthemcalories.inject.activities.tags;
 
-import android.support.annotation.NonNull;
-
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
-import com.github.st1hy.countthemcalories.inject.core.DrawerModule;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.core.DrawerModule;
+import com.github.st1hy.countthemcalories.inject.core.UndoModule;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 @PerActivity
-@Component(modules = {TagsActivityModule.class, DrawerModule.class},
-        dependencies = ApplicationComponent.class)
-public interface TagsActivityComponent {
+@Subcomponent(modules = {
+        TagsActivityModule.class,
+        DrawerModule.class,
+        UndoModule.class
+})
+public interface TagsActivityComponent extends TagsFragmentComponentFactory {
 
-    void inject(@NonNull TagsActivity activity);
+    void inject(TagsActivity activity);
 
-    TagsScreen tagsScreen();
 }

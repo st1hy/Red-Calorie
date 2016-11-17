@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.inject.activities.tags;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,13 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponentFactory;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,7 +35,9 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public TagsFragment provideContent(Bundle arguments, FragmentManager fragmentManager) {
+    public TagsFragment provideContent(Bundle arguments,
+                                       FragmentManager fragmentManager,
+                                       TagsFragmentComponentFactory componentFactory) {
         final String tag = "tags content";
 
         TagsFragment fragment = (TagsFragment) fragmentManager.findFragmentByTag(tag);
@@ -45,6 +51,7 @@ public class TagsActivityModule {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
+        fragment.setComponentFactory(componentFactory);
         return fragment;
     }
 
@@ -84,6 +91,7 @@ public class TagsActivityModule {
 
     @Provides
     @PerActivity
+    @Named("undoViewRoot")
     public View undoRootView() {
         return activity.findViewById(R.id.tags_root);
     }
@@ -95,6 +103,12 @@ public class TagsActivityModule {
 
     @Provides
     public Activity activity() {
+        return activity;
+    }
+
+    @Provides
+    @Named("activityContext")
+    public Context context() {
         return activity;
     }
 
@@ -115,4 +129,10 @@ public class TagsActivityModule {
     public TagsScreen tagsScreen(TagsScreenImpl screen) {
         return screen;
     }
+
+    @Provides
+    public TagsFragmentComponentFactory tagsFragmentComponentFactory(TagsActivityComponent component) {
+        return component;
+    }
+
 }

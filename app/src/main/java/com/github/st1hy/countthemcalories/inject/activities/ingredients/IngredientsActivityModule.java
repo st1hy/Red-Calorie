@@ -16,8 +16,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.Ingred
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
@@ -175,11 +173,6 @@ public class IngredientsActivityModule {
         return activity.findViewById(R.id.ingredients_root);
     }
 
-    @Provides
-    @PerActivity
-    public UndoView undoView(@Named("undoViewRoot") View rootView) {
-        return new UndoViewImpl(rootView);
-    }
 
     @Provides
     @Named("activityContext")
