@@ -9,20 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponent;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.google.common.base.Preconditions;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentModule;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-
 public class AddIngredientFragment extends BaseFragment {
 
-    AddIngredientFragmentComponent component;
+    private AddIngredientFragmentComponentFactory componentFactory;
 
     @Inject
     AddIngredientPresenter presenter;
@@ -30,6 +27,10 @@ public class AddIngredientFragment extends BaseFragment {
     AddIngredientStateSaver saver;
     @Inject
     RecyclerView tagsRecycler; //Injects tags adapter into recycler
+
+    public void setComponentFactory(@NonNull AddIngredientFragmentComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
+    }
 
     @Nullable
     @Override
@@ -40,19 +41,9 @@ public class AddIngredientFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
-        getComponent(savedInstanceState).inject(this);
-    }
-
-    @NonNull
-    protected AddIngredientFragmentComponent getComponent(@Nullable Bundle savedState) {
-        if (component == null) {
-            component = DaggerAddIngredientFragmentComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .addIngredientFragmentModule(new AddIngredientFragmentModule(this, savedState))
-                    .build();
-        }
-        return component;
+        componentFactory.newAddIngredientFragmentComponent(new AddIngredientFragmentModule(this, savedInstanceState))
+                .inject(this);
+        componentFactory = null;
     }
 
     @Override

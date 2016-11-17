@@ -1,8 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.tags.inject;
+package com.github.st1hy.countthemcalories.inject.activities.tags;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
 import com.github.st1hy.countthemcalories.inject.core.DrawerModule;

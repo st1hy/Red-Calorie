@@ -1,28 +1,35 @@
 package com.github.st1hy.countthemcalories.inject.activities.addingredient;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenImpl;
+import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
+
+import org.parceler.Parcels;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 import rx.subjects.PublishSubject;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_AMOUNT_UNIT;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
-import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EXTRA_NAME;
 
 
@@ -41,13 +48,24 @@ public class AddIngredientModule {
     }
 
     @Provides
-    public AddIngredientFragment provideContent(Bundle arguments, FragmentManager fragmentManager) {
+    public AppCompatActivity appCompatActivity() {
+        return activity;
+    }
+
+    @Provides
+    @Named("activityContext")
+    public Context activityContext() {
+        return activity;
+    }
+
+    @Provides
+    public AddIngredientFragment provideContent(FragmentManager fragmentManager,
+                                                AddIngredientFragmentComponentFactory componentFactory) {
         final String tag = "add ingredient content";
 
-        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        AddIngredientFragment fragment = (AddIngredientFragment) fragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new AddIngredientFragment();
-            fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
                     .add(R.id.add_ingredient_content_frame, fragment, tag)
@@ -55,29 +73,21 @@ public class AddIngredientModule {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
-        return (AddIngredientFragment) fragment;
+        fragment.setComponentFactory(componentFactory);
+        return fragment;
     }
 
     @Provides
-    public Bundle provideArguments(Intent intent, AmountUnitType unitType) {
-        Bundle arguments = new Bundle();
-        arguments.putParcelable(ARG_EDIT_INGREDIENT_PARCEL,
-                intent.getParcelableExtra(ARG_EDIT_INGREDIENT_PARCEL));
-        arguments.putSerializable(ARG_AMOUNT_UNIT, unitType);
-        arguments.putLong(ARG_EDIT_REQUEST_ID_LONG,
-                intent.getLongExtra(ARG_EDIT_REQUEST_ID_LONG, -1L));
-        arguments.putString(ARG_EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
-        return arguments;
+    @Named("initialName")
+    public String provideInitialName(Intent intent) {
+        String name = intent.getStringExtra(ARG_EXTRA_NAME);
+        return name != null ? name : "";
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
-        return activity.getSupportFragmentManager();
-    }
-
-    @Provides
-    public Intent provideIntent() {
-        return activity.getIntent();
+    @Nullable
+    public IngredientTemplate provideIngredientTemplate(Intent intent) {
+        return Parcels.unwrap(intent.getParcelableExtra(ARG_EDIT_INGREDIENT_PARCEL));
     }
 
     @Provides
@@ -91,11 +101,32 @@ public class AddIngredientModule {
         return AmountUnitType.MASS;
     }
 
+
+    @Provides
+    public FragmentManager provideFragmentManager() {
+        return activity.getSupportFragmentManager();
+    }
+
+    @Provides
+    public Intent provideIntent() {
+        return activity.getIntent();
+    }
+
+
     @PerActivity
     @Provides
     public PublishSubject<AddIngredientMenuAction> menuActions() {
         return PublishSubject.create();
     }
 
+    @Provides
+    public AddIngredientScreen addIngredientScreen(AddIngredientScreenImpl screen) {
+        return screen;
+    }
+
+    @Provides
+    public AddIngredientFragmentComponentFactory fragmentComponentFactory(AddIngredientComponent component) {
+        return component;
+    }
 
 }

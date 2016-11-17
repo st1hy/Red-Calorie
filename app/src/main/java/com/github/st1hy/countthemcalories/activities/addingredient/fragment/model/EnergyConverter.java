@@ -7,11 +7,13 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
+@PerFragment
 public class EnergyConverter {
 
     private final SettingsModel settingsModel;

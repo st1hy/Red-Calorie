@@ -1,37 +1,21 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentModule;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponent;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
 
 public class IngredientsFragment extends BaseFragment {
     public static final String ARG_SELECT_BOOL = "selection mode";

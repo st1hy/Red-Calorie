@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
@@ -40,6 +41,7 @@ import static com.github.st1hy.countthemcalories.activities.addingredient.fragme
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.NO_VALUE;
 import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType.ZERO_VALUE;
 
+@PerFragment
 public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
     @NonNull
@@ -53,7 +55,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
     @NonNull
     private final DialogView dialogView;
     @NonNull
-    private final Observable<AddMealMenuAction> menuActionObservable;
+    private final Observable<AddIngredientMenuAction> menuActionObservable;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -63,7 +65,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                                      @NonNull AddIngredientModelHelper modelHelper,
                                      @NonNull DialogView dialogView,
                                      @NonNull SelectPicturePresenter picturePresenter,
-                                     @NonNull Observable<AddMealMenuAction> menuActionObservable) {
+                                     @NonNull Observable<AddIngredientMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;
         this.modelHelper = modelHelper;
@@ -96,7 +98,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
         );
 
         subscribe(
-                menuActionObservable.filter(Filters.equalTo(AddMealMenuAction.SAVE))
+                menuActionObservable.filter(Filters.equalTo(AddIngredientMenuAction.SAVE))
                         .map(Functions.INTO_VOID)
                         .flatMap(saveToDatabase())
                         .observeOn(AndroidSchedulers.mainThread())

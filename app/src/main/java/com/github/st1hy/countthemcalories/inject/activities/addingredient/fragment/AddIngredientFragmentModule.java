@@ -1,37 +1,34 @@
 package com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.EnergyConverter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.IngredientTagsAdapter;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
-import com.github.st1hy.countthemcalories.core.Utils;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -49,10 +46,6 @@ import dagger.Provides;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_AMOUNT_UNIT;
-import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
-import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EXTRA_NAME;
-
 @Module
 public class AddIngredientFragmentModule {
 
@@ -64,7 +57,6 @@ public class AddIngredientFragmentModule {
         }
     };
 
-
     private final AddIngredientFragment fragment;
     private final Bundle savedState;
 
@@ -74,21 +66,18 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    public AddIngredientView provideView(View rootView,
-                                         @NonNull Resources resources,
-                                         @NonNull AddIngredientScreen screen) {
-        return new AddIngredientViewController(rootView, resources, screen);
+    public AddIngredientView provideView(AddIngredientViewController controller) {
+        return controller;
     }
 
     @Provides
-    public AddIngredientScreen provideScreen() {
-        return Utils.checkIsSubclass(fragment.getActivity(), AddIngredientScreen.class);
-    }
-
-    @Provides
-    @PerFragment
     public AddIngredientPresenter providePresenter(AddIngredientPresenterImp presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public SelectPicturePresenter picturePresenter(SelectPicturePresenterImp presenter) {
         return presenter;
     }
 
@@ -117,47 +106,12 @@ public class AddIngredientFragmentModule {
         return savedState;
     }
 
-    @Provides
-    @Named("arguments")
-    public Bundle provideArguments() {
-        return fragment.getArguments();
-    }
-
-    @Provides
-    public Resources provideResources() {
-        return fragment.getResources();
-    }
-
-    @Provides
-    public AmountUnitType provideAmountUnitType(@Named("arguments") Bundle arguments) {
-        return (AmountUnitType) arguments.getSerializable(ARG_AMOUNT_UNIT);
-    }
-
-    @Provides
-    @Nullable
-    public IngredientTemplate provideIngredientTemplate(@Named("arguments") Bundle arguments) {
-        return Parcels.unwrap(arguments.getParcelable(ARG_EDIT_INGREDIENT_PARCEL));
-    }
-
-    @Provides
-    public FragmentActivity provideFragmentActivity() {
-        return fragment.getActivity();
-    }
-
-    @Provides
-    public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
-        return imageHolderDelegate;
-    }
-
-    @Provides
-    public String provideInitialName(@Named("arguments") Bundle arguments) {
-        return arguments.getString(ARG_EXTRA_NAME, "");
-    }
 
     @Provides
     @PerFragment
-    public AddIngredientModel provideIngredientModel(@Nullable IngredientTemplate templateSource,
-                                                     @NonNull String name,
+    public AddIngredientModel provideIngredientModel(@Nullable @Named("savedState") Bundle savedState,
+                                                     @Nullable IngredientTemplate templateSource,
+                                                     @NonNull @Named("initialName") String name,
                                                      @NonNull AmountUnitType amountUnitType,
                                                      @NonNull EnergyConverter energyConverter) {
         if (savedState != null) {
@@ -195,7 +149,7 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(View rootView, IngredientTagsAdapter adapter) {
+    public RecyclerView recyclerView(View rootView, @Named("ingredientTags") IngredientTagsAdapter adapter) {
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
@@ -204,15 +158,20 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    public IngredientTagsAdapter ingredientTagsAdapter(IngredientTagsPresenter presenter) {
-        IngredientTagsAdapter ingredientTagsAdapter = new IngredientTagsAdapter(presenter);
-        presenter.setNotifier(ingredientTagsAdapter);
-        return ingredientTagsAdapter;
+    @Named("ingredientTags")
+    public IngredientTagsAdapter ingredientTagsAdapter(IngredientTagsPresenter presenter,
+                                                       IngredientTagsAdapter tagsAdapter) {
+        presenter.setNotifier(tagsAdapter);
+        return tagsAdapter;
     }
 
     @Provides
-    public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> subject) {
+    public Observable<AddIngredientMenuAction> menuActionObservable(PublishSubject<AddIngredientMenuAction> subject) {
         return subject.asObservable();
+    }
+
+    @Provides
+    public PictureModel pictureModel(AddIngredientModel model) {
+        return model;
     }
 }

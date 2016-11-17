@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.inject.PerActivity;

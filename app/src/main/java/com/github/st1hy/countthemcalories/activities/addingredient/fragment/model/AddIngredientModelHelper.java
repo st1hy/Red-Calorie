@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.collect.Lists;
 
 import org.joda.time.DateTime;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
+@PerFragment
 public class AddIngredientModelHelper {
 
     private final SettingsModel settingsModel;

@@ -11,7 +11,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.EditMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.contribute.ContributeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
@@ -19,7 +19,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActi
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.SettingsActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;

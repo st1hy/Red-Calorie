@@ -35,7 +35,6 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     @BindView(R.id.add_meal_total_calories)
     TextView totalCalories;
 
-
     @Inject
     public AddMealViewController(@NonNull AddMealScreen delegate) {
         super(delegate);

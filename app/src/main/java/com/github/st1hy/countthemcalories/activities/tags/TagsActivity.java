@@ -1,13 +1,13 @@
-package com.github.st1hy.countthemcalories.activities.tags.view;
+package com.github.st1hy.countthemcalories.activities.tags;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.inject.DaggerTagsActivityComponent;
-import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityComponent;
-import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityModule;
+import com.github.st1hy.countthemcalories.inject.activities.tags.TagsActivityComponent;
+import com.github.st1hy.countthemcalories.inject.activities.tags.TagsActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 

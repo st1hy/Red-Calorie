@@ -2,18 +2,19 @@ package com.github.st1hy.countthemcalories.inject.activities.addingredient;
 
 
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
-import com.github.st1hy.countthemcalories.inject.core.PictureModule;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 @PerActivity
-@Component(modules = {AddIngredientModule.class, PictureModule.class},
-        dependencies = ApplicationComponent.class)
-public interface AddIngredientComponent {
+@Subcomponent(modules = {
+        AddIngredientModule.class,
+        ToolbarNavigateBackModule.class
+})
+public interface AddIngredientComponent extends AddIngredientFragmentComponentFactory {
 
     void inject(AddIngredientActivity activity);
-
 
 }

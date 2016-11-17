@@ -16,12 +16,14 @@ import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
 
+@PerFragment
 public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdapterWrapper<TagViewHolder> {
 
     private static final int TAG = R.layout.add_ingredient_tag;

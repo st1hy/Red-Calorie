@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.activities.contribute.ContributeActivi
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.SettingsActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 
 public enum DrawerMenuItem {

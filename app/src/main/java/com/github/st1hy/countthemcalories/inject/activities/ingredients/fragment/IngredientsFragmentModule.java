@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject;
+package com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment;
 
 import android.app.Activity;
 import android.content.res.Resources;

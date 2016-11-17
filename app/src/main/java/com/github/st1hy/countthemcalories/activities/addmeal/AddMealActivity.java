@@ -8,24 +8,23 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityModule;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxMenuItem;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import rx.subjects.PublishSubject;
 
 public class AddMealActivity extends BaseActivity {
 
     @BindView(R.id.image_header_toolbar)
+    @Inject
     Toolbar toolbar;
-
     @Inject
     AddMealFragment content; //adds fragment to stack
     @Inject
@@ -36,7 +35,6 @@ public class AddMealActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_meal_activity);
-        ButterKnife.bind(this);
         getAppComponent().newAddMealActivityComponent(new AddMealActivityModule(this))
                 .inject(this);
         setSupportActionBar(toolbar);

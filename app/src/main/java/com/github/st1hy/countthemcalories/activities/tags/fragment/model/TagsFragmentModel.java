@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment.model;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 
 import java.util.Arrays;
 import java.util.Collection;

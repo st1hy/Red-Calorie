@@ -1,40 +1,19 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
+package com.github.st1hy.countthemcalories.activities.tags.fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponent;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentModule;
+import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponent;
+import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.Tag;
-import com.google.common.base.Preconditions;
-import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class TagsFragment extends BaseFragment {
 

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.inject;
+package com.github.st1hy.countthemcalories.inject.activities.tags.fragment;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +8,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsViewImpl;
 import com.github.st1hy.countthemcalories.inject.PerFragment;

@@ -33,7 +33,7 @@
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".activities.addmeal.view.EditMealActivity"
+        <activity android:name=".activities.addmeal.EditMealActivity"
             android:label="@string/edit_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -43,7 +43,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.addingredient.view.EditIngredientActivity"
+            android:name=".activities.addingredient.EditIngredientActivity"
             android:label="@string/edit_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -53,7 +53,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activities.tags.view.TagsActivity"
+            android:name=".activities.tags.TagsActivity"
             android:label="@string/tags_title"
             android:theme="@style/AppTheme.NoActionBar"
             />
@@ -62,7 +62,7 @@
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.Semitransparent"
             />
-        <activity android:name=".activities.addingredient.view.SelectIngredientTypeActivity"
+        <activity android:name=".activities.addingredient.SelectIngredientTypeActivity"
             android:label="@string/select_ingredient_type_title"
             android:theme="@style/AppTheme.Dialog"
             />

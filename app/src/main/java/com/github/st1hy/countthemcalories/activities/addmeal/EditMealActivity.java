@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.view;
+package com.github.st1hy.countthemcalories.activities.addmeal;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 

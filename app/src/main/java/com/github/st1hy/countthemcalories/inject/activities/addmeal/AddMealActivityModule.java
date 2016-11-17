@@ -7,16 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 
 import javax.inject.Named;
 
@@ -34,6 +35,11 @@ public class AddMealActivityModule {
 
     @Provides
     public Activity activity() {
+        return activity;
+    }
+
+    @Provides
+    public AppCompatActivity appCompatActivity() {
         return activity;
     }
 

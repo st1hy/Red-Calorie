@@ -6,12 +6,17 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewAdapter;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
+import javax.inject.Inject;
+
+@PerFragment
 public class IngredientTagsAdapter extends RecyclerViewAdapter<TagViewHolder> {
 
     @NonNull
     private final IngredientTagsPresenter presenter;
 
+    @Inject
     public IngredientTagsAdapter(@NonNull IngredientTagsPresenter presenter) {
         this.presenter = presenter;
     }

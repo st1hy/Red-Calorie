@@ -1,18 +1,20 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.view;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewAdapter;
 
-public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> implements RecyclerViewNotifier {
+import javax.inject.Inject;
+
+public class IngredientsListAdapter extends RecyclerViewAdapter<IngredientItemViewHolder> {
 
     @NonNull
     private final IngredientsListPresenter presenter;
 
+    @Inject
     public IngredientsListAdapter(@NonNull IngredientsListPresenter presenter) {
         this.presenter = presenter;
     }

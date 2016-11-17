@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject;
+package com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;

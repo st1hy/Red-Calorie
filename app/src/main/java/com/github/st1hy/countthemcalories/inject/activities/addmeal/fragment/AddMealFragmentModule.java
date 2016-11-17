@@ -9,31 +9,26 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenterImp;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
-import com.github.st1hy.countthemcalories.core.headerpicture.PictureView;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
 import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;
@@ -76,8 +71,16 @@ public class AddMealFragmentModule {
     }
 
     @Provides
+    @Named("savedState")
+    public Bundle getSavedState() {
+        return savedState;
+    }
+
+    @Provides
     @PerFragment
-    public MealIngredientsListModel provideListModel(@NonNull Meal meal, @Nullable IngredientTemplate extraIngredient) {
+    public MealIngredientsListModel provideListModel(@Named("savedState") Bundle savedState,
+                                                     @NonNull Meal meal,
+                                                     @Nullable IngredientTemplate extraIngredient) {
 
         if (savedState != null) {
             MealIngredientsListModel listModel = Parcels.unwrap(savedState.getParcelable(MealIngredientsListModel.SAVED_INGREDIENTS));
@@ -96,7 +99,7 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public Meal provideMeal() {
+    public Meal provideMeal(@Named("savedState") Bundle savedState) {
         if (savedState != null) {
             return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {
@@ -130,12 +133,6 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    @Named("header")
-    public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
-        return imageHolderDelegate;
-    }
-
-    @Provides
     public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> actionPublishSubject) {
         return actionPublishSubject.asObservable();
     }
@@ -148,15 +145,15 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public IngredientsListAdapter ingredientsAdapter(IngredientsListPresenter listPresenter) {
-        IngredientsListAdapter adapter = new IngredientsListAdapter(listPresenter);
+    @Named("ingredientListAdapter")
+    public IngredientsListAdapter ingredientsAdapter(IngredientsListAdapter adapter, IngredientsListPresenter listPresenter) {
         listPresenter.setNotifier(adapter);
         return adapter;
     }
 
     @Provides
     public RecyclerView recyclerView(@Named("fragmentRootView")View rootView,
-                                     IngredientsListAdapter adapter,
+                                     @Named("ingredientListAdapter") IngredientsListAdapter adapter,
                                      @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
@@ -171,26 +168,9 @@ public class AddMealFragmentModule {
         return presenter;
     }
 
-
-    @Provides
-    @Nullable
-    @Named("pictureTempUri")
-    public Uri tempPictureUri() {
-        if (savedState != null) {
-            return savedState.getParcelable(PicturePicker.SAVE_TEMP_URI);
-        } else {
-            return null;
-        }
-    }
-
     @Provides
     public PictureModel pictureModel(AddMealModel model) {
         return model;
-    }
-
-    @Provides
-    public ImageView imageViewProvider(PictureView view) {
-        return view.getImageView();
     }
 
     @Provides

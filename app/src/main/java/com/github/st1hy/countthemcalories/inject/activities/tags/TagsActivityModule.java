@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.inject;
+package com.github.st1hy.countthemcalories.inject.activities.tags;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsFragment;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
+import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;

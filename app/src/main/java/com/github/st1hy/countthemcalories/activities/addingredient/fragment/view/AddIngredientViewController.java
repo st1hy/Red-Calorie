@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenDelegate;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -19,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
+@PerFragment
 public class AddIngredientViewController extends AddIngredientScreenDelegate implements AddIngredientView {
 
     @NonNull

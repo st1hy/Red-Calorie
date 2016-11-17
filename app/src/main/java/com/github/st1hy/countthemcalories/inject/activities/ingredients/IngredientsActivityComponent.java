@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.inject;
+package com.github.st1hy.countthemcalories.inject.activities.ingredients;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;

@@ -6,11 +6,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.parceler.Parcels;
 
@@ -23,6 +24,7 @@ import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
 
+@PerActivity
 public class AddIngredientScreenImpl implements AddIngredientScreen {
 
     private static final int REQUEST_PICK_TAG = 0x2010;
