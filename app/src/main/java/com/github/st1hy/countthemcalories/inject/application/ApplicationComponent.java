@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIng
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.contribute.ContributeComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailActivityComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.mealdetail.MealDetailActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.settings.SettingsActivityComponentFactory;
@@ -33,7 +34,8 @@ public interface ApplicationComponent extends AddMealActivityComponentFactory,
         ContributeComponentFactory,
         OverviewActivityComponentFactory,
         IntentHandlerActivityComponentFactory,
-        AddIngredientActivityComponentFactory {
+        AddIngredientActivityComponentFactory,
+        IngredientsActivityComponentFactory {
 
     @Named("appContext")
     Context getContext();

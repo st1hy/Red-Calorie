@@ -11,21 +11,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
-import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.dialog.DialogViewController;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
 import com.google.common.base.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -53,7 +52,6 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    @PerActivity
     public IngredientsScreen provideView(IngredientsScreenImpl ingredientsScreen) {
         return ingredientsScreen;
     }
@@ -86,7 +84,9 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public IngredientsFragment provideContent(FragmentManager fragmentManager, Bundle arguments) {
+    public IngredientsFragment provideContent(FragmentManager fragmentManager,
+                                              @Named("fragmentArguments") Bundle arguments,
+                                              IngredientsFragmentComponentFactory componentFactory) {
         final String tag = "ingredients content";
 
         IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(tag);
@@ -100,6 +100,7 @@ public class IngredientsActivityModule {
                     .commit();
             fragmentManager.executePendingTransactions();
         }
+        fragment.setComponentFactory(componentFactory);
         return fragment;
     }
 
@@ -109,6 +110,7 @@ public class IngredientsActivityModule {
     }
 
     @Provides
+    @Named("fragmentArguments")
     public Bundle provideArguments(Intent intent) {
         Bundle arguments = new Bundle();
         boolean selectMode = intent != null &&
@@ -180,14 +182,13 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    @PerActivity
-    public DialogView dialogView(DialogViewController dialogViewController) {
-        return dialogViewController;
-    }
-
-    @Provides
     @Named("activityContext")
     public Context context() {
         return activity;
+    }
+
+    @Provides
+    public IngredientsFragmentComponentFactory ingredientsFragmentComponentFactory(IngredientsActivityComponent component) {
+        return component;
     }
 }

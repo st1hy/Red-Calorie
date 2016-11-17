@@ -7,23 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponent;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.google.common.base.Preconditions;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentModule;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
 
 public class IngredientsFragment extends BaseFragment {
     public static final String ARG_SELECT_BOOL = "selection mode";
 
-    IngredientsFragmentComponent component;
+    private IngredientsFragmentComponentFactory componentFactory;
 
     @Inject
     IngredientsPresenter presenter;
+
+    public void setComponentFactory(IngredientsFragmentComponentFactory componentFactory) {
+        this.componentFactory = componentFactory;
+    }
 
     @Nullable
     @Override
@@ -31,21 +32,12 @@ public class IngredientsFragment extends BaseFragment {
         return inflater.inflate(R.layout.ingredients_content, container, false);
     }
 
-    private IngredientsFragmentComponent getComponent() {
-        if (component == null) {
-            component = DaggerIngredientsFragmentComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .ingredientsFragmentModule(new IngredientsFragmentModule(this))
-                    .build();
-        }
-        return component;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, Preconditions.checkNotNull(getView()));
-        getComponent().inject(this);
+        componentFactory.newIngredientsFragmentComponent(new IngredientsFragmentModule(this))
+                .inject(this);
+        componentFactory = null;
     }
 
     @Override

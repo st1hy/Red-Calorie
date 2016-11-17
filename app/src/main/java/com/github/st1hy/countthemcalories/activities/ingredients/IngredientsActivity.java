@@ -1,16 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.ingredients;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
-import com.github.st1hy.countthemcalories.activities.ingredients.inject.DaggerIngredientsActivityComponent;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityComponent;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityModule;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityModule;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,24 +29,12 @@ public class IngredientsActivity extends BaseActivity {
     @Inject
     DrawerPresenter drawerPresenter;
 
-    IngredientsActivityComponent component;
-
-    @NonNull
-    protected IngredientsActivityComponent getComponent() {
-        if (component == null) {
-            component = DaggerIngredientsActivityComponent.builder()
-                    .applicationComponent(getAppComponent())
-                    .ingredientsActivityModule(new IngredientsActivityModule(this))
-                    .build();
-        }
-        return component;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredients_activity);
-        getComponent().inject(this);
+        getAppComponent().newIngredientsActivityComponent(new IngredientsActivityModule(this))
+                .inject(this);
     }
 
 

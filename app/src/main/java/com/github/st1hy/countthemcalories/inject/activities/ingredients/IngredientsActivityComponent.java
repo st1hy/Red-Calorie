@@ -1,17 +1,15 @@
 package com.github.st1hy.countthemcalories.inject.activities.ingredients;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 @PerActivity
-@Component(modules = IngredientsActivityModule.class, dependencies = ApplicationComponent.class)
-public interface IngredientsActivityComponent {
+@Subcomponent(modules = IngredientsActivityModule.class)
+public interface IngredientsActivityComponent extends IngredientsFragmentComponentFactory {
 
     void inject(IngredientsActivity activity);
 
-    UndoView undoView();
 }

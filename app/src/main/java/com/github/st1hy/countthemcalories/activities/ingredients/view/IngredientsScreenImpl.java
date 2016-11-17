@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.EditIngredientActivity;
@@ -36,6 +37,7 @@ import static com.github.st1hy.countthemcalories.activities.ingredients.Ingredie
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_EDIT;
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_SELECT_TYPE;
 
+@PerActivity
 public class IngredientsScreenImpl implements IngredientsScreen {
 
     @NonNull

@@ -1,33 +1,33 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.model;
 
-import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 
 @PerFragment
 public class IngredientsFragmentModel {
-    private final Bundle arguments;
-    final PhysicalQuantitiesModel physicalQuantitiesModel;
+    private final boolean isInSelectMode;
+    @NonNull
+    private final PhysicalQuantitiesModel physicalQuantitiesModel;
 
     @Inject
-    public IngredientsFragmentModel(@NonNull Bundle arguments,
+    public IngredientsFragmentModel(@Named("isInSelectMode")boolean isInSelectMode,
                                     @NonNull PhysicalQuantitiesModel physicalQuantitiesModel) {
-        this.arguments = arguments;
+        this.isInSelectMode = isInSelectMode;
         this.physicalQuantitiesModel = physicalQuantitiesModel;
     }
 
     public boolean isInSelectMode() {
-        return arguments.getBoolean(IngredientsFragment.ARG_SELECT_BOOL, false);
+        return isInSelectMode;
     }
 
     @NonNull

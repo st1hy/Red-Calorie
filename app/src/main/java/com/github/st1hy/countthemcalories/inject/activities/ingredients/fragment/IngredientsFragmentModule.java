@@ -1,20 +1,23 @@
 package com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsViewController;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,11 +29,6 @@ public class IngredientsFragmentModule {
 
     public IngredientsFragmentModule(IngredientsFragment fragment) {
         this.fragment = fragment;
-    }
-
-    @Provides
-    public Bundle provideArguments() {
-        return fragment.getArguments();
     }
 
     @Provides
@@ -60,10 +58,24 @@ public class IngredientsFragmentModule {
     }
 
     @Provides
-    public RecyclerView ingredientsRecyclerView(Activity activity, IngredientsDaoAdapter adapter) {
-        RecyclerView recyclerView = (RecyclerView) activity.findViewById(R.id.ingredients_content);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-        recyclerView.setAdapter(adapter);
+    public RecyclerView ingredientsRecyclerView(View root,
+                                                @Named("activityContext") Context context) {
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.ingredients_content);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;
+    }
+
+    @Provides
+    @Named("isInSelectMode")
+    public boolean selectMode() {
+        return fragment.getArguments().getBoolean(IngredientsFragment.ARG_SELECT_BOOL, false);
+    }
+
+    @Provides
+    public IngredientsPresenter ingredientsPresenter(IngredientsPresenterImpl presenter,
+                                                     IngredientsDaoAdapter adapter,
+                                                     RecyclerView recyclerView) {
+        recyclerView.setAdapter(adapter);
+        return presenter;
     }
 }

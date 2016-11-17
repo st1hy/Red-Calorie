@@ -12,8 +12,10 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +23,7 @@ import rx.Observable;
 
 import static android.R.string.no;
 
+@PerFragment
 public class IngredientsViewController extends IngredientsViewDelegate {
 
     @NonNull
@@ -36,7 +39,7 @@ public class IngredientsViewController extends IngredientsViewDelegate {
     @Inject
     public IngredientsViewController(@NonNull UndoView undoView,
                                      @NonNull IngredientsScreen screen,
-                                     @NonNull Context context,
+                                     @NonNull @Named("activityContext") Context context,
                                      @NonNull View rootView,
                                      @NonNull RecyclerView recyclerView) {
         super(undoView, screen);
