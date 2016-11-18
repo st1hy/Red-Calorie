@@ -42,8 +42,8 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
                                        @NonNull Resources resources,
                                        @NonNull AddIngredientScreen screen) {
         this.resources = resources;
-        ButterKnife.bind(this, rootView);
         this.screen = screen;
+        ButterKnife.bind(this, rootView);
     }
 
     @Override

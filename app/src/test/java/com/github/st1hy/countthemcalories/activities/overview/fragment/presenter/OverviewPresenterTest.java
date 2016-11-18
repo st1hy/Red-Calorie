@@ -26,7 +26,7 @@ public class OverviewPresenterTest {
 
     @Before
     public void setup() {
-        presenter = new OverviewPresenterImp(view, adapter);
+        presenter = new OverviewPresenterImp(view, adapter, adapterDelegate);
     }
 
     @Test

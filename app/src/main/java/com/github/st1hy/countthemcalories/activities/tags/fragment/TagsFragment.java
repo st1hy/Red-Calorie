@@ -13,7 +13,6 @@ import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFr
 import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentModule;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class TagsFragment extends BaseFragment {
 
@@ -23,7 +22,6 @@ public class TagsFragment extends BaseFragment {
     private TagsFragmentComponentFactory componentFactory;
 
     @Inject
-    @Named("tagsAdapter")
     TagsDaoAdapter adapter;
 
     public void setComponentFactory(TagsFragmentComponentFactory componentFactory) {

@@ -7,18 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -27,6 +23,9 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListModule;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -45,8 +44,8 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
-public class IngredientsListPresenter implements IngredientItemViewHolder.Callback, BasicLifecycle,
-        RecyclerAdapterWrapper<IngredientItemViewHolder>  {
+public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientItemViewHolder>
+        implements IngredientItemViewHolder.Callback, BasicLifecycle {
 
     @NonNull
     private final AddMealView view;
@@ -56,8 +55,6 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     private final PhysicalQuantitiesModel quantityModel;
     @NonNull
     private final IngredientListComponentFactory factory;
-
-    private  RecyclerViewNotifier notifier;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -74,13 +71,8 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     }
 
     @Override
-    public void setNotifier(@NonNull RecyclerViewNotifier viewNotifier) {
-        this.notifier = viewNotifier;
-    }
-
-    @Override
     public void onStart() {
-        notifier.notifyDataSetChanged();
+        notifyDataSetChanged();
         onDataSetChanged();
         subscribe(
                 Observable.just(model.removeExtraIngredientType())
@@ -204,7 +196,7 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     private void onIngredientRemoved(long requestId) {
         if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
-        notifier.notifyDataSetChanged();
+        notifyDataSetChanged();
         onDataSetChanged();
     }
 
@@ -228,14 +220,14 @@ public class IngredientsListPresenter implements IngredientItemViewHolder.Callba
     }
 
     private void notifyInserted(int position) {
-        notifier.notifyItemInserted(position);
+        notifyItemInserted(position);
         view.scrollTo(position);
         view.showSnackbarError(Optional.<String>absent());
         onDataSetChanged();
     }
 
     private void notifyChanged(int position) {
-        notifier.notifyItemChanged(position);
+        notifyItemChanged(position);
         onDataSetChanged();
     }
 

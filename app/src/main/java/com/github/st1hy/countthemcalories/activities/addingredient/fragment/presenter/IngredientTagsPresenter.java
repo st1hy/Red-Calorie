@@ -11,9 +11,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -24,7 +23,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 @PerFragment
-public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdapterWrapper<TagViewHolder> {
+public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolder> implements OnItemClicked<Tag> {
 
     private static final int TAG = R.layout.add_ingredient_tag;
     private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
@@ -35,17 +34,10 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
     @NonNull
     private final AddIngredientView view;
 
-    private RecyclerViewNotifier notifier;
-
     @Inject
     public IngredientTagsPresenter(@NonNull IngredientTagsModel model, @NonNull AddIngredientView view) {
         this.model = model;
         this.view = view;
-    }
-
-    @NonNull
-    public void setNotifier(@NonNull RecyclerViewNotifier notifier) {
-        this.notifier = notifier;
     }
 
     @Override
@@ -91,7 +83,7 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
             @Override
             public void onNext(Tag tag) {
                 int position = model.addTag(tag);
-                notifier.notifyItemInserted(position);
+                notifyItemInserted(position);
             }
         });
 
@@ -102,7 +94,7 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
         return model.getSize() + ADD_CATEGORY_FIELDS_SIZE;
     }
 
-    private int getItemViewType(int position) {
+    public int getItemViewType(int position) {
         if (position < model.getSize()) {
             return TAG;
         } else {
@@ -113,6 +105,7 @@ public class IngredientTagsPresenter implements OnItemClicked<Tag>, RecyclerAdap
     @Override
     public void onItemClicked(@NonNull Tag tag) {
         int position = model.remove(tag);
-        notifier.notifyItemRemoved(position);
+        notifyItemRemoved(position);
     }
+
 }

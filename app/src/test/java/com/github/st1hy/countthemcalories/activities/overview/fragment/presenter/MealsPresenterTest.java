@@ -85,7 +85,7 @@ public class MealsPresenterTest {
     @Mock
     PermissionsHelper permissionsHelper;
 
-    MealsPresenterImpl adapter;
+    MealsPresenter adapter;
 
     @Before
     public void setUp() throws Exception {
@@ -97,7 +97,7 @@ public class MealsPresenterTest {
             }
         });
         MockitoAnnotations.initMocks(this);
-        adapter = new MealsPresenterImpl(view, databaseModel, picasso, quantityModel, commands, viewModel, permissionsHelper, undoView, mealRowComponentFactory);
+        adapter = new MealsPresenter(view, databaseModel, picasso, quantityModel, commands, viewModel, permissionsHelper, undoView, mealRowComponentFactory);
 
         Func1<?, BigDecimal> anyDecimal = Functions.into(BigDecimal.TEN);
         when(quantityModel.mapToEnergy()).thenReturn((Func1<Ingredient, BigDecimal>) anyDecimal);
@@ -160,10 +160,10 @@ public class MealsPresenterTest {
     @Test
     public void testGetItemViewType() throws Exception {
         adapter.list = Collections.emptyList();
-        assertThat(adapter.getItemViewType(0), equalTo(MealsPresenterImpl.bottomSpaceLayout));
+        assertThat(adapter.getItemViewType(0), equalTo(MealsPresenter.bottomSpaceLayout));
         adapter.list = Collections.singletonList(new Meal());
-        assertThat(adapter.getItemViewType(0), equalTo(MealsPresenterImpl.mealItemLayout));
-        assertThat(adapter.getItemViewType(1), equalTo(MealsPresenterImpl.bottomSpaceLayout));
+        assertThat(adapter.getItemViewType(0), equalTo(MealsPresenter.mealItemLayout));
+        assertThat(adapter.getItemViewType(1), equalTo(MealsPresenter.bottomSpaceLayout));
 
         testVerifyNoMoreInteractions();
     }
@@ -181,9 +181,9 @@ public class MealsPresenterTest {
     @Test
     public void testOnCreateViewHolder() throws Exception {
         ViewGroup parent = Mockito.mock(ViewGroup.class);
-        assertThat(adapter.onCreateViewHolder(parent, MealsPresenterImpl.bottomSpaceLayout),
+        assertThat(adapter.onCreateViewHolder(parent, MealsPresenter.bottomSpaceLayout),
                 instanceOf(EmptyMealItemHolder.class));
-        assertThat(adapter.onCreateViewHolder(parent, MealsPresenterImpl.mealItemLayout),
+        assertThat(adapter.onCreateViewHolder(parent, MealsPresenter.mealItemLayout),
                 instanceOf(MealItemHolder.class));
         testVerifyNoMoreInteractions(parent);
     }

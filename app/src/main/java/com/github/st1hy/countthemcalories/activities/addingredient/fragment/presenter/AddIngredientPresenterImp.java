@@ -120,7 +120,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
     @Override
     public void onStop() {
-        //NOOP
+        subscriptions.clear();
     }
 
     @NonNull

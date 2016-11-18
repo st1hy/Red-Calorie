@@ -19,7 +19,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.IngredientTagsAdapter;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
@@ -149,7 +150,7 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(View rootView, @Named("ingredientTags") IngredientTagsAdapter adapter) {
+    public RecyclerView recyclerView(View rootView, RecyclerViewAdapterDelegate adapter) {
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
@@ -158,11 +159,8 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    @Named("ingredientTags")
-    public IngredientTagsAdapter ingredientTagsAdapter(IngredientTagsPresenter presenter,
-                                                       IngredientTagsAdapter tagsAdapter) {
-        presenter.setNotifier(tagsAdapter);
-        return tagsAdapter;
+    public RecyclerAdapterWrapper recyclerAdapterWrapper(IngredientTagsPresenter tagsPresenter) {
+        return tagsPresenter;
     }
 
     @Provides
@@ -174,4 +172,5 @@ public class AddIngredientFragmentModule {
     public PictureModel pictureModel(AddIngredientModel model) {
         return model;
     }
+
 }

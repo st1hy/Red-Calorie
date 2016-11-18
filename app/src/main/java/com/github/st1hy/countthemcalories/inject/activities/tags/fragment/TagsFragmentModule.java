@@ -32,14 +32,6 @@ public class TagsFragmentModule {
     }
 
     @Provides
-    @Named("tagsAdapter")
-    public TagsDaoAdapter tagsDaoAdapter(TagsDaoAdapter adapter,
-                                         RecyclerView recyclerView) {
-        recyclerView.setAdapter(adapter);
-        return adapter;
-    }
-
-    @Provides
     @PerFragment
     public TagsFragmentModel provideFragmentModel() {
         return new TagsFragmentModel(fragment.getArguments());
@@ -54,9 +46,11 @@ public class TagsFragmentModule {
     @Provides
     @PerFragment
     public RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
-                                     @Named("activityContext") Context context) {
+                                     @Named("activityContext") Context context,
+                                     TagsDaoAdapter adapter) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
         return recyclerView;
     }
 

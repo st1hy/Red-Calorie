@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ public class IngredientsFragment extends BaseFragment {
 
     @Inject
     IngredientsPresenter presenter;
+    @Inject
+    RecyclerView recyclerView; //injects adapter
 
     public void setComponentFactory(IngredientsFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;

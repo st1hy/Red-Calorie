@@ -12,16 +12,18 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealIngredientsAdapter;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealIngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailViewImpl;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import org.parceler.Parcels;
 
@@ -92,11 +94,16 @@ public class MealDetailsModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(@Named("activityContext") Context context, View rootView, MealIngredientsAdapter adapter) {
+    public RecyclerView recyclerView(@Named("activityContext") Context context, View rootView, RecyclerViewAdapterDelegate adapter) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;
+    }
+
+    @Provides
+    public RecyclerAdapterWrapper recyclerAdapterWrapper(MealIngredientsPresenter presenter) {
+        return presenter;
     }
 
 }

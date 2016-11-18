@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientLifecycleController;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
@@ -22,7 +22,7 @@ public class AddIngredientFragment extends BaseFragment {
     private AddIngredientFragmentComponentFactory componentFactory;
 
     @Inject
-    AddIngredientPresenter presenter;
+    AddIngredientLifecycleController controller;
     @Inject
     AddIngredientStateSaver saver;
     @Inject
@@ -55,12 +55,12 @@ public class AddIngredientFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        presenter.onStart();
+        controller.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+        controller.onStop();
     }
 }

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.adapter;
+package com.github.st1hy.countthemcalories.core.adapter.delegate;
 
 public interface RecyclerViewNotifier {
 

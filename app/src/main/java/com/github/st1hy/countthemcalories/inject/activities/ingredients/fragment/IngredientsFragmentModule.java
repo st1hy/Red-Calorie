@@ -14,6 +14,8 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presen
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsViewController;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
@@ -59,9 +61,11 @@ public class IngredientsFragmentModule {
 
     @Provides
     public RecyclerView ingredientsRecyclerView(View root,
-                                                @Named("activityContext") Context context) {
+                                                @Named("activityContext") Context context,
+                                                IngredientsDaoAdapter adapter) {
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.ingredients_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
         return recyclerView;
     }
 
@@ -72,10 +76,13 @@ public class IngredientsFragmentModule {
     }
 
     @Provides
-    public IngredientsPresenter ingredientsPresenter(IngredientsPresenterImpl presenter,
-                                                     IngredientsDaoAdapter adapter,
-                                                     RecyclerView recyclerView) {
-        recyclerView.setAdapter(adapter);
+    public IngredientsPresenter ingredientsPresenter(IngredientsPresenterImpl presenter) {
         return presenter;
+    }
+
+    @Provides
+    @PerFragment
+    public RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
+        return RecyclerViewAdapterDelegate.newAdapter(wrapper);
     }
 }

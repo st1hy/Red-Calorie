@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewFragment;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;

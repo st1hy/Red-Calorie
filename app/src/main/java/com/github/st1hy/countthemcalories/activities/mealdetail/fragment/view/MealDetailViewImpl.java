@@ -20,9 +20,9 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
 
     @NonNull
     private final MealDetailScreen screen;
-    @NonNull
-    private final RecyclerView recyclerView; //injects adapter
 
+    @BindView(R.id.meal_detail_recycler)
+    RecyclerView recyclerView;
     @BindView(R.id.meal_detail_name)
     TextView name;
     @BindView(R.id.meal_detail_date)

@@ -9,14 +9,13 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerViewNotifier;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -27,14 +26,13 @@ import javax.inject.Inject;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
-public class MealIngredientsPresenter implements RecyclerAdapterWrapper<IngredientViewHolder>, BasicLifecycle {
-
+public class MealIngredientsPresenter extends RecyclerAdapterWrapper<IngredientViewHolder>
+        implements BasicLifecycle {
 
     @NonNull
     private final Meal meal;
     @NonNull
     private final PhysicalQuantitiesModel quantitiesModel;
-    private RecyclerViewNotifier notifier;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private List<Ingredient> ingredients = Collections.emptyList();
@@ -47,14 +45,9 @@ public class MealIngredientsPresenter implements RecyclerAdapterWrapper<Ingredie
     }
 
     @Override
-    public void setNotifier(@NonNull RecyclerViewNotifier notifier) {
-        this.notifier = notifier;
-    }
-
-    @Override
     public void onStart() {
         ingredients = meal.getIngredients();
-        notifier.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override

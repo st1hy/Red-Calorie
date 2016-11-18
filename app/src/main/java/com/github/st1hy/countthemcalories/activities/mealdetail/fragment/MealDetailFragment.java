@@ -3,15 +3,16 @@ package com.github.st1hy.countthemcalories.activities.mealdetail.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailsLifecycleController;
+import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailsModule;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.LifecycleController;
-import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 
 import javax.inject.Inject;
 
@@ -22,7 +23,9 @@ public class MealDetailFragment extends BaseFragment {
     private MealDetailComponentFactory componentFactory;
 
     @Inject
-    LifecycleController controller;
+    MealDetailsLifecycleController controller;
+    @Inject
+    RecyclerView recyclerView; //injects adapter
 
     public void setComponentFactory(@NonNull MealDetailComponentFactory componentFactory) {
         this.componentFactory = componentFactory;

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.view;
+package com.github.st1hy.countthemcalories.activities.overview.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

@@ -19,8 +19,9 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
@@ -144,16 +145,13 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    @PerFragment
-    @Named("ingredientListAdapter")
-    public IngredientsListAdapter ingredientsAdapter(IngredientsListAdapter adapter, IngredientsListPresenter listPresenter) {
-        listPresenter.setNotifier(adapter);
-        return adapter;
+    public RecyclerAdapterWrapper ingredientsAdapter(IngredientsListPresenter listPresenter) {
+        return listPresenter;
     }
 
     @Provides
     public RecyclerView recyclerView(@Named("fragmentRootView")View rootView,
-                                     @Named("ingredientListAdapter") IngredientsListAdapter adapter,
+                                     RecyclerViewAdapterDelegate adapter,
                                      @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
@@ -177,4 +175,5 @@ public class AddMealFragmentModule {
     public IngredientListComponentFactory ingredientListComponentFactory(AddMealFragmentComponent component) {
         return component;
     }
+
 }

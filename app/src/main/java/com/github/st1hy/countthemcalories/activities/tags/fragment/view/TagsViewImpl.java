@@ -36,9 +36,9 @@ public class TagsViewImpl implements TagsView {
     private final TagsScreen screen;
     @NonNull
     private final Context context;
-    @NonNull
-    private final RecyclerView recyclerView;
 
+    @BindView(R.id.tags_recycler)
+    RecyclerView recyclerView;
     @BindView(R.id.tags_empty)
     View emptyTags;
     @BindView(R.id.tags_empty_message)
@@ -47,11 +47,9 @@ public class TagsViewImpl implements TagsView {
     @Inject
     public TagsViewImpl(@NonNull TagsScreen screen,
                         @NonNull @Named("fragmentRootView") View rootView,
-                        @NonNull @Named("activityContext") Context context,
-                        @NonNull RecyclerView recyclerView) {
+                        @NonNull @Named("activityContext") Context context) {
         this.screen = screen;
         this.context = context;
-        this.recyclerView = recyclerView;
         ButterKnife.bind(this, rootView);
     }
 

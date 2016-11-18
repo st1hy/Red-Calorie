@@ -28,9 +28,9 @@ public class IngredientsViewController extends IngredientsViewDelegate {
 
     @NonNull
     private final Context context;
-    @NonNull
-    private final RecyclerView recyclerView;
 
+    @BindView(R.id.ingredients_content)
+    RecyclerView recyclerView;
     @BindView(R.id.ingredients_empty)
     View emptyIngredients;
     @BindView(R.id.ingredients_empty_message)
@@ -40,11 +40,9 @@ public class IngredientsViewController extends IngredientsViewDelegate {
     public IngredientsViewController(@NonNull UndoView undoView,
                                      @NonNull IngredientsScreen screen,
                                      @NonNull @Named("activityContext") Context context,
-                                     @NonNull View rootView,
-                                     @NonNull RecyclerView recyclerView) {
+                                     @NonNull View rootView) {
         super(undoView, screen);
         this.context = context;
-        this.recyclerView = recyclerView;
         ButterKnife.bind(this, rootView);
     }
 
