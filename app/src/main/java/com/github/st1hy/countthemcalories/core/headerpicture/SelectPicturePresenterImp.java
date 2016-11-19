@@ -55,7 +55,8 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
-        subscriptions.add(view.getSelectPictureObservable()
+//        subscriptions.add(
+                view.getSelectPictureObservable()
                 .flatMap(checkPermission())
                 .filter(Permission.isGranted())
                 .flatMap(showDialog())
@@ -73,7 +74,8 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
                     public void onNext(Uri uri) {
                         displayImageUri(uri);
                     }
-                }));
+                });
+//        );
         subscriptions.add(imageHolderDelegate.getLoadingObservable()
                 .subscribe(new SimpleSubscriber<LoadedSource>() {
                     @Override

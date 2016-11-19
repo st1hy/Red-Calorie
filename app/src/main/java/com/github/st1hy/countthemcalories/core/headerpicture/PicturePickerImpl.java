@@ -62,7 +62,8 @@ public class PicturePickerImpl implements PicturePicker {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
-        return rxActivityResult.from(context).startActivityForResult(intent, REQUEST_CAMERA)
+        return rxActivityResult.from(context)
+                .startActivityForResult(intent, REQUEST_CAMERA)
                 .filter(ActivityResult.IS_OK)
                 .map(new Func1<ActivityResult, Uri>() {
                     @Override
@@ -87,7 +88,8 @@ public class PicturePickerImpl implements PicturePicker {
         Intent chooserIntent = Intent.createChooser(getIntent, context.getString(R.string.add_meal_image_gallery_picker));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-        return rxActivityResult.from(context).startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE)
+        return rxActivityResult.from(context)
+                .startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE)
                 .filter(ActivityResult.IS_OK)
                 .map(new Func1<ActivityResult, Uri>() {
                     @Override

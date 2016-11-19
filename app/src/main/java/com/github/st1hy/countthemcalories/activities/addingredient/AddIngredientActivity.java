@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -25,6 +26,8 @@ public class AddIngredientActivity extends BaseActivity {
     public static final String ARG_EXTRA_NAME = "extra ingredient name";
     public static final String RESULT_INGREDIENT_TEMPLATE = "ingredient result";
 
+    @Inject
+    AddIngredientFragment content; //injects fragment
     @Inject
     Toolbar toolbar; //setup toolbar
     @Inject

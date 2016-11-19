@@ -125,8 +125,8 @@ public class IngredientsActivityModule {
 
     @Provides
     @PerActivity
-    public TokenSearchTextView tokenSearchTextView(Activity activity) {
-        return (TokenSearchTextView) activity.findViewById(R.id.ingredients_search_view);
+    public TokenSearchTextView tokenSearchTextView(TokenSearchView view) {
+        return (TokenSearchTextView) view.findViewById(R.id.token_search_text_view);
     }
 
     @Provides

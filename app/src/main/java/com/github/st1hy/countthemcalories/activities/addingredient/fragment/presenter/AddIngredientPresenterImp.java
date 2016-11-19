@@ -76,7 +76,6 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
     @Override
     public void onStart() {
-        picturePresenter.onStart();
         picturePresenter.loadImageUri(model.getImageUri());
         view.setName(model.getName());
         view.setEnergyDensityValue(model.getEnergyValue());

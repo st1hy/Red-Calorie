@@ -52,7 +52,6 @@ public class AddMealPresenterImp implements AddMealPresenter {
 
     @Override
     public void onStart() {
-        picturePresenter.onStart();
         picturePresenter.loadImageUri(meal.getImageUri());
 
         view.setName(meal.getName());
@@ -72,7 +71,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
 
     @Override
     public void onStop() {
-        picturePresenter.onStop();
+        subscriptions.clear();
     }
 
     @NonNull

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
@@ -17,22 +18,27 @@ public class AddMealLifecycleController implements BasicLifecycle {
     private final AddMealPresenter mealPresenter;
     @NonNull
     private final RecyclerViewAdapterDelegate adapterDelegate;
+    @NonNull
+    private final SelectPicturePresenter picturePresenter;
 
     @Inject
     public AddMealLifecycleController(@NonNull IngredientsListPresenter listPresenter,
                                       @NonNull AddMealPresenter mealPresenter,
-                                      @NonNull RecyclerViewAdapterDelegate adapterDelegate) {
+                                      @NonNull RecyclerViewAdapterDelegate adapterDelegate,
+                                      @NonNull SelectPicturePresenter picturePresenter) {
         this.listPresenter = listPresenter;
         this.mealPresenter = mealPresenter;
         this.adapterDelegate = adapterDelegate;
+        this.picturePresenter = picturePresenter;
     }
 
 
     @Override
     public void onStart() {
-        mealPresenter.onStop();
+        mealPresenter.onStart();
         adapterDelegate.onStart();
         listPresenter.onStart();
+        picturePresenter.onStart();
     }
 
     @Override
@@ -40,5 +46,6 @@ public class AddMealLifecycleController implements BasicLifecycle {
         mealPresenter.onStop();
         adapterDelegate.onStop();
         listPresenter.onStop();
+        picturePresenter.onStop();
     }
 }

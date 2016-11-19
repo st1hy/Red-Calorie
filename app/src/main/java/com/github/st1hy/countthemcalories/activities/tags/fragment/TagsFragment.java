@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ public class TagsFragment extends BaseFragment {
 
     @Inject
     TagsDaoAdapter adapter;
+    @Inject
+    RecyclerView recyclerView; //injects adapter
 
     public void setComponentFactory(TagsFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;

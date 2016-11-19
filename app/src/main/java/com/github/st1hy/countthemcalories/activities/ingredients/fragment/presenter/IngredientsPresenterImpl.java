@@ -64,10 +64,13 @@ public class IngredientsPresenterImpl implements IngredientsPresenter {
                         })
         );
 
+        adapter.onStart();
+
     }
 
     @Override
     public void onStop() {
+        adapter.onStop();
         subscriptions.clear();
     }
 

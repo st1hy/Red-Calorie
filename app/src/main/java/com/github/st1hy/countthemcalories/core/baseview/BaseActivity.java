@@ -8,7 +8,7 @@ import com.github.st1hy.countthemcalories.inject.application.ApplicationComponen
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected final ApplicationComponent getAppComponent() {
-        return ((CaloriesCounterApplication) getApplication()).getComponent();
+        return CaloriesCounterApplication.get(this).getComponent();
     }
 
 }

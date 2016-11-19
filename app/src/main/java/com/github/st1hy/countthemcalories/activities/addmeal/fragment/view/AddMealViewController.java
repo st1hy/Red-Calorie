@@ -17,8 +17,10 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 
 @PerFragment
@@ -36,8 +38,10 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     TextView totalCalories;
 
     @Inject
-    public AddMealViewController(@NonNull AddMealScreen delegate) {
+    public AddMealViewController(@NonNull @Named("fragmentRootView") View rootView,
+                                 @NonNull AddMealScreen delegate) {
         super(delegate);
+        ButterKnife.bind(this, rootView);
     }
 
     @NonNull

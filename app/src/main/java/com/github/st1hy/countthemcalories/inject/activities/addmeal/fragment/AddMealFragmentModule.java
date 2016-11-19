@@ -73,13 +73,14 @@ public class AddMealFragmentModule {
 
     @Provides
     @Named("savedState")
+    @Nullable
     public Bundle getSavedState() {
         return savedState;
     }
 
     @Provides
     @PerFragment
-    public MealIngredientsListModel provideListModel(@Named("savedState") Bundle savedState,
+    public MealIngredientsListModel provideListModel(@Nullable @Named("savedState") Bundle savedState,
                                                      @NonNull Meal meal,
                                                      @Nullable IngredientTemplate extraIngredient) {
 
@@ -100,7 +101,7 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public Meal provideMeal(@Named("savedState") Bundle savedState) {
+    public Meal provideMeal(@Nullable @Named("savedState") Bundle savedState) {
         if (savedState != null) {
             return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {

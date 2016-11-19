@@ -1,17 +1,18 @@
 package com.github.st1hy.countthemcalories.core.activityresult;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 
 import javax.inject.Inject;
 
 /**
  * Wrapper for onActivityResult
  */
-public class IntentHandlerActivity extends BaseActivity {
+public class IntentHandlerActivity extends Activity {
 
     @Inject
     RxActivityResult rxActivityResult;
@@ -19,7 +20,9 @@ public class IntentHandlerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getAppComponent().newIntentHandlerActivityComponent().inject(this);
+        CaloriesCounterApplication.get(this).getComponent()
+                .newIntentHandlerActivityComponent()
+                .inject(this);
         if (savedInstanceState == null) {
             handleIntent(getIntent());
         }
