@@ -47,12 +47,6 @@ public class AddIngredientFragment extends BaseFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saver.onSaveState(outState);
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         controller.onStart();
@@ -62,5 +56,11 @@ public class AddIngredientFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         controller.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saver.onSaveState(outState);
     }
 }

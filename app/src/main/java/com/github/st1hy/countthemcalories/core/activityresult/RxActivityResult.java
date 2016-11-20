@@ -10,11 +10,13 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.functions.Action0;
 
 /**
  * Provide a way to receive the results of the {@link Activity} with RxJava.
@@ -26,7 +28,7 @@ public class RxActivityResult {
     static final String BUNDLE = "Bundle";
 
     private final String packageName;
-    private Map<Integer, PublishSubject<ActivityResult>> results = new HashMap<>();
+    private final Map<Integer, QueueSubject<ActivityResult>> results = new HashMap<>();
 
     public RxActivityResult(String packageName) {
         this.packageName = packageName;
@@ -44,15 +46,13 @@ public class RxActivityResult {
     }
 
     void onActivityResult(int requestCode, int resultCode, Intent data) {
-        PublishSubject<ActivityResult> subject = results.remove(requestCode);
-        ActivityResult result = new ActivityResult(requestCode, resultCode, data);
-        subject.onNext(result);
+        QueueSubject<ActivityResult> subject = results.get(requestCode);
+        subject.onNext(new ActivityResult(requestCode, resultCode, data));
         subject.onCompleted();
     }
 
     void onError(int requestCode, ActivityNotFoundException exception) {
-        PublishSubject<ActivityResult> subject = results.remove(requestCode);
-        subject.onError(exception);
+        results.get(requestCode).onError(exception);
     }
 
     private Intent prepareIntent(final Intent intent, final int requestCode, @Nullable final Bundle options) {
@@ -65,12 +65,25 @@ public class RxActivityResult {
         return shadowIntent;
     }
 
-    private PublishSubject<ActivityResult> prepareSubject(final int requestCode) {
-        PublishSubject<ActivityResult> subject = results.get(requestCode);
-        if (subject == null)
-            subject = PublishSubject.create();
+    private Observable<ActivityResult> prepareSubject(final int requestCode) {
+        QueueSubject<ActivityResult> subject = results.get(requestCode);
+        if (subject == null) {
+            subject = QueueSubject.create();
+            subject.doAfterDeliveryOnTerminate(new Action0() {
+                @Override
+                public void call() {
+                    results.remove(requestCode);
+                }
+            });
+        }
         results.put(requestCode, subject);
         return subject;
+    }
+
+    public Observable<? extends ActivityResult> attachToExistingRequest(int requestCode) {
+        Observable<ActivityResult> resultSubject = results.get(requestCode);
+        if (resultSubject == null) resultSubject = Observable.empty();
+        return resultSubject;
     }
 
     private static class Launcher implements Launchable {
@@ -97,11 +110,9 @@ public class RxActivityResult {
                                                                  @Nullable Bundle options) {
             if (requestCode < 0)
                 throw new IllegalArgumentException("requestCode must be greater than 0");
-
-            PublishSubject<ActivityResult> subject = rxActivityResult.prepareSubject(requestCode);
             Intent shadowIntent = rxActivityResult.prepareIntent(intent, requestCode, options);
             startActivity(shadowIntent);
-            return subject;
+            return rxActivityResult.prepareSubject(requestCode);
         }
     }
 

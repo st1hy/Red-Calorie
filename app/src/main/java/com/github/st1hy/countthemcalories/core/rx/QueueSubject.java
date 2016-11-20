@@ -10,6 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import rx.Notification;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action0;
+import rx.functions.Actions;
 import rx.subjects.Subject;
 
 /**
@@ -27,7 +29,7 @@ public class QueueSubject<T> extends Subject<T, T> {
         this.state = state;
     }
 
-    public static <T> Subject<T, T> create() {
+    public static <T> QueueSubject<T> create() {
         return new QueueSubject<>(new State<T>());
     }
 
@@ -59,9 +61,14 @@ public class QueueSubject<T> extends Subject<T, T> {
         }
     }
 
+    public void doAfterDeliveryOnTerminate(@NonNull Action0 action) {
+        state.doAfterDelivery = action;
+    }
+
     static class State<T> implements OnSubscribe<T> {
         private final Queue<Notification<T>> queue = new ConcurrentLinkedQueue<>();
         private final List<Subscriber<? super T>> subscribers = new CopyOnWriteArrayList<>();
+        private Action0 doAfterDelivery = Actions.empty();
 
         @Override
         public void call(final Subscriber<? super T> subscriber) {
@@ -70,6 +77,9 @@ public class QueueSubject<T> extends Subject<T, T> {
                     Notification<T> notification = queue.poll();
                     if (notification != null) {
                         notification.accept(subscriber);
+                        if (notification.isOnCompleted() || notification.isOnError()) {
+                            doAfterDelivery.call();
+                        }
                     }
                 }
                 subscribers.add(subscriber);
@@ -113,6 +123,7 @@ public class QueueSubject<T> extends Subject<T, T> {
                     else
                         subscribers.remove(s);
                 }
+                doAfterDelivery.call();
             }
         }
 
@@ -130,6 +141,7 @@ public class QueueSubject<T> extends Subject<T, T> {
                     else
                         subscribers.remove(s);
                 }
+                doAfterDelivery.call();
             }
         }
     }

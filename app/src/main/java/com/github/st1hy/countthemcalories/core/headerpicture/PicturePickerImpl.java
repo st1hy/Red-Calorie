@@ -10,10 +10,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.rx.Filters;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+
+import org.greenrobot.greendao.annotation.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,7 +53,44 @@ public class PicturePickerImpl implements PicturePicker {
     }
 
     @Override
-    public Observable<Uri> openCameraAndGetPicture() {
+    public Observable.Transformer<ImageSource, Uri> pickImage() {
+        return new Observable.Transformer<ImageSource, Uri>() {
+            @Override
+            public Observable<Uri> call(Observable<ImageSource> imageSourceObservable) {
+                Observable<ImageSource> sharedSource = imageSourceObservable.share();
+                return sharedSource.flatMap(startActivityRequest())
+                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_CAMERA))
+                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_PICK_IMAGE))
+                        .distinctUntilChanged()
+                        .map(intoUri())
+                        .filter(Functions.NOT_NULL)
+                        .mergeWith(
+                                sharedSource.filter(Filters.equalTo(ImageSource.REMOVE_SOURCE))
+                                .map(Functions.into(Uri.EMPTY))
+                        );
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<ImageSource, Observable<ActivityResult>> startActivityRequest() {
+        return new Func1<ImageSource, Observable<ActivityResult>>() {
+            @Override
+            public Observable<ActivityResult> call(ImageSource imageSource) {
+                switch (imageSource) {
+                    case CAMERA:
+                        return openCameraAndGetPicture();
+                    case GALLERY:
+                        return pickImageFromGallery();
+                    default:
+                        return Observable.empty();
+                }
+            }
+        };
+    }
+
+    @NotNull
+    private Observable<ActivityResult> openCameraAndGetPicture() {
 
         ContentValues values = new ContentValues(1);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
@@ -63,20 +103,13 @@ public class PicturePickerImpl implements PicturePicker {
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
         return rxActivityResult.from(context)
-                .startActivityForResult(intent, REQUEST_CAMERA)
-                .filter(ActivityResult.IS_OK)
-                .map(new Func1<ActivityResult, Uri>() {
-                    @Override
-                    public Uri call(ActivityResult activityResult) {
-                        Uri uri = tempImageUri;
-                        tempImageUri = null;
-                        return uri;
-                    }
-                }).filter(Functions.NOT_NULL);
+                .startActivityForResult(intent, REQUEST_CAMERA);
+
     }
 
-    @Override
-    public Observable<Uri> pickImageFromGallery() {
+
+    @NotNull
+    public Observable<ActivityResult> pickImageFromGallery() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.addCategory(Intent.CATEGORY_OPENABLE);
         getIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
@@ -89,15 +122,27 @@ public class PicturePickerImpl implements PicturePicker {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
         return rxActivityResult.from(context)
-                .startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE)
-                .filter(ActivityResult.IS_OK)
-                .map(new Func1<ActivityResult, Uri>() {
-                    @Override
-                    public Uri call(ActivityResult activityResult) {
+                .startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
+    }
+
+    @NonNull
+    private Func1<ActivityResult, Uri> intoUri() {
+        return new Func1<ActivityResult, Uri>() {
+            @Override
+            public Uri call(ActivityResult activityResult) {
+                switch (activityResult.getRequestCode()) {
+                    case REQUEST_CAMERA:
+                        Uri uri = tempImageUri;
+                        tempImageUri = null;
+                        return uri;
+                    case REQUEST_PICK_IMAGE:
                         Intent data = activityResult.getData();
                         return data != null ? data.getData() : null;
-                    }
-                })
-                .filter(Functions.NOT_NULL);
+                    default:
+                        return null;
+                }
+            }
+        };
     }
+
 }

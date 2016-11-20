@@ -55,27 +55,27 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
-//        subscriptions.add(
+        subscriptions.add(
                 view.getSelectPictureObservable()
-                .flatMap(checkPermission())
-                .filter(Permission.isGranted())
-                .flatMap(showDialog())
-                .map(intoImageSource())
-                .flatMap(pickImage())
-                .doOnNext(new Action1<Uri>() {
-                    @Override
-                    public void call(Uri uri) {
-                        model.setImageUri(uri);
-                    }
-                })
-                .mergeWith(internalUriSource)
-                .subscribe(new SimpleSubscriber<Uri>() {
-                    @Override
-                    public void onNext(Uri uri) {
-                        displayImageUri(uri);
-                    }
-                });
-//        );
+                        .flatMap(checkPermission())
+                        .filter(Permission.isGranted())
+                        .flatMap(showDialog())
+                        .map(intoImageSource())
+                        .compose(pictureController.pickImage())
+                        .doOnNext(new Action1<Uri>() {
+                            @Override
+                            public void call(Uri uri) {
+                                model.setImageUri(uri);
+                            }
+                        })
+                        .mergeWith(internalUriSource)
+                        .subscribe(new SimpleSubscriber<Uri>() {
+                            @Override
+                            public void onNext(Uri uri) {
+                                displayImageUri(uri);
+                            }
+                        })
+        );
         subscriptions.add(imageHolderDelegate.getLoadingObservable()
                 .subscribe(new SimpleSubscriber<LoadedSource>() {
                     @Override
@@ -111,25 +111,6 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
                         model.getSelectImageSourceOptions();
 
                 return dialogView.showAlertDialog(model.getImageSourceDialogTitleResId(), options);
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<ImageSource, Observable<Uri>> pickImage() {
-        return new Func1<ImageSource, Observable<Uri>>() {
-            @Override
-            public Observable<Uri> call(ImageSource imageSource) {
-                switch (imageSource) {
-                    case CAMERA:
-                        return pictureController.openCameraAndGetPicture();
-                    case GALLERY:
-                        return pictureController.pickImageFromGallery();
-                    case REMOVE_SOURCE:
-                        return Observable.just(Uri.EMPTY);
-                    default:
-                        throw new UnsupportedOperationException();
-                }
             }
         };
     }

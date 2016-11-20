@@ -9,19 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponent;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealLifecycleController;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 
 import javax.inject.Inject;
 
 public class AddMealFragment extends BaseFragment {
 
     private AddMealFragmentComponentFactory componentFactory;
-    private AddMealFragmentComponent component;
 
     @Inject
     AddMealLifecycleController controller;
@@ -43,15 +41,8 @@ public class AddMealFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getComponent(savedInstanceState).inject(this);
-    }
-
-    @NonNull
-    protected AddMealFragmentComponent getComponent(@Nullable Bundle savedState) {
-        if (component == null) {
-            component = componentFactory.newAddMealFragmentComponent(new AddMealFragmentModule(this, savedState));
-        }
-        return component;
+        componentFactory.newAddMealFragmentComponent(new AddMealFragmentModule(this, savedInstanceState)).inject(this);
+        componentFactory = null;
     }
 
     @Override
@@ -71,6 +62,5 @@ public class AddMealFragment extends BaseFragment {
         super.onSaveInstanceState(outState);
         saver.onSaveState(outState);
     }
-
 
 }

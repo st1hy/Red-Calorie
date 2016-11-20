@@ -28,6 +28,7 @@ public class AddIngredientLifecycleController implements BasicLifecycle {
         this.picturePresenter = picturePresenter;
     }
 
+
     @Override
     public void onStart() {
         adapterDelegate.onStart();

@@ -45,4 +45,5 @@ public class ActivityResult {
     public boolean isCanceled() {
         return resultCode == Activity.RESULT_CANCELED;
     }
+
 }
