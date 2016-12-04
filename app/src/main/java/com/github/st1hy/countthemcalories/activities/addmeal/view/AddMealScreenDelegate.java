@@ -2,14 +2,11 @@ package com.github.st1hy.countthemcalories.activities.addmeal.view;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-import android.view.View;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Optional;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -47,15 +44,15 @@ public abstract class AddMealScreenDelegate implements AddMealScreen {
     @Override
     @CheckResult
     @NonNull
-    public Observable<IngredientAction> showIngredientDetails(long requestId, @NonNull Ingredient ingredient, @NonNull List<Pair<View, String>> sharedElements) {
-        return getDelegate().showIngredientDetails(requestId, ingredient, sharedElements);
+    public Observable<IngredientAction> showIngredientDetails(@NonNull ShowIngredientsInfo ingredientsInfo) {
+        return getDelegate().showIngredientDetails(ingredientsInfo);
     }
 
     @Override
     @NonNull
     @CheckResult
-    public Observable<Ingredient> addIngredient() {
-        return getDelegate().addIngredient();
+    public Observable.Transformer<Void, Ingredient> newIngredients() {
+        return getDelegate().newIngredients();
     }
 
 }

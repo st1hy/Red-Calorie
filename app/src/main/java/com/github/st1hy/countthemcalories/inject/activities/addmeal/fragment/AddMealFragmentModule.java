@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,7 @@ public class AddMealFragmentModule {
     @PerFragment
     public MealIngredientsListModel provideListModel(@Nullable @Named("savedState") Bundle savedState,
                                                      @NonNull Meal meal,
-                                                     @Nullable IngredientTemplate extraIngredient) {
+                                                     @Nullable Ingredient extraIngredient) {
 
         if (savedState != null) {
             MealIngredientsListModel listModel = Parcels.unwrap(savedState.getParcelable(MealIngredientsListModel.SAVED_INGREDIENTS));
@@ -127,6 +128,16 @@ public class AddMealFragmentModule {
         IngredientTemplate ingredientTemplate = unwrap(arguments.getParcelable(EXTRA_INGREDIENT_PARCEL));
         arguments.remove(EXTRA_INGREDIENT_PARCEL);
         return ingredientTemplate;
+    }
+
+    @Provides
+    @Nullable
+    public Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
+        if (extraTemplate != null) {
+            return new Ingredient(extraTemplate, BigDecimal.ZERO);
+        } else {
+            return null;
+        }
     }
 
     @Provides

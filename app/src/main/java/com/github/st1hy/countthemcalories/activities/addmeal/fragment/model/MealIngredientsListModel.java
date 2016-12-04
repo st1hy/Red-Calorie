@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
@@ -17,11 +16,11 @@ public class MealIngredientsListModel {
     public static final String SAVED_INGREDIENTS = "add meal ingredient list";
 
     private final List<Ingredient> ingredients;
-    private IngredientTemplate extraIngredient;
+    private Ingredient extraIngredient;
 
     @ParcelConstructor
     public MealIngredientsListModel(@NonNull List<Ingredient> ingredients,
-                                    IngredientTemplate extraIngredient) {
+                                    Ingredient extraIngredient) {
         this.ingredients = ingredients;
         this.extraIngredient = extraIngredient;
     }
@@ -61,18 +60,18 @@ public class MealIngredientsListModel {
         return ingredients;
     }
 
-    public void setExtraIngredient(@Nullable IngredientTemplate extraIngredient) {
+    public void setExtraIngredient(@Nullable Ingredient extraIngredient) {
         this.extraIngredient = extraIngredient;
     }
 
     @Nullable
-    public IngredientTemplate removeExtraIngredientType() {
-        IngredientTemplate extra = extraIngredient;
+    public Ingredient removeExtraIngredientType() {
+        Ingredient extra = extraIngredient;
         extraIngredient = null;
         return extra;
     }
 
-    public IngredientTemplate getExtraIngredient() {
+    public Ingredient getExtraIngredient() {
         return extraIngredient;
     }
 }

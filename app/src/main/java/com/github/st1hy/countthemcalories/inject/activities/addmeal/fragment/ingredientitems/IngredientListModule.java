@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.squareup.picasso.Picasso;
@@ -21,13 +20,9 @@ public class IngredientListModule {
 
     @NonNull
     private final View rootView;
-    @NonNull
-    private final IngredientItemViewHolder.Callback callback;
 
-    public IngredientListModule(@NonNull View rootView,
-                                @NonNull IngredientItemViewHolder.Callback callback) {
+    public IngredientListModule(@NonNull View rootView) {
         this.rootView = rootView;
-        this.callback = callback;
     }
 
     @Named("ingredientImageHolder")
@@ -50,8 +45,4 @@ public class IngredientListModule {
         return (ImageView) rootView.findViewById(R.id.add_meal_ingredient_image);
     }
 
-    @Provides
-    public IngredientItemViewHolder.Callback callback() {
-        return callback;
-    }
 }

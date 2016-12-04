@@ -2,14 +2,11 @@ package com.github.st1hy.countthemcalories.activities.addmeal.view;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-import android.view.View;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.google.common.base.Optional;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -19,19 +16,17 @@ public interface AddMealScreen {
 
     void onMealSaved();
 
+    //TODO check if this part is being correctly handled when activity restarts, since starting events depend heavily on starting parameter using compose to attach to preexisting events is challenging
     @CheckResult
     @NonNull
-    Observable<IngredientAction> showIngredientDetails(long requestId,
-                                                       @NonNull Ingredient ingredient,
-                                                       @NonNull List<Pair<View, String>> sharedElements);
+    Observable.Transformer<ShowIngredientsInfo, IngredientAction> showIngredientDetails();
 
     @NonNull
     @CheckResult
-    Observable<Ingredient> addIngredient();
+    Observable.Transformer<Void, Ingredient> newIngredients();
 
     @NonNull
     @CheckResult
     Observable<Void> getAddIngredientButtonObservable();
-
 
 }

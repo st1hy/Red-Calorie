@@ -9,11 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Observable;
 import rx.functions.Action0;
@@ -25,10 +23,10 @@ public class RxActivityResult {
 
     static final String INTENT = "intent";
     static final String REQUEST_CODE = "request";
-    static final String BUNDLE = "Bundle";
+    private static final String BUNDLE = "Bundle";
 
     private final String packageName;
-    private final Map<Integer, QueueSubject<ActivityResult>> results = new HashMap<>();
+    private final SparseArray<QueueSubject<ActivityResult>> results = new SparseArray<>();
 
     public RxActivityResult(String packageName) {
         this.packageName = packageName;
@@ -69,7 +67,7 @@ public class RxActivityResult {
         QueueSubject<ActivityResult> subject = results.get(requestCode);
         if (subject == null) {
             subject = QueueSubject.create();
-            subject.doAfterDeliveryOnTerminate(new Action0() {
+            subject.doAfterTerminate(new Action0() {
                 @Override
                 public void call() {
                     results.remove(requestCode);

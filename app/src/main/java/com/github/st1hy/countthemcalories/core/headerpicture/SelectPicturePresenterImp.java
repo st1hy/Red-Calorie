@@ -19,7 +19,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -35,7 +35,7 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
     private final PictureModel model;
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final ImageHolderDelegate imageHolderDelegate;
-    private final Subject<Uri, Uri> internalUriSource = PublishSubject.create();
+    private final Subject<Uri, Uri> internalUriSource = BehaviorSubject.create();
 
     @Inject
     public SelectPicturePresenterImp(@NonNull PictureView pictureView,
@@ -56,25 +56,25 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
     public void onStart() {
         imageHolderDelegate.onAttached();
         subscriptions.add(
-                view.getSelectPictureObservable()
-                        .flatMap(checkPermission())
-                        .filter(Permission.isGranted())
-                        .flatMap(showDialog())
-                        .map(intoImageSource())
-                        .compose(pictureController.pickImage())
-                        .doOnNext(new Action1<Uri>() {
-                            @Override
-                            public void call(Uri uri) {
-                                model.setImageUri(uri);
-                            }
-                        })
-                        .mergeWith(internalUriSource)
-                        .subscribe(new SimpleSubscriber<Uri>() {
-                            @Override
-                            public void onNext(Uri uri) {
-                                displayImageUri(uri);
-                            }
-                        })
+                internalUriSource.mergeWith(
+                        view.getSelectPictureObservable()
+                                .flatMap(checkPermission())
+                                .filter(Permission.isGranted())
+                                .flatMap(showDialog())
+                                .map(intoImageSource())
+                                .compose(pictureController.pickImage())
+                                .doOnNext(new Action1<Uri>() {
+                                    @Override
+                                    public void call(Uri uri) {
+                                        model.setImageUri(uri);
+                                    }
+                                })
+                ).subscribe(new SimpleSubscriber<Uri>() {
+                    @Override
+                    public void onNext(Uri uri) {
+                        displayImageUri(uri);
+                    }
+                })
         );
         subscriptions.add(imageHolderDelegate.getLoadingObservable()
                 .subscribe(new SimpleSubscriber<LoadedSource>() {

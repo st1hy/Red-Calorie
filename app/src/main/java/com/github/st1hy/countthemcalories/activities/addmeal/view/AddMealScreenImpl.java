@@ -14,16 +14,16 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -84,53 +84,76 @@ public class AddMealScreenImpl implements AddMealScreen {
 
     @NonNull
     @Override
-    public Observable<Ingredient> addIngredient() {
-        Intent intent = new Intent(activity, IngredientsActivity.class);
-        intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
-        return rxActivityResult.from(activity)
-                .startActivityForResult(intent, REQUEST_PICK_INGREDIENT)
-                .filter(ActivityResult.IS_OK)
-                .map(new Func1<ActivityResult, IngredientTemplate>() {
-                    @Override
-                    public IngredientTemplate call(ActivityResult activityResult) {
-                        Intent data = activityResult.getData();
-                        if (data == null) return null;
-                        return Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
-                    }
-                }).filter(Functions.NOT_NULL)
-                .map(new Func1<IngredientTemplate, Ingredient>() {
-                    @Override
-                    public Ingredient call(IngredientTemplate ingredientTemplate) {
-                        return new Ingredient(ingredientTemplate, BigDecimal.ZERO);
-                    }
-                });
+    public Observable.Transformer<Void, Ingredient> newIngredients() {
+        return new Observable.Transformer<Void, Ingredient>() {
+            @Override
+            public Observable<Ingredient> call(Observable<Void> voidObservable) {
+                return voidObservable.flatMap(
+                        new Func1<Void, Observable<ActivityResult>>() {
+                            @Override
+                            public Observable<ActivityResult> call(Void aVoid) {
+                                Intent intent = new Intent(activity, IngredientsActivity.class);
+                                intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
+                                return rxActivityResult.from(activity)
+                                        .startActivityForResult(intent, REQUEST_PICK_INGREDIENT);
+                            }
+                        }).mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_PICK_INGREDIENT))
+                        .distinctUntilChanged()
+                        .filter(ActivityResult.IS_OK)
+                        .map(new Func1<ActivityResult, IngredientTemplate>() {
+                            @Override
+                            public IngredientTemplate call(ActivityResult activityResult) {
+                                Intent data = activityResult.getData();
+                                if (data == null) return null;
+                                return Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
+                            }
+                        }).filter(Functions.NOT_NULL)
+                        .map(new Func1<IngredientTemplate, Ingredient>() {
+                            @Override
+                            public Ingredient call(IngredientTemplate ingredientTemplate) {
+                                return new Ingredient(ingredientTemplate, BigDecimal.ZERO);
+                            }
+                        });
+            }
+        };
     }
 
 
     @Override
     @NonNull
-    public Observable<IngredientAction> showIngredientDetails(long requestId,
-                                                              @NonNull Ingredient ingredient,
-                                                              @NonNull List<Pair<View, String>> sharedElements) {
-        Bundle startOptions = null;
-        if (!sharedElements.isEmpty()) {
-            @SuppressWarnings("unchecked")
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                    sharedElements.toArray(new Pair[sharedElements.size()]));
-            startOptions = options.toBundle();
-        }
-        Intent intent = new Intent(activity, IngredientDetailActivity.class);
-        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG, requestId);
-        intent.putExtra(IngredientsDetailFragmentModule.EXTRA_INGREDIENT, Parcels.wrap(ingredient));
-        return rxActivityResult.from(activity)
-                .startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions)
-                .map(new Func1<ActivityResult, IngredientAction>() {
-                    @Override
-                    public IngredientAction call(ActivityResult activityResult) {
-                        EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(activityResult.getResultCode());
-                        return getIngredientAction(result, activityResult.getData());
-                    }
-                });
+    public Observable.Transformer<ShowIngredientsInfo, IngredientAction> showIngredientDetails() {
+        return new Observable.Transformer<ShowIngredientsInfo, IngredientAction>() {
+            @Override
+            public Observable<IngredientAction> call(Observable<ShowIngredientsInfo> infoObservable) {
+                return infoObservable
+                        .flatMap(new Func1<ShowIngredientsInfo, Observable<ActivityResult>>() {
+                            @Override
+                            public Observable<ActivityResult> call(ShowIngredientsInfo info) {
+                                Bundle startOptions = null;
+                                List<Pair<View, String>> sharedElements = info.getSharedElements();
+                                if (!sharedElements.isEmpty()) {
+                                    @SuppressWarnings("unchecked")
+                                    Pair<View, String>[] pairs = sharedElements.toArray(new Pair[sharedElements.size()]);
+                                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pairs);
+                                    startOptions = options.toBundle();
+                                }
+                                Intent intent = new Intent(activity, IngredientDetailActivity.class);
+                                intent.putExtra(EXTRA_INGREDIENT_ID_LONG, info.getId());
+                                intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(info.getIngredient()));
+                                return rxActivityResult.from(activity)
+                                        .startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
+                            }
+                        })
+                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_EDIT_INGREDIENT))
+                        .map(new Func1<ActivityResult, IngredientAction>() {
+                            @Override
+                            public IngredientAction call(ActivityResult activityResult) {
+                                EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(activityResult.getResultCode());
+                                return getIngredientAction(result, activityResult.getData());
+                            }
+                        });
+            }
+        };
     }
 
     @Override

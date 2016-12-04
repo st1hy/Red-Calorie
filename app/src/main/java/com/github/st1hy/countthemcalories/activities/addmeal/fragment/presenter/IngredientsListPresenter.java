@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.Ingr
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
@@ -41,11 +42,12 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
 public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientItemViewHolder>
-        implements IngredientItemViewHolder.Callback, BasicLifecycle {
+        implements BasicLifecycle {
 
     @NonNull
     private final AddMealView view;
@@ -57,7 +59,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
     private final IngredientListComponentFactory factory;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
-
+    private final PublishSubject<IngredientItemViewHolder> ingredientClicks = PublishSubject.create();
 
     @Inject
     public IngredientsListPresenter(@NonNull AddMealView view,
@@ -77,27 +79,35 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
         subscribe(
                 Observable.just(model.removeExtraIngredientType())
                         .filter(Functions.NOT_NULL)
-                        .map(new Func1<IngredientTemplate, Ingredient>() {
+                        .mergeWith(
+                                view.getAddIngredientButtonObservable()
+                                        .compose(view.newIngredients())
+                        )
+                        .map(new Func1<Ingredient, ShowIngredientsInfo>() {
                             @Override
-                            public Ingredient call(IngredientTemplate ingredientTemplate) {
-                                return new Ingredient(ingredientTemplate, BigDecimal.ZERO);
+                            public ShowIngredientsInfo call(Ingredient ingredient) {
+                                return ShowIngredientsInfo.of(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
                             }
                         })
                         .mergeWith(
-                                view.getAddIngredientButtonObservable()
-                                        .flatMap(new Func1<Void, Observable<Ingredient>>() {
-                                            @Override
-                                            public Observable<Ingredient> call(Void aVoid) {
-                                                return view.addIngredient();
-                                            }
-                                        })
+                                ingredientClicks.map(new Func1<IngredientItemViewHolder, ShowIngredientsInfo>() {
+                                    @Override
+                                    public ShowIngredientsInfo call(IngredientItemViewHolder viewHolder) {
+                                        Ingredient ingredient = viewHolder.getIngredient();
+                                        final int position = model.indexOf(ingredient);
+                                        final List<Pair<View, String>> sharedViews = ImmutableList.of(
+                                                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
+//                                                pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
+//                                                pairOf(viewHolder.getName(), "ingredient-shared-view-name"),
+//                                                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
+//                                                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
+                                        );
+                                        return ShowIngredientsInfo.of(position, ingredient, sharedViews);
+                                    }
+                                })
                         )
-                        .flatMap(new Func1<Ingredient, Observable<IngredientAction>>() {
-                            @Override
-                            public Observable<IngredientAction> call(Ingredient ingredient) {
-                                return view.showIngredientDetails(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
-                            }
-                        }).subscribe(onIngredientAction())
+                        .compose(view.showIngredientDetails())
+                        .subscribe(onIngredientAction())
         );
     }
 
@@ -115,35 +125,35 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
         return model.getItemsCount();
     }
 
-    @Override
-    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
-        final int position = model.indexOf(ingredient);
-        final List<Pair<View, String>> sharedViews = ImmutableList.of(
-                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
+//    @Override
+//    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
+//        final int position = model.indexOf(ingredient);
+//        final List<Pair<View, String>> sharedViews = ImmutableList.of(
+//                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
 //                pairOf(viewHolder.getRoot(), "ingredient-shared-view")
 //                pairOf(viewHolder.getName(), "ingredient-shared-view-name")
 //                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
 //                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
-        );
-        viewHolder.setEnabled(false);
-        subscribe(
-                view.showIngredientDetails(position, ingredient, sharedViews)
-                        .first()
-                        .doOnNext(new Action1<IngredientAction>() {
-                            @Override
-                            public void call(IngredientAction ingredientAction) {
-                                viewHolder.setEnabled(true);
-                            }
-                        })
-                        .subscribe(onIngredientAction())
-        );
-    }
+//        );
+//        viewHolder.setEnabled(false);
+//        subscribe(
+//                view.showIngredientDetails(position, ingredient, sharedViews)
+//                        .first()
+//                        .doOnNext(new Action1<IngredientAction>() {
+//                            @Override
+//                            public void call(IngredientAction ingredientAction) {
+//                                viewHolder.setEnabled(true);
+//                            }
+//                        })
+//                        .subscribe(onIngredientAction())
+//        );
+//    }
 
     @Override
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         Preconditions.checkNotNull(view);
-        return factory.newAddMealFragmentComponent(new IngredientListModule(view, this))
+        return factory.newAddMealFragmentComponent(new IngredientListModule(view))
                 .getHolder();
     }
 
@@ -257,5 +267,17 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
     @NonNull
     private static Pair<View, String> pairOf(@NonNull View view, @NonNull String string) {
         return Pair.create(view, string);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(IngredientItemViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onAttached(ingredientClicks);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(IngredientItemViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.onDetached();
     }
 }

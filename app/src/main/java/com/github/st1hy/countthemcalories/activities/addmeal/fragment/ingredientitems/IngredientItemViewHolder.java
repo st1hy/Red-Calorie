@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems;
 
 import android.net.Uri;
+import android.support.annotation.CheckResult;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,17 +11,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.PerIngredientRow;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.PerIngredientRow;
 import com.google.common.base.Optional;
+import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
+
+import static com.github.st1hy.countthemcalories.core.rx.Transformers.channel;
 
 @PerIngredientRow
 public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
@@ -42,20 +49,18 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
     @NonNull
     private final ImageHolderDelegate imageHolderDelegate;
-    @NonNull
-    private final Callback callback;
+
     @NonNull
     private final ImageView image;
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public IngredientItemViewHolder(@NonNull @Named("ingredientListRow") View itemView,
-                                    @NonNull Callback callback,
                                     @NonNull @Named("ingredientImageHolder") ImageHolderDelegate imageHolderDelegate,
                                     @NonNull @Named("ingredientImage") ImageView image) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        this.callback = callback;
-        this.imageHolderDelegate =  imageHolderDelegate;
+        this.imageHolderDelegate = imageHolderDelegate;
         this.image = image;
     }
 
@@ -79,9 +84,15 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         this.ingredient = ingredient;
     }
 
-    @OnClick(R.id.add_meal_ingredient_compact)
-    public void onClicked() {
-        if (ingredient != null) callback.onIngredientClicked(ingredient, this);
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    @NonNull
+    @CheckResult
+    public Observable<IngredientItemViewHolder> clicks() {
+        return RxView.clicks(compatView)
+                .map(Functions.into(this));
     }
 
     @NonNull
@@ -112,12 +123,17 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         imageHolderDelegate.setImagePlaceholder(placeholderResId);
     }
 
-    public void onAttached() {
+    public void onAttached(PublishSubject<IngredientItemViewHolder> ingredientClicks) {
         imageHolderDelegate.onAttached();
+        subscriptions.add(
+                clicks().compose(channel(ingredientClicks))
+                        .subscribe()
+        );
     }
 
     public void onDetached() {
         imageHolderDelegate.onDetached();
+        subscriptions.clear();
     }
 
     @NonNull
@@ -127,11 +143,6 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
 
     public void setEnabled(boolean enabled) {
         compatView.setEnabled(enabled);
-    }
-
-    public interface Callback {
-        void onIngredientClicked(@NonNull Ingredient ingredient,
-                                 @NonNull IngredientItemViewHolder viewHolder);
     }
 
 }
