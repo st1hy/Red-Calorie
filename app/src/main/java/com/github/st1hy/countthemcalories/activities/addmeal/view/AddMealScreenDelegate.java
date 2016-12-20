@@ -44,8 +44,8 @@ public abstract class AddMealScreenDelegate implements AddMealScreen {
     @Override
     @CheckResult
     @NonNull
-    public Observable<IngredientAction> showIngredientDetails(@NonNull ShowIngredientsInfo ingredientsInfo) {
-        return getDelegate().showIngredientDetails(ingredientsInfo);
+    public Observable.Transformer<ShowIngredientsInfo, IngredientAction> showIngredientDetails() {
+        return getDelegate().showIngredientDetails();
     }
 
     @Override

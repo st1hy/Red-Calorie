@@ -6,19 +6,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -67,21 +68,48 @@ public class OverviewScreenImpl implements OverviewScreen {
 
     @NonNull
     @Override
-    public Observable<MealDetailAction> openMealDetails(@NonNull Meal meal,
-                                                        @NonNull View sharedView) {
+    public Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails() {
+        return new Observable.Transformer<MealDetailParams, MealDetailAction>() {
+            @Override
+            public Observable<MealDetailAction> call(Observable<MealDetailParams> paramsObservable) {
+                return paramsObservable.map(intoRequest())
+                        .compose(
+                                rxActivityResult.from(activity)
+                                        .startActivityForResult(REQUEST_MEAL_DETAIL)
+                        )
+                        .map(onResult());
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<MealDetailParams, StartParams> intoRequest() {
+        return new Func1<MealDetailParams, StartParams>() {
+            @Override
+            public StartParams call(MealDetailParams params) {
+                return getMealDetailsParams(params);
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<ActivityResult, MealDetailAction> onResult() {
+        return new Func1<ActivityResult, MealDetailAction>() {
+            @Override
+            public MealDetailAction call(ActivityResult activityResult) {
+                return getMealDetailResult(activityResult);
+            }
+        };
+    }
+
+    @NonNull
+    private StartParams getMealDetailsParams(@NonNull MealDetailParams params) {
         Bundle startOptions = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(activity, sharedView, "overview-shared-view-image")
+                .makeSceneTransitionAnimation(activity, params.getSharedView(), "overview-shared-view-image")
                 .toBundle();
         Intent intent = new Intent(activity, MealDetailActivity.class);
-        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
-        return rxActivityResult.from(activity)
-                .startActivityForResult(intent, REQUEST_MEAL_DETAIL, startOptions)
-                .map(new Func1<ActivityResult, MealDetailAction>() {
-                    @Override
-                    public MealDetailAction call(ActivityResult activityResult) {
-                        return getMealDetailResult(activityResult);
-                    }
-                });
+        intent.putExtra(MealDetailActivity.EXTRA_MEAL_PARCEL, Parcels.wrap(params.getMeal()));
+        return StartParams.of(intent, REQUEST_MEAL_DETAIL, startOptions);
     }
 
     @Override

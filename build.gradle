@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -15,7 +15,7 @@ ext {
     compileSdkVersion = 24
     buildToolsVersion = '25.0.1'
 
-    supportLibraryVersion = '25.0.1'
+    supportLibraryVersion = '25.1.0'
 
     daggerVersion = '2.7'
     butterknifeVersion = '8.4.0'

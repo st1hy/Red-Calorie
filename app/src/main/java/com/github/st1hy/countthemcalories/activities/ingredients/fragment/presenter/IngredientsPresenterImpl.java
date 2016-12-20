@@ -4,15 +4,15 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -43,19 +43,15 @@ public class IngredientsPresenterImpl implements IngredientsPresenter {
     public void onStart() {
         subscribe(
                 view.getOnAddIngredientClickedObservable()
-                        .flatMap(new Func1<Void, Observable<AddIngredientType>>() {
+                        .compose(view.selectIngredientType())
+                        .map(new Func1<AddIngredientType, AddIngredientParams>() {
                             @Override
-                            public Observable<AddIngredientType> call(Void aVoid) {
-                                return view.selectIngredientType();
-                            }
-                        })
-                        .flatMap(new Func1<AddIngredientType, Observable<IngredientTemplate>>() {
-                            @Override
-                            public Observable<IngredientTemplate> call(AddIngredientType type) {
+                            public AddIngredientParams call(AddIngredientType type) {
                                 String extraName = recentSearchResult.get().getQuery();
-                                return view.addNewIngredient(type, extraName);
+                                return new AddIngredientParams(type, extraName);
                             }
                         })
+                        .compose(view.addNewIngredient())
                         .subscribe(new Action1<IngredientTemplate>() {
                             @Override
                             public void call(IngredientTemplate ingredientTemplate) {

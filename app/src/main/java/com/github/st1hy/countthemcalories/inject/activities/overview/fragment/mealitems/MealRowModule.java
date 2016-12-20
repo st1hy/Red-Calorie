@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.OnMealInteraction;
 
 import javax.inject.Named;
 
@@ -23,26 +22,17 @@ public class MealRowModule {
     private final int layoutRes;
     @NonNull
     private final ViewGroup parent;
-    @NonNull
-    private final OnMealInteraction onMealInteraction;
 
     public MealRowModule(@LayoutRes int layoutRes,
-                         @NonNull ViewGroup parent,
-                         @NonNull OnMealInteraction onMealInteraction) {
+                         @NonNull ViewGroup parent) {
         this.parent = parent;
         this.layoutRes = layoutRes;
-        this.onMealInteraction = onMealInteraction;
     }
 
     @Provides
     @Named("mealItemRoot")
     public View rootView() {
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
-    }
-
-    @Provides
-    public OnMealInteraction onMealInteraction() {
-        return onMealInteraction;
     }
 
     @Provides

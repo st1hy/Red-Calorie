@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActi
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -88,17 +89,19 @@ public class AddMealScreenImpl implements AddMealScreen {
         return new Observable.Transformer<Void, Ingredient>() {
             @Override
             public Observable<Ingredient> call(Observable<Void> voidObservable) {
-                return voidObservable.flatMap(
-                        new Func1<Void, Observable<ActivityResult>>() {
+                return voidObservable.map(
+                        new Func1<Void, StartParams>() {
                             @Override
-                            public Observable<ActivityResult> call(Void aVoid) {
+                            public StartParams call(Void aVoid) {
                                 Intent intent = new Intent(activity, IngredientsActivity.class);
                                 intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
-                                return rxActivityResult.from(activity)
-                                        .startActivityForResult(intent, REQUEST_PICK_INGREDIENT);
+                                return StartParams.of(intent, REQUEST_PICK_INGREDIENT);
                             }
-                        }).mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_PICK_INGREDIENT))
-                        .distinctUntilChanged()
+                        })
+                        .compose(
+                                rxActivityResult.from(activity)
+                                        .startActivityForResult(REQUEST_PICK_INGREDIENT)
+                        )
                         .filter(ActivityResult.IS_OK)
                         .map(new Func1<ActivityResult, IngredientTemplate>() {
                             @Override
@@ -126,9 +129,9 @@ public class AddMealScreenImpl implements AddMealScreen {
             @Override
             public Observable<IngredientAction> call(Observable<ShowIngredientsInfo> infoObservable) {
                 return infoObservable
-                        .flatMap(new Func1<ShowIngredientsInfo, Observable<ActivityResult>>() {
+                        .map(new Func1<ShowIngredientsInfo, StartParams>() {
                             @Override
-                            public Observable<ActivityResult> call(ShowIngredientsInfo info) {
+                            public StartParams call(ShowIngredientsInfo info) {
                                 Bundle startOptions = null;
                                 List<Pair<View, String>> sharedElements = info.getSharedElements();
                                 if (!sharedElements.isEmpty()) {
@@ -140,11 +143,13 @@ public class AddMealScreenImpl implements AddMealScreen {
                                 Intent intent = new Intent(activity, IngredientDetailActivity.class);
                                 intent.putExtra(EXTRA_INGREDIENT_ID_LONG, info.getId());
                                 intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(info.getIngredient()));
-                                return rxActivityResult.from(activity)
-                                        .startActivityForResult(intent, REQUEST_EDIT_INGREDIENT, startOptions);
+                                return StartParams.of(intent, REQUEST_EDIT_INGREDIENT, startOptions);
                             }
                         })
-                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_EDIT_INGREDIENT))
+                        .compose(
+                                rxActivityResult.from(activity)
+                                        .startActivityForResult(REQUEST_EDIT_INGREDIENT)
+                        )
                         .map(new Func1<ActivityResult, IngredientAction>() {
                             @Override
                             public IngredientAction call(ActivityResult activityResult) {

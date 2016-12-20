@@ -2,10 +2,7 @@ package com.github.st1hy.countthemcalories.core.activityresult;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.CheckResult;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import rx.Observable;
 
@@ -31,28 +28,12 @@ public interface Launchable {
      * <p>This method throws {@link IllegalArgumentException}
      * if there was no Activity found to run the given Intent.
      *
-     * @param intent      The intent to start.
      * @param requestCode If >= 0, this code will be returned in
      *                    onActivityResult() when the activity exits.
-     * @param options     Additional options for how the Activity should be started.
-     *                    See {@link android.content.Context#startActivity(Intent, Bundle)
      *                    Context.startActivity(Intent, Bundle)} for more details.
      * @throws IllegalArgumentException when requestCode is less than zero
      */
     @CheckResult
-    Observable<ActivityResult> startActivityForResult(@NonNull Intent intent, int requestCode,
-                                                      @Nullable Bundle options);
+    Observable.Transformer<StartParams, ActivityResult> startActivityForResult(int requestCode);
 
-    /**
-     * Same as calling #startActivityForResult(Intent, int, Bundle)
-     * with no options.
-     *
-     * @param intent      The intent to start.
-     * @param requestCode If >= 0, this code will be returned in {@link ActivityResult}
-     *                    when the activity exits.
-     * @return the result
-     * @throws IllegalArgumentException when requestCode is less than zero
-     */
-    @CheckResult
-    Observable<ActivityResult> startActivityForResult(@NonNull Intent intent, int requestCode);
 }

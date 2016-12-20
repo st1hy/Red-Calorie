@@ -11,19 +11,22 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.AddNewTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.ItemTagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
-import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
-public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolder> implements OnItemClicked<Tag> {
+public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolder> implements OnItemClicked<Tag>, BasicLifecycle {
 
     private static final int TAG = R.layout.add_ingredient_tag;
     private static final int ADD_TAG = R.layout.add_ingredient_add_tag;
@@ -34,10 +37,38 @@ public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolde
     @NonNull
     private final AddIngredientView view;
 
+    private final PublishSubject<Void> addTagEvents = PublishSubject.create();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
+
     @Inject
     public IngredientTagsPresenter(@NonNull IngredientTagsModel model, @NonNull AddIngredientView view) {
         this.model = model;
         this.view = view;
+    }
+
+    @Override
+    public void onStart() {
+        subscriptions.add(
+                addTagEvents.map(new Func1<Void, SelectTagParams>() {
+                    @Override
+                    public SelectTagParams call(Void aVoid) {
+                        return new SelectTagParams(model.getTagNames());
+                    }
+                })
+                .compose(view.selectTag())
+                .subscribe(new Action1<Tag>() {
+                    @Override
+                    public void call(Tag tag) {
+                        int position = model.addTag(tag);
+                        notifyItemInserted(position);
+                    }
+                })
+        );
+    }
+
+    @Override
+    public void onStop() {
+        subscriptions.clear();
     }
 
     @Override
@@ -60,7 +91,6 @@ public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolde
                 onBindTag((ItemTagViewHolder) holder, position);
                 break;
             case ADD_TAG:
-                onBindAddTag((AddNewTagViewHolder) holder);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -73,20 +103,22 @@ public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolde
         viewHolder.setTag(tag);
     }
 
-    private void onBindAddTag(@NonNull AddNewTagViewHolder holder) {
-        holder.addNewObservable().flatMap(new Func1<Void, Observable<Tag>>() {
-            @Override
-            public Observable<Tag> call(Void aVoid) {
-                return view.selectTag(model.getTagNames());
-            }
-        }).subscribe(new SimpleSubscriber<Tag>() {
-            @Override
-            public void onNext(Tag tag) {
-                int position = model.addTag(tag);
-                notifyItemInserted(position);
-            }
-        });
+    @Override
+    public void onViewAttachedToWindow(TagViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof AddNewTagViewHolder) {
+            AddNewTagViewHolder newTagViewHolder = (AddNewTagViewHolder) holder;
+            newTagViewHolder.onAttached(addTagEvents);
+        }
+    }
 
+    @Override
+    public void onViewDetachedFromWindow(TagViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof AddNewTagViewHolder) {
+            AddNewTagViewHolder newTagViewHolder = (AddNewTagViewHolder) holder;
+            newTagViewHolder.onDetached();
+        }
     }
 
     @Override

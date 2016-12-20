@@ -4,6 +4,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import rx.Observable;
@@ -12,7 +13,7 @@ public interface IngredientsScreen {
 
     @NonNull
     @CheckResult
-    Observable<AddIngredientType> selectIngredientType();
+    Observable.Transformer<Void, AddIngredientType> selectIngredientType();
 
     @NonNull
     @CheckResult
@@ -20,7 +21,7 @@ public interface IngredientsScreen {
 
     @NonNull
     @CheckResult
-    Observable<IngredientTemplate> addNewIngredient(@NonNull AddIngredientType type, @NonNull String extraName);
+    Observable.Transformer<AddIngredientParams, IngredientTemplate> addNewIngredient();
 
     void editIngredientTemplate(long requestID, IngredientTemplate ingredientTemplate);
 

@@ -125,30 +125,6 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
         return model.getItemsCount();
     }
 
-//    @Override
-//    public void onIngredientClicked(@NonNull Ingredient ingredient, @NonNull final IngredientItemViewHolder viewHolder) {
-//        final int position = model.indexOf(ingredient);
-//        final List<Pair<View, String>> sharedViews = ImmutableList.of(
-//                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
-//                pairOf(viewHolder.getRoot(), "ingredient-shared-view")
-//                pairOf(viewHolder.getName(), "ingredient-shared-view-name")
-//                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
-//                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
-//        );
-//        viewHolder.setEnabled(false);
-//        subscribe(
-//                view.showIngredientDetails(position, ingredient, sharedViews)
-//                        .first()
-//                        .doOnNext(new Action1<IngredientAction>() {
-//                            @Override
-//                            public void call(IngredientAction ingredientAction) {
-//                                viewHolder.setEnabled(true);
-//                            }
-//                        })
-//                        .subscribe(onIngredientAction())
-//        );
-//    }
-
     @Override
     public IngredientItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);

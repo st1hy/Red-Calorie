@@ -8,7 +8,9 @@ import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 
-public class Transformers {
+public final class Transformers {
+
+    private Transformers() {}
 
     /**
      * Creates observable transformer that replicates information from source observable onto target

@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
+import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -52,11 +53,12 @@ public class OverviewViewImpl implements OverviewView {
         screen.addNewMeal();
     }
 
+
     @Override
     @NonNull
     @CheckResult
-    public Observable<MealDetailAction> openMealDetails(@NonNull Meal meal, @NonNull View sharedView) {
-        return screen.openMealDetails(meal, sharedView);
+    public Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails() {
+        return screen.openMealDetails();
     }
 
     @Override

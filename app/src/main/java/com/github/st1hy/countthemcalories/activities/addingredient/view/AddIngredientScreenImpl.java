@@ -3,12 +3,15 @@ package com.github.st1hy.countthemcalories.activities.addingredient.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
+import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
@@ -52,23 +55,40 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
 
     @Override
     @NonNull
-    public Observable<Tag> selectTag(@NonNull Collection<String> excludedTagNames) {
-        Intent intent = new Intent(activity, TagsActivity.class);
-        intent.setAction(TagsActivity.ACTION_PICK_TAG);
-        if (!excludedTagNames.isEmpty()) {
-            String[] tags = excludedTagNames.toArray(new String[excludedTagNames.size()]);
-            intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
-        }
-        return rxActivityResult.from(activity).startActivityForResult(intent, REQUEST_PICK_TAG)
-                .filter(ActivityResult.IS_OK)
-                .map(new Func1<ActivityResult, Tag>() {
-                    @Override
-                    public Tag call(ActivityResult activityResult) {
-                        Intent data = activityResult.getData();
-                        if (data == null) return null;
-                        return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
-                    }
-                });
+    @CheckResult
+    public Observable.Transformer<SelectTagParams, Tag> selectTag() {
+        return new Observable.Transformer<SelectTagParams, Tag>() {
+            @Override
+            public Observable<Tag> call(Observable<SelectTagParams> paramsObservable) {
+                return paramsObservable
+                        .map(new Func1<SelectTagParams, StartParams>() {
+                            @Override
+                            public StartParams call(SelectTagParams selectTagParams) {
+                                Intent intent = new Intent(activity, TagsActivity.class);
+                                intent.setAction(TagsActivity.ACTION_PICK_TAG);
+                                Collection<String> excludedTags = selectTagParams.getExcludedTags();
+                                if (!excludedTags.isEmpty()) {
+                                    String[] tags = excludedTags.toArray(new String[excludedTags.size()]);
+                                    intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
+                                }
+                                return null;
+                            }
+                        })
+                        .compose(
+                                rxActivityResult.from(activity)
+                                        .startActivityForResult(REQUEST_PICK_TAG)
+                        )
+                        .filter(ActivityResult.IS_OK)
+                        .map(new Func1<ActivityResult, Tag>() {
+                            @Override
+                            public Tag call(ActivityResult activityResult) {
+                                Intent data = activityResult.getData();
+                                if (data == null) return null;
+                                return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
+                            }
+                        });
+            }
+        };
     }
 
     @Override

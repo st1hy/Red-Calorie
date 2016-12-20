@@ -18,14 +18,18 @@ public class AddIngredientLifecycleController implements BasicLifecycle {
     private final AddIngredientPresenter presenter;
     @NonNull
     private final SelectPicturePresenter picturePresenter;
+    @NonNull
+    private final IngredientTagsPresenter tagsPresenter;
 
     @Inject
     public AddIngredientLifecycleController(@NonNull RecyclerViewAdapterDelegate adapterDelegate,
                                             @NonNull AddIngredientPresenter presenter,
-                                            @NonNull SelectPicturePresenter picturePresenter) {
+                                            @NonNull SelectPicturePresenter picturePresenter,
+                                            @NonNull IngredientTagsPresenter tagsPresenter) {
         this.adapterDelegate = adapterDelegate;
         this.presenter = presenter;
         this.picturePresenter = picturePresenter;
+        this.tagsPresenter = tagsPresenter;
     }
 
 
@@ -34,6 +38,7 @@ public class AddIngredientLifecycleController implements BasicLifecycle {
         adapterDelegate.onStart();
         presenter.onStart();
         picturePresenter.onStart();
+        tagsPresenter.onStart();
     }
 
     @Override
@@ -41,5 +46,6 @@ public class AddIngredientLifecycleController implements BasicLifecycle {
         adapterDelegate.onStop();
         presenter.onStop();
         picturePresenter.onStop();
+        tagsPresenter.onStop();
     }
 }

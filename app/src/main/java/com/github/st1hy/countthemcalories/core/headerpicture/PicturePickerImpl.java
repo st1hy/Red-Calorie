@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -58,10 +59,18 @@ public class PicturePickerImpl implements PicturePicker {
             @Override
             public Observable<Uri> call(Observable<ImageSource> imageSourceObservable) {
                 Observable<ImageSource> sharedSource = imageSourceObservable.share();
-                return sharedSource.flatMap(startActivityRequest())
-                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_CAMERA))
-                        .mergeWith(rxActivityResult.attachToExistingRequest(REQUEST_PICK_IMAGE))
-                        .distinctUntilChanged()
+                return sharedSource.filter(Filters.equalTo(ImageSource.CAMERA))
+                        .map(Functions.into(imageFromCameraParams()))
+                        .compose(rxActivityResult.from(context)
+                                .startActivityForResult(REQUEST_CAMERA))
+                        .mergeWith(
+                                sharedSource
+                                        .filter(Filters.equalTo(ImageSource.GALLERY))
+                                        .map(Functions.into(imageFromGalleryParams()))
+                                        .compose(rxActivityResult.from(context)
+                                                .startActivityForResult(REQUEST_PICK_IMAGE))
+                        )
+                        .filter(ActivityResult.IS_OK)
                         .map(intoUri())
                         .filter(Functions.NOT_NULL)
                         .mergeWith(
@@ -72,25 +81,8 @@ public class PicturePickerImpl implements PicturePicker {
         };
     }
 
-    @NonNull
-    private Func1<ImageSource, Observable<ActivityResult>> startActivityRequest() {
-        return new Func1<ImageSource, Observable<ActivityResult>>() {
-            @Override
-            public Observable<ActivityResult> call(ImageSource imageSource) {
-                switch (imageSource) {
-                    case CAMERA:
-                        return openCameraAndGetPicture();
-                    case GALLERY:
-                        return pickImageFromGallery();
-                    default:
-                        return Observable.empty();
-                }
-            }
-        };
-    }
-
     @NotNull
-    private Observable<ActivityResult> openCameraAndGetPicture() {
+    private StartParams imageFromCameraParams() {
 
         ContentValues values = new ContentValues(1);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
@@ -102,14 +94,13 @@ public class PicturePickerImpl implements PicturePicker {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
-        return rxActivityResult.from(context)
-                .startActivityForResult(intent, REQUEST_CAMERA);
+        return StartParams.of(intent, REQUEST_CAMERA);
 
     }
 
 
     @NotNull
-    public Observable<ActivityResult> pickImageFromGallery() {
+    private StartParams imageFromGalleryParams() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.addCategory(Intent.CATEGORY_OPENABLE);
         getIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
@@ -121,8 +112,7 @@ public class PicturePickerImpl implements PicturePicker {
         Intent chooserIntent = Intent.createChooser(getIntent, context.getString(R.string.add_meal_image_gallery_picker));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-        return rxActivityResult.from(context)
-                .startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
+        return StartParams.of(chooserIntent, REQUEST_PICK_IMAGE);
     }
 
     @NonNull

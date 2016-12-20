@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems;
 
 import android.net.Uri;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.PerMealRow;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.core.rx.Transformers;
+import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.PerMealRow;
 import com.google.common.base.Optional;
+import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -22,13 +26,19 @@ import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dagger.internal.InstanceFactory;
+import rx.Observable;
+import rx.functions.Func1;
+import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
+
+import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.DELETE;
+import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.EDIT;
+import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.OPEN;
 
 @PerMealRow
 public class MealItemHolder extends AbstractMealItemHolder {
 
-    private final OnMealInteraction onMealInteraction;
     private final ScrollingItemDelegate scrollingItemDelegate;
     private final ImageHolderDelegate imageHolderDelegate;
 
@@ -57,13 +67,13 @@ public class MealItemHolder extends AbstractMealItemHolder {
     @BindView(R.id.overview_item_delete)
     View deleteButton;
 
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
+
     @Inject
     public MealItemHolder(@NonNull @Named("mealItemRoot") View itemView,
-                          @NonNull OnMealInteraction onMealInteraction,
                           @NonNull Picasso picasso,
                           @NonNull PermissionsHelper permissionHelper) {
         super(itemView);
-        this.onMealInteraction = onMealInteraction;
         ButterKnife.bind(this, itemView);
         scrollingItemDelegate = ScrollingItemDelegate.Builder.create()
                 .setLeft(deleteFrame)
@@ -73,21 +83,6 @@ public class MealItemHolder extends AbstractMealItemHolder {
                 .build();
         this.imageHolderDelegate = new ImageHolderDelegate(picasso, permissionHelper,
                 InstanceFactory.create(image));
-    }
-
-    @OnClick(R.id.overview_item_content)
-    public void onContentClicked() {
-        onMealInteraction.onMealClicked(this);
-    }
-
-    @OnClick(R.id.overview_item_edit)
-    public void onEditClicked() {
-        onMealInteraction.onEditClicked(this);
-    }
-
-    @OnClick(R.id.overview_item_delete)
-    public void onDeleteClicked() {
-        onMealInteraction.onDeleteClicked(this);
     }
 
     public void fillParent(@NonNull final ViewGroup parent) {
@@ -123,14 +118,20 @@ public class MealItemHolder extends AbstractMealItemHolder {
         return meal;
     }
 
-    public void onAttached() {
+    @Override
+    public void onAttached(@NonNull PublishSubject<MealInteraction> subject) {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
+        subscriptions.add(interactions()
+                .compose(Transformers.channel(subject))
+                .subscribe());
     }
 
+    @Override
     public void onDetached() {
         scrollingItemDelegate.onDetached();
         imageHolderDelegate.onDetached();
+        subscriptions.clear();
     }
 
     public void setEnabled(boolean enabled) {
@@ -143,4 +144,40 @@ public class MealItemHolder extends AbstractMealItemHolder {
         imageHolderDelegate.displayImage(uri);
     }
 
+    @NonNull
+    @CheckResult
+    private Observable<MealInteraction.Type> openInteraction() {
+        return RxView.clicks(content).map(Functions.into(OPEN));
+    }
+
+    @NonNull
+    @CheckResult
+    private Observable<MealInteraction.Type> editInteraction() {
+        return RxView.clicks(editButton).map(Functions.into(EDIT));
+    }
+
+    @NonNull
+    @CheckResult
+    private Observable<MealInteraction.Type> deleteInteraction() {
+        return RxView.clicks(deleteButton).map(Functions.into(DELETE));
+    }
+
+    @NonNull
+    @CheckResult
+    private Observable<MealInteraction> interactions() {
+        return openInteraction()
+                .mergeWith(editInteraction())
+                .mergeWith(deleteInteraction())
+                .map(intoInteraction());
+    }
+
+    @NonNull
+    private Func1<MealInteraction.Type, MealInteraction> intoInteraction() {
+        return new Func1<MealInteraction.Type, MealInteraction>() {
+            @Override
+            public MealInteraction call(MealInteraction.Type type) {
+                return MealInteraction.of(type, MealItemHolder.this);
+            }
+        };
+    }
 }

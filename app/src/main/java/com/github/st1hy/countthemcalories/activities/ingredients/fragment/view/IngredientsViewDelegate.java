@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
@@ -37,7 +38,7 @@ abstract class IngredientsViewDelegate implements IngredientsView {
     @Override
     @NonNull
     @CheckResult
-    public Observable<AddIngredientType> selectIngredientType() {
+    public Observable.Transformer<Void, AddIngredientType> selectIngredientType() {
         return screen.selectIngredientType();
     }
 
@@ -51,8 +52,8 @@ abstract class IngredientsViewDelegate implements IngredientsView {
     @Override
     @NonNull
     @CheckResult
-    public Observable<IngredientTemplate> addNewIngredient(@NonNull AddIngredientType type, @NonNull String extraName) {
-        return screen.addNewIngredient(type, extraName);
+    public Observable.Transformer<AddIngredientParams, IngredientTemplate> addNewIngredient() {
+        return screen.addNewIngredient();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 
 import rx.Observable;
 import rx.functions.Action0;
+import rx.functions.Func1;
 
 /**
  * Provide a way to receive the results of the {@link Activity} with RxJava.
@@ -78,7 +79,7 @@ public class RxActivityResult {
         return subject;
     }
 
-    public Observable<? extends ActivityResult> attachToExistingRequest(int requestCode) {
+    private Observable<? extends ActivityResult> attachToExistingRequest(int requestCode) {
         Observable<ActivityResult> resultSubject = results.get(requestCode);
         if (resultSubject == null) resultSubject = Observable.empty();
         return resultSubject;
@@ -98,19 +99,39 @@ public class RxActivityResult {
             context.startActivity(intent);
         }
 
-        @Override
-        public Observable<ActivityResult> startActivityForResult(@NonNull Intent intent, int requestCode) {
-            return startActivityForResult(intent, requestCode, null);
-        }
-
-        @Override
-        public Observable<ActivityResult> startActivityForResult(@NonNull Intent intent, int requestCode,
-                                                                 @Nullable Bundle options) {
+        private Observable<ActivityResult> startActivityForResult(@NonNull StartParams startParams) {
+            int requestCode = startParams.getRequestCode();
             if (requestCode < 0)
                 throw new IllegalArgumentException("requestCode must be greater than 0");
-            Intent shadowIntent = rxActivityResult.prepareIntent(intent, requestCode, options);
+            Intent shadowIntent = rxActivityResult.prepareIntent(startParams.getIntent(),
+                    requestCode, startParams.getOptions());
             startActivity(shadowIntent);
             return rxActivityResult.prepareSubject(requestCode);
+        }
+
+
+        @Override
+        public Observable.Transformer<StartParams, ActivityResult> startActivityForResult(final int requestCode) {
+            if (requestCode < 0)
+                throw new IllegalArgumentException("requestCode must be greater than 0");
+            return new Observable.Transformer<StartParams, ActivityResult>() {
+                @Override
+                public Observable<ActivityResult> call(Observable<StartParams> startParamsObservable) {
+                    return startParamsObservable.flatMap(startActivity())
+                            .mergeWith(rxActivityResult.attachToExistingRequest(requestCode))
+                            .distinctUntilChanged();
+                }
+            };
+        }
+
+        @NonNull
+        private Func1<StartParams, Observable<ActivityResult>> startActivity() {
+            return new Func1<StartParams, Observable<ActivityResult>>() {
+                @Override
+                public Observable<ActivityResult> call(StartParams startParams) {
+                    return startActivityForResult(startParams);
+                }
+            };
         }
     }
 
