@@ -23,7 +23,6 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -58,7 +57,7 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @CheckResult
     public Observable.Transformer<SelectTagParams, Tag> selectTag() {
         return paramsObservable -> paramsObservable
-                .map((Func1<SelectTagParams, StartParams>) selectTagParams -> {
+                .map(selectTagParams -> {
                     Intent intent = new Intent(activity, TagsActivity.class);
                     intent.setAction(TagsActivity.ACTION_PICK_TAG);
                     Collection<String> excludedTags = selectTagParams.getExcludedTags();
@@ -66,7 +65,7 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
                         String[] tags = excludedTags.toArray(new String[excludedTags.size()]);
                         intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
                     }
-                    return null;
+                    return StartParams.of(intent, REQUEST_PICK_TAG);
                 })
                 .compose(
                         rxActivityResult.from(activity)

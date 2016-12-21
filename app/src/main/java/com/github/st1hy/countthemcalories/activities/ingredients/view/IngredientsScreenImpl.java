@@ -119,7 +119,6 @@ public class IngredientsScreenImpl implements IngredientsScreen {
                         rxActivityResult.from(activity)
                                 .startActivityForResult(REQUEST_SELECT_TYPE)
                 )
-                .filter(ActivityResult.IS_OK)
                 .map(activityResult -> {
                     switch (activityResult.getResultCode()) {
                         case SelectIngredientTypeActivity.RESULT_DRINK:

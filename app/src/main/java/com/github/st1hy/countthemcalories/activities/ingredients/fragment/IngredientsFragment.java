@@ -53,7 +53,7 @@ public class IngredientsFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStart();
+        presenter.onStop();
     }
 
 }
