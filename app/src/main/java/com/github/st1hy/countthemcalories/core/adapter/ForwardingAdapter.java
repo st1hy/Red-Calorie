@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 import android.widget.Filterable;
 import android.widget.ListAdapter;
 
-public class ForwardingAdapter<R extends ListAdapter & Filterable> extends AbstractForwardingAdapter<R> {
+public class ForwardingAdapter<R extends ListAdapter & Filterable> extends
+        AbstractForwardingAdapter<R> {
 
-    final R parent;
+    @NonNull
+    private final R parent;
 
     public ForwardingAdapter(@NonNull R parent) {
         this.parent = parent;

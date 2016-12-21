@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.model;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.google.common.base.Function;
@@ -18,19 +17,8 @@ public class IngredientTagsModel {
 
     public static final String SAVED_TAGS_MODEL = "add ingredient tags model";
 
-    private static final Function<Tag, Long> TAG_TO_ID = new Function<Tag, Long>() {
-        @Override
-        public Long apply(Tag input) {
-            return input.getId();
-        }
-    };
-    private static final Function<Tag, String> TAG_TO_NAME = new Function<Tag, String>() {
-        @Nullable
-        @Override
-        public String apply(Tag input) {
-            return input.getName();
-        }
-    };
+    private static final Function<Tag, Long> TAG_TO_ID = Tag::getId;
+    private static final Function<Tag, String> TAG_TO_NAME = Tag::getName;
 
     final ArrayList<Tag> tags;
 

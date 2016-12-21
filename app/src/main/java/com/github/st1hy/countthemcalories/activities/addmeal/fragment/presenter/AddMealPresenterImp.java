@@ -6,19 +6,16 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddM
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
@@ -58,14 +55,17 @@ public class AddMealPresenterImp implements AddMealPresenter {
         subscribe(
                 view.getNameObservable()
                         .skip(1)
-                        .subscribe(setNameToModel())
+                        .subscribe(charSequence -> {
+                            meal.setName(charSequence.toString());
+                            validateName();
+                        })
         );
         subscribe(
                 menuActionObservable.filter(Filters.equalTo(AddMealMenuAction.SAVE))
                         .map(Functions.INTO_VOID)
-                        .filter(whenMealValid())
-                        .flatMap(saveMealToDatabase())
-                        .subscribe(closeView())
+                        .filter(aVoid -> validateMeal())
+                        .flatMap(aVoid1 -> model.saveToDatabase())
+                        .subscribe(v -> view.onMealSaved())
         );
     }
 
@@ -74,62 +74,22 @@ public class AddMealPresenterImp implements AddMealPresenter {
         subscriptions.clear();
     }
 
-    @NonNull
-    private Func1<Void, Boolean> whenMealValid() {
-        return new Func1<Void, Boolean>() {
-            @Override
-            public Boolean call(Void aVoid) {
-                return validateMeal();
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Void, Observable<Void>> saveMealToDatabase() {
-        return new Func1<Void, Observable<Void>>() {
-            @Override
-            public Observable<Void> call(Void aVoid) {
-                return model.saveToDatabase();
-            }
-        };
-    }
-
-    @NonNull
-    private SimpleSubscriber<Void> closeView() {
-        return new SimpleSubscriber<Void>() {
-
-            @Override
-            public void onNext(Void aVoid) {
-                view.onMealSaved();
-            }
-        };
-    }
-
     private boolean validateMeal() {
         return validateName() & validateIngredients();
     }
 
     private boolean validateName() {
         Optional<String> nameError = model.getNameError();
-        view.showNameError(nameError);
+        if (nameError.isPresent()) view.showNameError(nameError.get());
+        else view.hideNameError();
         return !nameError.isPresent();
     }
 
     private boolean validateIngredients() {
         Optional<String> ingredientsError = model.getIngredientsError();
-        view.showSnackbarError(ingredientsError);
+        if (ingredientsError.isPresent()) view.showSnackbarError(ingredientsError.get());
+        else view.hideSnackbarError();
         return !ingredientsError.isPresent();
-    }
-
-    @NonNull
-    private Action1<CharSequence> setNameToModel() {
-        return new Action1<CharSequence>() {
-            @Override
-            public void call(CharSequence charSequence) {
-                meal.setName(charSequence.toString());
-                validateName();
-            }
-        };
     }
 
     private void subscribe(@NonNull Subscription subscription) {

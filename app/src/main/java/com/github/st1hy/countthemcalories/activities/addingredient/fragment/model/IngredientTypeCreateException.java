@@ -20,19 +20,27 @@ public class IngredientTypeCreateException extends IllegalStateException {
     }
 
     public enum ErrorType {
-        NO_NAME(R.string.add_ingredient_name_error_empty),
-        NO_VALUE(R.string.add_ingredient_energy_density_error_empty),
-        ZERO_VALUE(R.string.add_ingredient_energy_density_error_zero);
+        NO_NAME(R.string.add_ingredient_name_error_empty, InputType.NAME),
+        NO_VALUE(R.string.add_ingredient_energy_density_error_empty, InputType.VALUE),
+        ZERO_VALUE(R.string.add_ingredient_energy_density_error_zero, InputType.VALUE);
 
         private final int errorResId;
+        @NonNull
+        private final InputType inputType;
 
-        ErrorType(@StringRes int errorResId) {
+        ErrorType(@StringRes int errorResId, @NonNull InputType inputType) {
             this.errorResId = errorResId;
+            this.inputType = inputType;
         }
 
         @StringRes
         public int getErrorResId() {
             return errorResId;
+        }
+
+        @NonNull
+        public InputType getInputType() {
+            return inputType;
         }
 
     }

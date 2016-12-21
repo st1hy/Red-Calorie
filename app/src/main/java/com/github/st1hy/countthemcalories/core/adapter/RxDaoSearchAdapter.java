@@ -2,18 +2,15 @@ package com.github.st1hy.countthemcalories.core.adapter;
 
 import android.database.Cursor;
 import android.support.annotation.CallSuper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
-
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<T>
@@ -44,30 +41,20 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
                     );
         }
         addSubscription(sequenceObservable
-                .doOnNext(new Action1<CharSequence>() {
-                    @Override
-                    public void call(CharSequence text) {
-                        Timber.v("Search notification: queryText='%s'", text);
-                    }
+                .doOnNext(text -> Timber.v("Search notification: queryText='%s'", text))
+                .map(CharSequence::toString)
+                .flatMap(query -> {
+                    Observable<Cursor> cursor11 = getAllWithFilter(query);
+                    return cursor11.map(cursor1 -> Pair.create(query, cursor1));
                 })
-                .flatMap(queryDatabaseFiltered())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable e) {
-                        Timber.e(e, "Search exploded");
-                    }
-                })
+                .doOnError(e -> Timber.e(e, "Search exploded"))
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<Pair<String, Cursor>>() {
-                    @Override
-                    public void onNext(Pair<String, Cursor> result) {
-                        Timber.v("Db cursor query ended");
-                        lastQuery = result.first;
-                        onCursorUpdate(result.first, result.second);
-                        notifyDataSetChanged();
-                        onSearchFinished();
-                    }
+                .subscribe(result -> {
+                    Timber.v("Db cursor query ended");
+                    lastQuery = result.first;
+                    onCursorUpdate(result.first, result.second);
+                    notifyDataSetChanged();
                 }));
     }
 
@@ -76,32 +63,8 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
         super.onCursorUpdate(cursor);
     }
 
-    protected void onSearchFinished() {
-    }
-
     @NonNull
-    private Func1<? super CharSequence, ? extends Observable<Pair<String, Cursor>>> queryDatabaseFiltered() {
-        return new Func1<CharSequence, Observable<Pair<String, Cursor>>>() {
-            @Override
-            public Observable<Pair<String, Cursor>> call(CharSequence text) {
-                final String query = text.toString();
-                Observable<Cursor> cursor = getAllWithFilter(query);
-                return cursor.map(withQuery(query));
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Cursor, Pair<String, Cursor>> withQuery(final String query) {
-        return new Func1<Cursor, Pair<String, Cursor>>() {
-            @Override
-            public Pair<String, Cursor> call(Cursor cursor) {
-                return Pair.create(query, cursor);
-            }
-        };
-    }
-
-    @NonNull
+    @CheckResult
     protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
         return db.getAllFiltered(filter);
     }

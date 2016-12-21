@@ -9,6 +9,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "me.tatarka.retrolambda" version "3.4.0"
+}
+
 ext {
     minSdkVersion = 16
     targetSdkVersion = 24

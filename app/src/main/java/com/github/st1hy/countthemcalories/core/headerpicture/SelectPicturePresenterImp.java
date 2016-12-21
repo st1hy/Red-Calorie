@@ -2,23 +2,17 @@ package com.github.st1hy.countthemcalories.core.headerpicture;
 
 import android.Manifest;
 import android.net.Uri;
-import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.LoadedSource;
 import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
@@ -58,61 +52,46 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
         subscriptions.add(
                 internalUriSource.mergeWith(
                         view.getSelectPictureObservable()
-                                .flatMap(checkPermission())
+                                .flatMap(aVoid ->
+                                        permissionsHelper.checkPermissionAndAskIfNecessary(
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE, null)
+                                )
                                 .filter(Permission.isGranted())
-                                .flatMap(showDialog())
+                                .flatMap(permission ->
+                                        dialogView.showAlertDialog(
+                                                model.getImageSourceDialogTitleResId(), getOptions()
+                                        )
+                                )
                                 .map(intoImageSource())
                                 .compose(pictureController.pickImage())
-                                .doOnNext(new Action1<Uri>() {
-                                    @Override
-                                    public void call(Uri uri) {
-                                        model.setImageUri(uri);
-                                    }
-                                })
-                ).subscribe(new SimpleSubscriber<Uri>() {
-                    @Override
-                    public void onNext(Uri uri) {
-                        displayImageUri(uri);
-                    }
-                })
+                                .doOnNext(model::setImageUri)
+                ).subscribe((uri) -> imageHolderDelegate.displayImage(from(uri)))
         );
-        subscriptions.add(imageHolderDelegate.getLoadingObservable()
-                .subscribe(new SimpleSubscriber<LoadedSource>() {
-                    @Override
-                    public void onNext(LoadedSource loadedSource) {
-                        showOverlay(loadedSource);
-                    }
-                }));
+        subscriptions.add(
+                imageHolderDelegate.getLoadingObservable()
+                        .subscribe((loadedSource) -> {
+                            switch (loadedSource) {
+                                case PICASSO:
+                                    view.showImageOverlay();
+                                    break;
+                                case PLACEHOLDER:
+                                    view.hideImageOverlay();
+                                    break;
+                            }
+                        })
+        );
+    }
+
+    private int getOptions() {
+        return (model.hasImage()) ?
+                model.getSelectImageSourceAndRemoveOptions() :
+                model.getSelectImageSourceOptions();
     }
 
     @Override
     public void onStop() {
         imageHolderDelegate.onDetached();
         subscriptions.clear();
-    }
-
-    @NonNull
-    private Func1<Void, Observable<Permission>> checkPermission() {
-        return new Func1<Void, Observable<Permission>>() {
-            @Override
-            public Observable<Permission> call(Void aVoid) {
-                return permissionsHelper.checkPermissionAndAskIfNecessary(Manifest.permission.WRITE_EXTERNAL_STORAGE, null);
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Permission, Observable<Integer>> showDialog() {
-        return new Func1<Permission, Observable<Integer>>() {
-            @Override
-            public Observable<Integer> call(Permission permission) {
-                @ArrayRes int options = (model.hasImage()) ?
-                        model.getSelectImageSourceAndRemoveOptions() :
-                        model.getSelectImageSourceOptions();
-
-                return dialogView.showAlertDialog(model.getImageSourceDialogTitleResId(), options);
-            }
-        };
     }
 
     /**
@@ -124,21 +103,6 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
     @Override
     public void loadImageUri(@Nullable final Uri uri) {
         internalUriSource.onNext(uri);
-    }
-
-    private void displayImageUri(@Nullable Uri uri) {
-        imageHolderDelegate.displayImage(from(uri));
-    }
-
-    private void showOverlay(@NonNull LoadedSource loadedSource) {
-        switch (loadedSource) {
-            case PICASSO:
-                view.showImageOverlay();
-                break;
-            case PLACEHOLDER:
-                view.hideImageOverlay();
-                break;
-        }
     }
 
 }

@@ -25,6 +25,8 @@ abstract class IngredientsViewDelegate implements IngredientsView {
         this.screen = screen;
     }
 
+    @CheckResult
+    @NonNull
     @Override
     public Observable<UndoAction> showUndoMessage(@StringRes int undoMessageResId) {
         return undoView.showUndoMessage(undoMessageResId);

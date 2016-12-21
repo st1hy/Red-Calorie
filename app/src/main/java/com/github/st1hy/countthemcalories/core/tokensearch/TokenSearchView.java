@@ -56,18 +56,8 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         expand = findViewById(R.id.token_search_expand);
         collapse = findViewById(R.id.token_search_collapse);
         searchView = (TokenSearchTextView) findViewById(R.id.token_search_text_view);
-        expand.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onExpandClicked();
-            }
-        });
-        collapse.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onCollapseClicked();
-            }
-        });
+        expand.setOnClickListener(view -> onExpandClicked());
+        collapse.setOnClickListener(view -> onCollapseClicked());
         setupState();
     }
 
@@ -109,7 +99,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     }
 
     public void setQuery(String query) {
-        setQuery(query, Collections.<String>emptyList());
+        setQuery(query, Collections.emptyList());
     }
 
     public void clearText() {

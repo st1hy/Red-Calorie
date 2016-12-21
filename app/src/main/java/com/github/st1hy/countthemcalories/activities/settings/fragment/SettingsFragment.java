@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentModule;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
+import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentModule;
 
 import javax.inject.Inject;
 

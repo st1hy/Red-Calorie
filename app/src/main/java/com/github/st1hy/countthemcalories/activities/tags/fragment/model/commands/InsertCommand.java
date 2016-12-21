@@ -18,10 +18,14 @@ import java.util.List;
 import rx.Observable;
 
 class InsertCommand implements Command<InsertResult, Cursor> {
-    final RxTagsDatabaseModel databaseModel;
-    final TagsDatabaseCommands commands;
-    final Tag tag;
-    final List<JointIngredientTag> jTags;
+    @NonNull
+    private final RxTagsDatabaseModel databaseModel;
+    @NonNull
+    private final TagsDatabaseCommands commands;
+    @NonNull
+    private final Tag tag;
+    @NonNull
+    private final List<JointIngredientTag> jTags;
 
     public InsertCommand(@NonNull RxTagsDatabaseModel databaseModel,
                          @NonNull TagsDatabaseCommands commands,
@@ -66,9 +70,9 @@ class InsertCommand implements Command<InsertResult, Cursor> {
     }
 
 
-    class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
+    private class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
 
-        public InsertResponse(@NonNull InsertResult result) {
+        InsertResponse(@NonNull InsertResult result) {
             super(result, false);
         }
 

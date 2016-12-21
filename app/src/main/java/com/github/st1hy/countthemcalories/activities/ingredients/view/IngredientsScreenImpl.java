@@ -61,36 +61,27 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @NonNull
     @CheckResult
     public Observable.Transformer<AddIngredientParams, IngredientTemplate> addNewIngredient() {
-        return new Observable.Transformer<AddIngredientParams, IngredientTemplate>() {
-            @Override
-            public Observable<IngredientTemplate> call(Observable<AddIngredientParams> paramsObservable) {
-                return paramsObservable
-                        .map(new Func1<AddIngredientParams, StartParams>() {
-                            @Override
-                            public StartParams call(AddIngredientParams addIngredientParams) {
-                                AddIngredientType type = addIngredientParams.getType();
-                                Intent intent = new Intent(activity, AddIngredientActivity.class);
-                                intent.setAction(type.getAction());
-                                intent.putExtra(AddIngredientModule.EXTRA_NAME,
-                                        addIngredientParams.getExtraName());
-                                return StartParams.of(intent, REQUEST_ADD_INGREDIENT);
-                            }
-                        })
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_ADD_INGREDIENT)
-                        )
-                        .filter(ActivityResult.IS_OK)
-                        .map(new Func1<ActivityResult, IngredientTemplate>() {
-                            @Override
-                            public IngredientTemplate call(ActivityResult activityResult) {
-                                Intent data = activityResult.getData();
-                                if (data == null) return null;
-                                return Parcels.unwrap(data.getParcelableExtra(AddIngredientActivity.RESULT_INGREDIENT_TEMPLATE));
-                            }
-                        }).filter(Functions.NOT_NULL);
-            }
-        };
+        return paramsObservable -> paramsObservable
+                .map(addIngredientParams -> {
+                    AddIngredientType type = addIngredientParams.getType();
+                    Intent intent = new Intent(activity, AddIngredientActivity.class);
+                    intent.setAction(type.getAction());
+                    intent.putExtra(AddIngredientModule.EXTRA_NAME,
+                            addIngredientParams.getExtraName());
+                    return StartParams.of(intent, REQUEST_ADD_INGREDIENT);
+                })
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_ADD_INGREDIENT)
+                )
+                .filter(ActivityResult.IS_OK)
+                .map((Func1<ActivityResult, IngredientTemplate>) activityResult -> {
+                    Intent data = activityResult.getData();
+                    if (data == null) return null;
+                    return Parcels.unwrap(data.getParcelableExtra(
+                            AddIngredientActivity.RESULT_INGREDIENT_TEMPLATE));
+                })
+                .filter(Functions.NOT_NULL);
     }
 
     @NonNull
@@ -118,38 +109,27 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @NonNull
     @CheckResult
     public Observable.Transformer<Void, AddIngredientType> selectIngredientType() {
-        return new Observable.Transformer<Void, AddIngredientType>() {
-            @Override
-            public Observable<AddIngredientType> call(Observable<Void> voidObservable) {
-                return voidObservable
-                        .map(new Func1<Void, StartParams>() {
-                            @Override
-                            public StartParams call(Void aVoid) {
-                                Intent intent = new Intent(activity,
-                                        SelectIngredientTypeActivity.class);
-                                return StartParams.of(intent, REQUEST_SELECT_TYPE);
-                            }
-                        })
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_SELECT_TYPE)
-                        )
-                        .filter(ActivityResult.IS_OK)
-                        .map(new Func1<ActivityResult, AddIngredientType>() {
-                            @Override
-                            public AddIngredientType call(ActivityResult activityResult) {
-                                switch (activityResult.getResultCode()) {
-                                    case SelectIngredientTypeActivity.RESULT_DRINK:
-                                        return AddIngredientType.DRINK;
-                                    case SelectIngredientTypeActivity.RESULT_MEAL:
-                                        return AddIngredientType.MEAL;
-                                    default:
-                                        return null;
-                                }
-                            }
-                        }).filter(Functions.NOT_NULL);
-            }
-        };
+        return voidObservable -> voidObservable
+                .map(aVoid -> {
+                    Intent intent = new Intent(activity,
+                            SelectIngredientTypeActivity.class);
+                    return StartParams.of(intent, REQUEST_SELECT_TYPE);
+                })
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_SELECT_TYPE)
+                )
+                .filter(ActivityResult.IS_OK)
+                .map(activityResult -> {
+                    switch (activityResult.getResultCode()) {
+                        case SelectIngredientTypeActivity.RESULT_DRINK:
+                            return AddIngredientType.DRINK;
+                        case SelectIngredientTypeActivity.RESULT_MEAL:
+                            return AddIngredientType.MEAL;
+                        default:
+                            return null;
+                    }
+                }).filter(Functions.NOT_NULL);
     }
 
     @Override

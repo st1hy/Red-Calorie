@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.inject.activities.mealdetail;
 
-import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailComponentFactory;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailComponentFactory;
 
 import dagger.Subcomponent;
 

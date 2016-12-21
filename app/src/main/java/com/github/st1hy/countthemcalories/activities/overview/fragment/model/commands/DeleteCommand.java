@@ -16,9 +16,12 @@ import rx.Observable;
 
 public class DeleteCommand implements Command<Void, Meal> {
 
-    final RxMealsDatabaseModel databaseModel;
-    final MealsDatabaseCommands commands;
-    final Meal meal;
+    @NonNull
+    private final RxMealsDatabaseModel databaseModel;
+    @NonNull
+    private final MealsDatabaseCommands commands;
+    @NonNull
+    private final Meal meal;
 
     public DeleteCommand(@NonNull RxMealsDatabaseModel databaseModel,
                          @NonNull MealsDatabaseCommands commands,
@@ -39,7 +42,7 @@ public class DeleteCommand implements Command<Void, Meal> {
         return new DeleteResponse(whatsRemoved.first, whatsRemoved.second);
     }
 
-    class DeleteResponse extends AbstractCommandResponse<Void, Meal> {
+    private class DeleteResponse extends AbstractCommandResponse<Void, Meal> {
         final Meal removedMeal;
         final List<Ingredient> removedIngredients;
 

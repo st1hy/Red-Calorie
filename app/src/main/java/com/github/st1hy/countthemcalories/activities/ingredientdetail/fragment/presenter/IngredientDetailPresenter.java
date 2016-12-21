@@ -3,11 +3,9 @@ package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-public interface IngredientDetailPresenter {
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 
-    void onStart();
-
-    void onStop();
+public interface IngredientDetailPresenter extends BasicLifecycle {
 
     void onSaveState(@NonNull Bundle outState);
 }

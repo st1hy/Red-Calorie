@@ -8,8 +8,10 @@ import com.github.st1hy.countthemcalories.database.Meal;
 
 public class MealDetailParams {
 
-    @NonNull private final Meal meal;
-    @Nullable private final View sharedView;
+    @NonNull
+    private final Meal meal;
+    @Nullable
+    private final View sharedView;
 
     public MealDetailParams(@NonNull Meal meal, @Nullable View sharedView) {
         this.meal = meal;

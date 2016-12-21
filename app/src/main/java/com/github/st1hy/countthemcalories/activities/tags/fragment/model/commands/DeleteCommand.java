@@ -17,9 +17,12 @@ import java.util.List;
 import rx.Observable;
 
 class DeleteCommand implements Command<Cursor, InsertResult> {
-    final RxTagsDatabaseModel databaseModel;
-    final TagsDatabaseCommands commands;
-    final Tag tag;
+    @NonNull
+    private final RxTagsDatabaseModel databaseModel;
+    @NonNull
+    private final TagsDatabaseCommands commands;
+    @NonNull
+    private final Tag tag;
 
     public DeleteCommand(@NonNull RxTagsDatabaseModel databaseModel,
                          @NonNull TagsDatabaseCommands commands,
@@ -42,13 +45,13 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
         return new DeleteResponse(cursor, tagListPair.first, tagListPair.second);
     }
 
-    class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
+    private class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
         final Tag removedTag;
         final List<JointIngredientTag> removedJTags;
 
-        public DeleteResponse(@NonNull Cursor cursor,
-                              @NonNull Tag removedTag,
-                              @NonNull List<JointIngredientTag> removedJTags) {
+        DeleteResponse(@NonNull Cursor cursor,
+                       @NonNull Tag removedTag,
+                       @NonNull List<JointIngredientTag> removedJTags) {
             super(cursor, true);
             this.removedTag = removedTag;
             this.removedJTags = removedJTags;

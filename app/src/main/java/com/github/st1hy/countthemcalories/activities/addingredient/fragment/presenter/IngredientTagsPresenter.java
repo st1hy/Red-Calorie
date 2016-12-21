@@ -13,15 +13,12 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.callbacks.OnItemClicked;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -49,20 +46,12 @@ public class IngredientTagsPresenter extends RecyclerAdapterWrapper<TagViewHolde
     @Override
     public void onStart() {
         subscriptions.add(
-                addTagEvents.map(new Func1<Void, SelectTagParams>() {
-                    @Override
-                    public SelectTagParams call(Void aVoid) {
-                        return new SelectTagParams(model.getTagNames());
-                    }
-                })
-                .compose(view.selectTag())
-                .subscribe(new Action1<Tag>() {
-                    @Override
-                    public void call(Tag tag) {
-                        int position = model.addTag(tag);
-                        notifyItemInserted(position);
-                    }
-                })
+                addTagEvents.map(aVoid -> SelectTagParams.of(model.getTagNames()))
+                        .compose(view.selectTag())
+                        .subscribe(tag -> {
+                            int position = model.addTag(tag);
+                            notifyItemInserted(position);
+                        })
         );
     }
 

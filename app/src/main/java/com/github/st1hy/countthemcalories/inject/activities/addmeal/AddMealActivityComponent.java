@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.inject.activities.addmeal;
 
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
 import dagger.Subcomponent;

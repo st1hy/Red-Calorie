@@ -8,9 +8,9 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 import javax.inject.Named;

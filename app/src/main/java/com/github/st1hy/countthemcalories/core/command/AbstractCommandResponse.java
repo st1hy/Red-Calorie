@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoAvailability;
 
 import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public abstract class AbstractCommandResponse<Response, UndoResponse> implements CommandResponse<Response, UndoResponse> {
     private final Response response;
@@ -56,52 +53,19 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
     private Observable<CommandResponse<UndoResponse, Response>> reverseIfAvailable() {
         return undoAvailability()
                 .firstOrDefault(false)
-                .filter(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean isAvailable) {
-                        return isAvailable;
-                    }
-                })
-                .doOnNext(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        invalidateUndo();
-                    }
-                })
-                .switchMap(new Func1<Boolean, Observable<CommandResponse<UndoResponse, Response>>>() {
-                    @Override
-                    public Observable<CommandResponse<UndoResponse, Response>> call(Boolean isAvailable) {
-                        return reverseCommand();
-                    }
-                }).mergeWith(undoAvailability()
+                .filter(isAvailable -> isAvailable)
+                .doOnNext(aBoolean -> invalidate())
+                .switchMap(isAvailable1 -> reverseCommand())
+                .mergeWith(undoAvailability()
                         .firstOrDefault(false)
-                        .filter(new Func1<Boolean, Boolean>() {
-                            @Override
-                            public Boolean call(Boolean isAvailable) {
-                                return !isAvailable;
-                            }
-                        }).switchMap(new Func1<Boolean, Observable<? extends CommandResponse<UndoResponse, Response>>>() {
-                            @Override
-                            public Observable<? extends CommandResponse<UndoResponse, Response>> call(Boolean aBoolean) {
-                                return getError();
-                            }
-                        })
+                        .filter(isAvailable -> !isAvailable)
+                        .switchMap(aBoolean -> getError())
                 );
     }
 
     @NonNull
     private Observable<CommandResponse<UndoResponse, Response>> getError() {
         return Observable.error(new IllegalStateException("Cannot undo command"));
-    }
-
-    @NonNull
-    private Action0 invalidateUndo() {
-        return new Action0() {
-            @Override
-            public void call() {
-                invalidate();
-            }
-        };
     }
 
     @NonNull

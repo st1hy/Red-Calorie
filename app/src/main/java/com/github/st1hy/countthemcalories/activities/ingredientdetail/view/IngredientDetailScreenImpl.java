@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.parceler.Parcels;
 
@@ -17,9 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.RESULT_REMOVE;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.RESULT_REMOVE;
 
 @PerActivity
 public class IngredientDetailScreenImpl implements IngredientDetailScreen {

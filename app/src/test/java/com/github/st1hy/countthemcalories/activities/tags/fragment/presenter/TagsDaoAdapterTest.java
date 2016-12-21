@@ -117,7 +117,7 @@ public class TagsDaoAdapterTest {
         final int position = 230;
         final int message = 0x21;
 
-        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
+        when(view.newTagDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(cursor.getCount()).thenReturn(500);
         when(result.getNewItemPositionInCursor()).thenReturn(position);
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
@@ -126,7 +126,7 @@ public class TagsDaoAdapterTest {
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt(), anyString());
+        verify(view).newTagDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
         //noinspection ResourceType
         verify(view).showUndoMessage(message);
@@ -146,7 +146,7 @@ public class TagsDaoAdapterTest {
     @Test
     public void testAddTagError() throws Exception {
         final String tagName = "Tag name";
-        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
+        when(view.newTagDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>error(new TestError()));
 
         Subject<Void, Void> subject = PublishSubject.create(); //Subject here to prevent from infinite loop when retry kicks in
@@ -154,12 +154,12 @@ public class TagsDaoAdapterTest {
         subject.onNext(null);
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt(), anyString());
+        verify(view).newTagDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
 
         subject.onNext(null);
         verify(viewModel, times(2)).getNewTagDialogTitle();
-        verify(view, times(2)).showEditTextDialog(anyInt(), anyString());
+        verify(view, times(2)).newTagDialog(anyInt(), anyString());
         verify(commands, times(2)).insert(any(Tag.class));
 
         verifyNoMoreInteractions(model, view, cursor, fragmentModel, commands, commandResponse,
@@ -292,7 +292,7 @@ public class TagsDaoAdapterTest {
         final String tagName = "Tag name";
         final int position = 230;
 
-        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
+        when(view.newTagDialog(anyInt(), anyString())).thenReturn(Observable.just(tagName));
         when(cursor.getCount()).thenReturn(500);
         when(result.getNewItemPositionInCursor()).thenReturn(position);
         when(commands.insert(any(Tag.class))).thenReturn(Observable.<CommandResponse<InsertResult, Cursor>>just(commandResponse));
@@ -302,7 +302,7 @@ public class TagsDaoAdapterTest {
         presenter.onAddTagClicked(Observable.<Void>just(null));
 
         verify(viewModel).getNewTagDialogTitle();
-        verify(view).showEditTextDialog(anyInt(), anyString());
+        verify(view).newTagDialog(anyInt(), anyString());
         verify(commands).insert(any(Tag.class));
         verify(view).showUndoMessage(anyInt());
         verify(view).scrollToPosition(position);
@@ -327,7 +327,7 @@ public class TagsDaoAdapterTest {
     public void testEditTag() throws Exception {
         Tag tag = Mockito.mock(Tag.class);
         when(tag.getName()).thenReturn("Tag name");
-        when(view.showEditTextDialog(anyInt(), anyString())).thenReturn(Observable.just("New name"));
+        when(view.newTagDialog(anyInt(), anyString())).thenReturn(Observable.just("New name"));
         when(model.updateRefresh(tag)).thenReturn(Observable.just(cursor));
         when(cursor.getCount()).thenReturn(500);
         when(model.findInCursor(cursor, tag)).thenReturn(1);
@@ -335,7 +335,7 @@ public class TagsDaoAdapterTest {
         presenter.onEditClicked(1, tag);
 
         verify(tag).getName();
-        verify(view).showEditTextDialog(anyInt(), eq("Tag name"));
+        verify(view).newTagDialog(anyInt(), eq("Tag name"));
         verify(tag).setName("New name");
         verify(model).updateRefresh(tag);
         verify(model).findInCursor(cursor, tag);

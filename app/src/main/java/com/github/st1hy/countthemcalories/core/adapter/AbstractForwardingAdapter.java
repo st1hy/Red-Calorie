@@ -8,7 +8,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListAdapter;
 
-public abstract class AbstractForwardingAdapter<R extends ListAdapter & Filterable> implements ListAdapter, Filterable {
+public abstract class AbstractForwardingAdapter<R extends ListAdapter & Filterable> implements
+        ListAdapter, Filterable {
 
     @NonNull
     protected abstract R getParent();

@@ -24,12 +24,7 @@ public class MealInteraction {
     @NonNull
     @CheckResult
     public static Func1<MealInteraction, Boolean> ofType(@NonNull final Type type) {
-        return new Func1<MealInteraction, Boolean>() {
-            @Override
-            public Boolean call(MealInteraction interaction) {
-                return interaction.getType() == type;
-            }
-        };
+        return interaction -> interaction.getType() == type;
     }
 
     public enum Type {

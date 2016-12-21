@@ -8,10 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
+import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -59,7 +60,7 @@ public class TagsScreenImpl implements TagsScreen {
     @NonNull
     @Override
     public Observable<CharSequence> getQueryObservable() {
-        return RxSearchable.create(searchView).map(RxSearchable.intoQuery());
+        return RxSearchable.create(searchView).map(SearchResult::getQuery);
     }
 
     @Override

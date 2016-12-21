@@ -13,7 +13,7 @@ public interface TagsView extends TagsScreen {
      * @return observable emitting new tag name to add
      */
     @NonNull
-    Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText);
+    Observable<String> newTagDialog(@StringRes int newTagDialogTitle, @NonNull String initialText);
 
     void setNoTagsVisibility(@NonNull Visibility visibility);
 

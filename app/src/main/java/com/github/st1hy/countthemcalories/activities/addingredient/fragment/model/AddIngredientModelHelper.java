@@ -84,8 +84,8 @@ public class AddIngredientModelHelper {
         VolumeUnit volumeUnit = settingsModel.getVolumeUnit();
         String volume = settingsModel.getUnitName(volumeUnit);
         List<Pair<AmountUnit, CharSequence>> list = Lists.newLinkedList();
-        list.add(Pair.<AmountUnit, CharSequence>create(massUnit, energyDensityUnitOf(energy, mass)));
-        list.add(Pair.<AmountUnit, CharSequence>create(volumeUnit, energyDensityUnitOf(energy, volume)));
+        list.add(Pair.create(massUnit, energyDensityUnitOf(energy, mass)));
+        list.add(Pair.create(volumeUnit, energyDensityUnitOf(energy, volume)));
         return list;
     }
 

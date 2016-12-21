@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class PositionDelegate {
@@ -22,18 +21,15 @@ public class PositionDelegate {
 
 
     public void onAttached(@NonNull Observable<RecyclerEvent> events) {
-        subscriptions.add(events.subscribe(new Action1<RecyclerEvent>() {
-            @Override
-            public void call(RecyclerEvent recyclerEvent) {
-                int eventPosition = recyclerEvent.getPosition();
-                switch (recyclerEvent.getType()) {
-                    case ADDED:
-                        if (get() >= eventPosition) atomicPosition.incrementAndGet();
-                        break;
-                    case REMOVED:
-                        if (get() > eventPosition) atomicPosition.decrementAndGet();
-                        break;
-                }
+        subscriptions.add(events.subscribe(recyclerEvent -> {
+            int eventPosition = recyclerEvent.getPosition();
+            switch (recyclerEvent.getType()) {
+                case ADDED:
+                    if (get() >= eventPosition) atomicPosition.incrementAndGet();
+                    break;
+                case REMOVED:
+                    if (get() > eventPosition) atomicPosition.decrementAndGet();
+                    break;
             }
         }));
     }

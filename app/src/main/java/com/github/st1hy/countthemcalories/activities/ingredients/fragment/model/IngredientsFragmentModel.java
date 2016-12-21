@@ -20,7 +20,7 @@ public class IngredientsFragmentModel {
     private final PhysicalQuantitiesModel physicalQuantitiesModel;
 
     @Inject
-    public IngredientsFragmentModel(@Named("isInSelectMode")boolean isInSelectMode,
+    public IngredientsFragmentModel(@Named("isInSelectMode") boolean isInSelectMode,
                                     @NonNull PhysicalQuantitiesModel physicalQuantitiesModel) {
         this.isInSelectMode = isInSelectMode;
         this.physicalQuantitiesModel = physicalQuantitiesModel;

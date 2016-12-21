@@ -14,12 +14,14 @@ import java.util.List;
 import rx.Observable;
 
 public class InsertCommand implements Command<Meal, Void> {
-    final RxMealsDatabaseModel databaseModel;
-    final MealsDatabaseCommands commands;
     @NonNull
-    final Meal meal;
+    private final RxMealsDatabaseModel databaseModel;
     @NonNull
-    final List<Ingredient> ingredients;
+    private final MealsDatabaseCommands commands;
+    @NonNull
+    private final Meal meal;
+    @NonNull
+    private final List<Ingredient> ingredients;
 
     public InsertCommand(@NonNull RxMealsDatabaseModel databaseModel,
                          @NonNull MealsDatabaseCommands commands,
@@ -42,7 +44,7 @@ public class InsertCommand implements Command<Meal, Void> {
         return new InsertResponse(insertedMeal);
     }
 
-    class InsertResponse extends AbstractCommandResponse<Meal, Void> {
+    private class InsertResponse extends AbstractCommandResponse<Meal, Void> {
 
         public InsertResponse(@NonNull Meal result) {
             super(result, false);

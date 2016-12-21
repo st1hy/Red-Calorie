@@ -25,7 +25,6 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -41,6 +40,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
+import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult.fromIngredientDetailResult;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
 
@@ -86,101 +86,81 @@ public class AddMealScreenImpl implements AddMealScreen {
     @NonNull
     @Override
     public Observable.Transformer<Void, Ingredient> newIngredients() {
-        return new Observable.Transformer<Void, Ingredient>() {
-            @Override
-            public Observable<Ingredient> call(Observable<Void> voidObservable) {
-                return voidObservable.map(
-                        new Func1<Void, StartParams>() {
-                            @Override
-                            public StartParams call(Void aVoid) {
-                                Intent intent = new Intent(activity, IngredientsActivity.class);
-                                intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
-                                return StartParams.of(intent, REQUEST_PICK_INGREDIENT);
-                            }
-                        })
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_PICK_INGREDIENT)
-                        )
-                        .filter(ActivityResult.IS_OK)
-                        .map(new Func1<ActivityResult, IngredientTemplate>() {
-                            @Override
-                            public IngredientTemplate call(ActivityResult activityResult) {
-                                Intent data = activityResult.getData();
-                                if (data == null) return null;
-                                return Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
-                            }
-                        }).filter(Functions.NOT_NULL)
-                        .map(new Func1<IngredientTemplate, Ingredient>() {
-                            @Override
-                            public Ingredient call(IngredientTemplate ingredientTemplate) {
-                                return new Ingredient(ingredientTemplate, BigDecimal.ZERO);
-                            }
-                        });
-            }
-        };
+        return voidObservable -> voidObservable.map(
+                aVoid -> {
+                    Intent intent = new Intent(activity, IngredientsActivity.class);
+                    intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
+                    return StartParams.of(intent, REQUEST_PICK_INGREDIENT);
+                })
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_PICK_INGREDIENT)
+                )
+                .filter(ActivityResult.IS_OK)
+                .map(new Func1<ActivityResult, IngredientTemplate>() {
+                    @Override
+                    public IngredientTemplate call(ActivityResult activityResult) {
+                        Intent data = activityResult.getData();
+                        if (data == null) return null;
+                        return Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
+                    }
+                }).filter(Functions.NOT_NULL)
+                .map(ingredientTemplate -> new Ingredient(ingredientTemplate, BigDecimal.ZERO));
     }
 
 
     @Override
     @NonNull
     public Observable.Transformer<ShowIngredientsInfo, IngredientAction> showIngredientDetails() {
-        return new Observable.Transformer<ShowIngredientsInfo, IngredientAction>() {
-            @Override
-            public Observable<IngredientAction> call(Observable<ShowIngredientsInfo> infoObservable) {
-                return infoObservable
-                        .map(new Func1<ShowIngredientsInfo, StartParams>() {
-                            @Override
-                            public StartParams call(ShowIngredientsInfo info) {
-                                Bundle startOptions = null;
-                                List<Pair<View, String>> sharedElements = info.getSharedElements();
-                                if (!sharedElements.isEmpty()) {
-                                    @SuppressWarnings("unchecked")
-                                    Pair<View, String>[] pairs = sharedElements.toArray(new Pair[sharedElements.size()]);
-                                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pairs);
-                                    startOptions = options.toBundle();
-                                }
-                                Intent intent = new Intent(activity, IngredientDetailActivity.class);
-                                intent.putExtra(EXTRA_INGREDIENT_ID_LONG, info.getId());
-                                intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(info.getIngredient()));
-                                return StartParams.of(intent, REQUEST_EDIT_INGREDIENT, startOptions);
-                            }
-                        })
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_EDIT_INGREDIENT)
-                        )
-                        .map(new Func1<ActivityResult, IngredientAction>() {
-                            @Override
-                            public IngredientAction call(ActivityResult activityResult) {
-                                EditIngredientResult result = EditIngredientResult.fromIngredientDetailResult(activityResult.getResultCode());
-                                return getIngredientAction(result, activityResult.getData());
-                            }
-                        });
-            }
-        };
+        return infoObservable -> infoObservable
+                .map(info -> {
+                    Bundle startOptions = null;
+                    List<Pair<View, String>> sharedElements = info.getSharedElements();
+                    if (!sharedElements.isEmpty()) {
+                        @SuppressWarnings("unchecked")
+                        Pair<View, String>[] pairs = sharedElements.toArray(new Pair[sharedElements.size()]);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pairs);
+                        startOptions = options.toBundle();
+                    }
+                    Intent intent = new Intent(activity, IngredientDetailActivity.class);
+                    intent.putExtra(EXTRA_INGREDIENT_ID_LONG, info.getId());
+                    intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(info.getIngredient()));
+                    return StartParams.of(intent, REQUEST_EDIT_INGREDIENT, startOptions);
+                })
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_EDIT_INGREDIENT)
+                )
+                .map(activityResult -> {
+                    EditIngredientResult result = fromIngredientDetailResult(
+                            activityResult.getResultCode()
+                    );
+                    return getIngredientAction(result, activityResult.getData());
+                });
     }
 
     @Override
-    public void showSnackbarError(@NonNull Optional<String> ingredientsError) {
-        boolean isShown = this.ingredientsError != null && this.ingredientsError.isShownOrQueued();
-        if (ingredientsError.isPresent()) {
-            if (!isShown) {
-                this.ingredientsError = Snackbar.make(addIngredientFab, ingredientsError.get(), Snackbar.LENGTH_INDEFINITE);
-                this.ingredientsError.setCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event) {
-                        super.onDismissed(snackbar, event);
-                        AddMealScreenImpl.this.ingredientsError = null;
-                    }
-                });
-                this.ingredientsError.show();
-            }
-        } else {
-            if (isShown) {
-                this.ingredientsError.dismiss();
-            }
+    public void showSnackbarError(@NonNull String error) {
+        if (!isSnackbarShown()) {
+            ingredientsError = Snackbar.make(addIngredientFab, error, Snackbar.LENGTH_INDEFINITE);
+            ingredientsError.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    super.onDismissed(snackbar, event);
+                    AddMealScreenImpl.this.ingredientsError = null;
+                }
+            });
+            ingredientsError.show();
         }
+    }
+
+    @Override
+    public void hideSnackbarError() {
+        if (isSnackbarShown() && ingredientsError != null) ingredientsError.dismiss();
+    }
+
+    private boolean isSnackbarShown() {
+        return ingredientsError != null && ingredientsError.isShownOrQueued();
     }
 
     @NonNull

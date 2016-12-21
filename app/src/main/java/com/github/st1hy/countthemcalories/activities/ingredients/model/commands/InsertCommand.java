@@ -19,9 +19,12 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import rx.Observable;
 
 public class InsertCommand implements Command<InsertResult, Cursor> {
-    final RxIngredientsDatabaseModel databaseModel;
-    final IngredientsDatabaseCommands commands;
-    final RemovalEffect whatsRemoved;
+    @NonNull
+    private final RxIngredientsDatabaseModel databaseModel;
+    @NonNull
+    private final IngredientsDatabaseCommands commands;
+    @NonNull
+    private final RemovalEffect whatsRemoved;
 
     public InsertCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
                          @NonNull IngredientsDatabaseCommands commands,
@@ -70,7 +73,7 @@ public class InsertCommand implements Command<InsertResult, Cursor> {
         return new InsertResult(cursor, position);
     }
 
-    class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
+    private class InsertResponse extends AbstractCommandResponse<InsertResult, Cursor> {
         final IngredientTemplate ingredient;
 
         public InsertResponse(@NonNull InsertResult result, @NonNull IngredientTemplate ingredient) {

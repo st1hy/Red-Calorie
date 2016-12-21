@@ -111,22 +111,12 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
 
     @NonNull
     private <R> Callable<R> callInTx(@NonNull final Callable<R> task) {
-        return new Callable<R>() {
-            @Override
-            public R call() throws Exception {
-                return session().callInTx(task);
-            }
-        };
+        return () -> session().callInTx(task);
     }
 
     @NonNull
     private Callable<T> fromId(final long id) {
-        return new Callable<T>() {
-            @Override
-            public T call() throws Exception {
-                return performGetById(id);
-            }
-        };
+        return () -> performGetById(id);
     }
 
     @NonNull
@@ -136,23 +126,17 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
 
     @NonNull
     private Callable<Void> removeCall(@NonNull final T data) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                performRemove(data);
-                return null;
-            }
+        return () -> {
+            performRemove(data);
+            return null;
         };
     }
 
     @NonNull
     private Callable<Cursor> removeAllRefresh() {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                performRemoveAll();
-                return refresh().call();
-            }
+        return () -> {
+            performRemoveAll();
+            return refresh().call();
         };
     }
 
@@ -163,17 +147,14 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
 
     @NonNull
     protected Callable<CursorQuery> getQueryOf(@NonNull final String partOfName) {
-        return new Callable<CursorQuery>() {
-            @Override
-            public CursorQuery call() throws Exception {
-                cacheLastQuery(partOfName);
-                if (Strings.isNullOrEmpty(partOfName)) {
-                    return allSortedByNameSingleton().forCurrentThread();
-                } else {
-                    CursorQuery query = filteredSortedByNameQuerySingleton().forCurrentThread();
-                    query.setParameter(0, "%" + partOfName + "%");
-                    return query;
-                }
+        return () -> {
+            cacheLastQuery(partOfName);
+            if (Strings.isNullOrEmpty(partOfName)) {
+                return allSortedByNameSingleton().forCurrentThread();
+            } else {
+                CursorQuery query = filteredSortedByNameQuerySingleton().forCurrentThread();
+                query.setParameter(0, "%" + partOfName + "%");
+                return query;
             }
         };
     }
@@ -184,17 +165,14 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
 
     @NonNull
     protected Callable<Cursor> query(@NonNull final Callable<CursorQuery> queryCall) {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                CursorQuery query = queryCall.call();
-                return query.query();
-            }
+        return () -> {
+            CursorQuery query = queryCall.call();
+            return query.query();
         };
     }
 
     @NonNull
-    protected CursorQuery allSortedByNameSingleton() {
+    private CursorQuery allSortedByNameSingleton() {
         if (allSortedByNameQuery == null) {
             allSortedByNameQuery = allSortedByName();
         }
@@ -202,7 +180,7 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
     }
 
     @NonNull
-    protected CursorQuery filteredSortedByNameQuerySingleton() {
+    private CursorQuery filteredSortedByNameQuerySingleton() {
         if (filteredSortedByNameQuery == null) {
             filteredSortedByNameQuery = filteredSortedByNameQuery();
         }

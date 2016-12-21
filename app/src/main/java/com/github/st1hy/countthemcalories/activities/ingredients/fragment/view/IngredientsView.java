@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredients.fragment.view;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
@@ -17,6 +18,7 @@ public interface IngredientsView extends UndoView, IngredientsScreen {
      * @return observable that emits one item when action is confirmed by the user
      */
     @NonNull
+    @CheckResult
     Observable<Void> showUsedIngredientRemoveConfirmationDialog();
 
     void scrollToPosition(int position);

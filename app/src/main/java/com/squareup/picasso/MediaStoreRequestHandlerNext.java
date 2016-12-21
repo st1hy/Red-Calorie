@@ -22,10 +22,10 @@ import static com.squareup.picasso.MediaStoreRequestHandlerNext.PicassoKind.MINI
 import static com.squareup.picasso.Picasso.LoadedFrom.DISK;
 
 public class MediaStoreRequestHandlerNext extends ContentStreamRequestHandler {
-    private static final String[] CONTENT_ORIENTATION = new String[] {
+    private static final String[] CONTENT_ORIENTATION = new String[]{
             MediaStore.Images.ImageColumns.ORIENTATION
     };
-    private static final String[] CONTENT_DATA = new String[] {
+    private static final String[] CONTENT_DATA = new String[]{
             MediaStore.Images.ImageColumns.DATA
     };
 
@@ -33,13 +33,15 @@ public class MediaStoreRequestHandlerNext extends ContentStreamRequestHandler {
         super(context);
     }
 
-    @Override public boolean canHandleRequest(Request data) {
+    @Override
+    public boolean canHandleRequest(Request data) {
         final Uri uri = data.uri;
         return (SCHEME_CONTENT.equals(uri.getScheme())
                 && MediaStore.AUTHORITY.equals(uri.getAuthority()));
     }
 
-    @Override public Result load(Request request, int networkPolicy) throws IOException {
+    @Override
+    public Result load(Request request, int networkPolicy) throws IOException {
         ContentResolver contentResolver = context.getContentResolver();
         int exifOrientation = getExifOrientation(contentResolver, request.uri);
 

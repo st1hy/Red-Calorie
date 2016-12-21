@@ -2,14 +2,12 @@ package com.github.st1hy.countthemcalories.core.headerpicture.imageholder;
 
 import android.Manifest;
 import android.net.Uri;
-import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
@@ -21,7 +19,6 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Provider;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -53,16 +50,6 @@ public class ImageHolderDelegate {
 
     @DrawableRes
     private int placeholderResId = R.drawable.ic_fork_and_knife_wide;
-    //Lazy
-    private Func1<Optional<Uri>, Observable<PicassoEvent>> imageViewLoader;
-    //Lazy
-    private Func1<Optional<Uri>, Observable<Optional<Uri>>> permissionChecker;
-    private final Action1<PicassoEvent> ON_PICASSO_EVENT = new Action1<PicassoEvent>() {
-        @Override
-        public void call(PicassoEvent event) {
-            onPicassoResult(event);
-        }
-    };
 
     public ImageHolderDelegate(@NonNull Picasso picasso,
                                @NonNull PermissionsHelper permissionsHelper,
@@ -74,11 +61,11 @@ public class ImageHolderDelegate {
 
     @NonNull
     public static Optional<Uri> from(@Nullable Uri uri) {
-        return uri == null || Uri.EMPTY.equals(uri) ? Optional.<Uri>absent() : Optional.of(uri);
+        return uri == null || Uri.EMPTY.equals(uri) ? Optional.absent() : Optional.of(uri);
     }
 
     public void onAttached() {
-        subscriptions.add(loadImage().subscribe(new SimpleSubscriber<Void>()));
+        subscriptions.add(loadImage().subscribe(new SimpleSubscriber<>()));
     }
 
     public void onDetached() {
@@ -107,52 +94,36 @@ public class ImageHolderDelegate {
     private Observable<Void> loadImage() {
         return imageUriSubject.distinctUntilChanged()
                 .switchMap(checkPermission())
-                .switchMap(intoImageView())
-                .doOnNext(ON_PICASSO_EVENT)
-                .map(Functions.INTO_VOID);
-    }
-
-    @NonNull
-    private Func1<Optional<Uri>, Observable<Optional<Uri>>> checkPermission() {
-        if (permissionChecker == null) {
-            permissionChecker = new Func1<Optional<Uri>, Observable<Optional<Uri>>>() {
-                @Override
-                public Observable<Optional<Uri>> call(final Optional<Uri> uri) {
-                    if (uri.isPresent()) return permissionsHelper
-                            .checkPermissionAndAskOnce(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            .map(intoUriIfGranted(uri));
-                    else return Observable.just(uri);
-                }
-            };
-        }
-        return permissionChecker;
-    }
-
-    @NonNull
-    private Func1<Permission, Optional<Uri>> intoUriIfGranted(final Optional<Uri> uri) {
-        return new Func1<Permission, Optional<Uri>>() {
-            @Override
-            public Optional<Uri> call(Permission permission) {
-                return permission == GRANTED ? uri : Optional.<Uri>absent();
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Optional<Uri>, Observable<PicassoEvent>> intoImageView() {
-        if (imageViewLoader == null) {
-            imageViewLoader = new Func1<Optional<Uri>, Observable<PicassoEvent>>() {
-                @Override
-                public Observable<PicassoEvent> call(Optional<Uri> uri) {
+                .switchMap(uri -> {
                     if (uri.isPresent()) {
                         return loadImage(uri.get());
                     } else {
                         return Observable.just(PicassoEvent.ERROR);
                     }
-                }
-            };
-        }
-        return imageViewLoader;
+                })
+                .doOnNext((picassoEvent) -> {
+                    switch (picassoEvent) {
+                        case SUCCESS:
+                            loadedSourceSubject.onNext(LoadedSource.PICASSO);
+                            break;
+                        case ERROR:
+                        default:
+                            imageViewProvider.get().setImageResource(placeholderResId);
+                            loadedSourceSubject.onNext(LoadedSource.PLACEHOLDER);
+                            break;
+                    }
+                })
+                .map(Functions.INTO_VOID);
+    }
+
+    @NonNull
+    private Func1<Optional<Uri>, Observable<Optional<Uri>>> checkPermission() {
+        return uri -> {
+            if (uri.isPresent()) return permissionsHelper
+                    .checkPermissionAndAskOnce(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .map(permission -> permission == GRANTED ? uri : Optional.absent());
+            else return Observable.just(uri);
+        };
     }
 
     /**
@@ -169,26 +140,6 @@ public class ImageHolderDelegate {
                 .fit()
                 .into(imageViewProvider.get())
                 .asObservable();
-    }
-
-    /**
-     * Called after each attempt to load image.
-     * This implementation shows placeholder image if error happens.
-     *
-     * @param picassoEvent success if loaded uri or error otherwise
-     */
-    @CallSuper
-    protected void onPicassoResult(@NonNull PicassoEvent picassoEvent) {
-        switch (picassoEvent) {
-            case SUCCESS:
-                loadedSourceSubject.onNext(LoadedSource.PICASSO);
-                break;
-            case ERROR:
-            default:
-                imageViewProvider.get().setImageResource(placeholderResId);
-                loadedSourceSubject.onNext(LoadedSource.PLACEHOLDER);
-                break;
-        }
     }
 
     @NonNull

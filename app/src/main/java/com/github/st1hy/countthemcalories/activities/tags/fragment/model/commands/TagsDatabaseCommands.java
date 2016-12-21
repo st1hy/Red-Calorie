@@ -32,7 +32,7 @@ public class TagsDatabaseCommands {
 
     @NonNull
     public Observable<CommandResponse<InsertResult, Cursor>> insert(@NonNull final Tag tag) {
-        return insert(tag, Collections.<JointIngredientTag>emptyList());
+        return insert(tag, Collections.emptyList());
     }
 
     @NonNull

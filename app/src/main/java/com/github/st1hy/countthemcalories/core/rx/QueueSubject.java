@@ -59,7 +59,7 @@ public class QueueSubject<T> extends Subject<T, T> {
         }
     }
 
-    static class State<T> implements OnSubscribe<T> {
+    private static class State<T> implements OnSubscribe<T> {
         private final Queue<Notification<T>> queue = new ConcurrentLinkedQueue<>();
         private final List<Subscriber<? super T>> subscribers = new CopyOnWriteArrayList<>();
 
@@ -105,7 +105,7 @@ public class QueueSubject<T> extends Subject<T, T> {
 
         public void onError(Throwable e) {
             if (!hasObservers()) {
-                queue.add(Notification.<T>createOnError(e));
+                queue.add(Notification.createOnError(e));
             } else {
                 for (Subscriber<? super T> s : subscribers) {
                     if (!s.isUnsubscribed())
@@ -122,7 +122,7 @@ public class QueueSubject<T> extends Subject<T, T> {
 
         public void onCompleted() {
             if (!hasObservers()) {
-                queue.add(Notification.<T>createOnCompleted());
+                queue.add(Notification.createOnCompleted());
             } else {
                 for (Subscriber<? super T> s : subscribers) {
                     if (!s.isUnsubscribed())

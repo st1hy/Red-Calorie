@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.core.activityresult;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.CheckResult;
+import android.support.annotation.NonNull;
 
 import rx.Observable;
 
@@ -33,6 +34,7 @@ public interface Launchable {
      *                    Context.startActivity(Intent, Bundle)} for more details.
      * @throws IllegalArgumentException when requestCode is less than zero
      */
+    @NonNull
     @CheckResult
     Observable.Transformer<StartParams, ActivityResult> startActivityForResult(int requestCode);
 

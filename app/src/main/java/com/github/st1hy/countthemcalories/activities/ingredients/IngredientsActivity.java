@@ -24,7 +24,8 @@ public class IngredientsActivity extends BaseActivity {
 
     @Inject
     IngredientsFragment content;
-    @Inject @Named("suggestions")
+    @Inject
+    @Named("suggestions")
     SearchSuggestionsAdapter suggestionsAdapter;
     @Inject
     DrawerPresenter drawerPresenter;

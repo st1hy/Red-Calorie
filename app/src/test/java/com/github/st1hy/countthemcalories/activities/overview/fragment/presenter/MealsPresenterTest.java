@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -455,7 +456,14 @@ public class MealsPresenterTest {
 
     @Test
     public void testHideUndoMessage() throws Exception {
-        adapter.showUndoMessage(R.string.undo).call(false);
+        ((Func1<Boolean, Observable<UndoAction>>) isAvailable -> {
+            if (isAvailable)
+                return adapter.undoView.showUndoMessage(R.string.undo);
+            else {
+                adapter.undoView.hideUndoMessage();
+                return Observable.empty();
+            }
+        }).call(false);
 
         verify(view).hideUndoMessage();
 

@@ -8,7 +8,6 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
@@ -37,12 +36,7 @@ public class OverviewPresenterImp implements OverviewPresenter {
         adapterDelegate.onStart();
         adapter.onStart();
         subscriptions.add(view.getAddNewMealObservable()
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        view.addNewMeal();
-                    }
-                }));
+                .subscribe(aVoid -> view.addNewMeal()));
     }
 
     @Override

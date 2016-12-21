@@ -5,13 +5,9 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.Utils;
 
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class PermissionsHelper {
     private final PermissionSubject subject;
@@ -104,56 +100,25 @@ public class PermissionsHelper {
     private Observable<Permission> showRequestRationale(@NonNull final String permission,
                                                         @NonNull RequestRationale requestRationale) {
         return requestRationale.showRationale()
-                .flatMap(onRationaleResult(permission));
-    }
-
-    @NonNull
-    private Func1<UserResponseForRationale, Observable<Permission>> onRationaleResult(@NonNull final String permission) {
-        return new Func1<UserResponseForRationale, Observable<Permission>>() {
-            @Override
-            public Observable<Permission> call(UserResponseForRationale userResponseForRationale) {
-                switch (userResponseForRationale) {
-                    case CONTINUE_WITH_REQUEST:
-                        return makeRequestFor(permission);
-                    case ABORT_REQUEST:
-                    default:
-                        return Observable.just(Permission.REQUEST_CANCELED);
-                }
-            }
-        };
+                .flatMap(userResponseForRationale -> {
+                    switch (userResponseForRationale) {
+                        case CONTINUE_WITH_REQUEST:
+                            return makeRequestFor(permission);
+                        case ABORT_REQUEST:
+                        default:
+                            return Observable.just(Permission.REQUEST_CANCELED);
+                    }
+                });
     }
 
 
     @NonNull
     private Observable<Permission> makeRequestFor(@NonNull final String permissionName) {
         return subject.requestPermission(new String[]{permissionName})
-                .map(onlyOne())
-                .doOnNext(cachePermission(permissionName));
-    }
-
-    @NonNull
-    private Func1<Permission[], Permission> onlyOne() {
-        return new Func1<Permission[], Permission>() {
-            @Override
-            public Permission call(Permission[] permissions) {
-                if (permissions.length != 1) {
-                    throw new IllegalArgumentException(String.format(Locale.UK,
-                            "Asked for one permission, expected 1 answer; got %d", permissions.length));
-                }
-                return permissions[0];
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<Permission> cachePermission(@NonNull final String permissionName) {
-        return new Action1<Permission>() {
-            @Override
-            public void call(Permission permission) {
-                if (permission != Permission.REQUEST_CANCELED)
-                    permissionCache.put(permissionName, permission);
-            }
-        };
+                .filter(permissions -> permissions.length == 1)
+                .map(permissions -> permissions[0])
+                .filter(permission -> permission != Permission.REQUEST_CANCELED)
+                .doOnNext(permission -> permissionCache.put(permissionName, permission));
     }
 
 }

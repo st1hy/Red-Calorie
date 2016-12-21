@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.core.permissions;
 
 import android.os.Bundle;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +33,7 @@ public class PermissionFragment extends Fragment implements PermissionSubject {
         return ActivityCompat.checkSelfPermission(getContext(), permission);
     }
 
+    @CheckResult
     @NonNull
     @Override
     public Observable<Permission[]> requestPermission(@NonNull String[] permissions) {

@@ -39,7 +39,7 @@ public class DeleteCommand implements Command<Cursor, InsertResult> {
         return new DeleteResponse(cursor, removalEffect);
     }
 
-    class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
+    private class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
         RemovalEffect whatsRemoved;
 
         public DeleteResponse(@NonNull Cursor cursor, @NonNull RemovalEffect whatsRemoved) {

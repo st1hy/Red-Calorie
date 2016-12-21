@@ -1,9 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.util.Pair;
 import android.view.ViewGroup;
 
@@ -20,8 +18,6 @@ import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAc
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.command.CommandResponse;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -55,7 +51,8 @@ import static com.github.st1hy.countthemcalories.activities.overview.fragment.me
 import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
 @PerFragment
-public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolder> implements BasicLifecycle {
+public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
+        implements BasicLifecycle {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
     private static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
@@ -107,20 +104,41 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         subscriptions.add(
                 interactionSubject.filter(ofType(MealInteraction.Type.OPEN))
                         .doOnNext(disableViewHolder())
-                        .map(intoOpenParams())
+                        .map(interaction -> {
+                            MealItemHolder holder = interaction.getHolder();
+                            return new MealDetailParams(holder.getMeal(), holder.getImage());
+                        })
                         .compose(view.openMealDetails())
                         .doOnNext(enableViewHolder())
-                        .subscribe(onDetailScreenAction())
+                        .subscribe(mealDetailAction -> {
+                            long mealId = mealDetailAction.getId();
+                            switch (mealDetailAction.getType()) {
+                                case DELETE:
+                                    deleteMealWithId(mealId);
+                                    break;
+                                case EDIT:
+                                    editMealWithId(mealId);
+                                    break;
+                                case CANCELED:
+                                    break;
+                            }
+                        })
         );
         subscriptions.add(
                 interactionSubject.filter(ofType(MealInteraction.Type.EDIT))
                         .doOnNext(disableViewHolder())
-                        .subscribe(openEditScreen())
+                        .subscribe(interaction -> {
+                            MealItemHolder holder = interaction.getHolder();
+                            openEditScreen(holder.getMeal());
+                        })
         );
         subscriptions.add(
                 interactionSubject.filter(ofType(MealInteraction.Type.DELETE))
-                .doOnNext(disableViewHolder())
-                .subscribe(deleteMealWithId())
+                        .doOnNext(disableViewHolder())
+                        .subscribe(interaction -> {
+                            long id = interaction.getHolder().getMeal().getId();
+                            deleteMealWithId(id);
+                        })
         );
     }
 
@@ -169,38 +187,6 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
     @Override
     public void onViewDetachedFromWindow(AbstractMealItemHolder holder) {
         holder.onDetached();
-    }
-
-    @NonNull
-    @CheckResult
-    private Func1<MealInteraction, MealDetailParams> intoOpenParams() {
-        return new Func1<MealInteraction, MealDetailParams>() {
-            @Override
-            public MealDetailParams call(MealInteraction interaction) {
-                MealItemHolder holder = interaction.getHolder();
-                return new MealDetailParams(holder.getMeal(), holder.getImage());
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<MealDetailAction> onDetailScreenAction() {
-        return new Action1<MealDetailAction>() {
-            @Override
-            public void call(MealDetailAction mealDetailAction) {
-                long mealId = mealDetailAction.getId();
-                switch (mealDetailAction.getType()) {
-                    case DELETE:
-                        deleteMealWithId(mealId);
-                        break;
-                    case EDIT:
-                        editMealWithId(mealId);
-                        break;
-                    case CANCELED:
-                        break;
-                }
-            }
-        };
     }
 
     private void editMealWithId(long mealId) {
@@ -252,25 +238,16 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         Observable<Ingredient> ingredientObservable = Observable.from(ingredients);
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
-        ingredientObservable.map(toNames())
+        ingredientObservable.map(ingredient -> ingredient.getIngredientTypeOrNull().getName())
                 .map(joinStrings())
                 .lastOrDefault(new StringBuilder(0))
-                .subscribe(new Action1<StringBuilder>() {
-                    @Override
-                    public void call(StringBuilder stringBuilder) {
-                        holder.setIngredients(stringBuilder.toString().trim());
-                    }
-                });
+                .map(stringBuilder -> stringBuilder.toString().trim())
+                .subscribe(holder::setIngredients);
         decimalObservable.map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
                 .map(quantityModel.setScale(0))
                 .map(quantityModel.energyAsString())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String totalEnergy) {
-                        holder.setTotalEnergy(totalEnergy);
-                    }
-                });
+                .subscribe(holder::setTotalEnergy);
     }
 
     private void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
@@ -290,48 +267,33 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         return null;
     }
 
-    @NonNull
-    @CheckResult
-    private Action1<MealInteraction> openEditScreen() {
-        return new Action1<MealInteraction>() {
-            @Override
-            public void call(MealInteraction interaction) {
-                MealItemHolder holder = interaction.getHolder();
-                openEditScreen(holder.getMeal());
-            }
-        };
-    }
-
-    @NonNull
-    @CheckResult
-    private Action1<MealInteraction> deleteMealWithId() {
-        return new Action1<MealInteraction>() {
-            @Override
-            public void call(MealInteraction interaction) {
-                long id = interaction.getHolder().getMeal().getId();
-                deleteMealWithId(id);
-            }
-        };
-    }
-
     private void deleteMeal(@NonNull Meal meal, int position) {
         subscriptions.add(commands.delete(meal)
-                .doOnNext(showUndoRemoval(position))
-                .map(Functions.<Void>intoResponse())
+                .doOnNext(deleteResponse ->
+                        subscriptions.add(deleteResponse.undoAvailability()
+                                .compose(new UndoTransformer<>(deleteResponse,
+                                        isAvailable -> {
+                                            if (isAvailable)
+                                                return undoView.showUndoMessage(
+                                                        viewModel.getUndoRemoveMealMessage());
+                                            else {
+                                                undoView.hideUndoMessage();
+                                                return Observable.empty();
+                                            }
+                                        }))
+                                .subscribe(meal1 -> {
+                                    list.add(position, meal1);
+                                    onNewDataSet(list);
+                                    notifyItemInserted(position);
+                                })
+                        ))
+                .map(Functions.intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onMealDeleted(position)));
-    }
-
-    @NonNull
-    private Action1<Void> onMealDeleted(final int mealPos) {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                list.remove(mealPos);
-                onNewDataSet(list);
-                notifyItemRemoved(mealPos);
-            }
-        };
+                .subscribe(aVoid -> {
+                    list.remove(position);
+                    onNewDataSet(list);
+                    notifyItemRemoved(position);
+                }));
     }
 
     private void onNewDataSet(@NonNull List<Meal> meals) {
@@ -347,35 +309,14 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
     private void showTotal() {
         subscriptions.add(Observable.from(list)
                 .subscribeOn(Schedulers.computation())
-                .flatMap(new Func1<Meal, Observable<Ingredient>>() {
-                    @Override
-                    public Observable<Ingredient> call(Meal meal) {
-                        return Observable.from(meal.getIngredients());
-                    }
-                })
+                .flatMap(meal -> Observable.from(meal.getIngredients()))
                 .map(quantityModel.mapToEnergy())
                 .map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
                 .map(quantityModel.setScale(0))
                 .map(quantityModel.energyAsString())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String energy) {
-                        view.setTotalEnergy(energy);
-                    }
-                }));
-
-    }
-
-    @NonNull
-    private Func1<Ingredient, String> toNames() {
-        return new Func1<Ingredient, String>() {
-            @Override
-            public String call(Ingredient ingredient) {
-                return ingredient.getIngredientTypeOrNull().getName();
-            }
-        };
+                .subscribe(view::setTotalEnergy));
     }
 
     @NonNull
@@ -390,53 +331,6 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         };
     }
 
-    @NonNull
-    private Action1<CommandResponse<Void, Meal>> showUndoRemoval(final int position) {
-        return new Action1<CommandResponse<Void, Meal>>() {
-            @Override
-            public void call(final CommandResponse<Void, Meal> deleteResponse) {
-                subscriptions.add(deleteResponse.undoAvailability()
-                        .compose(onUndoAvailable(deleteResponse, viewModel.getUndoRemoveMealMessage()))
-                        .subscribe(onMealAdded(position))
-                );
-            }
-        };
-    }
-
-    @NonNull
-    private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
-            @NonNull final CommandResponse<Response, UndoResponse> response,
-            @StringRes final int undoMessage) {
-        return new UndoTransformer<>(response, showUndoMessage(undoMessage));
-    }
-
-
-    @NonNull
-    Func1<Boolean, Observable<UndoAction>> showUndoMessage(@StringRes final int undoMessage) {
-        return new Func1<Boolean, Observable<UndoAction>>() {
-            @Override
-            public Observable<UndoAction> call(Boolean isAvailable) {
-                if (isAvailable)
-                    return undoView.showUndoMessage(undoMessage);
-                else {
-                    undoView.hideUndoMessage();
-                    return Observable.empty();
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private SimpleSubscriber<Meal> onMealAdded(final int position) {
-        return new SimpleSubscriber<Meal>() {
-            @Override
-            public void onNext(Meal meal) {
-                list.add(position, meal);
-                onNewDataSet(list);
-                notifyItemInserted(position);
-            }
-        };
-    }
 
     private class OnUpdatedDataSet extends SimpleSubscriber<List<Meal>> {
 
@@ -450,24 +344,18 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
 
     @NonNull
     private Action1<MealInteraction> disableViewHolder() {
-        return new Action1<MealInteraction>() {
-            @Override
-            public void call(MealInteraction interaction) {
-                disabledHolder = interaction.getHolder();
-                disabledHolder.setEnabled(false);
-            }
+        return interaction -> {
+            disabledHolder = interaction.getHolder();
+            disabledHolder.setEnabled(false);
         };
     }
 
     @NonNull
     private Action1<MealDetailAction> enableViewHolder() {
-        return new Action1<MealDetailAction>() {
-            @Override
-            public void call(MealDetailAction mealDetailAction) {
-                if (disabledHolder != null) {
-                    disabledHolder.setEnabled(true);
-                    disabledHolder = null;
-                }
+        return mealDetailAction -> {
+            if (disabledHolder != null) {
+                disabledHolder.setEnabled(true);
+                disabledHolder = null;
             }
         };
     }

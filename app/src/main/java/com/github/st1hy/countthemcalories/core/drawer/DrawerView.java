@@ -11,11 +11,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.core.state.Selection;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
@@ -48,12 +47,7 @@ public final class DrawerView {
     }
 
     public void showNavigationAsUp() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> activity.onBackPressed());
         Preconditions.checkNotNull(activity.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 

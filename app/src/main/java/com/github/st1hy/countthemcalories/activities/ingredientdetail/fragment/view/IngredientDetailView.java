@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ public interface IngredientDetailView extends IngredientDetailScreen {
     void setCalorieCount(@NonNull String calorieCount);
 
     @NonNull
+    @CheckResult
     Observable<CharSequence> getAmountObservable();
 
     void setAmountError(@Nullable String errorResId);
@@ -29,9 +31,11 @@ public interface IngredientDetailView extends IngredientDetailScreen {
     void setUnitName(@NonNull String unitName);
 
     @NonNull
+    @CheckResult
     Observable<Void> getRemoveObservable();
 
     @NonNull
+    @CheckResult
     Observable<Void> getAcceptObservable();
 
     @NonNull

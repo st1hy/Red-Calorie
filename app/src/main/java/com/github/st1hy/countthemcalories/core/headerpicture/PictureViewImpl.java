@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.core.headerpicture;
 
 import android.app.Activity;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,6 +47,7 @@ public class PictureViewImpl implements PictureView {
         return ingredientImage;
     }
 
+    @CheckResult
     @NonNull
     @Override
     public Observable<Void> getSelectPictureObservable() {

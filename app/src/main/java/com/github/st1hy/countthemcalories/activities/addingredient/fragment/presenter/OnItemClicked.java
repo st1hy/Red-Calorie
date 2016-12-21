@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.core.adapter.callbacks;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter;
 
 import android.support.annotation.NonNull;
 

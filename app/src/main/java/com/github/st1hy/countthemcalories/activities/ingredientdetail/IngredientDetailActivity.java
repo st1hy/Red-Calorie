@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailModule;
 
 import javax.inject.Inject;
 

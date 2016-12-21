@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Provider;
-
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
@@ -35,28 +33,15 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
         super(lazySession);
-        this.dao = DoubleCheck.lazy(new Provider<TagDao>() {
-            @Override
-            public TagDao get() {
-                return session().getTagDao();
-            }
-        });
+        this.dao = DoubleCheck.lazy(() -> session().getTagDao());
     }
 
     @NonNull
     public Observable<Cursor> updateRefresh(@NonNull Tag tag) {
-        return fromDatabaseTask(updateRefreshCall(tag));
-    }
-
-    @NonNull
-    private Callable<Cursor> updateRefreshCall(@NonNull final Tag tag) {
-        return new Callable<Cursor>() {
-            @Override
-            public Cursor call() throws Exception {
-                dao().update(tag);
-                return refresh().call();
-            }
-        };
+        return fromDatabaseTask(() -> {
+            dao().update(tag);
+            return refresh().call();
+        });
     }
 
     @Override
@@ -159,12 +144,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
 
     @NonNull
     private Callable<CursorQuery> filteredExcludeQueryCall(@NonNull final String partOfName, @NonNull final Collection<String> excludedTags) {
-        return new Callable<CursorQuery>() {
-            @Override
-            public CursorQuery call() throws Exception {
-                return filteredExcludeSortedQuery(partOfName, excludedTags);
-            }
-        };
+        return () -> filteredExcludeSortedQuery(partOfName, excludedTags);
     }
 
     @NonNull
@@ -192,7 +172,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     protected void cacheLastQuery(@NonNull final String partOfName,
                                   @NonNull final Collection<String> excludedTags) {
         cacheLastQuery(partOfName);
-        lastExcluded = excludedTags.isEmpty() ? Collections.<String>emptyList()
+        lastExcluded = excludedTags.isEmpty() ? Collections.emptyList()
                 : new ArrayList<>(excludedTags);
     }
 }

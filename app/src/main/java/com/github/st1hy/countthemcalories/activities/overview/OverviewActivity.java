@@ -7,10 +7,10 @@ import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerView;
+import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 
 import javax.inject.Inject;
 

@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentModule;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
+import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentModule;
 
 import javax.inject.Inject;
 
@@ -31,7 +31,8 @@ public class OverviewFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.overview_content, container, false);
     }
 

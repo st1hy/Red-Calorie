@@ -15,30 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class HorizontalScrollObservable {
 
-    private static final Func1<MotionEvent, Integer> EVENT_ACTION = new Func1<MotionEvent, Integer>() {
-        @Override
-        public Integer call(MotionEvent motionEvent) {
-            return motionEvent.getAction();
-        }
-    };
-    private static final Func1<Integer, Boolean> IS_TOUCHING = new Func1<Integer, Boolean>() {
-
-        @Override
-        public Boolean call(Integer motionAction) {
-            return motionAction != MotionEvent.ACTION_UP && motionAction != MotionEvent.ACTION_CANCEL;
-        }
-    };
-    private static final Func1<Boolean, Boolean> NOT_TOUCHING = new Func1<Boolean, Boolean>() {
-        @Override
-        public Boolean call(Boolean isTouching) {
-            return !isTouching;
-        }
-    };
+    private static final Func1<Integer, Boolean> IS_TOUCHING = motionAction -> motionAction != MotionEvent.ACTION_UP && motionAction != MotionEvent.ACTION_CANCEL;
+    private static final Func1<Boolean, Boolean> NOT_TOUCHING = isTouching1 -> !isTouching1;
 
     private final AtomicBoolean isTouching = new AtomicBoolean(true);
     private final AtomicReference<ViewScrollChangeEvent> lastScrollEvent = new AtomicReference<>();
@@ -55,15 +37,34 @@ public class HorizontalScrollObservable {
         Observable<Boolean> touchingObservable = getTouchingObservable().share();
         observable = touchingObservable.filter(NOT_TOUCHING)
                 .throttleWithTimeout(200, TimeUnit.MILLISECONDS)
-                .switchMap(emitScrollEventIfExist())
+                .switchMap(isTouching -> {
+                    ViewScrollChangeEvent viewScrollChangeEvent = lastScrollEvent.getAndSet(null);
+                    if (viewScrollChangeEvent != null) {
+                        return Observable.just(viewScrollChangeEvent);
+                    } else {
+                        return Observable.empty();
+                    }
+                })
                 .mergeWith(getScrollingObservable()
-                        .switchMap(this.<ViewScrollChangeEvent>emitIfNotTouching())
+                        .switchMap(object1 -> {
+                            if (!isTouching.get()) {
+                                return Observable.just(object1);
+                            } else {
+                                return Observable.empty();
+                            }
+                        })
                 )
                 .distinctUntilChanged();
         idleObservable = touchingObservable.filter(NOT_TOUCHING)
                 .throttleWithTimeout(1500, TimeUnit.MILLISECONDS)
                 .map(Functions.INTO_VOID)
-                .switchMap(this.<Void>emitIfNotTouching());
+                .switchMap(object -> {
+                    if (!isTouching.get()) {
+                        return Observable.just(object);
+                    } else {
+                        return Observable.empty();
+                    }
+                });
     }
 
     @NonNull
@@ -71,11 +72,13 @@ public class HorizontalScrollObservable {
         return new HorizontalScrollObservable(scrollView, scrollView);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public Observable<ViewScrollChangeEvent> getScrollToPositionObservable() {
         return observable;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public Observable<Void> getIdleObservable() {
         return idleObservable;
@@ -84,46 +87,11 @@ public class HorizontalScrollObservable {
     @NonNull
     private Observable<Boolean> getTouchingObservable() {
         return RxView.touches(touchOverlay)
-                .doOnNext(loopBackToView(touchOverlay))
-                .map(EVENT_ACTION)
+                .doOnNext(touchOverlay::onTouchEvent)
+                .map(MotionEvent::getAction)
                 .distinctUntilChanged()
                 .map(IS_TOUCHING)
-                .doOnNext(setIsTouching());
-    }
-
-    @NonNull
-    private Action1<MotionEvent> loopBackToView(final View view) {
-        return new Action1<MotionEvent>() {
-            @Override
-            public void call(MotionEvent motionEvent) {
-                view.onTouchEvent(motionEvent);
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<Boolean> setIsTouching() {
-        return new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                isTouching.set(aBoolean);
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Boolean, Observable<ViewScrollChangeEvent>> emitScrollEventIfExist() {
-        return new Func1<Boolean, Observable<ViewScrollChangeEvent>>() {
-            @Override
-            public Observable<ViewScrollChangeEvent> call(Boolean isTouching) {
-                ViewScrollChangeEvent viewScrollChangeEvent = lastScrollEvent.getAndSet(null);
-                if (viewScrollChangeEvent != null) {
-                    return Observable.just(viewScrollChangeEvent);
-                } else {
-                    return Observable.empty();
-                }
-            }
-        };
+                .doOnNext(isTouching::set);
     }
 
     @NonNull
@@ -135,30 +103,7 @@ public class HorizontalScrollObservable {
             observable = ViewTreeScrollChangedListener.create(scrollView);
         }
         return observable.debounce(50, TimeUnit.MILLISECONDS)
-                .doOnNext(setLastScrollEvent());
+                .doOnNext(lastScrollEvent::set);
     }
 
-    @NonNull
-    private Action1<ViewScrollChangeEvent> setLastScrollEvent() {
-        return new Action1<ViewScrollChangeEvent>() {
-            @Override
-            public void call(ViewScrollChangeEvent viewScrollChangeEvent) {
-                lastScrollEvent.set(viewScrollChangeEvent);
-            }
-        };
-    }
-
-    @NonNull
-    private <T> Func1<T, Observable<T>> emitIfNotTouching() {
-        return new Func1<T, Observable<T>>() {
-            @Override
-            public Observable<T> call(T object) {
-                if (!isTouching.get()) {
-                    return Observable.just(object);
-                } else {
-                    return Observable.empty();
-                }
-            }
-        };
-    }
 }

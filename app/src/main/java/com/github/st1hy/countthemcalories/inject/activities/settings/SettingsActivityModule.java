@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
-import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.activities.settings.SettingsActivity;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 
 import javax.inject.Named;

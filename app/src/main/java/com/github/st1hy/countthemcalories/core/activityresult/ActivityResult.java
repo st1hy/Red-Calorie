@@ -10,12 +10,8 @@ import rx.functions.Func1;
  */
 public class ActivityResult {
 
-    public static final Func1<ActivityResult, Boolean> IS_OK = new Func1<ActivityResult, Boolean>() {
-        @Override
-        public Boolean call(ActivityResult activityResult) {
-            return activityResult.isOk();
-        }
-    };
+    public static final Func1<ActivityResult, Boolean> IS_OK = ActivityResult::isOk;
+
     private final int resultCode;
     private final int requestCode;
     private final Intent data;

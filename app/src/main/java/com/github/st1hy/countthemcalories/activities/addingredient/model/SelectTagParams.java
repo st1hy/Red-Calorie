@@ -9,8 +9,12 @@ public class SelectTagParams {
     @NonNull
     private final Collection<String> excludedTags;
 
-    public SelectTagParams(@NonNull Collection<String> excludedTags) {
+    private SelectTagParams(@NonNull Collection<String> excludedTags) {
         this.excludedTags = excludedTags;
+    }
+
+    public static SelectTagParams of(@NonNull Collection<String> excludedTags) {
+        return new SelectTagParams(excludedTags);
     }
 
     @NonNull

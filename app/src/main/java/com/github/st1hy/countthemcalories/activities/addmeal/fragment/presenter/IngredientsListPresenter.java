@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems.IngredientItemViewHolder;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
@@ -17,7 +17,6 @@ import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -27,7 +26,6 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListModule;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import java.math.BigDecimal;
@@ -38,10 +36,7 @@ import javax.inject.Inject;
 
 import dagger.internal.Preconditions;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -60,6 +55,8 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final PublishSubject<IngredientItemViewHolder> ingredientClicks = PublishSubject.create();
+    @Nullable
+    private IngredientItemViewHolder disabledItem;
 
     @Inject
     public IngredientsListPresenter(@NonNull AddMealView view,
@@ -83,31 +80,47 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
                                 view.getAddIngredientButtonObservable()
                                         .compose(view.newIngredients())
                         )
-                        .map(new Func1<Ingredient, ShowIngredientsInfo>() {
-                            @Override
-                            public ShowIngredientsInfo call(Ingredient ingredient) {
-                                return ShowIngredientsInfo.of(-1L, ingredient, Collections.<Pair<View, String>>emptyList());
-                            }
-                        })
+                        .map(ingredient -> ShowIngredientsInfo.of(-1L, ingredient,
+                                Collections.emptyList()))
                         .mergeWith(
-                                ingredientClicks.map(new Func1<IngredientItemViewHolder, ShowIngredientsInfo>() {
-                                    @Override
-                                    public ShowIngredientsInfo call(IngredientItemViewHolder viewHolder) {
-                                        Ingredient ingredient = viewHolder.getIngredient();
-                                        final int position = model.indexOf(ingredient);
-                                        final List<Pair<View, String>> sharedViews = ImmutableList.of(
-                                                pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
-//                                                pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
-//                                                pairOf(viewHolder.getName(), "ingredient-shared-view-name"),
-//                                                pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
-//                                                pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
-                                        );
-                                        return ShowIngredientsInfo.of(position, ingredient, sharedViews);
-                                    }
-                                })
+                                ingredientClicks
+                                        .doOnNext(holder -> {
+                                            disabledItem = holder;
+                                            holder.setEnabled(false);
+                                        })
+                                        .map(viewHolder -> {
+                                            Ingredient ingredient = viewHolder.getIngredient();
+                                            final int position = model.indexOf(ingredient);
+                                            final List<Pair<View, String>> sharedViews = ImmutableList.of(
+                                                    pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
+//                                            pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
+//                                            pairOf(viewHolder.getName(), "ingredient-shared-view-name"),
+//                                            pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
+//                                            pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
+                                            );
+                                            return ShowIngredientsInfo.of(position, ingredient, sharedViews);
+                                        })
                         )
                         .compose(view.showIngredientDetails())
-                        .subscribe(onIngredientAction())
+                        .doOnNext(action -> {
+                            if (disabledItem != null) {
+                                disabledItem.setEnabled(true);
+                                disabledItem = null;
+                            }
+                        })
+                        .subscribe(ingredientAction -> {
+                            switch (ingredientAction.getType()) {
+                                case EDIT:
+                                    onIngredientEditFinished(ingredientAction.getId(),
+                                            ingredientAction.getIngredient());
+                                    break;
+                                case REMOVE:
+                                    onIngredientRemoved(ingredientAction.getId());
+                                    break;
+                                case CANCELED:
+                                    break;
+                            }
+                        })
         );
     }
 
@@ -160,25 +173,6 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
         subscriptions.add(subscribe);
     }
 
-    @NonNull
-    private Subscriber<IngredientAction> onIngredientAction() {
-        return new SimpleSubscriber<IngredientAction>() {
-            @Override
-            public void onNext(IngredientAction ingredientAction) {
-                switch (ingredientAction.getType()) {
-                    case EDIT:
-                        onIngredientEditFinished(ingredientAction.getId(), ingredientAction.getIngredient());
-                        break;
-                    case REMOVE:
-                        onIngredientRemoved(ingredientAction.getId());
-                        break;
-                    case CANCELED:
-                        break;
-                }
-            }
-        };
-    }
-
     private void onIngredientRemoved(long requestId) {
         if (requestId == -1L) return;
         model.removeIngredient((int) requestId);
@@ -208,7 +202,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
     private void notifyInserted(int position) {
         notifyItemInserted(position);
         view.scrollTo(position);
-        view.showSnackbarError(Optional.<String>absent());
+        view.hideNameError();
         onDataSetChanged();
     }
 
@@ -232,12 +226,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
                 .map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
                 .map(quantityModel.energyAsString())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String totalEnergy) {
-                        view.setTotalEnergy(totalEnergy);
-                    }
-                });
+                .subscribe(view::setTotalEnergy);
     }
 
     @NonNull

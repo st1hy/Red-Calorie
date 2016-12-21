@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
@@ -14,6 +15,7 @@ public interface OnTagInteraction {
     void onDeleteClicked(int position, @NonNull Tag tag);
 
     @NonNull
+    @CheckResult
     Observable<RecyclerEvent> getEvents();
 
     void onEditClicked(int position, @NonNull Tag tag);

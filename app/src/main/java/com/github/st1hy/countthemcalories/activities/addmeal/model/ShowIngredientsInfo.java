@@ -17,7 +17,7 @@ public class ShowIngredientsInfo {
 
 
     private ShowIngredientsInfo(long id, @NonNull Ingredient ingredient,
-                               @NonNull List<Pair<View, String>> sharedElements) {
+                                @NonNull List<Pair<View, String>> sharedElements) {
         this.id = id;
         this.ingredient = ingredient;
         this.sharedElements = sharedElements;

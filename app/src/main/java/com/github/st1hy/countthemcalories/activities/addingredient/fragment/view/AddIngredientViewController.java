@@ -2,17 +2,21 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.vie
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -37,6 +41,8 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     @BindView(R.id.add_ingredient_name_search)
     View searchName;
 
+    private final Map<InputType, EditText> inputMap;
+
     @Inject
     public AddIngredientViewController(@NonNull View rootView,
                                        @NonNull Resources resources,
@@ -44,13 +50,16 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
         this.resources = resources;
         this.screen = screen;
         ButterKnife.bind(this, rootView);
+        inputMap = ImmutableMap.of(
+                InputType.NAME, name,
+                InputType.VALUE, energyDensityValue
+        );
     }
 
     @Override
     protected AddIngredientScreen getDelegate() {
         return screen;
     }
-
 
     @Override
     public void setSelectedUnitName(@NonNull String unitName) {
@@ -80,31 +89,26 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     }
 
     @Override
-    public void showNameError(@NonNull Optional<Integer> errorResId) {
-        if (errorResId.isPresent()) {
-            name.setError(resources.getString(errorResId.get()));
-        } else {
-            name.setError(null);
-        }
+    public void showError(@NonNull InputType type, @StringRes int errorResId) {
+        EditText input = getInputOfType(type);
+        input.setError(resources.getString(errorResId));
     }
 
     @Override
-    public void showValueError(@NonNull Optional<Integer> errorResId) {
-        if (errorResId.isPresent()) {
-            energyDensityValue.setError(resources.getString(errorResId.get()));
-        } else {
-            energyDensityValue.setError(null);
-        }
+    public void hideError(@NonNull InputType type) {
+        EditText input = getInputOfType(type);
+        input.setError(null);
     }
 
     @Override
-    public void requestFocusToName() {
-        name.requestFocus();
+    public void requestFocusTo(@NonNull InputType type) {
+        EditText input = getInputOfType(type);
+        input.requestFocus();
     }
 
-    @Override
-    public void requestFocusToValue() {
-        energyDensityValue.requestFocus();
+    @NonNull
+    private EditText getInputOfType(@NonNull InputType type) {
+        return inputMap.get(type);
     }
 
     @NonNull

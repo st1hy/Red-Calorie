@@ -10,9 +10,8 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.google.common.base.Optional;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -79,7 +78,12 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     }
 
     @Override
-    public void showNameError(@NonNull Optional<String> error) {
-        name.setError(error.orNull());
+    public void showNameError(@NonNull String error) {
+        name.setError(error);
+    }
+
+    @Override
+    public void hideNameError() {
+        name.setError(null);
     }
 }

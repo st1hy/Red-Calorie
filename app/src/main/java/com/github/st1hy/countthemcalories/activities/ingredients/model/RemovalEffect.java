@@ -13,10 +13,14 @@ import java.util.List;
  * Storage for removed objects as effect of IngredientTemplate deletion
  */
 public class RemovalEffect {
-    final IngredientTemplate template;
-    final List<Ingredient> childIngredients;
-    final List<JointIngredientTag> joins;
-    final List<Meal> meals;
+    @NonNull
+    private final IngredientTemplate template;
+    @NonNull
+    private final List<Ingredient> childIngredients;
+    @NonNull
+    private final List<JointIngredientTag> joins;
+    @NonNull
+    private final List<Meal> meals;
 
     public RemovalEffect(@NonNull IngredientTemplate template,
                          @NonNull List<Ingredient> childIngredients,

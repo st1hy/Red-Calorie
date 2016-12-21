@@ -162,7 +162,7 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public RecyclerView recyclerView(@Named("fragmentRootView")View rootView,
+    public RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
                                      RecyclerViewAdapterDelegate adapter,
                                      @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);

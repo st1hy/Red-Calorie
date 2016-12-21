@@ -7,40 +7,23 @@ import android.widget.HorizontalScrollView;
 
 import com.jakewharton.rxbinding.internal.Functions;
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
 
 import dagger.internal.Preconditions;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class ScrollingItemDelegate {
 
-    private final Action1<Void> resetScrollOnPreDraw = new Action1<Void>() {
-        @Override
-        public void call(Void aVoid) {
-            resetScroll();
-        }
-    };
-    private final Action1<ViewScrollChangeEvent> scrollToNearest = new Action1<ViewScrollChangeEvent>() {
-        @Override
-        public void call(ViewScrollChangeEvent viewScrollChangeEvent) {
-            onFinishedScroll(viewScrollChangeEvent.scrollX());
-        }
-    };
-    private final Action1<Void> scrollToContent = new Action1<Void>() {
-        @Override
-        public void call(Void aVoid) {
-            scrollView.smoothScrollTo(center.getLeft(), 0);
-        }
-    };
+    @NonNull
     private final HorizontalScrollObservable scrollingObservable;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    final View left, center, right;
-    final HorizontalScrollView scrollView;
+    @NonNull
+    private final View left, center, right;
+    @NonNull
+    private final HorizontalScrollView scrollView;
 
     private ScrollingItemDelegate(@NonNull Builder builder) {
         this.scrollView = builder.scrollView;
@@ -63,12 +46,18 @@ public class ScrollingItemDelegate {
 
     public void onAttached() {
         resetScroll();
-        subscribe(scrollingObservable.getScrollToPositionObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(scrollToNearest));
-        subscribe(scrollingObservable.getIdleObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(scrollToContent));
+        subscribe(
+                scrollingObservable.getScrollToPositionObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(viewScrollChangeEvent ->
+                                onFinishedScroll(viewScrollChangeEvent.scrollX())
+                        )
+        );
+        subscribe(
+                scrollingObservable.getIdleObservable()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(aVoid -> scrollView.smoothScrollTo(center.getLeft(), 0))
+        );
     }
 
     public void onDetached() {
@@ -89,7 +78,7 @@ public class ScrollingItemDelegate {
         } else {
             subscriptions.add(RxView.preDraws(center, Functions.FUNC0_ALWAYS_TRUE)
                     .take(1)
-                    .subscribe(resetScrollOnPreDraw));
+                    .subscribe(aVoid -> resetScroll()));
         }
     }
 

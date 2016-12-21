@@ -5,7 +5,14 @@ import org.greenrobot.greendao.annotation.NotNull;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.*;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.DATA_SET_CHANGED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.ITEM_CHANGED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.ITEM_INSERTED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.ITEM_MOVED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.ITEM_RANGE_REMOVED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.ITEM_REMOVED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.RANGE_CHANGED;
+import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.Type.RANGE_INSERTED;
 import static com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewNotification.of;
 
 public class RecyclerViewNotifierObservable implements RecyclerViewNotifier {

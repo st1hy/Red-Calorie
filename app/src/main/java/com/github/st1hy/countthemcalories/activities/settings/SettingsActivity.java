@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
-import com.github.st1hy.countthemcalories.inject.activities.settings.SettingsActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.inject.activities.settings.SettingsActivityModule;
 
 import javax.inject.Inject;
 

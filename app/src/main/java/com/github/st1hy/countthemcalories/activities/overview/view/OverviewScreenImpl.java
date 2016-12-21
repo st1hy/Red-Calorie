@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.functions.Func1;
 
 @PerActivity
 public class OverviewScreenImpl implements OverviewScreen {
@@ -69,37 +68,13 @@ public class OverviewScreenImpl implements OverviewScreen {
     @NonNull
     @Override
     public Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails() {
-        return new Observable.Transformer<MealDetailParams, MealDetailAction>() {
-            @Override
-            public Observable<MealDetailAction> call(Observable<MealDetailParams> paramsObservable) {
-                return paramsObservable.map(intoRequest())
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_MEAL_DETAIL)
-                        )
-                        .map(onResult());
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<MealDetailParams, StartParams> intoRequest() {
-        return new Func1<MealDetailParams, StartParams>() {
-            @Override
-            public StartParams call(MealDetailParams params) {
-                return getMealDetailsParams(params);
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<ActivityResult, MealDetailAction> onResult() {
-        return new Func1<ActivityResult, MealDetailAction>() {
-            @Override
-            public MealDetailAction call(ActivityResult activityResult) {
-                return getMealDetailResult(activityResult);
-            }
-        };
+        return paramsObservable -> paramsObservable
+                .map(this::getMealDetailsParams)
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_MEAL_DETAIL)
+                )
+                .map(this::getMealDetailResult);
     }
 
     @NonNull

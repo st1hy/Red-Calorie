@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.core.permissions.PersistentPermissionCache;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
+import com.github.st1hy.countthemcalories.core.permissions.PersistentPermissionCache;
 import com.squareup.picasso.MediaStoreRequestHandlerNext;
 import com.squareup.picasso.Picasso;
 

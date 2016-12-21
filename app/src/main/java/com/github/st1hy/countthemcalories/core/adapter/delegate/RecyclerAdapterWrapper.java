@@ -14,7 +14,7 @@ public abstract class RecyclerAdapterWrapper<T extends RecyclerView.ViewHolder> 
     public void onViewAttachedToWindow(T holder) {
     }
 
-    public void onViewDetachedFromWindow(T holder){
+    public void onViewDetachedFromWindow(T holder) {
     }
 
     public int getItemViewType(int position) {

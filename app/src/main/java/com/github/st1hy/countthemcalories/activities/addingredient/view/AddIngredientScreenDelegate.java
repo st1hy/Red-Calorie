@@ -15,7 +15,7 @@ public abstract class AddIngredientScreenDelegate implements AddIngredientScreen
     protected abstract AddIngredientScreen getDelegate();
 
     @Override
-    public void onIngredientTemplateCreated(IngredientTemplate template) {
+    public void onIngredientTemplateCreated(@NonNull IngredientTemplate template) {
         getDelegate().onIngredientTemplateCreated(template);
     }
 

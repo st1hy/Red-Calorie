@@ -8,34 +8,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientDetailFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
+import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientDetailFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule;
 
 import javax.inject.Inject;
 
-public class  IngredientDetailFragment extends BaseFragment {
+public class IngredientDetailFragment extends BaseFragment {
 
     private IngredientDetailFragmentComponentFactory componentFactory;
 
     @Inject
     IngredientDetailPresenter presenter;
 
-    public void setComponentFactory(@NonNull IngredientDetailFragmentComponentFactory componentFactory) {
+    public void setComponentFactory(
+            @NonNull IngredientDetailFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ingredient_detail_content, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newIngredientDetailFragmentComponent(new IngredientsDetailFragmentModule(this, savedInstanceState))
+        componentFactory.newIngredientDetailFragmentComponent(
+                new IngredientsDetailFragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenImpl;
 

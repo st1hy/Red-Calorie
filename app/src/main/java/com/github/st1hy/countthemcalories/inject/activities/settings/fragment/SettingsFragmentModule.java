@@ -3,10 +3,10 @@ package com.github.st1hy.countthemcalories.inject.activities.settings.fragment;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SelectUnitViewHolder;
-import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsView;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SettingsViewImpl;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.UnitsViewHolder;

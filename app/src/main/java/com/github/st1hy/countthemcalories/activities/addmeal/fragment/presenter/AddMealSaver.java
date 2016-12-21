@@ -34,7 +34,8 @@ public class AddMealSaver implements WithState {
     @Override
     public void onSaveState(@NonNull Bundle outState) {
         outState.putParcelable(AddMealModel.SAVED_MEAL_STATE, Parcels.wrap(meal));
-        outState.putParcelable(MealIngredientsListModel.SAVED_INGREDIENTS, Parcels.wrap(ingredientsListModel));
+        outState.putParcelable(MealIngredientsListModel.SAVED_INGREDIENTS,
+                Parcels.wrap(ingredientsListModel));
         picturePicker.onSaveState(outState);
     }
 }

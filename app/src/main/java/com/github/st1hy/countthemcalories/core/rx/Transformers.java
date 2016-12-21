@@ -2,15 +2,14 @@ package com.github.st1hy.countthemcalories.core.rx;
 
 import android.support.annotation.NonNull;
 
-import rx.Notification;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 
 public final class Transformers {
 
-    private Transformers() {}
+    private Transformers() {
+    }
 
     /**
      * Creates observable transformer that replicates information from source observable onto target
@@ -32,20 +31,17 @@ public final class Transformers {
 
         @Override
         public Observable<T> call(Observable<T> source) {
-            return source.doOnEach(new Action1<Notification<? super T>>() {
-                @Override
-                public void call(Notification<? super T> notification) {
-                    switch (notification.getKind()) {
-                        case OnNext:
-                            target.onNext((T) notification.getValue());
-                            break;
-                        case OnError:
-                            target.onError(notification.getThrowable());
-                            break;
-                        case OnCompleted:
-                            target.onCompleted();
-                            break;
-                    }
+            return source.doOnEach(notification -> {
+                switch (notification.getKind()) {
+                    case OnNext:
+                        target.onNext((T) notification.getValue());
+                        break;
+                    case OnError:
+                        target.onError(notification.getThrowable());
+                        break;
+                    case OnCompleted:
+                        target.onCompleted();
+                        break;
                 }
             });
         }

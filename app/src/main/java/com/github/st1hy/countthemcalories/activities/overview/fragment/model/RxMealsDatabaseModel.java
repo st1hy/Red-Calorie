@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Provider;
-
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
@@ -34,12 +32,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
-        mealDaoLazy = DoubleCheck.lazy(new Provider<MealDao>() {
-            @Override
-            public MealDao get() {
-                return session().getMealDao();
-            }
-        });
+        mealDaoLazy = DoubleCheck.lazy(() -> session().getMealDao());
     }
 
     private MealDao dao() {
@@ -58,12 +51,9 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     @NonNull
     private Callable<Void> insertOrUpdateCall(final Meal meal, final Collection<Ingredient> ingredients) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                performInsertOrUpdate(meal, ingredients);
-                return null;
-            }
+        return () -> {
+            performInsertOrUpdate(meal, ingredients);
+            return null;
         };
     }
 
@@ -96,21 +86,18 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     @NonNull
     private Callable<List<Meal>> filteredBetween(@NonNull final DateTime from, @NonNull final DateTime to) {
-        return new Callable<List<Meal>>() {
-            @Override
-            public List<Meal> call() throws Exception {
-                Query<Meal> query = filteredByDateSortedByDateSingleton().forCurrentThread();
-                query.setParameter(0, from.getMillis());
-                query.setParameter(1, to.getMillis());
-                List<Meal> list = query.list();
-                for (Meal meal : list) {
-                    List<Ingredient> ingredients = meal.getIngredients();
-                    for (Ingredient ingredient : ingredients) {
-                        ingredient.getIngredientType();
-                    }
+        return () -> {
+            Query<Meal> query = filteredByDateSortedByDateSingleton().forCurrentThread();
+            query.setParameter(0, from.getMillis());
+            query.setParameter(1, to.getMillis());
+            List<Meal> list = query.list();
+            for (Meal meal : list) {
+                List<Ingredient> ingredients = meal.getIngredients();
+                for (Ingredient ingredient : ingredients) {
+                    ingredient.getIngredientType();
                 }
-                return list;
             }
+            return list;
         };
     }
 

@@ -57,38 +57,27 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @NonNull
     @CheckResult
     public Observable.Transformer<SelectTagParams, Tag> selectTag() {
-        return new Observable.Transformer<SelectTagParams, Tag>() {
-            @Override
-            public Observable<Tag> call(Observable<SelectTagParams> paramsObservable) {
-                return paramsObservable
-                        .map(new Func1<SelectTagParams, StartParams>() {
-                            @Override
-                            public StartParams call(SelectTagParams selectTagParams) {
-                                Intent intent = new Intent(activity, TagsActivity.class);
-                                intent.setAction(TagsActivity.ACTION_PICK_TAG);
-                                Collection<String> excludedTags = selectTagParams.getExcludedTags();
-                                if (!excludedTags.isEmpty()) {
-                                    String[] tags = excludedTags.toArray(new String[excludedTags.size()]);
-                                    intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
-                                }
-                                return null;
-                            }
-                        })
-                        .compose(
-                                rxActivityResult.from(activity)
-                                        .startActivityForResult(REQUEST_PICK_TAG)
-                        )
-                        .filter(ActivityResult.IS_OK)
-                        .map(new Func1<ActivityResult, Tag>() {
-                            @Override
-                            public Tag call(ActivityResult activityResult) {
-                                Intent data = activityResult.getData();
-                                if (data == null) return null;
-                                return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
-                            }
-                        });
-            }
-        };
+        return paramsObservable -> paramsObservable
+                .map((Func1<SelectTagParams, StartParams>) selectTagParams -> {
+                    Intent intent = new Intent(activity, TagsActivity.class);
+                    intent.setAction(TagsActivity.ACTION_PICK_TAG);
+                    Collection<String> excludedTags = selectTagParams.getExcludedTags();
+                    if (!excludedTags.isEmpty()) {
+                        String[] tags = excludedTags.toArray(new String[excludedTags.size()]);
+                        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
+                    }
+                    return null;
+                })
+                .compose(
+                        rxActivityResult.from(activity)
+                                .startActivityForResult(REQUEST_PICK_TAG)
+                )
+                .filter(ActivityResult.IS_OK)
+                .map(activityResult -> {
+                    Intent data = activityResult.getData();
+                    if (data == null) return null;
+                    return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
+                });
     }
 
     @Override

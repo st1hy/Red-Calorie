@@ -1,8 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
 
-public interface OverviewPresenter {
+import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 
-    void onStart();
+public interface OverviewPresenter extends BasicLifecycle {
 
-    void onStop();
 }

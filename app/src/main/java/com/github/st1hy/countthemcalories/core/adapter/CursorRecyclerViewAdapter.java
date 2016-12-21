@@ -16,7 +16,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     //Lazy
     private Subject<RecyclerEvent, RecyclerEvent> changeEvents;
 
-    Cursor cursor;
+    private Cursor cursor;
 
     @CallSuper
     public void onStart() {

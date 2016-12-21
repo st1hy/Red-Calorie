@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -15,7 +14,6 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
-import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import org.greenrobot.greendao.Property;
@@ -31,8 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Provider;
-
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
@@ -44,13 +40,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
     public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
-        this.dao = DoubleCheck.lazy(new Provider<IngredientTemplateDao>() {
-
-            @Override
-            public IngredientTemplateDao get() {
-                return session().getIngredientTemplateDao();
-            }
-        });
+        this.dao = DoubleCheck.lazy(() -> session().getIngredientTemplateDao());
     }
 
     public Observable<Cursor> getAllFilteredBy(@NonNull String name, @NonNull List<String> tags) {
@@ -76,12 +66,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
     @NonNull
     private Callable<CursorQuery> filteredByCall(@NonNull final String partOfName, @NonNull final Collection<String> tags) {
-        return new Callable<CursorQuery>() {
-            @Override
-            public CursorQuery call() throws Exception {
-                return filteredByQuery(partOfName, tags);
-            }
-        };
+        return () -> filteredByQuery(partOfName, tags);
     }
 
 
@@ -125,27 +110,24 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     @NonNull
     private Callable<IngredientTemplate> insertOrUpdateCall(@NonNull final IngredientTemplate ingredientTemplate,
                                                             @NonNull final Collection<Long> tagIds) {
-        return new Callable<IngredientTemplate>() {
-            @Override
-            public IngredientTemplate call() throws Exception {
-                dao().insertOrReplace(ingredientTemplate);
-                List<JointIngredientTag> jTags = ingredientTemplate.getTags();
-                for (JointIngredientTag jTag : jTags) {
-                    if (!tagIds.contains(jTag.getTagId())) {
-                        jTag.delete();
-                    }
+        return () -> {
+            dao().insertOrReplace(ingredientTemplate);
+            List<JointIngredientTag> jTags = ingredientTemplate.getTags();
+            for (JointIngredientTag jTag : jTags) {
+                if (!tagIds.contains(jTag.getTagId())) {
+                    jTag.delete();
                 }
-                Collection<Long> currentTagIds = Collections2.transform(jTags, intoTagIds());
-                for (Long tagId : tagIds) {
-                    if (!currentTagIds.contains(tagId)) {
-                        addJointTagWithIngredientTemplate(ingredientTemplate, tagId);
-                    }
-                }
-                dao().update(ingredientTemplate);
-                ingredientTemplate.resetTags();
-                ingredientTemplate.getTags();
-                return ingredientTemplate;
             }
+            Collection<Long> currentTagIds = Collections2.transform(jTags, jTag -> jTag.getTagId());
+            for (Long tagId : tagIds) {
+                if (!currentTagIds.contains(tagId)) {
+                    addJointTagWithIngredientTemplate(ingredientTemplate, tagId);
+                }
+            }
+            dao().update(ingredientTemplate);
+            ingredientTemplate.resetTags();
+            ingredientTemplate.getTags();
+            return ingredientTemplate;
         };
     }
 
@@ -224,17 +206,6 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         return ingredientTemplate.getId();
     }
 
-    @NonNull
-    private static Function<JointIngredientTag, Long> intoTagIds() {
-        return new Function<JointIngredientTag, Long>() {
-            @Nullable
-            @Override
-            public Long apply(JointIngredientTag jTag) {
-                return jTag.getTagId();
-            }
-        };
-    }
-
     @SuppressWarnings("unchecked")
     @NonNull
     private CursorQuery filteredByQuery(@NonNull final String partOfName,
@@ -279,15 +250,12 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
      */
     @NonNull
     public Observable<IngredientTemplate> getByIdRecursive(final long id) {
-        return fromDatabaseTask(new Callable<IngredientTemplate>() {
-            @Override
-            public IngredientTemplate call() throws Exception {
-                IngredientTemplate ingredientTemplate = performGetById(id);
-                for (JointIngredientTag jointIngredientTag : ingredientTemplate.getTags()) {
-                    jointIngredientTag.getTag();
-                }
-                return ingredientTemplate;
+        return fromDatabaseTask(() -> {
+            IngredientTemplate ingredientTemplate = performGetById(id);
+            for (JointIngredientTag jointIngredientTag : ingredientTemplate.getTags()) {
+                jointIngredientTag.getTag();
             }
+            return ingredientTemplate;
         });
     }
 }

@@ -14,8 +14,6 @@ import android.util.SparseArray;
 import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 
 import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Func1;
 
 /**
  * Provide a way to receive the results of the {@link Activity} with RxJava.
@@ -68,12 +66,7 @@ public class RxActivityResult {
         QueueSubject<ActivityResult> subject = results.get(requestCode);
         if (subject == null) {
             subject = QueueSubject.create();
-            subject.doAfterTerminate(new Action0() {
-                @Override
-                public void call() {
-                    results.remove(requestCode);
-                }
-            });
+            subject.doAfterTerminate(() -> results.remove(requestCode));
         }
         results.put(requestCode, subject);
         return subject;
@@ -110,29 +103,18 @@ public class RxActivityResult {
         }
 
 
+        @NonNull
         @Override
-        public Observable.Transformer<StartParams, ActivityResult> startActivityForResult(final int requestCode) {
+        public Observable.Transformer<StartParams, ActivityResult> startActivityForResult(
+                final int requestCode) {
             if (requestCode < 0)
                 throw new IllegalArgumentException("requestCode must be greater than 0");
-            return new Observable.Transformer<StartParams, ActivityResult>() {
-                @Override
-                public Observable<ActivityResult> call(Observable<StartParams> startParamsObservable) {
-                    return startParamsObservable.flatMap(startActivity())
-                            .mergeWith(rxActivityResult.attachToExistingRequest(requestCode))
-                            .distinctUntilChanged();
-                }
-            };
+            return startParamsObservable -> startParamsObservable
+                    .flatMap(this::startActivityForResult)
+                    .mergeWith(rxActivityResult.attachToExistingRequest(requestCode))
+                    .distinctUntilChanged();
         }
 
-        @NonNull
-        private Func1<StartParams, Observable<ActivityResult>> startActivity() {
-            return new Func1<StartParams, Observable<ActivityResult>>() {
-                @Override
-                public Observable<ActivityResult> call(StartParams startParams) {
-                    return startActivityForResult(startParams);
-                }
-            };
-        }
     }
 
 }

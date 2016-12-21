@@ -62,12 +62,9 @@ public class RxAlertDialog {
         return Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {
-                itemClickedDelegate = new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!subscriber.isUnsubscribed())
-                            subscriber.onNext(which);
-                    }
+                itemClickedDelegate = (dialog1, which) -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(which);
                 };
                 subscriber.add(new MainThreadSubscription() {
                     @Override
@@ -80,17 +77,15 @@ public class RxAlertDialog {
         });
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public Observable<Void> observeNegativeClick() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
-                negativeClickedDelegate = new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!subscriber.isUnsubscribed())
-                            subscriber.onNext(null);
-                    }
+                negativeClickedDelegate = (dialog1, which) -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(null);
                 };
                 subscriber.add(new MainThreadSubscription() {
                     @Override
@@ -108,12 +103,9 @@ public class RxAlertDialog {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
-                positiveClickedDelegate = new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!subscriber.isUnsubscribed())
-                            subscriber.onNext(null);
-                    }
+                positiveClickedDelegate = (dialog1, which) -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(null);
                 };
                 subscriber.add(new MainThreadSubscription() {
                     @Override
@@ -126,17 +118,15 @@ public class RxAlertDialog {
         });
     }
 
+    @SuppressWarnings("unused")
     @NonNull
     public Observable<Void> observeCanceled() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
-                onCancelDelegate = new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        if (!subscriber.isUnsubscribed())
-                            subscriber.onNext(null);
-                    }
+                onCancelDelegate = dialog1 -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(null);
                 };
                 subscriber.add(new MainThreadSubscription() {
                     @Override

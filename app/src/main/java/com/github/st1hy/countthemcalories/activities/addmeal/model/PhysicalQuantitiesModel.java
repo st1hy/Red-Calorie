@@ -166,15 +166,12 @@ public class PhysicalQuantitiesModel {
     @NonNull
     public Func1<Ingredient, BigDecimal> mapToEnergy() {
         if (ingredientToEnergy == null) {
-            ingredientToEnergy = new Func1<Ingredient, BigDecimal>() {
-                @Override
-                public BigDecimal call(Ingredient ingredient) {
-                    IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
-                    EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientTemplate);
-                    EnergyDensity energyDensity = convertToPreferred(databaseEnergyDensity);
-                    AmountUnit amountUnit = EnergyDensityUtils.getDefaultAmountUnit(ingredientTemplate.getAmountType());
-                    return getEnergyAmountFrom(ingredient.getAmount(), amountUnit, energyDensity);
-                }
+            ingredientToEnergy = ingredient -> {
+                IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
+                EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientTemplate);
+                EnergyDensity energyDensity = convertToPreferred(databaseEnergyDensity);
+                AmountUnit amountUnit = EnergyDensityUtils.getDefaultAmountUnit(ingredientTemplate.getAmountType());
+                return getEnergyAmountFrom(ingredient.getAmount(), amountUnit, energyDensity);
             };
         }
         return ingredientToEnergy;
@@ -183,12 +180,7 @@ public class PhysicalQuantitiesModel {
     @NonNull
     public Func1<BigDecimal, String> energyAsString() {
         if (energyAsString == null) {
-            energyAsString = new Func1<BigDecimal, String>() {
-                @Override
-                public String call(BigDecimal decimal) {
-                    return format(decimal, settingsModel.getEnergyUnit());
-                }
-            };
+            energyAsString = decimal -> format(decimal, settingsModel.getEnergyUnit());
         }
         return energyAsString;
     }
@@ -211,12 +203,7 @@ public class PhysicalQuantitiesModel {
 
     @NonNull
     public Func1<BigDecimal, BigDecimal> setScale(final int scale) {
-        return new Func1<BigDecimal, BigDecimal>() {
-            @Override
-            public BigDecimal call(BigDecimal decimal) {
-                return decimal.setScale(scale, BigDecimal.ROUND_HALF_UP);
-            }
-        };
+        return decimal -> decimal.setScale(scale, BigDecimal.ROUND_HALF_UP);
     }
 
     @NonNull

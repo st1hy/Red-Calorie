@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.core.command.undo;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -28,13 +29,15 @@ public final class UndoViewImpl implements UndoView {
         this.rootView = rootView;
     }
 
+    @CheckResult
     @Override
     @NonNull
     public Observable<UndoAction> showUndoMessage(@StringRes int undoMessageResId) {
+        @SuppressWarnings("WrongConstant")
         RxSnackbar rxSnackbar = RxSnackbar.make(rootView, undoMessageResId, Snackbar.LENGTH_LONG);
         Observable<Void> observable = rxSnackbar.action(R.string.undo);
         undo = rxSnackbar.getSnackbar();
-        undo.setCallback(new Snackbar.Callback() {
+        undo.addCallback(new Snackbar.Callback() {
             @Override
             public void onDismissed(Snackbar snackbar, int event) {
                 undo = null;

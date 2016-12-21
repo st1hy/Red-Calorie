@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.inject.activities.contribute.ContributeActivityModule;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
+import com.github.st1hy.countthemcalories.inject.activities.contribute.ContributeActivityModule;
 
 import javax.inject.Inject;
 

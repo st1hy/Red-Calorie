@@ -12,9 +12,9 @@ import rx.functions.Func1;
 
 public class UndoTransformer<Response, UndoResponse> implements Observable.Transformer<Boolean, UndoResponse> {
     @NonNull
-    final CommandResponse<Response, UndoResponse> response;
+    private final CommandResponse<Response, UndoResponse> response;
     @NonNull
-    final Func1<Boolean, Observable<UndoAction>> selectUndoCall;
+    private final Func1<Boolean, Observable<UndoAction>> selectUndoCall;
 
     public UndoTransformer(@NonNull CommandResponse<Response, UndoResponse> response,
                            @NonNull Func1<Boolean, Observable<UndoAction>> selectUndoCall) {
@@ -28,18 +28,9 @@ public class UndoTransformer<Response, UndoResponse> implements Observable.Trans
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(selectUndoCall)
                 .filter(Filters.equalTo(UndoAction.UNDO))
-                .flatMap(onActionUndo())
-                .map(Functions.<UndoResponse>intoResponse())
+                .flatMap(action -> response.undo())
+                .map(Functions.intoResponse())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    @NonNull
-    private Func1<UndoAction, Observable<CommandResponse<UndoResponse, Response>>> onActionUndo() {
-        return new Func1<UndoAction, Observable<CommandResponse<UndoResponse, Response>>>() {
-            @Override
-            public Observable<CommandResponse<UndoResponse, Response>> call(UndoAction action) {
-                return response.undo();
-            }
-        };
-    }
 }

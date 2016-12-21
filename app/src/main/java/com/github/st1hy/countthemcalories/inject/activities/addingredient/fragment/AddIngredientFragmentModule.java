@@ -19,9 +19,9 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
-import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;

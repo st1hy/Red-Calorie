@@ -3,7 +3,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment.prese
 import android.database.Cursor;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,37 +18,29 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredi
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
-import com.github.st1hy.countthemcalories.core.command.CommandResponse;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
@@ -165,13 +156,26 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
 
     @Override
     public void onIngredientClicked(@NonNull final IngredientTemplate ingredientTemplate,
-                                    int position) {
+                                    final int position) {
         if (model.isInSelectMode()) {
             view.onIngredientSelected(ingredientTemplate);
         } else {
             dialogView.showAlertDialog(model.getIngredientOptionsTitle(), model.getIngredientOptions())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(onAddToNewMealClicked(ingredientTemplate, position));
+                    .subscribe(selectedOptionPosition -> {
+                        IngredientOptions selectedOption = from(selectedOptionPosition);
+                        switch (selectedOption) {
+                            case ADD_TO_NEW:
+                                view.addToNewMeal(ingredientTemplate);
+                                break;
+                            case EDIT:
+                                onEditClicked(ingredientTemplate, position);
+                                break;
+                            case REMOVE:
+                                onDeleteClicked(ingredientTemplate, position);
+                                break;
+                        }
+                    });
         }
     }
 
@@ -179,12 +183,41 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
         databaseModel.getById(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(showConfirmationIfUsed())
-                .flatMap(deleteIngredient())
-                .doOnNext(showUndoRemoval())
-                .map(Functions.<Cursor>intoResponse())
+                .flatMap(ingredientTemplate1 -> {
+                    if (ingredientTemplate1.getChildIngredients().isEmpty())
+                        return Observable.just(ingredientTemplate1);
+                    else
+                        return view.showUsedIngredientRemoveConfirmationDialog()
+                                .map(Functions.into(ingredientTemplate1));
+                })
+                .flatMap(commands::delete)
+                .doOnNext(deleteResponse -> addSubscription(deleteResponse.undoAvailability()
+                        .compose(new UndoTransformer<>(deleteResponse,
+                                isAvailable -> {
+                                    if (isAvailable)
+                                        return view.showUndoMessage(model.getUndoDeleteMessage());
+                                    else {
+                                        view.hideUndoMessage();
+                                        return Observable.empty();
+                                    }
+                                }))
+                        .subscribe(result -> {
+                            int newItemPosition = result.getNewItemPositionInCursor();
+                            onCursorUpdate(result.getCursor(), recentSearchResult.get());
+                            if (newItemPosition != -1) {
+                                notifyItemInsertedRx(newItemPosition);
+                                view.scrollToPosition(newItemPosition);
+                            } else {
+                                notifyDataSetChanged();
+                            }
+                        })
+                ))
+                .map(Functions.intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onItemRemoved(position));
+                .subscribe(cursor -> {
+                    onCursorUpdate(cursor, recentSearchResult.get());
+                    notifyItemRemovedRx(position);
+                });
     }
 
     @Override
@@ -192,11 +225,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         //Ingredient template here is not attached to database and is missing tags
         databaseModel.getByIdRecursive(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<IngredientTemplate>() {
-                    @Override
-                    public void call(IngredientTemplate ingredientTemplate) {
-                        view.editIngredientTemplate(position, ingredientTemplate);
-                    }
+                .subscribe(ingredientTemplate1 -> {
+                    view.editIngredientTemplate(position, ingredientTemplate1);
                 });
     }
 
@@ -209,107 +239,30 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @NonNull
     private Subscription searchIngredients(@NonNull Observable<SearchResult> sequenceObservable) {
         return sequenceObservable
-                .flatMap(queryDatabaseFiltered())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable e) {
-                        Timber.e(e, "Search exploded");
-                    }
+                .flatMap(searchResult1 -> {
+                    Observable<Cursor> cursor1 = databaseModel.getAllFilteredBy(
+                            searchResult1.getQuery(), searchResult1.getTokens()
+                    );
+                    return cursor1.map(cursor -> new QueryFinished(cursor, searchResult1));
                 })
+                .doOnError(e -> Timber.e(e, "Search exploded"))
                 .retry(128)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleSubscriber<QueryFinished>() {
-                    @Override
-                    public void onNext(QueryFinished queryFinished) {
-                        SearchResult searchResult = queryFinished.getSearchingFor();
-                        recentSearchResult.set(searchResult);
-                        onCursorUpdate(queryFinished.getCursor(), searchResult);
-                        notifyDataSetChanged();
-                        onSearchFinished();
-                    }
+                .subscribe(queryFinished -> {
+                    SearchResult searchResult = queryFinished.getSearchingFor();
+                    recentSearchResult.set(searchResult);
+                    onCursorUpdate(queryFinished.getCursor(), searchResult);
+                    notifyDataSetChanged();
+                    onSearchFinished();
                 });
     }
 
-    @NonNull
-    private Subscriber<Integer> onAddToNewMealClicked(@NonNull final IngredientTemplate ingredient,
-                                                      final int position) {
-        return new SimpleSubscriber<Integer>() {
-            @Override
-            public void onNext(Integer selectedOptionPosition) {
-                IngredientOptions selectedOption = from(selectedOptionPosition);
-                switch (selectedOption) {
-                    case ADD_TO_NEW:
-                        view.addToNewMeal(ingredient);
-                        break;
-                    case EDIT:
-                        onEditClicked(ingredient, position);
-                        break;
-                    case REMOVE:
-                        onDeleteClicked(ingredient, position);
-                        break;
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<SearchResult, Observable<QueryFinished>> queryDatabaseFiltered() {
-        return new Func1<SearchResult, Observable<QueryFinished>>() {
-            @Override
-            public Observable<QueryFinished> call(SearchResult searchResult) {
-                Observable<Cursor> cursor = getAllWithFilter(searchResult);
-                return cursor.map(withSearchResult(searchResult));
-            }
-        };
-    }
-
-
-    @NonNull
-    private Observable<Cursor> getAllWithFilter(@NonNull SearchResult searchResult) {
-        return databaseModel.getAllFilteredBy(searchResult.getQuery(), searchResult.getTokens());
-    }
-
-
-    @NonNull
-    private Func1<Cursor, QueryFinished> withSearchResult(@NonNull final SearchResult searchResult) {
-        return new Func1<Cursor, QueryFinished>() {
-            @Override
-            public QueryFinished call(Cursor cursor) {
-                return new QueryFinished(cursor, searchResult);
-            }
-        };
-    }
 
     private void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
         onCursorUpdate(cursor);
         boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
         view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
         view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
-    }
-
-    @NonNull
-    private Func1<IngredientTemplate, Observable<IngredientTemplate>> showConfirmationIfUsed() {
-        return new Func1<IngredientTemplate, Observable<IngredientTemplate>>() {
-            @Override
-            public Observable<IngredientTemplate> call(IngredientTemplate ingredientTemplate) {
-                if (ingredientTemplate.getChildIngredients().isEmpty())
-                    return Observable.just(ingredientTemplate);
-                else
-                    return view.showUsedIngredientRemoveConfirmationDialog()
-                            .map(Functions.into(ingredientTemplate));
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<Cursor> onItemRemoved(final int position) {
-        return new Action1<Cursor>() {
-            @Override
-            public void call(Cursor cursor) {
-                onCursorUpdate(cursor, recentSearchResult.get());
-                notifyItemRemovedRx(position);
-            }
-        };
     }
 
     public void onIngredientAdded(long addedIngredientId) {
@@ -319,100 +272,19 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     private void onSearchFinished() {
         final Long newItemId = addedItems.poll();
         if (newItemId != null) {
-            addSubscription(Observable.fromCallable(findInCursor(newItemId))
-                    .subscribeOn(Schedulers.computation())
-                    .filter(findSuccessful())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SimpleSubscriber<Integer>() {
-                        @Override
-                        public void onNext(Integer integer) {
-                            //Add maybe some sort of animation to highlight new item
-                            view.scrollToPosition(integer);
-                        }
-                    }));
+            addSubscription(
+                    Observable.fromCallable(
+                            () -> databaseModel.findInCursor(
+                                    getCursor(), newItemId))
+                            .subscribeOn(Schedulers.computation())
+                            .filter(IngredientsDaoAdapter::isSuccessful)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(view::scrollToPosition));
         }
     }
 
-    @NonNull
-    private Callable<Integer> findInCursor(final long newItemId) {
-        return new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return databaseModel.findInCursor(getCursor(), newItemId);
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Integer, Boolean> findSuccessful() {
-        return new Func1<Integer, Boolean>() {
-            @Override
-            public Boolean call(Integer integer) {
-                return integer != -1;
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<IngredientTemplate, Observable<CommandResponse<Cursor, InsertResult>>> deleteIngredient() {
-        return new Func1<IngredientTemplate, Observable<CommandResponse<Cursor, InsertResult>>>() {
-            @Override
-            public Observable<CommandResponse<Cursor, InsertResult>> call(IngredientTemplate ingredientTemplate) {
-                return commands.delete(ingredientTemplate);
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<CommandResponse<Cursor, InsertResult>> showUndoRemoval() {
-        return new Action1<CommandResponse<Cursor, InsertResult>>() {
-            @Override
-            public void call(final CommandResponse<Cursor, InsertResult> deleteResponse) {
-                addSubscription(deleteResponse.undoAvailability()
-                        .compose(onUndoAvailable(deleteResponse, model.getUndoDeleteMessage()))
-                        .subscribe(onIngredientAdded())
-                );
-            }
-        };
-    }
-
-    @NonNull
-    private <Response, UndoResponse> Observable.Transformer<Boolean, UndoResponse> onUndoAvailable(
-            @NonNull final CommandResponse<Response, UndoResponse> response,
-            @StringRes final int undoMessage) {
-        return new UndoTransformer<>(response, showUndoMessage(undoMessage));
-    }
-
-    @NonNull
-    Func1<Boolean, Observable<UndoAction>> showUndoMessage(@StringRes final int undoMessage) {
-        return new Func1<Boolean, Observable<UndoAction>>() {
-            @Override
-            public Observable<UndoAction> call(Boolean isAvailable) {
-                if (isAvailable)
-                    return view.showUndoMessage(undoMessage);
-                else {
-                    view.hideUndoMessage();
-                    return Observable.empty();
-                }
-            }
-        };
-    }
-
-    @NonNull
-    SimpleSubscriber<InsertResult> onIngredientAdded() {
-        return new SimpleSubscriber<InsertResult>() {
-            @Override
-            public void onNext(InsertResult result) {
-                int newItemPosition = result.getNewItemPositionInCursor();
-                onCursorUpdate(result.getCursor(), recentSearchResult.get());
-                if (newItemPosition != -1) {
-                    notifyItemInsertedRx(newItemPosition);
-                    view.scrollToPosition(newItemPosition);
-                } else {
-                    notifyDataSetChanged();
-                }
-            }
-        };
+    private static boolean isSuccessful(int cursorPosition) {
+        return cursorPosition != -1;
     }
 
     private void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {

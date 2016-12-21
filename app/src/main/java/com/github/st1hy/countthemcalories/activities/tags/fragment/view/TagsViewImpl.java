@@ -13,11 +13,10 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
-import com.google.common.base.Preconditions;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -26,8 +25,8 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @PerFragment
 public class TagsViewImpl implements TagsView {
@@ -61,27 +60,39 @@ public class TagsViewImpl implements TagsView {
 
     @NonNull
     @Override
-    public Observable<String> showEditTextDialog(@StringRes int newTagDialogTitle, @NonNull String initialText) {
+    public Observable<String> newTagDialog(@StringRes int newTagDialogTitle,
+                                           @NonNull String initialText) {
         final RxAlertDialog rxAlertDialog = RxAlertDialog.Builder.with(context)
                 .title(newTagDialogTitle)
                 .customView(R.layout.tags_new_tag_dialog_content)
                 .positiveButton(android.R.string.ok)
                 .negativeButton(android.R.string.cancel)
                 .show();
-        final EditText text = (EditText) Preconditions.checkNotNull(rxAlertDialog.getCustomView())
+        final EditText text = (EditText) checkNotNull(rxAlertDialog.getCustomView())
                 .findViewById(R.id.tags_dialog_name);
         text.setText(initialText);
-        text.setOnKeyListener(closeOnEnter(rxAlertDialog));
+        text.setOnKeyListener((v, keyCode, event) -> {
+            if (isEnterClicked(event)) {
+                finishDialog(rxAlertDialog);
+            }
+            return false;
+        });
+
         RxTextView.editorActions(text)
-                .filter(imeActionDone())
-                .subscribe(closeDialog(rxAlertDialog));
+                .filter(actionId -> actionId == EditorInfo.IME_ACTION_DONE)
+                .subscribe(actionId1 -> finishDialog(rxAlertDialog));
         return rxAlertDialog.observePositiveClick()
-                .map(new Func1<Void, String>() {
-                    @Override
-                    public String call(Void aVoid) {
-                        return text.getText().toString();
-                    }
-                });
+                .map(aVoid -> text.getText().toString());
+    }
+
+    private boolean finishDialog(@NonNull RxAlertDialog rxAlertDialog) {
+        return rxAlertDialog.getDialog()
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .performClick();
+    }
+
+    private static boolean isEnterClicked(KeyEvent event) {
+        return event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
     }
 
     @Override
@@ -105,39 +116,6 @@ public class TagsViewImpl implements TagsView {
     @Override
     public void scrollToPosition(int position) {
         recyclerView.scrollToPosition(position);
-    }
-
-    @NonNull
-    private View.OnKeyListener closeOnEnter(final RxAlertDialog rxAlertDialog) {
-        return new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    closeDialog(rxAlertDialog).call(0);
-                }
-                return false;
-            }
-        };
-    }
-
-    @NonNull
-    private Func1<Integer, Boolean> imeActionDone() {
-        return new Func1<Integer, Boolean>() {
-            @Override
-            public Boolean call(Integer actionId) {
-                return actionId == EditorInfo.IME_ACTION_DONE;
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<Integer> closeDialog(final RxAlertDialog rxAlertDialog) {
-        return new Action1<Integer>() {
-            @Override
-            public void call(Integer actionId) {
-                rxAlertDialog.getDialog().getButton(AlertDialog.BUTTON_POSITIVE).performClick();
-            }
-        };
     }
 
     @Override

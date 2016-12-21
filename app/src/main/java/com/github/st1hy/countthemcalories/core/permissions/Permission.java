@@ -8,19 +8,11 @@ import rx.functions.Func1;
 public enum Permission {
     GRANTED, DENIED, REQUEST_CANCELED;
 
-    private static final Func1<Permission, Boolean> IS_GRANTED = new Func1<Permission, Boolean>() {
-        @Override
-        public Boolean call(Permission permission) {
-            return permission == Permission.GRANTED;
-        }
-    };
+    private static final Func1<Permission, Boolean> IS_GRANTED = permission ->
+            permission == Permission.GRANTED;
 
-    private static final Func1<Permission, Boolean> IS_NOT_GRANTED = new Func1<Permission, Boolean>() {
-        @Override
-        public Boolean call(Permission permission) {
-            return permission != Permission.GRANTED;
-        }
-    };
+    private static final Func1<Permission, Boolean> IS_NOT_GRANTED = permission ->
+            permission != Permission.GRANTED;
 
     /**
      * @return either GRANTED or DENIED

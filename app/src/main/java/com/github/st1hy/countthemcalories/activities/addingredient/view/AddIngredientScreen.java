@@ -12,7 +12,7 @@ import rx.Observable;
 
 public interface AddIngredientScreen {
 
-    void onIngredientTemplateCreated(IngredientTemplate template);
+    void onIngredientTemplateCreated(@NonNull IngredientTemplate template);
 
     @NonNull
     @CheckResult

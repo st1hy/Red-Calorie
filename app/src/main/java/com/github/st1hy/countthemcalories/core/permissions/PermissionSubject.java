@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.core.permissions;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import rx.Observable;
@@ -54,5 +55,6 @@ public interface PermissionSubject {
      * @see Activity#requestPermissions(String[], int)
      */
     @NonNull
+    @CheckResult
     Observable<Permission[]> requestPermission(@NonNull String[] permissions);
 }

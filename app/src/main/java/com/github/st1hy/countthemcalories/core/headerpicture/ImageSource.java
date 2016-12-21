@@ -9,12 +9,7 @@ import rx.functions.Func1;
 public enum ImageSource {
     GALLERY, CAMERA, REMOVE_SOURCE;
 
-    private static final Func1<Integer, ImageSource> INTO_IMAGE_SOURCE = new Func1<Integer, ImageSource>() {
-        @Override
-        public ImageSource call(Integer integer) {
-            return ImageSource.fromItemPos(integer);
-        }
-    };
+    private static final Func1<Integer, ImageSource> INTO_IMAGE_SOURCE = ImageSource::fromItemPos;
 
     /**
      * @param arrayItemPosition position of item in {@link R.array.add_meal_image_select_options}

@@ -5,15 +5,14 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
@@ -42,8 +41,12 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     public void onStart() {
         imageHolderDelegate.onAttached();
         setupView(meal);
-        subscriptions.add(view.getEditObservable().subscribe(onEditClicked()));
-        subscriptions.add(view.getDeleteObservable().subscribe(onDeleteClicked()));
+        subscriptions.add(view.getEditObservable()
+                .subscribe(aVoid -> view.editMealWithId(meal.getId()))
+        );
+        subscriptions.add(view.getDeleteObservable()
+                .subscribe(aVoid -> view.deleteMealWithId(meal.getId()))
+        );
     }
 
     @Override
@@ -61,34 +64,11 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
                 .map(quantitiesModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
                 .map(quantitiesModel.energyAsString())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String energy) {
-                        view.setEnergy(energy);
-                    }
-                });
+                .subscribe(view::setEnergy);
     }
 
     void bindImage(@NonNull Meal meal) {
         imageHolderDelegate.displayImage(from(meal.getImageUri()));
     }
 
-    private Action1<Void> onEditClicked() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.editMealWithId(meal.getId());
-            }
-        };
-    }
-
-    @NonNull
-    private Action1<Void> onDeleteClicked() {
-        return new Action1<Void>() {
-            @Override
-            public void call(Void aVoid) {
-                view.deleteMealWithId(meal.getId());
-            }
-        };
-    }
 }

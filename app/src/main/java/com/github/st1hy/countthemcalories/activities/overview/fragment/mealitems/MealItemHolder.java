@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems;
 
 import android.net.Uri;
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,6 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.internal.InstanceFactory;
-import rx.Observable;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -122,9 +119,14 @@ public class MealItemHolder extends AbstractMealItemHolder {
     public void onAttached(@NonNull PublishSubject<MealInteraction> subject) {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
-        subscriptions.add(interactions()
-                .compose(Transformers.channel(subject))
-                .subscribe());
+        subscriptions.add(
+                RxView.clicks(content).map(Functions.into(OPEN))
+                        .mergeWith(RxView.clicks(editButton).map(Functions.into(EDIT)))
+                        .mergeWith(RxView.clicks(deleteButton).map(Functions.into(DELETE)))
+                        .map(type -> MealInteraction.of(type, this))
+                        .compose(Transformers.channel(subject))
+                        .subscribe()
+        );
     }
 
     @Override
@@ -144,40 +146,4 @@ public class MealItemHolder extends AbstractMealItemHolder {
         imageHolderDelegate.displayImage(uri);
     }
 
-    @NonNull
-    @CheckResult
-    private Observable<MealInteraction.Type> openInteraction() {
-        return RxView.clicks(content).map(Functions.into(OPEN));
-    }
-
-    @NonNull
-    @CheckResult
-    private Observable<MealInteraction.Type> editInteraction() {
-        return RxView.clicks(editButton).map(Functions.into(EDIT));
-    }
-
-    @NonNull
-    @CheckResult
-    private Observable<MealInteraction.Type> deleteInteraction() {
-        return RxView.clicks(deleteButton).map(Functions.into(DELETE));
-    }
-
-    @NonNull
-    @CheckResult
-    private Observable<MealInteraction> interactions() {
-        return openInteraction()
-                .mergeWith(editInteraction())
-                .mergeWith(deleteInteraction())
-                .map(intoInteraction());
-    }
-
-    @NonNull
-    private Func1<MealInteraction.Type, MealInteraction> intoInteraction() {
-        return new Func1<MealInteraction.Type, MealInteraction>() {
-            @Override
-            public MealInteraction call(MealInteraction.Type type) {
-                return MealInteraction.of(type, MealItemHolder.this);
-            }
-        };
-    }
 }

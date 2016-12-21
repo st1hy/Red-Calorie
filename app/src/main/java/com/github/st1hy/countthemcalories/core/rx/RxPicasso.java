@@ -51,13 +51,10 @@ public class RxPicasso implements Callback {
                 @Override
                 public void call(final Subscriber<? super PicassoEvent> subscriber) {
 
-                    delegate = new Action1<PicassoEvent>() {
-                        @Override
-                        public void call(PicassoEvent event) {
-                            if (!subscriber.isUnsubscribed()) {
-                                subscriber.onNext(event);
-                                subscriber.onCompleted();
-                            }
+                    delegate = event -> {
+                        if (!subscriber.isUnsubscribed()) {
+                            subscriber.onNext(event);
+                            subscriber.onCompleted();
                         }
                     };
                     subscriber.add(new MainThreadSubscription() {
