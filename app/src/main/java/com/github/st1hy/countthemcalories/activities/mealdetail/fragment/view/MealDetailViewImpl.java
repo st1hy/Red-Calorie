@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 
 @PerFragment
@@ -35,10 +36,12 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
     View removeButton;
 
     @Inject
-    public MealDetailViewImpl(@NonNull MealDetailScreen screen,
+    public MealDetailViewImpl(@NonNull View rootView,
+                              @NonNull MealDetailScreen screen,
                               @NonNull RecyclerView recyclerView) {
         this.screen = screen;
         this.recyclerView = recyclerView;
+        ButterKnife.bind(this, rootView);
     }
 
     @Override

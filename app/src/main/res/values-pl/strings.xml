@@ -74,12 +74,4 @@
     <string name="tags_undo_add_message">Dodano nową kategorię</string>
     <string name="tags_undo_delete_message">Kategoria została usunięta</string>
     <string name="undo">Cofnij</string>
-    <string name="contribute_title">Wspomóż</string>
-    <string name="contribute_body_ask">Jeśli chcesz zobaczyć kod źródłowy, zrobić fork i dokonać modyfikacji rzuć okiem na repozytorium github:</string>
-    <string name="contribute_body_skills">Ale czy ja mam umiejętności, króre są potrzebne?</string>
-    <string name="contribute_body_title">Chcesz wspomóc ten projekt?</string>
-    <string name="contribute_body_why">Dlaczego?</string>
-    <string name="contribute_body_why_answer">Dlaczego nie? Jeśli masz trochę wolnego czasu, umiejętności developera, kilka ciekawych pomysłów lub chciałbys zgłosić błąd, to jest miejsce gdzie możesz to zrobić. Przy okazji możesz nauczyć się kilku przydanych rzeczy. Wszyscy wygywają.</string>
-    <string name="contribute_thanks">Dziękuję za twoją uwagę</string>
-    <string name="contribute_skills_answer">Może znasz język, którego ja nie znam. Tej aplikacji przydałoby się kilku dobrych tłumaczy.</string>
 </resources>

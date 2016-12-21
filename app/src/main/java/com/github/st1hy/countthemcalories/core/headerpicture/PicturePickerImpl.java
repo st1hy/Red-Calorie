@@ -60,13 +60,13 @@ public class PicturePickerImpl implements PicturePicker {
         return imageSourceObservable -> {
             Observable<ImageSource> sharedSource = imageSourceObservable.share();
             return sharedSource.filter(Filters.equalTo(ImageSource.CAMERA))
-                    .map(Functions.into(imageFromCameraParams()))
+                    .map(source -> imageFromCameraParams())
                     .compose(rxActivityResult.from(context)
                             .startActivityForResult(REQUEST_CAMERA))
                     .mergeWith(
                             sharedSource
                                     .filter(Filters.equalTo(ImageSource.GALLERY))
-                                    .map(Functions.into(imageFromGalleryParams()))
+                                    .map(source -> imageFromGalleryParams())
                                     .compose(rxActivityResult.from(context)
                                             .startActivityForResult(REQUEST_PICK_IMAGE))
                     )
@@ -94,10 +94,10 @@ public class PicturePickerImpl implements PicturePicker {
 
     @NotNull
     private StartParams imageFromCameraParams() {
-
         ContentValues values = new ContentValues(1);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-        tempImageUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        tempImageUri = context.getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -117,7 +117,8 @@ public class PicturePickerImpl implements PicturePicker {
         getIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         getIntent.setType("image/*");
 
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickIntent.setType("image/*");
 
         Intent chooserIntent = Intent.createChooser(getIntent, context.getString(R.string.add_meal_image_gallery_picker));

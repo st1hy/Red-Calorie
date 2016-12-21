@@ -32,20 +32,24 @@
             android:name=".activities.addmeal.AddMealActivity"
             android:label="@string/add_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged"
             />
         <activity android:name=".activities.addmeal.EditMealActivity"
             android:label="@string/edit_meal_title"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged"
             />
         <activity
             android:name=".activities.addingredient.AddIngredientActivity"
             android:label="@string/add_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged"
             />
         <activity
             android:name=".activities.addingredient.EditIngredientActivity"
             android:label="@string/edit_ingredient_title"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged"
             />
         <activity
             android:name=".activities.settings.SettingsActivity"
@@ -69,10 +73,6 @@
         <activity android:name=".activities.mealdetail.MealDetailActivity"
             android:label="@string/meal_details_title"
             android:theme="@style/AppTheme.Semitransparent"
-            />
-        <activity android:name=".activities.contribute.ContributeActivity"
-            android:label="@string/contribute_title"
-            android:theme="@style/AppTheme.NoActionBar"
             />
         <activity android:name=".core.activityresult.IntentHandlerActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>

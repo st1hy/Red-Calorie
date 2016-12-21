@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.contribute.ContributeActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.settings.SettingsActivity;
@@ -16,8 +15,7 @@ public enum DrawerMenuItem {
     OVERVIEW(OverviewActivity.class, R.id.nav_overview),
     INGREDIENTS(IngredientsActivity.class, R.id.nav_ingredients),
     CATEGORIES(TagsActivity.class, R.id.nav_tags),
-    SETTINGS(SettingsActivity.class, R.id.nav_settings),
-    CONTRIBUTE(ContributeActivity.class, R.id.nav_contribute);
+    SETTINGS(SettingsActivity.class, R.id.nav_settings);
     private final Class<? extends BaseActivity> activityClass;
     @IdRes
     private final int menuItemId;

@@ -183,12 +183,12 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
         databaseModel.getById(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(ingredientTemplate1 -> {
-                    if (ingredientTemplate1.getChildIngredients().isEmpty())
-                        return Observable.just(ingredientTemplate1);
+                .flatMap(template -> {
+                    if (template.getChildIngredients().isEmpty())
+                        return Observable.just(template);
                     else
                         return view.showUsedIngredientRemoveConfirmationDialog()
-                                .map(Functions.into(ingredientTemplate1));
+                                .map(Functions.into(template));
                 })
                 .flatMap(commands::delete)
                 .doOnNext(deleteResponse -> addSubscription(deleteResponse.undoAvailability()

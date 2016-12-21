@@ -53,6 +53,7 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     @Override
     public void setName(@NonNull String name) {
         this.name.setText(name);
+        this.name.setSelection(name.length());
     }
 
     @NonNull

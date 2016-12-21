@@ -20,7 +20,6 @@ import rx.subjects.PublishSubject;
 
 public class AddIngredientActivity extends BaseActivity {
 
-    public static final String ARG_AMOUNT_UNIT = "amount unit type";
     public static final String ARG_EDIT_REQUEST_ID_LONG = "edit ingredient extra request id";
     public static final String ARG_EDIT_INGREDIENT_PARCEL = "edit ingredient extra parcel";
     public static final String ARG_EXTRA_NAME = "extra ingredient name";

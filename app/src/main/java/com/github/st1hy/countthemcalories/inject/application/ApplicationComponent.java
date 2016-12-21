@@ -4,7 +4,6 @@ import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.contribute.ContributeComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.mealdetail.MealDetailActivityComponentFactory;
@@ -23,7 +22,6 @@ public interface ApplicationComponent extends AddMealActivityComponentFactory,
         MealDetailActivityComponentFactory,
         IngredientDetailActivityComponentFactory,
         SettingsActivityComponentFactory,
-        ContributeComponentFactory,
         OverviewActivityComponentFactory,
         IntentHandlerActivityComponentFactory,
         AddIngredientActivityComponentFactory,

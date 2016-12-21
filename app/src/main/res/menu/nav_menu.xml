@@ -19,11 +19,5 @@
             android:icon="@drawable/ic_settings_48px"
             android:title="@string/nav_settings" />
     </group>
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_contribute"
-            android:icon="@drawable/ic_thumb_up_24px"
-            android:title="@string/nav_contribute" />
-    </group>
 
 </menu>

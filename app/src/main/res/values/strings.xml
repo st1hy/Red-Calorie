@@ -33,9 +33,6 @@
     <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
     <string name="add_meal_name_empty_error">Name cannot be empty</string>
     <string name="add_meal_ingredients_empty_error">You must add at least one ingredient</string>
-    <string name="add_meal_name_suggestion_breakfast">Breakfast</string>
-    <string name="add_meal_name_suggestion_lunch">Lunch</string>
-    <string name="add_meal_name_suggestion_dinner">Dinner</string>
 
     <string name="ingredients_title">Ingredients</string>
     <string name="ingredients_search_title">Search ingredients</string>
@@ -87,14 +84,5 @@
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
     <string name="search_hint">Search</string>
-
-    <string name="contribute_body_title">Want to contribute?</string>
-    <string name="contribute_body_ask">If you want to check the source code of this application, fork and tinker check out our github repository:</string>
-    <string name="contribute_body_why">Why?</string>
-    <string name="contribute_body_why_answer">Why not? If you have some time to spare, skills in development or just want to add some ideas or report bugs this is the place to do it. You may also learn some useful skills in the process. Everybody wins.</string>
-    <string name="contribute_body_skills">But do I have the skills to do anything?</string>
-    <string name="contribute_skills_answer">Maybe you know language that I don\'t. This app could really use some good translators.</string>
-    <string name="contribute_thanks">Thank you for your attention</string>
-    <string name="contribute_title">Contribute</string>
 
 </resources>

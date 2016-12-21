@@ -69,11 +69,13 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     @Override
     public void setName(@NonNull String name) {
         this.name.setText(name);
+        this.name.setSelection(name.length());
     }
 
     @Override
     public void setEnergyDensityValue(@NonNull String energyValue) {
         this.energyDensityValue.setText(energyValue);
+        this.energyDensityValue.setSelection(energyValue.length());
     }
 
     @NonNull
