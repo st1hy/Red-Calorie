@@ -28,20 +28,24 @@ public class AddIngredientFragment extends BaseFragment {
     @Inject
     RecyclerView tagsRecycler; //Injects tags adapter into recycler
 
-    public void setComponentFactory(@NonNull AddIngredientFragmentComponentFactory componentFactory) {
+    public void setComponentFactory(
+            @NonNull AddIngredientFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.add_ingredient_content, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newAddIngredientFragmentComponent(new AddIngredientFragmentModule(this, savedInstanceState))
+        componentFactory.newAddIngredientFragmentComponent(new AddIngredientFragmentModule(this,
+                savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

@@ -82,11 +82,12 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public IngredientsFragment provideContent(FragmentManager fragmentManager,
-                                              @Named("fragmentArguments") Bundle arguments,
-                                              IngredientsFragmentComponentFactory componentFactory) {
-        final String tag = "ingredients content";
+    public IngredientsFragment provideContent(
+            FragmentManager fragmentManager,
+            @Named("fragmentArguments") Bundle arguments,
+            IngredientsFragmentComponentFactory componentFactory) {
 
+        final String tag = "ingredients content";
         IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new IngredientsFragment();
@@ -95,8 +96,7 @@ public class IngredientsActivityModule {
             fragmentManager.beginTransaction()
                     .add(R.id.ingredients_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         fragment.setComponentFactory(componentFactory);
         return fragment;
@@ -181,7 +181,8 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public IngredientsFragmentComponentFactory ingredientsFragmentComponentFactory(IngredientsActivityComponent component) {
+    public IngredientsFragmentComponentFactory ingredientsFragmentComponentFactory(
+            IngredientsActivityComponent component) {
         return component;
     }
 }

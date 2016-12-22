@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
@@ -27,6 +26,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.SAVED_INGREDIENT_MODEL;
 
 @Module
 public class IngredientsDetailFragmentModule {
@@ -78,7 +79,7 @@ public class IngredientsDetailFragmentModule {
     public Ingredient provideIngredient(@Nullable @Named("savedState") Bundle savedState,
                                         @Named("arguments") Bundle arguments) {
         if (savedState != null) {
-            return Parcels.unwrap(savedState.getParcelable(IngredientDetailModel.SAVED_INGREDIENT_MODEL));
+            return Parcels.unwrap(savedState.getParcelable(SAVED_INGREDIENT_MODEL));
         } else {
             Ingredient ingredient = Parcels.unwrap(arguments.getParcelable(EXTRA_INGREDIENT));
             Preconditions.checkNotNull(ingredient, "Missing ingredient!");
@@ -92,7 +93,8 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    public ImageHolderDelegate provideImageHolderDelegate(WithoutPlaceholderImageHolderDelegate holderDelegate) {
+    public ImageHolderDelegate provideImageHolderDelegate(
+            WithoutPlaceholderImageHolderDelegate holderDelegate) {
         return holderDelegate;
     }
 

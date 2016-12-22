@@ -19,7 +19,6 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -66,7 +65,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
                     AddIngredientType type = addIngredientParams.getType();
                     Intent intent = new Intent(activity, AddIngredientActivity.class);
                     intent.setAction(type.getAction());
-                    intent.putExtra(AddIngredientModule.EXTRA_NAME,
+                    intent.putExtra(AddIngredientActivity.ARG_EXTRA_NAME,
                             addIngredientParams.getExtraName());
                     return StartParams.of(intent, REQUEST_ADD_INGREDIENT);
                 })

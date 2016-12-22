@@ -50,7 +50,9 @@ public class PermissionFragment extends Fragment implements PermissionSubject {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         Integer request = requestCode;
         PermissionActor permissionActor = pendingRequests.get(request);
         if (permissionActor != null) {

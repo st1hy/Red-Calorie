@@ -8,7 +8,10 @@ import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 import dagger.Subcomponent;
 
 @PerFragment
-@Subcomponent(modules = {SettingsFragmentModule.class, DialogModule.class})
+@Subcomponent(modules = {
+        SettingsFragmentModule.class,
+        DialogModule.class
+})
 public interface SettingsFragmentComponent {
 
     void inject(SettingsFragment fragment);

@@ -48,8 +48,7 @@ public class TagsActivityModule {
             fragmentManager.beginTransaction()
                     .add(R.id.tags_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         fragment.setComponentFactory(componentFactory);
         return fragment;
@@ -131,7 +130,8 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public TagsFragmentComponentFactory tagsFragmentComponentFactory(TagsActivityComponent component) {
+    public TagsFragmentComponentFactory tagsFragmentComponentFactory(
+            TagsActivityComponent component) {
         return component;
     }
 

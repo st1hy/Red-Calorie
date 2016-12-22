@@ -63,8 +63,7 @@ public class AddMealActivityModule {
             fragmentManager.beginTransaction()
                     .add(R.id.add_meal_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         fragment.setComponentFactory(component);
         return fragment;
@@ -90,7 +89,6 @@ public class AddMealActivityModule {
         return activity.getIntent();
     }
 
-
     @Provides
     @PerActivity
     public PublishSubject<AddMealMenuAction> menuActionPublishSubject() {
@@ -101,6 +99,5 @@ public class AddMealActivityModule {
     public AddMealScreen addMealScreen(AddMealScreenImpl screen) {
         return screen;
     }
-
 
 }

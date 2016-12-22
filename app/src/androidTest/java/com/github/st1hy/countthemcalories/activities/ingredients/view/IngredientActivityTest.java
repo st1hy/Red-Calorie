@@ -7,12 +7,11 @@ import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
@@ -333,7 +332,7 @@ public class IngredientActivityTest {
         onView(withId(R.id.select_ingredient_type_meal)).perform(click());
         intended(allOf(
                 hasComponent(new ComponentName(main.getActivity(), AddIngredientActivity.class)),
-                hasExtra(AddIngredientModule.EXTRA_NAME, extraName)
+                hasExtra(AddIngredientActivity.ARG_EXTRA_NAME, extraName)
         ));
         onView(allOf(withId(R.id.add_ingredient_name), withText(extraName))).check(matches(isDisplayed()));
     }

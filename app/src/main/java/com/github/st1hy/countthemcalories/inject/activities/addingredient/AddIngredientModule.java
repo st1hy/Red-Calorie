@@ -35,7 +35,6 @@ import static com.github.st1hy.countthemcalories.activities.addingredient.AddIng
 
 @Module
 public class AddIngredientModule {
-    public static final String EXTRA_NAME = "ingredient extra name";
     private final AddIngredientActivity activity;
 
     public AddIngredientModule(@NonNull AddIngredientActivity activity) {
@@ -59,19 +58,20 @@ public class AddIngredientModule {
     }
 
     @Provides
-    public AddIngredientFragment provideContent(FragmentManager fragmentManager,
-                                                AddIngredientFragmentComponentFactory componentFactory) {
-        final String tag = "add ingredient content";
+    public AddIngredientFragment provideContent(
+            FragmentManager fragmentManager,
+            AddIngredientFragmentComponentFactory componentFactory) {
 
-        AddIngredientFragment fragment = (AddIngredientFragment) fragmentManager.findFragmentByTag(tag);
+        final String tag = "add ingredient content";
+        AddIngredientFragment fragment = (AddIngredientFragment) fragmentManager
+                .findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new AddIngredientFragment();
 
             fragmentManager.beginTransaction()
                     .add(R.id.add_ingredient_content_frame, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         fragment.setComponentFactory(componentFactory);
         return fragment;
@@ -101,7 +101,6 @@ public class AddIngredientModule {
         return AmountUnitType.MASS;
     }
 
-
     @Provides
     public FragmentManager provideFragmentManager() {
         return activity.getSupportFragmentManager();
@@ -125,7 +124,8 @@ public class AddIngredientModule {
     }
 
     @Provides
-    public AddIngredientFragmentComponentFactory fragmentComponentFactory(AddIngredientComponent component) {
+    public AddIngredientFragmentComponentFactory fragmentComponentFactory(
+            AddIngredientComponent component) {
         return component;
     }
 

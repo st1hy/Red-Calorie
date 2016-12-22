@@ -19,8 +19,7 @@ public class PermissionModule {
             fragment = new PermissionFragment();
             fragmentManager.beginTransaction()
                     .add(fragment, PermissionFragment.TAG)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         return fragment;
     }

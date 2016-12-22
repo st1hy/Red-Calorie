@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.google.common.annotations.VisibleForTesting;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
@@ -127,4 +128,8 @@ public class PicturePickerImpl implements PicturePicker {
         return StartParams.of(chooserIntent, REQUEST_PICK_IMAGE);
     }
 
+    @VisibleForTesting
+    void setTempImageUri(@Nullable Uri tempImageUri) {
+        this.tempImageUri = tempImageUri;
+    }
 }

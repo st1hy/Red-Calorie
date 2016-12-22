@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
 
@@ -69,7 +69,7 @@ dependencies {
     compile "org.parceler:parceler-api:$parcelerVersion"
     apt "org.parceler:parceler:$parcelerVersion"
 
-    compile 'net.danlew:android.joda:2.9.3'
+    compile 'net.danlew:android.joda:2.9.5.1'
 
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"

@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.SettingsActivity;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.junit.After;
@@ -38,7 +39,8 @@ public class SettingsActivityTest {
     @After
     public void tearDown() throws Exception {
         CaloriesCounterApplication application = (CaloriesCounterApplication) main.getActivity().getApplication();
-        application.getComponent().getSettingsModel().resetToDefaultSettings();
+        ApplicationTestComponent component = (ApplicationTestComponent) application.getComponent();
+        component.getSettingsModel().resetToDefaultSettings();
     }
 
     @Test

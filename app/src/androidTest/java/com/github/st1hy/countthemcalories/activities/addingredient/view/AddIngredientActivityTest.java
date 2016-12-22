@@ -51,7 +51,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.betterScrollTo;
 import static com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivityTest.resourceToUri;
-import static com.github.st1hy.countthemcalories.core.headerpicture.view.WithPictureActivityTestUtils.injectUriOnMatch;
+import static com.github.st1hy.countthemcalories.core.headerpicture.HeaderPicturePickerUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
@@ -67,16 +67,19 @@ public class AddIngredientActivityTest {
             new Tag(3L, "Meat"),
     };
 
-    private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
-    public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(AddIngredientActivity.class, true, false);
-
+    private final ApplicationComponentRule componentRule = new ApplicationComponentRule(
+            getTargetContext());
+    public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(
+            AddIngredientActivity.class, true, false);
 
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
 
     @Before
     public void onSetUp() {
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        CaloriesCounterApplication applicationContext = (CaloriesCounterApplication) getTargetContext()
+                .getApplicationContext();
+        ApplicationTestComponent component = (ApplicationTestComponent) applicationContext.getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
         tagDao.insertInTx(exampleTags);
@@ -93,7 +96,8 @@ public class AddIngredientActivityTest {
     public void testDisplaysElements() {
         onView(allOf(withChild(withText(R.string.add_ingredient_title)), withId(R.id.image_header_toolbar)))
                 .check(matches(isDisplayed()));
-        onView(allOf(withText("kcal / 100 ml"), withId(R.id.add_ingredient_unit))).check(matches(isDisplayed()));
+        onView(allOf(withText("kcal / 100 ml"), withId(R.id.add_ingredient_unit)))
+                .check(matches(isDisplayed()));
         onView(withHint(R.string.add_ingredient_name_hint)).check(matches(isDisplayed()))
                 .check(matches(hasFocus()));
         onView(withHint(R.string.add_ingredient_energy_density_hint)).check(matches(isDisplayed()));
@@ -214,8 +218,7 @@ public class AddIngredientActivityTest {
 
     @Test
     public void testSearchIngredientOnTheInternet() throws Exception {
-        onView(withHint(R.string.add_ingredient_name_hint))
-                .perform(typeTextIntoFocusedView("Eggs"));
+        onView(withHint(R.string.add_ingredient_name_hint)).perform(typeTextIntoFocusedView("Eggs"));
         closeSoftKeyboard();
         onView(withId(R.id.add_ingredient_name_search)).perform(click());
         Matcher<Intent> intentMatcher = allOf(hasAction(Intent.ACTION_VIEW),

@@ -5,8 +5,9 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
+import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.inject.DaggerApplicationTestComponent;
+import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -37,8 +38,22 @@ public class ApplicationComponentRule implements TestRule {
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.LAX);
 
         CaloriesCounterApplication application = CaloriesCounterApplication.get(context);
-        application.setComponent(DaggerApplicationTestComponent.builder()
+        ApplicationTestComponent build = DaggerApplicationTestComponent.builder()
                 .applicationModule(new ApplicationModule(application))
-                .build());
+                .build();
+
+//        ApplicationTestComponent mock = Mockito.mock(ApplicationTestComponent.class,
+//                (Answer) invocation -> {
+//                    Object[] arguments = invocation.getArguments();
+//                    Method method = invocation.getMethod();
+//                    return method.invoke(build, arguments);
+//                }
+//        );
+//
+//        when(mock.newAddIngredientActivityComponent(any())).thenAnswer(invocation -> {
+//            Object o = invocation.callRealMethod();
+//            return o;
+//        });
+        application.setComponent(build);
     }
 }

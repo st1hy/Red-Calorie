@@ -30,7 +30,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
-import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;
 
@@ -81,12 +80,14 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public MealIngredientsListModel provideListModel(@Nullable @Named("savedState") Bundle savedState,
-                                                     @NonNull Meal meal,
-                                                     @Nullable Ingredient extraIngredient) {
+    public MealIngredientsListModel provideListModel(
+            @Nullable @Named("savedState") Bundle savedState,
+            @NonNull Meal meal,
+            @Nullable Ingredient extraIngredient) {
 
         if (savedState != null) {
-            MealIngredientsListModel listModel = Parcels.unwrap(savedState.getParcelable(MealIngredientsListModel.SAVED_INGREDIENTS));
+            MealIngredientsListModel listModel = Parcels.unwrap(
+                    savedState.getParcelable(MealIngredientsListModel.SAVED_INGREDIENTS));
             listModel.setExtraIngredient(extraIngredient);
             return listModel;
         } else {
@@ -107,7 +108,6 @@ public class AddMealFragmentModule {
             return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {
             Bundle arguments = fragment.getArguments();
-            Preconditions.checkNotNull(arguments);
             Meal editedMeal = Parcels.unwrap(arguments.getParcelable(EXTRA_MEAL_PARCEL));
             if (editedMeal != null) {
                 return editedMeal;
@@ -124,7 +124,6 @@ public class AddMealFragmentModule {
     @Nullable
     public IngredientTemplate provideExtraIngredientTemplate() {
         Bundle arguments = fragment.getArguments();
-        Preconditions.checkNotNull(arguments);
         IngredientTemplate ingredientTemplate = unwrap(arguments.getParcelable(EXTRA_INGREDIENT_PARCEL));
         arguments.remove(EXTRA_INGREDIENT_PARCEL);
         return ingredientTemplate;
@@ -146,7 +145,8 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public Observable<AddMealMenuAction> menuActionObservable(PublishSubject<AddMealMenuAction> actionPublishSubject) {
+    public Observable<AddMealMenuAction> menuActionObservable(
+            PublishSubject<AddMealMenuAction> actionPublishSubject) {
         return actionPublishSubject.asObservable();
     }
 
@@ -165,7 +165,9 @@ public class AddMealFragmentModule {
     public RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
                                      RecyclerViewAdapterDelegate adapter,
                                      @Named("activityContext") Context context) {
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.add_meal_ingredients_list);
+
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(
+                R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setNestedScrollingEnabled(false);
@@ -184,7 +186,8 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public IngredientListComponentFactory ingredientListComponentFactory(AddMealFragmentComponent component) {
+    public IngredientListComponentFactory ingredientListComponentFactory(
+            AddMealFragmentComponent component) {
         return component;
     }
 

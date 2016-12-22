@@ -32,6 +32,8 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
+import static com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment.ARG_MEAL_PARCEL;
+
 @Module
 public class MealDetailsModule {
 
@@ -62,7 +64,7 @@ public class MealDetailsModule {
     @Provides
     @PerFragment
     public Meal provideMeal() {
-        return Parcels.unwrap(fragment.getArguments().getParcelable(MealDetailFragment.ARG_MEAL_PARCEL));
+        return Parcels.unwrap(fragment.getArguments().getParcelable(ARG_MEAL_PARCEL));
     }
 
     @Provides
@@ -94,7 +96,10 @@ public class MealDetailsModule {
 
     @Provides
     @PerFragment
-    public RecyclerView recyclerView(@Named("activityContext") Context context, View rootView, RecyclerViewAdapterDelegate adapter) {
+    public RecyclerView recyclerView(@Named("activityContext") Context context,
+                                     View rootView,
+                                     RecyclerViewAdapterDelegate adapter) {
+
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

@@ -51,7 +51,8 @@ public class PictureModule {
 
     @Provides
     @Named("header")
-    public ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate imageHolderDelegate) {
+    public ImageHolderDelegate provideImageHolderDelegate(
+            HeaderImageHolderDelegate imageHolderDelegate) {
         return imageHolderDelegate;
     }
 

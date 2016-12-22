@@ -21,17 +21,17 @@ ext {
 
     supportLibraryVersion = '25.1.0'
 
-    daggerVersion = '2.7'
+    daggerVersion = '2.8'
     butterknifeVersion = '8.4.0'
 
-    rxJavaVersion = '1.1.10'
+    rxJavaVersion = '1.2.4'
     rxAndroidVersion = '1.2.1'
-    timberVersion = '4.3.1'
+    timberVersion = '4.4.0'
     greenDaoVersion = '3.2.0'
 
     jUnitVersion = '4.12'
-    mockitoVersion = '1.10.19'
-    powerMockVersion = '1.6.4'
+    mockitoVersion = '2.4.1'
+    powerMockVersion = '1.6.6'
     parcelerVersion = '1.1.6'
 }
 

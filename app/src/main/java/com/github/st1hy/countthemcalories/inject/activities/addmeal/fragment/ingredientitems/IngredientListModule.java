@@ -30,7 +30,8 @@ public class IngredientListModule {
     public ImageHolderDelegate imageHolderDelegate(Picasso picasso,
                                                    PermissionsHelper permissionsHelper,
                                                    @Named("ingredientImage") ImageView imageView) {
-        return new ImageHolderDelegate(picasso, permissionsHelper, InstanceFactory.create(imageView));
+        return new ImageHolderDelegate(picasso, permissionsHelper,
+                InstanceFactory.create(imageView));
     }
 
     @Named("ingredientListRow")

@@ -17,7 +17,12 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, DatabaseModule.class, SettingsModule.class, DbModelsModule.class})
+@Component(modules = {
+        ApplicationModule.class,
+        DatabaseModule.class,
+        SettingsModule.class,
+        DbModelsModule.class
+})
 public interface ApplicationComponent extends AddMealActivityComponentFactory,
         MealDetailActivityComponentFactory,
         IngredientDetailActivityComponentFactory,

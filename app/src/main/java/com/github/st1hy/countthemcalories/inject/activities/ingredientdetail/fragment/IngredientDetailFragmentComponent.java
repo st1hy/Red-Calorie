@@ -7,7 +7,10 @@ import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
 import dagger.Subcomponent;
 
 @PerFragment
-@Subcomponent(modules = {IngredientsDetailFragmentModule.class, PermissionModule.class})
+@Subcomponent(modules = {
+        IngredientsDetailFragmentModule.class,
+        PermissionModule.class
+})
 public interface IngredientDetailFragmentComponent {
 
     void inject(IngredientDetailFragment fragment);

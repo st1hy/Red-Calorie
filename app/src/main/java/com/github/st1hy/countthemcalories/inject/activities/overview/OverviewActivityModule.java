@@ -29,8 +29,10 @@ public class OverviewActivityModule {
     }
 
     @Provides
-    public OverviewFragment provideOverviewFragment(FragmentManager fragmentManager,
-                                                    OverviewFragmentComponentFactory componentFactory) {
+    public OverviewFragment provideOverviewFragment(
+            FragmentManager fragmentManager,
+            OverviewFragmentComponentFactory componentFactory) {
+
         OverviewFragment fragment = (OverviewFragment) fragmentManager
                 .findFragmentById(R.id.overview_content_fragment);
         fragment.setComponentFactory(componentFactory);
@@ -76,7 +78,8 @@ public class OverviewActivityModule {
     }
 
     @Provides
-    public OverviewFragmentComponentFactory fragmentComponentFactory(OverviewActivityComponent component) {
+    public OverviewFragmentComponentFactory fragmentComponentFactory(
+            OverviewActivityComponent component) {
         return component;
     }
 }

@@ -30,7 +30,6 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
@@ -49,14 +48,6 @@ import rx.subjects.PublishSubject;
 
 @Module
 public class AddIngredientFragmentModule {
-
-    private static final Function<JointIngredientTag, Tag> JOINT_INGREDIENT_TO_TAG_FUNCTION = new Function<JointIngredientTag, Tag>() {
-        @Nullable
-        @Override
-        public Tag apply(JointIngredientTag input) {
-            return input.getTagOrNull();
-        }
-    };
 
     private final AddIngredientFragment fragment;
     private final Bundle savedState;
@@ -92,7 +83,8 @@ public class AddIngredientFragmentModule {
         } else {
             ArrayList<Tag> tags;
             if (template != null) {
-                tags = Lists.newArrayList(Collections2.transform(template.getTags(), JOINT_INGREDIENT_TO_TAG_FUNCTION));
+                tags = Lists.newArrayList(Collections2.transform(template.getTags(),
+                        JointIngredientTag::getTagOrNull));
             } else {
                 tags = new ArrayList<>(5);
             }
@@ -110,13 +102,16 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public AddIngredientModel provideIngredientModel(@Nullable @Named("savedState") Bundle savedState,
-                                                     @Nullable IngredientTemplate templateSource,
-                                                     @NonNull @Named("initialName") String name,
-                                                     @NonNull AmountUnitType amountUnitType,
-                                                     @NonNull EnergyConverter energyConverter) {
+    public AddIngredientModel provideIngredientModel(
+            @Nullable @Named("savedState") Bundle savedState,
+            @Nullable IngredientTemplate templateSource,
+            @NonNull @Named("initialName") String name,
+            @NonNull AmountUnitType amountUnitType,
+            @NonNull EnergyConverter energyConverter) {
+
         if (savedState != null) {
-            Parcelable parcelable = savedState.getParcelable(AddIngredientModel.SAVED_INGREDIENT_MODEL);
+            Parcelable parcelable = savedState.getParcelable(
+                    AddIngredientModel.SAVED_INGREDIENT_MODEL);
             return Parcels.unwrap(parcelable);
         } else {
             Long id;
@@ -128,7 +123,8 @@ public class AddIngredientFragmentModule {
                 name = templateSource.getName();
                 amountUnitType = templateSource.getAmountType();
                 final BigDecimal energyDensityAmount = templateSource.getEnergyDensityAmount();
-                energyValue = energyConverter.fromDatabaseToCurrent(amountUnitType, energyDensityAmount)
+                energyValue = energyConverter.fromDatabaseToCurrent(amountUnitType,
+                        energyDensityAmount)
                         .toPlainString();
                 imageUri = templateSource.getImageUri();
                 creationDate = templateSource.getCreationDate();
@@ -138,7 +134,8 @@ public class AddIngredientFragmentModule {
                 imageUri = Uri.EMPTY;
                 creationDate = null;
             }
-            return new AddIngredientModel(name, amountUnitType, energyValue, imageUri, creationDate, id);
+            return new AddIngredientModel(name, amountUnitType, energyValue, imageUri,
+                    creationDate, id);
         }
     }
 
@@ -151,7 +148,8 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public RecyclerView recyclerView(View rootView, RecyclerViewAdapterDelegate adapter) {
-        RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(R.id.add_ingredient_categories_recycler);
+        RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(
+                R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
         tagsRecycler.setNestedScrollingEnabled(false);

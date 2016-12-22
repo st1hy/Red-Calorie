@@ -39,7 +39,8 @@ public class IngredientDetailModule {
                                                    IngredientDetailComponent component) {
         final String tag = "ingredient detail content";
 
-        IngredientDetailFragment fragment = (IngredientDetailFragment) fragmentManager.findFragmentByTag(tag);
+        IngredientDetailFragment fragment = (IngredientDetailFragment) fragmentManager
+                .findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new IngredientDetailFragment();
             fragment.setArguments(arguments);
@@ -47,8 +48,7 @@ public class IngredientDetailModule {
             fragmentManager.beginTransaction()
                     .add(R.id.ingredient_detail_content, fragment, tag)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+                    .commitNow();
         }
         fragment.setComponentFactory(component);
         return fragment;
