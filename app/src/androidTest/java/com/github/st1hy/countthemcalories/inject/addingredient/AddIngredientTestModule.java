@@ -12,4 +12,5 @@ public class AddIngredientTestModule {
     public AddIngredientComponent component(AddIngredientTestComponent component) {
         return component;
     }
+
 }

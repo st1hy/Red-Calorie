@@ -1,10 +1,13 @@
 package com.github.st1hy.countthemcalories.inject;
 
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.core.headerpicture.HeaderPicturePickerUtils;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityModule;
 import com.github.st1hy.countthemcalories.inject.addingredient.AddIngredientTestComponent;
+import com.github.st1hy.countthemcalories.inject.addmeal.AddMealTestComponent;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
 import com.github.st1hy.countthemcalories.inject.application.DbModelsModule;
@@ -20,7 +23,6 @@ import dagger.Component;
         DatabaseModule.class,
         SettingsModule.class,
         DbModelsModule.class,
-        ActivityInjectModule.class
 })
 public interface ApplicationTestComponent extends ApplicationComponent {
 
@@ -28,5 +30,11 @@ public interface ApplicationTestComponent extends ApplicationComponent {
 
     SettingsModel getSettingsModel();
 
-    AddIngredientTestComponent newAddIngredientTestComponent(AddIngredientModule module);
+    @Override
+    AddIngredientTestComponent newAddIngredientActivityComponent(AddIngredientModule activityModule);
+
+    @Override
+    AddMealTestComponent newAddMealActivityComponent(AddMealActivityModule activityModule);
+
+    HeaderPicturePickerUtils testHeaderPicturePickerUtils();
 }

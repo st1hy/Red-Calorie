@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.inject.core.headerpicture;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
-import com.github.st1hy.countthemcalories.core.headerpicture.PicturePickerImpl;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureView;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureViewImpl;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
@@ -19,13 +18,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class PictureModule {
-
-    @Provides
-    @PerFragment
-    public PicturePicker pictureViewController(PicturePickerImpl picturePicker) {
-        return picturePicker;
-    }
+public class PictureOthersModule {
 
     @PerFragment
     @Provides
@@ -55,5 +48,4 @@ public class PictureModule {
             HeaderImageHolderDelegate imageHolderDelegate) {
         return imageHolderDelegate;
     }
-
 }

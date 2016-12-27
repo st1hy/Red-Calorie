@@ -50,8 +50,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.betterScrollTo;
-import static com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealActivityTest.resourceToUri;
 import static com.github.st1hy.countthemcalories.core.headerpicture.HeaderPicturePickerUtils.injectUriOnMatch;
+import static com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker.TEST_CAMERA_PICTURE;
+import static com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker.resourceToUri;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
 import static org.hamcrest.Matchers.allOf;
@@ -107,7 +108,7 @@ public class AddIngredientActivityTest {
     @Test
     public void testSelectImageFromGallery() {
         Intent intent = new Intent();
-        intent.setData(resourceToUri(getContext(), android.R.drawable.ic_input_add));
+        intent.setData(resourceToUri(getContext(), TEST_CAMERA_PICTURE));
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, intent));
         RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
@@ -158,7 +159,7 @@ public class AddIngredientActivityTest {
     @Test
     public void testSelectImageFromCamera() throws Exception {
         AddIngredientActivity activity = main.getActivity();
-        final Uri uri = resourceToUri(activity, android.R.drawable.ic_input_add);
+        final Uri uri = resourceToUri(activity, TEST_CAMERA_PICTURE);
         final Matcher<Intent> cameraIntentMatcher = allOf(
                 hasAction(MediaStore.ACTION_IMAGE_CAPTURE),
                 injectUriOnMatch(activity, uri)

@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
@@ -17,7 +18,6 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.google.common.annotations.VisibleForTesting;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
@@ -72,19 +72,7 @@ public class PicturePickerImpl implements PicturePicker {
                                             .startActivityForResult(REQUEST_PICK_IMAGE))
                     )
                     .filter(ActivityResult.IS_OK)
-                    .map(activityResult -> {
-                        switch (activityResult.getRequestCode()) {
-                            case REQUEST_CAMERA:
-                                Uri uri = tempImageUri;
-                                tempImageUri = null;
-                                return uri;
-                            case REQUEST_PICK_IMAGE:
-                                Intent data = activityResult.getData();
-                                return data != null ? data.getData() : null;
-                            default:
-                                return null;
-                        }
-                    })
+                    .map(this::extractUriFrom)
                     .filter(Functions.NOT_NULL)
                     .mergeWith(
                             sharedSource.filter(Filters.equalTo(ImageSource.REMOVE_SOURCE))
@@ -110,7 +98,6 @@ public class PicturePickerImpl implements PicturePicker {
 
     }
 
-
     @NotNull
     private StartParams imageFromGalleryParams() {
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -126,6 +113,22 @@ public class PicturePickerImpl implements PicturePicker {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
         return StartParams.of(chooserIntent, REQUEST_PICK_IMAGE);
+    }
+
+
+    @Nullable
+    private Uri extractUriFrom(ActivityResult activityResult) {
+        switch (activityResult.getRequestCode()) {
+            case REQUEST_CAMERA:
+                Uri uri = tempImageUri;
+                tempImageUri = null;
+                return uri;
+            case REQUEST_PICK_IMAGE:
+                Intent data = activityResult.getData();
+                return data != null ? data.getData() : null;
+            default:
+                return null;
+        }
     }
 
     @VisibleForTesting
