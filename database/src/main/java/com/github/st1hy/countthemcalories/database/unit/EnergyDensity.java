@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultAmountUnit;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultEnergyUnit;

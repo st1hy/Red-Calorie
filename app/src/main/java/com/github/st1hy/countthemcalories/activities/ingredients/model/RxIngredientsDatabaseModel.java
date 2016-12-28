@@ -118,7 +118,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                     jTag.delete();
                 }
             }
-            Collection<Long> currentTagIds = Collections2.transform(jTags, jTag -> jTag.getTagId());
+            Collection<Long> currentTagIds = Collections2.transform(jTags, JointIngredientTag::getTagId);
             for (Long tagId : tagIds) {
                 if (!currentTagIds.contains(tagId)) {
                     addJointTagWithIngredientTemplate(ingredientTemplate, tagId);
