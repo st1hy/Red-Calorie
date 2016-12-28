@@ -80,23 +80,15 @@ repositories {
 }
 
 dependencies {
-    final supportLibraryVersion = rootProject.ext.supportLibraryVersion
-    final daggerVersion = rootProject.ext.daggerVersion
-    final rxJavaVersion = rootProject.ext.rxJavaVersion
-    final rxAndroidVersion = rootProject.ext.rxAndroidVersion
-    final timberVersion = rootProject.ext.timberVersion
-    final butterknifeVersion = rootProject.ext.butterknifeVersion
-    final rxBindingsVersion = '1.0.0'
+//    final supportLibraryVersion = rootProject.ext.supportLibraryVersion
+//    final daggerVersion = rootProject.ext.daggerVersion
+//    final rxJavaVersion = rootProject.ext.rxJavaVersion
+//    final rxAndroidVersion = rootProject.ext.rxAndroidVersion
+//    final timberVersion = rootProject.ext.timberVersion
+//    final butterknifeVersion = rootProject.ext.butterknifeVersion
 
-    final jUnitVersion = rootProject.ext.jUnitVersion
-    final supportTestRunnerVersion = '0.5'
-    final mockitoVersion = rootProject.ext.mockitoVersion
-    final espressoVersion = '2.2.2'
-    final hamcrestVersion = '2.0.0.0'
-    final picassoVersion = '2.5.3-SNAPSHOT'
-    final leakCanaryVersion = '1.5'
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    final jUnitVersion = rootProject.ext.jUnitVersion
+//    final mockitoVersion = rootProject.ext.mockitoVersion
 
     compile project(':database')
     compile "com.android.support:support-annotations:$supportLibraryVersion"

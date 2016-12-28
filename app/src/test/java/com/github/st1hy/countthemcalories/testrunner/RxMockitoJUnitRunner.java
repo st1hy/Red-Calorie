@@ -1,10 +1,10 @@
 package com.github.st1hy.countthemcalories.testrunner;
 
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.InvocationTargetException;
 
-import rx.plugins.TestRxPlugins;
+import com.github.st1hy.countthemcalories.core.TestRxPlugins;
 
 public class RxMockitoJUnitRunner extends MockitoJUnitRunner {
 

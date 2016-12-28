@@ -14,6 +14,7 @@ plugins {
 }
 
 ext {
+    //Shared
     minSdkVersion = 16
     targetSdkVersion = 24
     compileSdkVersion = 24
@@ -33,6 +34,17 @@ ext {
     mockitoVersion = '2.4.1'
     powerMockVersion = '1.6.6'
     parcelerVersion = '1.1.6'
+
+    //App
+    rxBindingsVersion = '1.0.0'
+    supportTestRunnerVersion = '0.5'
+    espressoVersion = '2.2.2'
+    hamcrestVersion = '2.0.0.0'
+    picassoVersion = '2.5.3-SNAPSHOT'
+    leakCanaryVersion = '1.5'
+
+    //Database
+    jodaTimeVersion = '2.9.5.1'
 }
 
 allprojects {

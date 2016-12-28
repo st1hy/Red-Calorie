@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("CheckResult")
 @RunWith(RxMockitoJUnitRunner.class)
 public class PermissionsHelperTest {
     @Mock

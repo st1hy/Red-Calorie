@@ -40,6 +40,6 @@ public class ProductionOpenHelper extends DaoMaster.OpenHelper {
     private void recreateDatabase(@NonNull Database db) {
         if (BuildConfig.DEBUG) Timber.w("Upgrade/downgrade not handled: recreating database from scratch");
         DaoMaster.dropAllTables(db, true);
-        onCreate(db);
+        DaoMaster.createAllTables(db, true);
     }
 }

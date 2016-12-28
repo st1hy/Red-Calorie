@@ -4,13 +4,13 @@ import org.greenrobot.greendao.database.Database;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatabaseMigrationHelperTest {
-    final DatabaseMigrationHelper migrationHelper = new DatabaseMigrationHelper();
+    private final DatabaseMigrationHelper migrationHelper = new DatabaseMigrationHelper();
     @Mock
     private Database db;
 
