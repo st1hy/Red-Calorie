@@ -71,7 +71,7 @@ android {
 
     lintOptions {
         //Retrolamda breaks lint
-        checkReleaseBuilds false
+        //checkReleaseBuilds false
         abortOnError false
     }
 }
