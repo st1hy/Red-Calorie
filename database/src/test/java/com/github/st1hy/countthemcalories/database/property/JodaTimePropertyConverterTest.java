@@ -3,7 +3,9 @@ package com.github.st1hy.countthemcalories.database.property;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.chrono.EthiopicChronology;
+import org.joda.time.tz.UTCProvider;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -15,6 +17,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class JodaTimePropertyConverterTest {
     private final JodaTimePropertyConverter jodaTimePropertyConverter = new JodaTimePropertyConverter();
+
+    @Before
+    public void setUp() throws Exception {
+        DateTimeZone.setProvider(new UTCProvider());
+    }
 
     @Test
     public void testConversion() throws Exception {

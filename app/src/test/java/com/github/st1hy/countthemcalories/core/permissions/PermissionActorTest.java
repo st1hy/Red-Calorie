@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -24,17 +23,10 @@ public class PermissionActorTest {
         final String[] permissions = {"firstPermission", "secondPermission"};
 
         PermissionActor permissionActor = new PermissionActor(permissions);
-        permissionActor.asObservable()
-                .observeOn(Schedulers.immediate())
-                .subscribe(new Action1<Permission[]>() {
-                    @Override
-                    public void call(Permission[] permissions) {
-                        assertThat(permissions, arrayContaining(Permission.GRANTED, Permission.GRANTED));
-                    }
-                });
-
         permissionActor.onRequestPermissionsResult(permissions,
                 new int[] {PERMISSION_GRANTED, PERMISSION_GRANTED});
+        Permission[] outputPermissions = permissionActor.asObservable().toBlocking().first();
+        assertThat(outputPermissions, arrayContaining(Permission.GRANTED, Permission.GRANTED));
 
     }
 
@@ -45,12 +37,9 @@ public class PermissionActorTest {
         PermissionActor permissionActor = new PermissionActor(permissions);
         permissionActor.asObservable()
                 .observeOn(Schedulers.immediate())
-                .subscribe(new Action1<Permission[]>() {
-                    @Override
-                    public void call(Permission[] permissions) {
-                        assertThat(permissions, arrayContaining(Permission.REQUEST_CANCELED,
-                                Permission.REQUEST_CANCELED));
-                    }
+                .subscribe(permissions1 -> {
+                    assertThat(permissions1, arrayContaining(Permission.REQUEST_CANCELED,
+                            Permission.REQUEST_CANCELED));
                 });
 
         permissionActor.onRequestPermissionsResult(new String[] {},

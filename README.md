@@ -2,13 +2,17 @@
 # Count Them Calories
 Android app for keeping your calories in check.
 
-## Going for release
-All the planned basic functionality that I've planned for 1.0 is complete. There is definitely sill room for improvement, but after some thought and consideration I decided that the time has come to release this to the public audience.
-All feedback/critique is welcome and appreciated.
-
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state: 1.2.3
+## Current state 1.3 beta
+* General code redesign aiming at "simplification" and "maintainability"
+* No interesting function added but bugs
+* Removed Robolectric tests and most of mockito tests: 
+1st constantly broke when upgrading support library, 
+2nd after redesign become impossible to maintain (reverse implementation will do that). 
+* Espresso tests survived pretty much without major change. Espresso for the win.
+
+## 1.2.3
 * Fixed incorrectly starting multiple activities in some edge cases
 * Fixed missing view refresh when ingredient was removed in a meal.
 * Improved search flow: when user cannot find the searched result and adds new item default name is the same as the query.
@@ -62,7 +66,7 @@ Application is available on [Google Play](https://play.google.com/store/apps/det
 * More tests
 
 ## General project goal:
-* TDD from the beginning via espresso / mockito / robolectic
+* TDD from the beginning via espresso ~~/ mockito / robolectic~~
 * dagger2 + rxJava + MVP based
 
 ## Planned functionality for 1.0

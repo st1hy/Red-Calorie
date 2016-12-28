@@ -80,16 +80,6 @@ repositories {
 }
 
 dependencies {
-//    final supportLibraryVersion = rootProject.ext.supportLibraryVersion
-//    final daggerVersion = rootProject.ext.daggerVersion
-//    final rxJavaVersion = rootProject.ext.rxJavaVersion
-//    final rxAndroidVersion = rootProject.ext.rxAndroidVersion
-//    final timberVersion = rootProject.ext.timberVersion
-//    final butterknifeVersion = rootProject.ext.butterknifeVersion
-
-//    final jUnitVersion = rootProject.ext.jUnitVersion
-//    final mockitoVersion = rootProject.ext.mockitoVersion
-
     compile project(':database')
     compile "com.android.support:support-annotations:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
@@ -108,15 +98,15 @@ dependencies {
     compile "com.jakewharton.rxbinding:rxbinding-appcompat-v7:$rxBindingsVersion"
     compile "com.jakewharton.rxbinding:rxbinding-support-v4:$rxBindingsVersion"
     compile "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rxBindingsVersion"
-    compile 'com.google.guava:guava:20.0'
-    compile "com.splitwise:tokenautocomplete:2.0.8@aar"
+    compile "com.google.guava:guava:$guavaVersion"
+    compile "com.splitwise:tokenautocomplete:$tokenAutoCompleteVersion"
     compile "org.parceler:parceler-api:$parcelerVersion"
     apt "org.parceler:parceler:$parcelerVersion"
 
-    devtoolsDebugCompile 'com.facebook.stetho:stetho:1.4.2'
+    devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
-    devtoolsDebugCompile 'com.github.brianPlummer:tinydancer:0.1.0'
+    devtoolsDebugCompile "com.github.brianPlummer:tinydancer:$tinyDancerVersion"
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"
@@ -132,13 +122,10 @@ dependencies {
     androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
     androidTestCompile "junit:junit:$jUnitVersion"
     androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
-    androidTestCompile'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestCompile "com.android.support.test.uiautomator:uiautomator-v18:$uiAutomatorVersion"
 
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "junit:junit:$jUnitVersion"
-    testCompile "org.hamcrest:hamcrest-junit:$hamcrestVersion"
-    testCompile "org.powermock:powermock-module-junit4:$powerMockVersion"
-    testCompile "org.powermock:powermock-api-mockito:$powerMockVersion"
     testApt "com.google.dagger:dagger-compiler:$daggerVersion"
     testCompile "com.android.support:support-annotations:$supportLibraryVersion"
     testCompile "com.android.support.test.espresso:espresso-intents:$espressoVersion"

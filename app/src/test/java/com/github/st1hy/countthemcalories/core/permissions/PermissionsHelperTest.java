@@ -18,11 +18,10 @@ import rx.Subscriber;
 
 import static com.github.st1hy.countthemcalories.core.permissions.UserResponseForRationale.ABORT_REQUEST;
 import static com.github.st1hy.countthemcalories.core.permissions.UserResponseForRationale.CONTINUE_WITH_REQUEST;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -118,8 +117,6 @@ public class PermissionsHelperTest {
         when(subject.checkSelfPermission(testPermission)).thenReturn(PackageManager.PERMISSION_DENIED);
         when(subject.shouldShowRequestPermissionRationale(testPermission)).thenReturn(true);
         when(requestRationale.showRationale()).thenReturn(Observable.just(ABORT_REQUEST));
-        when(subject.requestPermission(any(String[].class)))
-                .thenReturn(Observable.just(new Permission[]{Permission.GRANTED}));
 
         ReadPermission subscriber = new ReadPermission();
         permissionsHelper.checkPermissionAndAskIfNecessary(testPermission, requestRationale)
@@ -172,8 +169,7 @@ public class PermissionsHelperTest {
         ReadPermission subscriber = new ReadPermission();
         permissionsHelper.checkPermissionAndAskIfNecessary(testPermission, requestRationale)
                 .subscribe(subscriber);
-        assertThat(subscriber.error, notNullValue());
-        assertTrue(subscriber.error instanceof IllegalArgumentException);
+        assertThat(subscriber.error, nullValue()); //no response
         assertThat(subscriber.output, hasSize(0));
 
         verify(subject).checkSelfPermission(testPermission);

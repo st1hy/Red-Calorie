@@ -32,16 +32,20 @@ ext {
 
     jUnitVersion = '4.12'
     mockitoVersion = '2.4.1'
-    powerMockVersion = '1.6.6'
     parcelerVersion = '1.1.6'
 
     //App
+    guavaVersion = '20.0'
     rxBindingsVersion = '1.0.0'
     supportTestRunnerVersion = '0.5'
     espressoVersion = '2.2.2'
-    hamcrestVersion = '2.0.0.0'
+//    hamcrestVersion = '2.0.0.0'
     picassoVersion = '2.5.3-SNAPSHOT'
     leakCanaryVersion = '1.5'
+    tokenAutoCompleteVersion = '2.0.8@aar'
+    stethoVersion = '1.4.2'
+    tinyDancerVersion = '0.1.0'
+    uiAutomatorVersion = '2.1.2'
 
     //Database
     jodaTimeVersion = '2.9.5.1'
