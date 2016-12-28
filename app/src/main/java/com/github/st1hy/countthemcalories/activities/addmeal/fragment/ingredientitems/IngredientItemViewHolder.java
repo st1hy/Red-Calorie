@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHo
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.PerIngredientRow;
-import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
@@ -115,7 +114,7 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         return energyDensity;
     }
 
-    public void setImageUri(@NonNull Optional<Uri> uri) {
+    public void setImageUri(@NonNull Uri uri) {
         imageHolderDelegate.displayImage(uri);
     }
 

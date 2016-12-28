@@ -18,7 +18,6 @@ import rx.subjects.Subject;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.github.st1hy.countthemcalories.core.headerpicture.ImageSource.intoImageSource;
-import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
 public final class SelectPicturePresenterImp implements SelectPicturePresenter {
 
@@ -65,7 +64,7 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
                                 .map(intoImageSource())
                                 .compose(pictureController.pickImage())
                                 .doOnNext(model::setImageUri)
-                ).subscribe((uri) -> imageHolderDelegate.displayImage(from(uri)))
+                ).subscribe(imageHolderDelegate::displayImage)
         );
         subscriptions.add(
                 imageHolderDelegate.getLoadingObservable()

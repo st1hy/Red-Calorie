@@ -25,8 +25,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
-
 @PerFragment
 public class IngredientDetailPresenterImpl implements IngredientDetailPresenter {
     private final IngredientDetailModel model;
@@ -94,7 +92,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
                 ingredientTemplate.getAmountType() == AmountUnitType.VOLUME
                         ? R.drawable.ic_fizzy_drink
                         : R.drawable.ic_fork_and_knife_wide);
-        imageHolderDelegate.displayImage(from(ingredientTemplate.getImageUri()));
+        imageHolderDelegate.displayImage(ingredientTemplate.getImageUri());
     }
 
     @Override

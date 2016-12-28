@@ -20,7 +20,6 @@ import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -303,10 +302,11 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         }
     }
 
-    private void onBindImage(@NonNull IngredientTemplate ingredient, @NonNull IngredientItemViewHolder holder) {
+    private void onBindImage(@NonNull IngredientTemplate ingredient,
+                             @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
-        holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
+        holder.setImageUri(ingredient.getImageUri());
     }
 
     private static class QueryFinished {

@@ -16,7 +16,6 @@ import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHo
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -117,7 +116,7 @@ public class IngredientItemViewHolder extends IngredientViewHolder {
         imageHolderDelegate.onDetached();
     }
 
-    public void setImageUri(@NonNull Optional<Uri> uri) {
+    public void setImageUri(@NonNull Uri uri) {
         imageHolderDelegate.displayImage(uri);
     }
 

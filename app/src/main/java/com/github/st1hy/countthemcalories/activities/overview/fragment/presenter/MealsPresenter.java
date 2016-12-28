@@ -48,7 +48,6 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.ofType;
-import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
 
 @PerFragment
 public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
@@ -251,7 +250,7 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
     }
 
     private void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
-        holder.setImageUri(from(meal.getImageUri()));
+        holder.setImageUri(meal.getImageUri());
     }
 
     @Nullable

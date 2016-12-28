@@ -15,8 +15,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate.from;
-
 @PerFragment
 public class MealDetailPresenterImpl implements MealDetailPresenter {
 
@@ -68,7 +66,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     }
 
     void bindImage(@NonNull Meal meal) {
-        imageHolderDelegate.displayImage(from(meal.getImageUri()));
+        imageHolderDelegate.displayImage(meal.getImageUri());
     }
 
 }

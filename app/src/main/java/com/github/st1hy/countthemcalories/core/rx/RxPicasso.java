@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import com.github.st1hy.countthemcalories.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -20,6 +21,7 @@ public class RxPicasso implements Callback {
     private ImageView imageView;
     private Picasso picasso;
     private PicassoEvent lastEvent;
+    private Uri uri;
     private Observable<PicassoEvent> observable;
 
     private RxPicasso(@NonNull Picasso picasso) {
@@ -61,7 +63,17 @@ public class RxPicasso implements Callback {
                         @Override
                         protected void onUnsubscribe() {
                             delegate = null;
-                            picasso.cancelRequest(imageView);
+                            if (!hasFinished() && isLoadingMyUri()) {
+                                picasso.cancelRequest(imageView);
+                            }
+                        }
+
+                        private boolean isLoadingMyUri() {
+                            return uri.equals(imageView.getTag(R.id.image_tag_uri));
+                        }
+
+                        private boolean hasFinished() {
+                            return lastEvent != null;
                         }
                     });
                     if (lastEvent != null) {
@@ -77,9 +89,10 @@ public class RxPicasso implements Callback {
         private final RxPicasso rxPicasso;
         private final RequestCreator requestCreator;
 
-        private Builder(RxPicasso rxPicasso, RequestCreator requestCreator) {
+        private Builder(RxPicasso rxPicasso, RequestCreator requestCreator, Uri uri) {
             this.rxPicasso = rxPicasso;
             this.requestCreator = requestCreator;
+            rxPicasso.uri = uri;
         }
 
         public RequestCreator childBuilder() {
@@ -87,7 +100,7 @@ public class RxPicasso implements Callback {
         }
 
         public static Builder with(@NonNull Picasso picasso, @NonNull Uri uri) {
-            return new Builder(new RxPicasso(picasso), picasso.load(uri));
+            return new Builder(new RxPicasso(picasso), picasso.load(uri), uri);
         }
 
         public Builder centerCrop() {
@@ -111,6 +124,7 @@ public class RxPicasso implements Callback {
         }
 
         public RxPicasso into(@NonNull ImageView imageView) {
+            imageView.setTag(R.id.image_tag_uri, rxPicasso.uri);
             rxPicasso.imageView = imageView;
             Hook.onStarted();
             requestCreator.into(imageView, rxPicasso);

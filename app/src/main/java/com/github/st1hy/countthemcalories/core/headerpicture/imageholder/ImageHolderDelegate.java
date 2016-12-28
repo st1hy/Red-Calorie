@@ -4,7 +4,6 @@ import android.Manifest;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -13,7 +12,6 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
 import com.github.st1hy.countthemcalories.core.rx.RxPicasso.PicassoEvent;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.google.common.base.Optional;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Provider;
@@ -42,7 +40,7 @@ public class ImageHolderDelegate {
     @NonNull
     protected final Provider<ImageView> imageViewProvider;
 
-    private final Subject<Optional<Uri>, Optional<Uri>> imageUriSubject = BehaviorSubject.create();
+    private final Subject<Uri, Uri> imageUriSubject = BehaviorSubject.create();
     private final Subject<LoadedSource, LoadedSource> loadedSourceSubject = PublishSubject.create();
     private final Observable<LoadedSource> loadedSourceObservable = loadedSourceSubject.asObservable();
     private final CompositeSubscription subscriptions = new CompositeSubscription();
@@ -59,11 +57,6 @@ public class ImageHolderDelegate {
         this.imageViewProvider = imageViewProvider;
     }
 
-    @NonNull
-    public static Optional<Uri> from(@Nullable Uri uri) {
-        return uri == null || Uri.EMPTY.equals(uri) ? Optional.absent() : Optional.of(uri);
-    }
-
     public void onAttached() {
         subscriptions.add(loadImage().subscribe(new SimpleSubscriber<>()));
     }
@@ -77,7 +70,7 @@ public class ImageHolderDelegate {
      *
      * @param uri optional uri
      */
-    public void displayImage(@NonNull Optional<Uri> uri) {
+    public void displayImage(@NonNull Uri uri) {
         imageUriSubject.onNext(uri);
     }
 
@@ -95,10 +88,10 @@ public class ImageHolderDelegate {
         return imageUriSubject.distinctUntilChanged()
                 .switchMap(checkPermission())
                 .switchMap(uri -> {
-                    if (uri.isPresent()) {
-                        return loadImage(uri.get());
-                    } else {
+                    if (isEmpty(uri)) {
                         return Observable.just(PicassoEvent.ERROR);
+                    } else {
+                        return loadImage(uri);
                     }
                 })
                 .doOnNext((picassoEvent) -> {
@@ -117,12 +110,15 @@ public class ImageHolderDelegate {
     }
 
     @NonNull
-    private Func1<Optional<Uri>, Observable<Optional<Uri>>> checkPermission() {
+    private Func1<Uri, Observable<Uri>> checkPermission() {
         return uri -> {
-            if (uri.isPresent()) return permissionsHelper
-                    .checkPermissionAndAskOnce(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    .map(permission -> permission == GRANTED ? uri : Optional.absent());
-            else return Observable.just(uri);
+            if (isEmpty(uri)) {
+                return Observable.just(uri);
+            } else {
+                return permissionsHelper
+                        .checkPermissionAndAskOnce(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .map(permission -> permission == GRANTED ? uri : Uri.EMPTY);
+            }
         };
     }
 
@@ -145,6 +141,10 @@ public class ImageHolderDelegate {
     @NonNull
     public Observable<LoadedSource> getLoadingObservable() {
         return loadedSourceObservable;
+    }
+
+    private static boolean isEmpty(@NonNull Uri uri) {
+        return Uri.EMPTY.equals(uri);
     }
 
 }

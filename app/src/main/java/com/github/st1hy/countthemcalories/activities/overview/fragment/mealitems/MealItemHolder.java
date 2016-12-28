@@ -16,7 +16,6 @@ import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.PerMealRow;
-import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.picasso.Picasso;
 
@@ -142,7 +141,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
         deleteButton.setEnabled(enabled);
     }
 
-    public void setImageUri(@NonNull Optional<Uri> uri) {
+    public void setImageUri(@NonNull Uri uri) {
         imageHolderDelegate.displayImage(uri);
     }
 

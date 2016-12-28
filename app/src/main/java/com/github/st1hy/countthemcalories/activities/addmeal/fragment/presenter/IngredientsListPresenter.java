@@ -15,7 +15,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -166,7 +165,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
                              @NonNull IngredientItemViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
-        holder.setImageUri(ImageHolderDelegate.from(ingredient.getImageUri()));
+        holder.setImageUri(ingredient.getImageUri());
     }
 
     private void subscribe(Subscription subscribe) {
