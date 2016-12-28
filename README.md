@@ -1,5 +1,5 @@
 ![Count Them Calories logo](web_ctc_logo.png)
-# Count Them Calories
+# Count Them Calories [![Build Status](https://travis-ci.org/st1hy/Count-Them-Calories.svg?branch=master)](https://travis-ci.org/st1hy/Count-Them-Calories)
 Android app for keeping your calories in check.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
