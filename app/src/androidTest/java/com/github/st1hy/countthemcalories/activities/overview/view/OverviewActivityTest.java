@@ -77,9 +77,24 @@ public class OverviewActivityTest {
             new Meal(2L, "Meal 2", Uri.EMPTY, DateTime.now()),
     };
     public static final Ingredient[] exampleIngredients = new Ingredient[]{
-            new Ingredient(1L, new BigDecimal("30"), exampleMeals[0].getId(), IngredientActivityTest.exampleIngredients[0].getId()),
-            new Ingredient(2L, new BigDecimal("20"), exampleMeals[0].getId(), IngredientActivityTest.exampleIngredients[1].getId()),
-            new Ingredient(3L, new BigDecimal("70"), exampleMeals[1].getId(), IngredientActivityTest.exampleIngredients[1].getId()),
+            new Ingredient(
+                    1L,
+                    new BigDecimal("30"),
+                    exampleMeals[0].getId(),
+                    IngredientActivityTest.exampleIngredients[0].getId()
+            ),
+            new Ingredient(
+                    2L,
+                    new BigDecimal("20"),
+                    exampleMeals[0].getId(),
+                    IngredientActivityTest.exampleIngredients[1].getId()
+            ),
+            new Ingredient(
+                    3L,
+                    new BigDecimal("70"),
+                    exampleMeals[1].getId(),
+                    IngredientActivityTest.exampleIngredients[1].getId()
+            ),
     };
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(getTargetContext());
@@ -90,7 +105,9 @@ public class OverviewActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        CaloriesCounterApplication application = (CaloriesCounterApplication) getTargetContext()
+                .getApplicationContext();
+        ApplicationTestComponent component = (ApplicationTestComponent) (application).getComponent();
         DaoSession session = component.getDaoSession();
         addExampleMealsIngredientsTags(session);
         main.launchActivity(null);
