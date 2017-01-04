@@ -8,8 +8,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: "idea"
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'me.tatarka.retrolambda'
 
@@ -55,10 +53,10 @@ dependencies {
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "org.greenrobot:greendao:$greenDaoVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
-    apt "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     compile "com.jakewharton.timber:timber:$timberVersion"
     compile "org.parceler:parceler-api:$parcelerVersion"
-    apt "org.parceler:parceler:$parcelerVersion"
+    annotationProcessor "org.parceler:parceler:$parcelerVersion"
     compile "net.danlew:android.joda:$jodaTimeVersion"
 
     testCompile "junit:junit:$jUnitVersion"

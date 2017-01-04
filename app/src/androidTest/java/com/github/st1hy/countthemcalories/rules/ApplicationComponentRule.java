@@ -42,18 +42,6 @@ public class ApplicationComponentRule implements TestRule {
                 .applicationModule(new ApplicationModule(application))
                 .build();
 
-//        ApplicationTestComponent mock = Mockito.mock(ApplicationTestComponent.class,
-//                (Answer) invocation -> {
-//                    Object[] arguments = invocation.getArguments();
-//                    Method method = invocation.getMethod();
-//                    return method.invoke(build, arguments);
-//                }
-//        );
-//
-//        when(mock.newAddIngredientActivityComponent(any())).thenAnswer(invocation -> {
-//            Object o = invocation.callRealMethod();
-//            return o;
-//        });
         application.setComponent(build);
     }
 }

@@ -1,6 +1,4 @@
-apply plugin: 'idea'
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
@@ -96,9 +94,9 @@ dependencies {
     compile "io.reactivex:rxandroid:$rxAndroidVersion"
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "com.google.dagger:dagger:$daggerVersion"
-    apt "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     compile "com.jakewharton:butterknife:$butterknifeVersion"
-    apt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile "com.squareup.picasso:picasso:$picassoVersion"
     compile "com.jakewharton.rxbinding:rxbinding:$rxBindingsVersion"
     compile "com.jakewharton.rxbinding:rxbinding-appcompat-v7:$rxBindingsVersion"
@@ -107,7 +105,7 @@ dependencies {
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.splitwise:tokenautocomplete:$tokenAutoCompleteVersion"
     compile "org.parceler:parceler-api:$parcelerVersion"
-    apt "org.parceler:parceler:$parcelerVersion"
+    annotationProcessor "org.parceler:parceler:$parcelerVersion"
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -127,12 +125,12 @@ dependencies {
     }
     androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
     androidTestCompile "junit:junit:$jUnitVersion"
-    androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     androidTestCompile "com.android.support.test.uiautomator:uiautomator-v18:$uiAutomatorVersion"
 
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "junit:junit:$jUnitVersion"
-    testApt "com.google.dagger:dagger-compiler:$daggerVersion"
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     testCompile "com.android.support:support-annotations:$supportLibraryVersion"
     testCompile "com.android.support.test.espresso:espresso-intents:$espressoVersion"
 }
