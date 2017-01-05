@@ -4,15 +4,13 @@ import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePickerImpl;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class PicturePickerModule {
+public abstract class PicturePickerModule {
 
-    @Provides
+    @Binds
     @PerFragment
-    public PicturePicker pictureViewController(PicturePickerImpl picturePicker) {
-        return picturePicker;
-    }
+    public abstract PicturePicker pictureViewController(PicturePickerImpl picturePicker);
 }

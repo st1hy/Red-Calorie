@@ -9,8 +9,8 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -34,13 +34,13 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @NonNull
     private final Activity activity;
     @NonNull
-    private final RxActivityResult rxActivityResult;
+    private final ActivityLauncher activityLauncher;
 
     @Inject
     public AddIngredientScreenImpl(@NonNull Activity activity,
-                                   @NonNull RxActivityResult rxActivityResult) {
+                                   @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
-        this.rxActivityResult = rxActivityResult;
+        this.activityLauncher = activityLauncher;
     }
 
     @Override
@@ -67,10 +67,7 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
                     }
                     return StartParams.of(intent, REQUEST_PICK_TAG);
                 })
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_PICK_TAG)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_PICK_TAG))
                 .filter(ActivityResult.IS_OK)
                 .map(activityResult -> {
                     Intent data = activityResult.getData();

@@ -18,8 +18,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredien
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -58,13 +58,13 @@ public class AddMealScreenImpl implements AddMealScreen {
     @Nullable
     private Snackbar ingredientsError;
     @NonNull
-    private final RxActivityResult rxActivityResult;
+    private final ActivityLauncher activityLauncher;
 
     @Inject
     public AddMealScreenImpl(@NonNull Activity activity,
-                             @NonNull RxActivityResult rxActivityResult) {
+                             @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
-        this.rxActivityResult = rxActivityResult;
+        this.activityLauncher = activityLauncher;
         ButterKnife.bind(this, activity);
     }
 
@@ -92,10 +92,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                     intent.setAction(IngredientsActivity.ACTION_SELECT_INGREDIENT);
                     return StartParams.of(intent, REQUEST_PICK_INGREDIENT);
                 })
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_PICK_INGREDIENT)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_PICK_INGREDIENT))
                 .filter(ActivityResult.IS_OK)
                 .map(new Func1<ActivityResult, IngredientTemplate>() {
                     @Override
@@ -127,10 +124,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                     intent.putExtra(EXTRA_INGREDIENT, Parcels.wrap(info.getIngredient()));
                     return StartParams.of(intent, REQUEST_EDIT_INGREDIENT, startOptions);
                 })
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_EDIT_INGREDIENT)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_EDIT_INGREDIENT))
                 .map(activityResult -> {
                     EditIngredientResult result = fromIngredientDetailResult(
                             activityResult.getResultCode()

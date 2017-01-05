@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -38,14 +38,14 @@ public class PicturePickerImpl implements PicturePicker {
     @NonNull
     private final Context context;
     @NonNull
-    private final RxActivityResult rxActivityResult;
+    private final ActivityLauncher activityLauncher;
 
     @Inject
     public PicturePickerImpl(@NonNull @Named("activityContext") Context context,
-                             @NonNull RxActivityResult rxActivityResult,
+                             @NonNull ActivityLauncher activityLauncher,
                              @Nullable @Named("pictureTempUri") Uri uri) {
         this.context = context;
-        this.rxActivityResult = rxActivityResult;
+        this.activityLauncher = activityLauncher;
         this.tempImageUri = uri;
     }
 
@@ -62,14 +62,14 @@ public class PicturePickerImpl implements PicturePicker {
             Observable<ImageSource> sharedSource = imageSourceObservable.share();
             return sharedSource.filter(Filters.equalTo(ImageSource.CAMERA))
                     .map(source -> imageFromCameraParams())
-                    .compose(rxActivityResult.from(context)
-                            .startActivityForResult(REQUEST_CAMERA))
+                    .compose(activityLauncher.startActivityForResult(REQUEST_CAMERA))
                     .mergeWith(
                             sharedSource
                                     .filter(Filters.equalTo(ImageSource.GALLERY))
                                     .map(source -> imageFromGalleryParams())
-                                    .compose(rxActivityResult.from(context)
-                                            .startActivityForResult(REQUEST_PICK_IMAGE))
+                                    .compose(activityLauncher
+                                            .startActivityForResult(REQUEST_PICK_IMAGE)
+                                    )
                     )
                     .filter(ActivityResult.IS_OK)
                     .map(this::extractUriFrom)

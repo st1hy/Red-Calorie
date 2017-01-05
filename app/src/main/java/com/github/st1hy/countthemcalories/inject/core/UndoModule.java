@@ -3,14 +3,12 @@ package com.github.st1hy.countthemcalories.inject.core;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class UndoModule {
+public abstract class UndoModule {
 
-    @Provides
-    public UndoView undoView(UndoViewImpl undoView) {
-        return undoView;
-    }
+    @Binds
+    public abstract UndoView undoView(UndoViewImpl undoView);
 }

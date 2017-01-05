@@ -10,7 +10,7 @@ import rx.Observable;
 /**
  * Interface to delegate the launch of an activity and return the result as an {@link Observable}
  */
-public interface Launchable {
+public interface ActivityLauncher {
 
     /**
      * Launch an activity for which you would like a result when it finished.

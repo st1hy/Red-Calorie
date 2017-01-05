@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.inject.activities.addmeal;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
 import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
 import dagger.Subcomponent;
@@ -10,7 +11,8 @@ import dagger.Subcomponent;
 @PerActivity
 @Subcomponent(modules = {
         AddMealActivityModule.class,
-        ToolbarNavigateBackModule.class
+        ToolbarNavigateBackModule.class,
+        ActivityLauncherModule.class
 })
 public interface AddMealActivityComponent extends AddMealFragmentComponentFactory {
 

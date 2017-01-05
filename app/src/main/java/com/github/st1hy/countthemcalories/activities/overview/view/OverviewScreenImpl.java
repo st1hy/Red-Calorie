@@ -14,8 +14,8 @@ import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
@@ -38,7 +38,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     @NonNull
     private final Activity activity;
     @NonNull
-    private final RxActivityResult rxActivityResult;
+    private final ActivityLauncher activityLauncher;
 
     @BindView(R.id.overview_fab)
     FloatingActionButton fab;
@@ -47,9 +47,9 @@ public class OverviewScreenImpl implements OverviewScreen {
 
     @Inject
     public OverviewScreenImpl(@NonNull Activity activity,
-                              @NonNull RxActivityResult rxActivityResult) {
+                              @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
-        this.rxActivityResult = rxActivityResult;
+        this.activityLauncher = activityLauncher;
         ButterKnife.bind(this, activity);
     }
 
@@ -70,10 +70,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     public Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails() {
         return paramsObservable -> paramsObservable
                 .map(this::getMealDetailsParams)
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_MEAL_DETAIL)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_MEAL_DETAIL))
                 .map(this::getMealDetailResult);
     }
 

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.application;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
@@ -29,7 +30,7 @@ public class CaloriesCounterApplication extends DatabaseApplication {
         return (CaloriesCounterApplication) context.getApplicationContext();
     }
 
-    //For testing
+    @VisibleForTesting
     public void setComponent(@NonNull ApplicationComponent component) {
         this.component = component;
     }

@@ -5,8 +5,8 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
 import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
 import com.github.st1hy.countthemcalories.inject.core.RecyclerViewAdapterDelegateModule;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
 
 import dagger.Subcomponent;
 
@@ -16,7 +16,7 @@ import dagger.Subcomponent;
         PictureModule.class,
         PermissionModule.class,
         DialogModule.class,
-        RecyclerViewAdapterDelegateModule.class
+        RecyclerViewAdapterDelegateModule.class,
 })
 public interface AddMealFragmentComponent extends IngredientListComponentFactory {
 

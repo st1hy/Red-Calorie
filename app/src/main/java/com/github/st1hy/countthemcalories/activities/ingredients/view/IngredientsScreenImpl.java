@@ -13,8 +13,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.SelectIngredi
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
-import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -44,15 +44,16 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @NonNull
     private final Activity activity;
     @NonNull
-    private final RxActivityResult rxActivityResult;
+    private final ActivityLauncher activityLauncher;
 
     @BindView(R.id.ingredients_fab)
     FloatingActionButton fab;
 
     @Inject
-    public IngredientsScreenImpl(@NonNull Activity activity, @NonNull RxActivityResult rxActivityResult) {
+    public IngredientsScreenImpl(@NonNull Activity activity,
+                                 @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
-        this.rxActivityResult = rxActivityResult;
+        this.activityLauncher = activityLauncher;
         ButterKnife.bind(this, activity);
     }
 
@@ -69,10 +70,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
                             addIngredientParams.getExtraName());
                     return StartParams.of(intent, REQUEST_ADD_INGREDIENT);
                 })
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_ADD_INGREDIENT)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_ADD_INGREDIENT))
                 .filter(ActivityResult.IS_OK)
                 .map((Func1<ActivityResult, IngredientTemplate>) activityResult -> {
                     Intent data = activityResult.getData();
@@ -114,10 +112,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
                             SelectIngredientTypeActivity.class);
                     return StartParams.of(intent, REQUEST_SELECT_TYPE);
                 })
-                .compose(
-                        rxActivityResult.from(activity)
-                                .startActivityForResult(REQUEST_SELECT_TYPE)
-                )
+                .compose(activityLauncher.startActivityForResult(REQUEST_SELECT_TYPE))
                 .map(activityResult -> {
                     switch (activityResult.getResultCode()) {
                         case SelectIngredientTypeActivity.RESULT_DRINK:
