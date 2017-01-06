@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ingredients_item_content"
@@ -18,8 +18,8 @@
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
         android:layout_margin="0dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
+        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
@@ -68,9 +68,4 @@
                 tools:text="400 kcal / 100 g" />
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/tags_separator" />
-</LinearLayout>
+</FrameLayout>

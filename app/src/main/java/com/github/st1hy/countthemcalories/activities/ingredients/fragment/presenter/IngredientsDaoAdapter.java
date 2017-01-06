@@ -11,8 +11,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.EmptySpaceViewHolder;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
@@ -46,13 +44,9 @@ import static com.github.st1hy.countthemcalories.activities.ingredients.fragment
 
 @PerFragment
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
-        implements IngredientItemViewHolder.Callback {
-
-    private static final int bottomSpaceItem = 1;
+        implements IngredientViewHolder.Callback {
     @LayoutRes
     private static final int item_layout = R.layout.ingredients_item_scrolling;
-    @LayoutRes
-    private static final int item_empty_space_layout = R.layout.ingredients_item_bottom_space;
 
     @NonNull
     private final IngredientsView view;
@@ -102,55 +96,42 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         addSubscription(searchIngredients(searchResultObservable));
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position < getDaoItemCount()) {
-            return item_layout;
-        } else {
-            return item_empty_space_layout;
-        }
-    }
 
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        if (viewType == item_layout) {
-            IngredientItemViewHolder holder = new IngredientItemViewHolder(view, this, picasso, permissionsHelper);
-            holder.fillParent(parent);
-            return holder;
-        } else {
-            return new EmptySpaceViewHolder(view);
-        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(item_layout, parent, false);
+        IngredientViewHolder holder = new IngredientViewHolder(view, this, picasso, permissionsHelper);
+        holder.fillParent(parent);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(IngredientViewHolder holder, int position) {
-        if (holder instanceof IngredientItemViewHolder) {
-            onBindToIngredientHolder((IngredientItemViewHolder) holder, position);
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            IngredientTemplate ingredient = holder.getReusableIngredient();
+            databaseModel.performReadEntity(cursor, ingredient);
+            holder.setPosition(position);
+            holder.setName(ingredient.getName());
+            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
+            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
+            onBindImage(ingredient, holder);
+        } else {
+            Timber.w("Cursor closed during binding views.");
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return super.getItemCount() + bottomSpaceItem;
     }
 
     @Override
     public void onViewAttachedToWindow(IngredientViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder instanceof IngredientItemViewHolder) {
-            IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
-            ingredientHolder.onAttached();
-        }
+        holder.onAttached();
     }
 
     @Override
     public void onViewDetachedFromWindow(IngredientViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder instanceof IngredientItemViewHolder) {
-            IngredientItemViewHolder ingredientHolder = (IngredientItemViewHolder) holder;
-            ingredientHolder.onDetached();
-        }
+        holder.onDetached();
     }
 
     @Override
@@ -286,24 +267,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         return cursorPosition != -1;
     }
 
-    private void onBindToIngredientHolder(@NonNull IngredientItemViewHolder holder, int position) {
-        Cursor cursor = getCursor();
-        if (cursor != null) {
-            cursor.moveToPosition(position);
-            IngredientTemplate ingredient = holder.getReusableIngredient();
-            databaseModel.performReadEntity(cursor, ingredient);
-            holder.setPosition(position);
-            holder.setName(ingredient.getName());
-            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
-            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
-            onBindImage(ingredient, holder);
-        } else {
-            Timber.w("Cursor closed during binding views.");
-        }
-    }
-
     private void onBindImage(@NonNull IngredientTemplate ingredient,
-                             @NonNull IngredientItemViewHolder holder) {
+                             @NonNull IngredientViewHolder holder) {
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(ingredient.getImageUri());

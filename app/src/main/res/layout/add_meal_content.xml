@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="0dp"
-            app:cardElevation="2dp"
+            app:cardElevation="@dimen/group_card_view_horizontally_borderless_elevation"
             android:layout_marginLeft="@dimen/group_card_view_horizontally_borderless_margin"
             android:layout_marginRight="@dimen/group_card_view_horizontally_borderless_margin"
             app:cardUseCompatPadding="true">

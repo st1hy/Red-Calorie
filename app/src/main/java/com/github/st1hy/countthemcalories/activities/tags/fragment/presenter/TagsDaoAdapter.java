@@ -14,9 +14,7 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFra
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.EmptySpaceViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
@@ -44,9 +42,7 @@ import timber.log.Timber;
 @PerFragment
 public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction {
 
-    private static final int bottomSpaceItem = 1;
     private static final int item_layout = R.layout.tags_item_scrolling;
-    private static final int item_bottom_space_layout = R.layout.tags_item_bottom_space;
 
     @NonNull
     private final TagsView view;
@@ -85,34 +81,15 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (position < getDaoItemCount()) {
-            return item_layout;
-        } else {
-            return item_bottom_space_layout;
-        }
-    }
-
-    @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        if (viewType == item_layout) {
-            TagItemViewHolder item = new TagItemViewHolder(view, this);
-            item.fillParent(parent);
-            return item;
-        } else {
-            return new EmptySpaceViewHolder(view);
-        }
+        View view = LayoutInflater.from(parent.getContext()).inflate(item_layout, parent, false);
+        TagViewHolder item = new TagViewHolder(view, this);
+        item.fillParent(parent);
+        return item;
     }
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
-        if (holder instanceof TagItemViewHolder) {
-            onBindToTagHolder((TagItemViewHolder) holder, position);
-        }
-    }
-
-    private void onBindToTagHolder(@NonNull TagItemViewHolder holder, int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
@@ -125,24 +102,15 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
-    public int getItemCount() {
-        return super.getItemCount() + bottomSpaceItem;
-    }
-
-    @Override
     public void onViewAttachedToWindow(TagViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder instanceof TagItemViewHolder) {
-            ((TagItemViewHolder) holder).onAttached();
-        }
+        holder.onAttached();
     }
 
     @Override
     public void onViewDetachedFromWindow(TagViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder instanceof TagItemViewHolder) {
-            ((TagItemViewHolder) holder).onDetached();
-        }
+        holder.onDetached();
     }
 
     @Override

@@ -111,9 +111,4 @@
                 tools:text="1750 kcal" />
         </RelativeLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/tags_separator" />
 </LinearLayout>

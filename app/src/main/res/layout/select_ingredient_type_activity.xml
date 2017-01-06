@@ -25,7 +25,7 @@
             tools:src="@drawable/ic_fizzy_drink" />
 
         <View
-            android:background="@drawable/tags_separator"
+            android:background="@drawable/default_separator"
             android:layout_height="match_parent"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"

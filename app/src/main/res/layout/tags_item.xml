@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/tags_item_content"
     android:background="@color/colorBackground"
+    android:gravity="center"
     android:minHeight="?listPreferredItemHeightSmall"
     >
     <FrameLayout
@@ -13,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
+        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
         android:layout_margin="0dp">
         <TextView
             android:id="@+id/tags_item_name"
@@ -26,8 +27,4 @@
             android:layout_gravity="center_vertical"
             tools:text="My tag name"/>
     </FrameLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/tags_separator"/>
 </LinearLayout>
