@@ -15,9 +15,6 @@ import rx.Observable;
 
 public class TestPicturePicker implements PicturePicker {
 
-    @DrawableRes
-    public static final int TEST_CAMERA_PICTURE = android.R.drawable.ic_input_add;
-
     @NonNull
     private final PicturePickerImpl picturePicker;
     private HeaderPicturePickerUtils utils;
@@ -59,9 +56,9 @@ public class TestPicturePicker implements PicturePicker {
     public Observable.Transformer<ImageSource, Uri> pickImage() {
         return (source) -> {
             Observable<ImageSource> sharedSource = source.share();
-            return sharedSource.compose(picturePicker.pickImage())
+            return sharedSource.compose(utils.onPickImage(this))
                     .mergeWith(
-                            sharedSource.compose(utils.onPickImage(this))
+                            sharedSource.compose(picturePicker.pickImage())
                     );
         };
     }

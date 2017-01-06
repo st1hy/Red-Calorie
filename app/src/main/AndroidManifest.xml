@@ -64,7 +64,6 @@
         <activity
             android:name=".activities.ingredientdetail.IngredientDetailActivity"
             android:label="@string/add_meal_title"
-            android:windowSoftInputMode="stateVisible|adjustResize"
             android:theme="@style/AppTheme.Semitransparent"
             />
         <activity android:name=".activities.addingredient.SelectIngredientTypeActivity"
