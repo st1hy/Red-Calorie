@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.addmeal;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,23 +18,17 @@ import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActi
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import rx.subjects.PublishSubject;
 
-@Module
+@Module(includes = AddMealActivityBindings.class)
 public class AddMealActivityModule {
     private final AddMealActivity activity;
+    private static final String ADD_MEAL_CONTENT = "add meal content";
 
     public AddMealActivityModule(@NonNull AddMealActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    public Activity activity() {
-        return activity;
     }
 
     @Provides
@@ -44,24 +37,17 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    @Named("activityContext")
-    public Context context() {
-        return activity;
-    }
+    public static AddMealFragment provideContent(FragmentManager fragmentManager,
+                                                 Bundle arguments,
+                                                 AddMealActivityComponent component) {
 
-    @Provides
-    public AddMealFragment provideContent(FragmentManager fragmentManager,
-                                          Bundle arguments,
-                                          AddMealActivityComponent component) {
-        final String tag = "add meal content";
-
-        AddMealFragment fragment = (AddMealFragment) fragmentManager.findFragmentByTag(tag);
+        AddMealFragment fragment = (AddMealFragment) fragmentManager.findFragmentByTag(ADD_MEAL_CONTENT);
         if (fragment == null) {
             fragment = new AddMealFragment();
             fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
-                    .add(R.id.add_meal_content_frame, fragment, tag)
+                    .add(R.id.add_meal_content_frame, fragment, ADD_MEAL_CONTENT)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commitNow();
         }
@@ -70,12 +56,12 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
+    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
     @Provides
-    public Bundle provideArguments(Intent intent) {
+    public static Bundle provideArguments(Intent intent) {
         Bundle arguments = new Bundle();
         arguments.putParcelable(AddMealFragmentModule.EXTRA_MEAL_PARCEL,
                 intent.getParcelableExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL));
@@ -85,19 +71,14 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    public Intent provideIntent(Activity activity) {
+    public static Intent provideIntent(Activity activity) {
         return activity.getIntent();
     }
 
     @Provides
     @PerActivity
-    public PublishSubject<AddMealMenuAction> menuActionPublishSubject() {
+    public static PublishSubject<AddMealMenuAction> menuActionPublishSubject() {
         return PublishSubject.create();
-    }
-
-    @Provides
-    public AddMealScreen addMealScreen(AddMealScreenImpl screen) {
-        return screen;
     }
 
 }

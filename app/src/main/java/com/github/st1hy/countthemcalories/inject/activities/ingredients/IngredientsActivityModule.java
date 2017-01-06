@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.ingredients;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +13,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
@@ -37,26 +34,17 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.ACTION_SELECT_INGREDIENT;
 
-@Module
+@Module(includes = IngredientActivityBindings.class)
 public class IngredientsActivityModule {
 
     public static int debounceTime = 250;
 
     private final IngredientsActivity activity;
+    public static final String INGREDIENTS_CONTENT = "ingredients content";
 
     public IngredientsActivityModule(@NonNull IngredientsActivity activity) {
         this.activity = activity;
         ButterKnife.bind(this, activity);
-    }
-
-    @Provides
-    public IngredientsScreen provideView(IngredientsScreenImpl ingredientsScreen) {
-        return ingredientsScreen;
-    }
-
-    @Provides
-    public Activity activity() {
-        return activity;
     }
 
     @Provides
@@ -65,12 +53,12 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public DrawerMenuItem currentItem() {
+    public static DrawerMenuItem currentItem() {
         return DrawerMenuItem.INGREDIENTS;
     }
 
     @Provides
-    public Optional<String> provideSearchFilter(Intent intent) {
+    public static Optional<String> provideSearchFilter(Intent intent) {
         if (intent != null) {
             String tag = intent.getStringExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING);
             if (tag != null) {
@@ -82,19 +70,18 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public IngredientsFragment provideContent(
+    public static IngredientsFragment provideContent(
             FragmentManager fragmentManager,
             @Named("fragmentArguments") Bundle arguments,
             IngredientsFragmentComponentFactory componentFactory) {
 
-        final String tag = "ingredients content";
-        IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(tag);
+        IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(INGREDIENTS_CONTENT);
         if (fragment == null) {
             fragment = new IngredientsFragment();
             fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
-                    .add(R.id.ingredients_content_frame, fragment, tag)
+                    .add(R.id.ingredients_content_frame, fragment, INGREDIENTS_CONTENT)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commitNow();
         }
@@ -103,13 +90,13 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public FragmentManager provideFragmentManager(AppCompatActivity activity) {
+    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
     @Provides
     @Named("fragmentArguments")
-    public Bundle provideArguments(Intent intent) {
+    public static Bundle provideArguments(Intent intent) {
         Bundle arguments = new Bundle();
         boolean selectMode = intent != null &&
                 ACTION_SELECT_INGREDIENT.equals(intent.getAction());
@@ -118,33 +105,34 @@ public class IngredientsActivityModule {
     }
 
     @Provides
-    public Intent provideIntent(Activity activity) {
+    public static Intent provideIntent(Activity activity) {
         return activity.getIntent();
     }
 
 
     @Provides
     @PerActivity
-    public TokenSearchTextView tokenSearchTextView(TokenSearchView view) {
+    public static TokenSearchTextView tokenSearchTextView(TokenSearchView view) {
         return (TokenSearchTextView) view.findViewById(R.id.token_search_text_view);
     }
 
     @Provides
     @PerActivity
-    public TokenSearchView tokenSearchView(Activity activity) {
+    public static TokenSearchView tokenSearchView(Activity activity) {
         return (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
     }
 
     @Provides
     @Named("suggestions")
-    public SearchSuggestionsAdapter suggestionsAdapter(SearchSuggestionsAdapter adapter, TokenSearchTextView searchView) {
+    public static SearchSuggestionsAdapter suggestionsAdapter(SearchSuggestionsAdapter adapter,
+                                                              TokenSearchTextView searchView) {
         searchView.setAdapter(adapter);
         return adapter;
     }
 
     @Provides
     @PerActivity
-    public Observable<SearchResult> provideSearchResults(TokenSearchTextView tokenSearchTextView) {
+    public static Observable<SearchResult> provideSearchResults(TokenSearchTextView tokenSearchTextView) {
         Observable<SearchResult> sequenceObservable = RxSearchable.create(tokenSearchTextView)
                 .subscribeOn(AndroidSchedulers.mainThread());
         if (debounceTime > 0) {
@@ -169,20 +157,8 @@ public class IngredientsActivityModule {
 
     @Provides
     @Named("undoViewRoot")
-    public View undoRootView(Activity activity) {
+    public static View undoRootView(Activity activity) {
         return activity.findViewById(R.id.ingredients_root);
     }
 
-
-    @Provides
-    @Named("activityContext")
-    public Context context() {
-        return activity;
-    }
-
-    @Provides
-    public IngredientsFragmentComponentFactory ingredientsFragmentComponentFactory(
-            IngredientsActivityComponent component) {
-        return component;
-    }
 }

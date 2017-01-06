@@ -168,7 +168,7 @@ public class TagsActivityTest {
         intended(allOf(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)),
                 hasExtra(IngredientsActivity.EXTRA_TAG_FILTER_STRING, tagName)));
 
-        onView(withId(R.id.ingredients_search_view)).check(matches(isDisplayed()));
+        onView(withId(R.id.ingredients_search_view)).check(matches(isDisplayed())).perform(loopMainThreadForAtLeast(100));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(doesNotExist());
         onView(withText(IngredientActivityTest.exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withText(IngredientActivityTest.exampleIngredients[2].getName())).check(doesNotExist());

@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,17 +15,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddI
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.EnergyConverter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.IngredientTagsPresenter;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
-import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
-import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -46,7 +38,7 @@ import dagger.Provides;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-@Module
+@Module(includes = AddIngredientFragmentBindings.class)
 public class AddIngredientFragmentModule {
 
     private final AddIngredientFragment fragment;
@@ -58,24 +50,22 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public AddIngredientView provideView(AddIngredientViewController controller) {
-        return controller;
-    }
-
-    @Provides
-    public AddIngredientPresenter providePresenter(AddIngredientPresenterImp presenter) {
-        return presenter;
-    }
-
-    @Provides
-    @PerFragment
-    public SelectPicturePresenter picturePresenter(SelectPicturePresenterImp presenter) {
-        return presenter;
+    @Nullable
+    @Named("savedState")
+    public Bundle provideSavedStateBundle() {
+        return savedState;
     }
 
     @Provides
     @PerFragment
-    public IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState,
+    public View rootView() {
+        return fragment.getView();
+    }
+
+
+    @Provides
+    @PerFragment
+    public static IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState,
                                                          @Nullable IngredientTemplate template) {
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(IngredientTagsModel.SAVED_TAGS_MODEL);
@@ -93,16 +83,8 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    @Nullable
-    @Named("savedState")
-    public Bundle provideSavedStateBundle() {
-        return savedState;
-    }
-
-
-    @Provides
     @PerFragment
-    public AddIngredientModel provideIngredientModel(
+    public static AddIngredientModel provideIngredientModel(
             @Nullable @Named("savedState") Bundle savedState,
             @Nullable IngredientTemplate templateSource,
             @NonNull @Named("initialName") String name,
@@ -141,34 +123,20 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public View rootView() {
-        return fragment.getView();
-    }
-
-    @Provides
-    @PerFragment
-    public RecyclerView recyclerView(View rootView, RecyclerViewAdapterDelegate adapter) {
+    public static RecyclerView recyclerView(View rootView,
+                                            RecyclerViewAdapterDelegate adapter,
+                                            @Named("activityContext") Context context) {
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(
                 R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
-        tagsRecycler.setLayoutManager(new LinearLayoutManager(fragment.getActivity()));
+        tagsRecycler.setLayoutManager(new LinearLayoutManager(context));
         tagsRecycler.setNestedScrollingEnabled(false);
         return tagsRecycler;
     }
 
     @Provides
-    public RecyclerAdapterWrapper recyclerAdapterWrapper(IngredientTagsPresenter tagsPresenter) {
-        return tagsPresenter;
-    }
-
-    @Provides
-    public Observable<AddIngredientMenuAction> menuActionObservable(PublishSubject<AddIngredientMenuAction> subject) {
+    public static Observable<AddIngredientMenuAction> menuActionObservable(PublishSubject<AddIngredientMenuAction> subject) {
         return subject.asObservable();
-    }
-
-    @Provides
-    public PictureModel pictureModel(AddIngredientModel model) {
-        return model;
     }
 
 }

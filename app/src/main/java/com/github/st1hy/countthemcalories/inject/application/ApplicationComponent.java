@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.inject.application;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.activityresult.RxActivityResult;
-import com.github.st1hy.countthemcalories.database.application.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailActivityComponentFactory;
@@ -17,12 +16,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {
-        ApplicationModule.class,
-        DatabaseModule.class,
-        SettingsModule.class,
-        DbModelsModule.class
-})
+@Component(modules = ApplicationModule.class)
 public interface ApplicationComponent extends AddMealActivityComponentFactory,
         MealDetailActivityComponentFactory,
         IngredientDetailActivityComponentFactory,

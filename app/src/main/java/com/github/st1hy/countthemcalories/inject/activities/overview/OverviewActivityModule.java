@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.overview;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,7 +19,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = OverviewActivityBindings.class)
 public class OverviewActivityModule {
     private OverviewActivity activity;
 
@@ -29,7 +28,7 @@ public class OverviewActivityModule {
     }
 
     @Provides
-    public OverviewFragment provideOverviewFragment(
+    public static OverviewFragment provideOverviewFragment(
             FragmentManager fragmentManager,
             OverviewFragmentComponentFactory componentFactory) {
 
@@ -40,21 +39,15 @@ public class OverviewActivityModule {
     }
 
     @Provides
-    public FragmentManager fragmentManager() {
+    public static FragmentManager fragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
     @Provides
     @PerActivity
     @Named("undoViewRoot")
-    public View rootUndoView(Activity activity) {
+    public static View rootUndoView(Activity activity) {
         return activity.findViewById(R.id.overview_root);
-    }
-
-    @Provides
-    @Named("activityContext")
-    public Context activityContext() {
-        return activity;
     }
 
     @Provides
@@ -63,23 +56,8 @@ public class OverviewActivityModule {
     }
 
     @Provides
-    public Activity activity() {
-        return activity;
-    }
-
-    @Provides
-    public DrawerMenuItem drawerMenuItem() {
+    public static DrawerMenuItem drawerMenuItem() {
         return DrawerMenuItem.OVERVIEW;
     }
 
-    @Provides
-    public OverviewScreen overviewScreen(OverviewScreenImpl screen) {
-        return screen;
-    }
-
-    @Provides
-    public OverviewFragmentComponentFactory fragmentComponentFactory(
-            OverviewActivityComponent component) {
-        return component;
-    }
 }

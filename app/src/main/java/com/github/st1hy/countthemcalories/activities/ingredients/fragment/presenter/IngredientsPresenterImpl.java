@@ -51,7 +51,6 @@ public class IngredientsPresenterImpl implements IngredientsPresenter {
         );
 
         adapter.onStart();
-
     }
 
     @Override
@@ -59,7 +58,6 @@ public class IngredientsPresenterImpl implements IngredientsPresenter {
         adapter.onStop();
         subscriptions.clear();
     }
-
 
     private void subscribe(@NonNull Subscription subscription) {
         subscriptions.add(subscription);

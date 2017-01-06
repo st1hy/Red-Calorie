@@ -9,10 +9,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class PermissionModule {
+public abstract class PermissionModule {
 
     @Provides
-    public PermissionSubject providePermissionSubject(FragmentManager fragmentManager) {
+    public static PermissionSubject providePermissionSubject(FragmentManager fragmentManager) {
         PermissionFragment fragment = (PermissionFragment) fragmentManager
                 .findFragmentByTag(PermissionFragment.TAG);
         if (fragment == null) {

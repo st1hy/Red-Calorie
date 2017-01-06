@@ -14,22 +14,21 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Named;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class PictureOthersModule {
+public abstract class PictureOthersModule {
 
     @PerFragment
-    @Provides
-    public PictureView pictureView(PictureViewImpl pictureView) {
-        return pictureView;
-    }
+    @Binds
+    public abstract PictureView pictureView(PictureViewImpl pictureView);
 
     @Provides
     @Nullable
     @Named("pictureTempUri")
-    public Uri tempPictureUri(@Nullable @Named("savedState") Bundle savedState) {
+    public static Uri tempPictureUri(@Nullable @Named("savedState") Bundle savedState) {
         if (savedState != null) {
             return savedState.getParcelable(PicturePicker.SAVE_TEMP_URI);
         } else {
@@ -38,14 +37,11 @@ public class PictureOthersModule {
     }
 
     @Provides
-    public ImageView imageViewProvider(PictureView view) {
+    public static ImageView imageViewProvider(PictureView view) {
         return view.getImageView();
     }
 
-    @Provides
+    @Binds
     @Named("header")
-    public ImageHolderDelegate provideImageHolderDelegate(
-            HeaderImageHolderDelegate imageHolderDelegate) {
-        return imageHolderDelegate;
-    }
+    public abstract ImageHolderDelegate provideImageHolderDelegate(HeaderImageHolderDelegate delegate);
 }

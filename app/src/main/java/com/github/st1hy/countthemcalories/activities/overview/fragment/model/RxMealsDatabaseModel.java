@@ -21,15 +21,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
 
+@Singleton
 public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     private final Lazy<MealDao> mealDaoLazy;
     private Query<Meal> filteredByDateSortedByDate;
 
+    @Inject
     public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
         mealDaoLazy = DoubleCheck.lazy(() -> session().getMealDao());

@@ -22,15 +22,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
 
 
+@Singleton
 public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     private final Lazy<TagDao> dao;
     private List<String> lastExcluded = Collections.emptyList();
 
+    @Inject
     public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
         super(lazySession);
         this.dao = DoubleCheck.lazy(() -> session().getTagDao());

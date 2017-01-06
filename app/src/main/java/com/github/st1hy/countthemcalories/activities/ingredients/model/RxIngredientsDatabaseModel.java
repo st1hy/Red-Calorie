@@ -29,15 +29,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import dagger.Lazy;
 import dagger.internal.DoubleCheck;
 import rx.Observable;
 
+@Singleton
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
 
     private final Lazy<IngredientTemplateDao> dao;
     private Collection<String> lastTagsFilter = Collections.emptyList();
 
+    @Inject
     public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
         super(session);
         this.dao = DoubleCheck.lazy(() -> session().getIngredientTemplateDao());

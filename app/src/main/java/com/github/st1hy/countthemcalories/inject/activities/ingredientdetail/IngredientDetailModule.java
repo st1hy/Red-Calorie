@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,34 +18,34 @@ import dagger.Provides;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
 import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
 
-@Module
+@Module(includes = IngredientDetailBindings.class)
 public class IngredientDetailModule {
 
     private final IngredientDetailActivity activity;
+    private static final String INGREDIENT_DETAIL_CONTENT = "ingredient detail content";
 
     public IngredientDetailModule(@NonNull IngredientDetailActivity activity) {
         this.activity = activity;
     }
 
     @Provides
-    public Intent provideIntent() {
+    public static Intent provideIntent(Activity activity) {
         return activity.getIntent();
     }
 
     @Provides
-    public IngredientDetailFragment provideContent(FragmentManager fragmentManager,
-                                                   Bundle arguments,
-                                                   IngredientDetailComponent component) {
-        final String tag = "ingredient detail content";
+    public static IngredientDetailFragment provideContent(FragmentManager fragmentManager,
+                                                          Bundle arguments,
+                                                          IngredientDetailComponent component) {
 
         IngredientDetailFragment fragment = (IngredientDetailFragment) fragmentManager
-                .findFragmentByTag(tag);
+                .findFragmentByTag(INGREDIENT_DETAIL_CONTENT);
         if (fragment == null) {
             fragment = new IngredientDetailFragment();
             fragment.setArguments(arguments);
 
             fragmentManager.beginTransaction()
-                    .add(R.id.ingredient_detail_content, fragment, tag)
+                    .add(R.id.ingredient_detail_content, fragment, INGREDIENT_DETAIL_CONTENT)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
                     .commitNow();
         }
@@ -55,17 +54,17 @@ public class IngredientDetailModule {
     }
 
     @Provides
-    public Activity activity() {
+    public AppCompatActivity appCompatActivity() {
         return activity;
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
+    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
     @Provides
-    public Bundle provideArguments(Intent intent) {
+    public static Bundle provideArguments(Intent intent) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_INGREDIENT,
                 intent.getParcelableExtra(EXTRA_INGREDIENT));
@@ -74,8 +73,4 @@ public class IngredientDetailModule {
         return bundle;
     }
 
-    @Provides
-    public IngredientDetailScreen ingredientDetailScreen(IngredientDetailScreenImpl screen) {
-        return screen;
-    }
 }

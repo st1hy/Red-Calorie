@@ -25,24 +25,24 @@ public class IngredientListModule {
         this.rootView = rootView;
     }
 
-    @Named("ingredientImageHolder")
-    @Provides
-    public ImageHolderDelegate imageHolderDelegate(Picasso picasso,
-                                                   PermissionsHelper permissionsHelper,
-                                                   @Named("ingredientImage") ImageView imageView) {
-        return new ImageHolderDelegate(picasso, permissionsHelper,
-                InstanceFactory.create(imageView));
-    }
-
     @Named("ingredientListRow")
     @Provides
     public View rootView() {
         return rootView;
     }
 
+    @Named("ingredientImageHolder")
+    @Provides
+    public static ImageHolderDelegate imageHolderDelegate(Picasso picasso,
+                                                          PermissionsHelper permissionsHelper,
+                                                          @Named("ingredientImage") ImageView imageView) {
+        return new ImageHolderDelegate(picasso, permissionsHelper,
+                InstanceFactory.create(imageView));
+    }
+
     @Provides
     @Named("ingredientImage")
-    public ImageView imageView(@Named("ingredientListRow") View rootView) {
+    public static ImageView imageView(@Named("ingredientListRow") View rootView) {
         return (ImageView) rootView.findViewById(R.id.add_meal_ingredient_image);
     }
 

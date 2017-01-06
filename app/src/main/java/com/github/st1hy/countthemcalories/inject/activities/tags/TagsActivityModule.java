@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.tags;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
-import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
@@ -26,7 +23,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = TagsActivityBindings.class)
 public class TagsActivityModule {
     private final TagsActivity activity;
 
@@ -35,9 +32,9 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public TagsFragment provideContent(Bundle arguments,
-                                       FragmentManager fragmentManager,
-                                       TagsFragmentComponentFactory componentFactory) {
+    public static TagsFragment provideContent(Bundle arguments,
+                                              FragmentManager fragmentManager,
+                                              TagsFragmentComponentFactory componentFactory) {
         final String tag = "tags content";
 
         TagsFragment fragment = (TagsFragment) fragmentManager.findFragmentByTag(tag);
@@ -55,7 +52,7 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public Bundle provideArguments(Boolean inSelectMode, String[] excludedTags) {
+    public static Bundle provideArguments(Boolean inSelectMode, String[] excludedTags) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(TagsFragment.ARG_PICK_BOOL, inSelectMode);
         bundle.putStringArray(TagsFragment.ARG_EXCLUDED_TAGS_STRING_ARRAY, excludedTags);
@@ -63,12 +60,12 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public Boolean provideIsInSelectMode(@Nullable Intent intent) {
+    public static Boolean provideIsInSelectMode(@Nullable Intent intent) {
         return intent != null && TagsActivity.ACTION_PICK_TAG.equals(intent.getAction());
     }
 
     @Provides
-    public String[] provideExcludedTags(@Nullable Intent intent) {
+    public static String[] provideExcludedTags(@Nullable Intent intent) {
         String[] tags = null;
         if (intent != null) {
             tags = intent.getStringArrayExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY);
@@ -79,19 +76,19 @@ public class TagsActivityModule {
 
     @Provides
     @Nullable
-    public Intent provideIntent() {
+    public static Intent provideIntent(Activity activity) {
         return activity.getIntent();
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
+    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
         return activity.getSupportFragmentManager();
     }
 
     @Provides
     @PerActivity
     @Named("undoViewRoot")
-    public View undoRootView() {
+    public static View undoRootView(Activity activity) {
         return activity.findViewById(R.id.tags_root);
     }
 
@@ -101,38 +98,16 @@ public class TagsActivityModule {
     }
 
     @Provides
-    public Activity activity() {
-        return activity;
-    }
-
-    @Provides
-    @Named("activityContext")
-    public Context context() {
-        return activity;
-    }
-
-    @Provides
-    public DrawerMenuItem drawerMenuItem() {
+    public static DrawerMenuItem drawerMenuItem() {
         return DrawerMenuItem.CATEGORIES;
     }
 
     @Provides
     @PerActivity
-    public TokenSearchView settingsView(Activity activity) {
+    public static TokenSearchView settingsView(Activity activity) {
         TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.tags_search_view);
         searchView.getSearchTextView().setSplitChar(new char[]{0xAD});
         return searchView;
-    }
-
-    @Provides
-    public TagsScreen tagsScreen(TagsScreenImpl screen) {
-        return screen;
-    }
-
-    @Provides
-    public TagsFragmentComponentFactory tagsFragmentComponentFactory(
-            TagsActivityComponent component) {
-        return component;
     }
 
 }

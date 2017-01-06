@@ -8,11 +8,11 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class RecyclerViewAdapterDelegateModule {
+public abstract class RecyclerViewAdapterDelegateModule {
 
     @Provides
     @PerFragment
-    public RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
+    public static RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
         return RecyclerViewAdapterDelegate.newAdapter(wrapper);
     }
 }

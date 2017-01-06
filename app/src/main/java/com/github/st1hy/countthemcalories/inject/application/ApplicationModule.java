@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
 import com.squareup.picasso.MediaStoreRequestHandlerNext;
 import com.squareup.picasso.Picasso;
 
@@ -13,7 +14,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = {
+        SettingsModule.class,
+        DatabaseModule.class
+})
 public class ApplicationModule {
     private final CaloriesCounterApplication application;
 
@@ -24,13 +28,13 @@ public class ApplicationModule {
     @Provides
     @Named("appContext")
     public Context provideContext() {
-        return application.getBaseContext();
+        return application.getApplicationContext();
     }
 
 
     @Provides
     @Singleton
-    public Picasso providePicasso(@Named("appContext") Context context) {
+    public static Picasso providePicasso(@Named("appContext") Context context) {
         return new Picasso.Builder(context)
                 .addRequestHandler(new MediaStoreRequestHandlerNext(context))
                 .build();

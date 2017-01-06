@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,22 +13,12 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenter;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.AddMealPresenterImp;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.IngredientsListPresenter;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
-import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
-import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.IngredientListComponentFactory;
 
 import org.parceler.Parcels;
 
@@ -46,7 +35,7 @@ import rx.subjects.PublishSubject;
 
 import static org.parceler.Parcels.unwrap;
 
-@Module
+@Module(includes = AddMealFragmentBindings.class)
 public class AddMealFragmentModule {
 
     public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
@@ -62,25 +51,27 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public AddMealPresenter providePresenter(AddMealPresenterImp presenter) {
-        return presenter;
-    }
-
-    @Provides
-    public AddMealView provideView(AddMealViewController addMealViewController) {
-        return addMealViewController;
-    }
-
-    @Provides
     @Named("savedState")
     @Nullable
     public Bundle getSavedState() {
         return savedState;
     }
 
+    @Named("fragmentRootView")
+    @Provides
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    @Named("arguments")
+    public Bundle arguments() {
+        return fragment.getArguments();
+    }
+
     @Provides
     @PerFragment
-    public MealIngredientsListModel provideListModel(
+    public static MealIngredientsListModel provideListModel(
             @Nullable @Named("savedState") Bundle savedState,
             @NonNull Meal meal,
             @Nullable Ingredient extraIngredient) {
@@ -103,11 +94,11 @@ public class AddMealFragmentModule {
 
     @Provides
     @PerFragment
-    public Meal provideMeal(@Nullable @Named("savedState") Bundle savedState) {
+    public static Meal provideMeal(@Nullable @Named("savedState") Bundle savedState,
+                                   @Named("arguments") Bundle arguments) {
         if (savedState != null) {
             return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {
-            Bundle arguments = fragment.getArguments();
             Meal editedMeal = Parcels.unwrap(arguments.getParcelable(EXTRA_MEAL_PARCEL));
             if (editedMeal != null) {
                 return editedMeal;
@@ -122,8 +113,7 @@ public class AddMealFragmentModule {
 
     @Provides
     @Nullable
-    public IngredientTemplate provideExtraIngredientTemplate() {
-        Bundle arguments = fragment.getArguments();
+    public static IngredientTemplate provideExtraIngredientTemplate(@Named("arguments") Bundle arguments) {
         IngredientTemplate ingredientTemplate = unwrap(arguments.getParcelable(EXTRA_INGREDIENT_PARCEL));
         arguments.remove(EXTRA_INGREDIENT_PARCEL);
         return ingredientTemplate;
@@ -131,7 +121,7 @@ public class AddMealFragmentModule {
 
     @Provides
     @Nullable
-    public Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
+    public static Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
         if (extraTemplate != null) {
             return new Ingredient(extraTemplate, BigDecimal.ZERO);
         } else {
@@ -140,29 +130,13 @@ public class AddMealFragmentModule {
     }
 
     @Provides
-    public FragmentActivity provideFragmentActivity() {
-        return fragment.getActivity();
-    }
-
-    @Provides
-    public Observable<AddMealMenuAction> menuActionObservable(
+    public static Observable<AddMealMenuAction> menuActionObservable(
             PublishSubject<AddMealMenuAction> actionPublishSubject) {
         return actionPublishSubject.asObservable();
     }
 
-    @Named("fragmentRootView")
     @Provides
-    public View rootView() {
-        return fragment.getView();
-    }
-
-    @Provides
-    public RecyclerAdapterWrapper ingredientsAdapter(IngredientsListPresenter listPresenter) {
-        return listPresenter;
-    }
-
-    @Provides
-    public RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
+    public static RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
                                      RecyclerViewAdapterDelegate adapter,
                                      @Named("activityContext") Context context) {
 
@@ -174,21 +148,5 @@ public class AddMealFragmentModule {
         return recyclerView;
     }
 
-    @Provides
-    @PerFragment
-    public SelectPicturePresenter picturePresenter(SelectPicturePresenterImp presenter) {
-        return presenter;
-    }
-
-    @Provides
-    public PictureModel pictureModel(AddMealModel model) {
-        return model;
-    }
-
-    @Provides
-    public IngredientListComponentFactory ingredientListComponentFactory(
-            AddMealFragmentComponent component) {
-        return component;
-    }
 
 }

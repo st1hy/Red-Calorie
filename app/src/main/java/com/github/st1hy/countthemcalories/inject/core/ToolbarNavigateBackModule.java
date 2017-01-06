@@ -11,10 +11,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class ToolbarNavigateBackModule {
+public abstract class ToolbarNavigateBackModule {
 
     @Provides
-    public Toolbar toolbar(AppCompatActivity activity, PressBackOnClickListener onClickListener) {
+    public static Toolbar toolbar(AppCompatActivity activity, PressBackOnClickListener onClickListener) {
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.image_header_toolbar);
         activity.setSupportActionBar(toolbar);
         Preconditions.checkNotNull(activity.getSupportActionBar())

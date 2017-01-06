@@ -12,17 +12,17 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class SettingsModule {
+public abstract class SettingsModule {
 
     @Provides
     @Singleton
-    public SharedPreferences providePreferences(@Named("appContext") Context context) {
+    public static SharedPreferences providePreferences(@Named("appContext") Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Provides
     @Singleton
-    public Resources provideResources(@Named("appContext") Context context) {
+    public static Resources provideResources(@Named("appContext") Context context) {
         return context.getResources();
     }
 }

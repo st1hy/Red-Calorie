@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.AbstractMealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.EmptyMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
 
 import javax.inject.Named;
@@ -15,7 +14,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(includes = MealRowBindings.class)
 public class MealRowModule {
 
     @LayoutRes
@@ -42,9 +41,4 @@ public class MealRowModule {
         return holder;
     }
 
-    @Provides
-    @Named("emptySpace")
-    public AbstractMealItemHolder emptySpace(EmptyMealItemHolder emptyMealItemHolder) {
-        return emptyMealItemHolder;
-    }
 }

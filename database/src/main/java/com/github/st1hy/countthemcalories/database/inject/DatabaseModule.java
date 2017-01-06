@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.database.application.inject;
+package com.github.st1hy.countthemcalories.database.inject;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
