@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="activity_horizontal_margin">64dp</dimen>
+    <dimen name="group_card_view_horizontally_borderless_margin">@dimen/activity_horizontal_margin</dimen>
+    <dimen name="group_card_view_horizontally_borderless_horizontal_padding">8dp</dimen>
+</resources>

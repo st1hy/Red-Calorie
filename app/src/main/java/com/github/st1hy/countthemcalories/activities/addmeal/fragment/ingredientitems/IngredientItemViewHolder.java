@@ -41,8 +41,6 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     TextView calorieCount;
     @BindView(R.id.add_meal_ingredient_compact)
     ViewGroup compatView;
-    @BindView(R.id.add_meal_ingredient_root)
-    ViewGroup root;
 
     private Ingredient ingredient;
 
@@ -92,11 +90,6 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     public Observable<IngredientItemViewHolder> clicks() {
         return RxView.clicks(compatView)
                 .map(Functions.into(this));
-    }
-
-    @NonNull
-    public View getRoot() {
-        return root;
     }
 
     @NonNull

@@ -1,98 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_meal_ingredient_root"
+    android:id="@+id/add_meal_ingredient_compact"
+    style="@style/Base.Widget.AppCompat.Button.Borderless"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?listPreferredItemHeight"
-    android:transitionName="ingredient-shared-view"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
+    android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="true">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/add_meal_ingredient_image"
+            android:layout_width="@dimen/list_item_image_size"
+            android:layout_height="@dimen/list_item_image_size"
+            android:contentDescription="@string/add_meal_ingredient_photo_description"
+            android:scaleType="fitCenter"
+            android:transitionName="ingredient-shared-view-image"
+            app:srcCompat="@drawable/ic_fork_and_knife_wide"
+            tools:targetApi="lollipop" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v4.widget.Space
+        android:layout_width="8dp"
+        android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@+id/add_meal_ingredient_compact"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:clickable="true"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:padding="0dp"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="0"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardUseCompatPadding="true">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/add_meal_ingredient_image"
-                android:transitionName="ingredient-shared-view-image"
-                android:layout_width="@dimen/list_item_image_size"
-                android:layout_height="@dimen/list_item_image_size"
-                android:contentDescription="@string/add_meal_ingredient_photo_description"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_fork_and_knife_wide"
-                tools:targetApi="lollipop" />
-        </android.support.v7.widget.CardView>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/add_meal_ingredient_item_name"
-                style="@style/Base.TextAppearance.AppCompat.Body2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:textSize="18sp"
-                android:transitionName="ingredient-shared-view-name"
-                tools:text="Example ingredient name"
-                tools:targetApi="lollipop" />
-
-            <TextView
-                android:id="@+id/add_meal_ingredient_energy_density"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:transitionName="ingredient-shared-view-density"
-                tools:text="400 kcal / 100 g"
-                tools:targetApi="lollipop" />
-
-            <TextView
-                android:id="@+id/add_meal_ingredient_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:transitionName="ingredient-shared-view-calories"
-                tools:text="40 g"
-                tools:targetApi="lollipop" />
-        </LinearLayout>
-
-        <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="wrap_content" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/add_meal_ingredient_calorie_count"
+            android:id="@+id/add_meal_ingredient_item_name"
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
             android:textIsSelectable="false"
             android:textSize="18sp"
-            tools:text="160 kcal" />
+            android:transitionName="ingredient-shared-view-name"
+            tools:targetApi="lollipop"
+            tools:text="Example ingredient name" />
 
-        <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/add_meal_ingredient_energy_density"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            android:transitionName="ingredient-shared-view-density"
+            tools:targetApi="lollipop"
+            tools:text="400 kcal / 100 g" />
+
+        <TextView
+            android:id="@+id/add_meal_ingredient_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            android:transitionName="ingredient-shared-view-calories"
+            tools:targetApi="lollipop"
+            tools:text="40 g" />
     </LinearLayout>
-</android.support.v7.widget.CardView>
+
+    <android.support.v4.widget.Space
+        android:layout_width="8dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/add_meal_ingredient_calorie_count"
+        style="@style/Base.TextAppearance.AppCompat.Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?colorAccent"
+        android:textIsSelectable="false"
+        android:textSize="18sp"
+        tools:text="160 kcal" />
+
+</LinearLayout>
