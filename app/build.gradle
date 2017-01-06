@@ -106,6 +106,7 @@ dependencies {
     compile "com.splitwise:tokenautocomplete:$tokenAutoCompleteVersion"
     compile "org.parceler:parceler-api:$parcelerVersion"
     annotationProcessor "org.parceler:parceler:$parcelerVersion"
+    provided "com.google.code.findbugs:jsr305:3.0.0"
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -115,13 +116,18 @@ dependencies {
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"
     androidTestCompile "com.android.support.test:rules:$supportTestRunnerVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoVersion"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:$espressoVersion"
+    androidTestCompile("com.android.support.test.espresso:espresso-core:$espressoVersion") {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
+    androidTestCompile("com.android.support.test.espresso:espresso-intents:$espressoVersion") {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
     androidTestCompile("com.android.support.test.espresso:espresso-contrib:$espressoVersion") {
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
     }
     androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
     androidTestCompile "junit:junit:$jUnitVersion"
