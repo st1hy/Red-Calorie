@@ -13,6 +13,4 @@ public interface MealRowComponent {
     @Named("mealRow")
     AbstractMealItemHolder getHolder();
 
-    @Named("emptySpace")
-    AbstractMealItemHolder getEmptySpace();
 }

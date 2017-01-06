@@ -15,8 +15,8 @@
         android:textColor="?android:textColorPrimary"
         android:textIsSelectable="false"
         android:textSize="16sp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
+        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
         tools:text="Name" />
 
     <android.support.v7.widget.AppCompatImageButton

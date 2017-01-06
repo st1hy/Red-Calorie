@@ -14,7 +14,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = MealRowBindings.class)
+@Module
 public class MealRowModule {
 
     @LayoutRes

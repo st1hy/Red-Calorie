@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -66,7 +67,7 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public static IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState,
-                                                         @Nullable IngredientTemplate template) {
+                                                                @Nullable IngredientTemplate template) {
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(IngredientTagsModel.SAVED_TAGS_MODEL);
             return Parcels.unwrap(parcelable);
@@ -131,6 +132,7 @@ public class AddIngredientFragmentModule {
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(context));
         tagsRecycler.setNestedScrollingEnabled(false);
+        tagsRecycler.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return tagsRecycler;
     }
 

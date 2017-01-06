@@ -54,7 +54,6 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         implements BasicLifecycle {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
-    private static final int bottomSpaceLayout = R.layout.overview_item_bottom_space;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -147,28 +146,15 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (position < getDaoItemCount()) {
-            return mealItemLayout;
-        } else {
-            return bottomSpaceLayout;
-        }
-    }
-
-    @Override
     public int getItemCount() {
-        return list.size() + 1;
+        return list.size();
     }
 
     @Override
     public AbstractMealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MealRowComponent component = mealRowComponentFactory.newMealRowComponent(
-                new MealRowModule(viewType, parent));
-        if (viewType == mealItemLayout) {
-            return component.getHolder();
-        } else {
-            return component.getEmptySpace();
-        }
+                new MealRowModule(mealItemLayout, parent));
+        return component.getHolder();
     }
 
     @Override
@@ -217,10 +203,6 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         subscriptions.add(databaseModel.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnUpdatedDataSet()));
-    }
-
-    private int getDaoItemCount() {
-        return list.size();
     }
 
     private void onBindMealItemHolder(@NonNull MealItemHolder holder, int position) {
