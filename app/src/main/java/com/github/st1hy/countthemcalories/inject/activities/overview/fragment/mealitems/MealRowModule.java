@@ -5,11 +5,16 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.AbstractMealItemHolder;
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,6 +34,7 @@ public class MealRowModule {
     }
 
     @Provides
+    @PerMealRow
     @Named("mealItemRoot")
     public View rootView() {
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
@@ -36,9 +42,22 @@ public class MealRowModule {
 
     @Provides
     @Named("mealRow")
-    public AbstractMealItemHolder mealItemHolder(MealItemHolder holder) {
+    public MealItemHolder mealItemHolder(MealItemHolder holder) {
         holder.fillParent(parent);
         return holder;
+    }
+
+    @Provides
+    public static ImageHolderDelegate imageHolderDelegate(Picasso picasso,
+                                                          PermissionsHelper permissionHelper,
+                                                          Provider<ImageView> imageView) {
+        return new ImageHolderDelegate(picasso, permissionHelper, imageView);
+    }
+
+    @Provides
+    @PerMealRow
+    public static ImageView image(@Named("mealItemRoot") View rootView) {
+        return (ImageView) rootView.findViewById(R.id.overview_item_image);
     }
 
 }

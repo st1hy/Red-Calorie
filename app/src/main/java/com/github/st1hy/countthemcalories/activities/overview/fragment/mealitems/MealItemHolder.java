@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.fragment.mealitem
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -10,21 +11,18 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.PerMealRow;
 import com.jakewharton.rxbinding.view.RxView;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.internal.InstanceFactory;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -33,7 +31,7 @@ import static com.github.st1hy.countthemcalories.activities.overview.fragment.me
 import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.OPEN;
 
 @PerMealRow
-public class MealItemHolder extends AbstractMealItemHolder {
+public class MealItemHolder extends RecyclerView.ViewHolder {
 
     private final ScrollingItemDelegate scrollingItemDelegate;
     private final ImageHolderDelegate imageHolderDelegate;
@@ -67,8 +65,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
     @Inject
     public MealItemHolder(@NonNull @Named("mealItemRoot") View itemView,
-                          @NonNull Picasso picasso,
-                          @NonNull PermissionsHelper permissionHelper) {
+                          @NonNull ImageHolderDelegate imageHolderDelegate) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         scrollingItemDelegate = ScrollingItemDelegate.Builder.create()
@@ -77,8 +74,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
-        this.imageHolderDelegate = new ImageHolderDelegate(picasso, permissionHelper,
-                InstanceFactory.create(image));
+        this.imageHolderDelegate = imageHolderDelegate;
     }
 
     public void fillParent(@NonNull final ViewGroup parent) {
@@ -114,7 +110,6 @@ public class MealItemHolder extends AbstractMealItemHolder {
         return meal;
     }
 
-    @Override
     public void onAttached(@NonNull PublishSubject<MealInteraction> subject) {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
@@ -128,7 +123,6 @@ public class MealItemHolder extends AbstractMealItemHolder {
         );
     }
 
-    @Override
     public void onDetached() {
         scrollingItemDelegate.onDetached();
         imageHolderDelegate.onDetached();

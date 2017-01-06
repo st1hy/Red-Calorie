@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.MealsViewModel;
@@ -50,7 +49,7 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.ofType;
 
 @PerFragment
-public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
+public class MealsPresenter extends RecyclerAdapterWrapper<MealItemHolder>
         implements BasicLifecycle {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
@@ -151,26 +150,30 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
     }
 
     @Override
-    public AbstractMealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MealRowComponent component = mealRowComponentFactory.newMealRowComponent(
                 new MealRowModule(mealItemLayout, parent));
         return component.getHolder();
     }
 
     @Override
-    public void onBindViewHolder(AbstractMealItemHolder holder, int position) {
-        if (holder instanceof MealItemHolder) {
-            onBindMealItemHolder((MealItemHolder) holder, position);
-        }
+    public void onBindViewHolder(MealItemHolder holder, int position) {
+        final Meal meal = list.get(position);
+        holder.setName(meal.getName());
+        holder.setMeal(meal);
+        holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
+        onBindIngredients(holder, meal.getIngredients());
+        onBindImage(meal, holder);
+        holder.setEnabled(true);
     }
 
     @Override
-    public void onViewAttachedToWindow(AbstractMealItemHolder holder) {
+    public void onViewAttachedToWindow(MealItemHolder holder) {
         holder.onAttached(interactionSubject);
     }
 
     @Override
-    public void onViewDetachedFromWindow(AbstractMealItemHolder holder) {
+    public void onViewDetachedFromWindow(MealItemHolder holder) {
         holder.onDetached();
     }
 
@@ -203,16 +206,6 @@ public class MealsPresenter extends RecyclerAdapterWrapper<AbstractMealItemHolde
         subscriptions.add(databaseModel.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnUpdatedDataSet()));
-    }
-
-    private void onBindMealItemHolder(@NonNull MealItemHolder holder, int position) {
-        final Meal meal = list.get(position);
-        holder.setName(meal.getName());
-        holder.setMeal(meal);
-        holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
-        onBindIngredients(holder, meal.getIngredients());
-        onBindImage(meal, holder);
-        holder.setEnabled(true);
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {

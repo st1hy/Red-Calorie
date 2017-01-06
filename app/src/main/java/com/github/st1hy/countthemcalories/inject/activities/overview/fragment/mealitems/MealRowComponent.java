@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems;
 
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.AbstractMealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
 
 import javax.inject.Named;
 
@@ -11,6 +11,6 @@ import dagger.Subcomponent;
 public interface MealRowComponent {
 
     @Named("mealRow")
-    AbstractMealItemHolder getHolder();
+    MealItemHolder getHolder();
 
 }
