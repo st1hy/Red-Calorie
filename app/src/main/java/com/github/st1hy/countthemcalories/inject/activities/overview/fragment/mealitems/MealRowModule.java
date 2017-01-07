@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.squareup.picasso.Picasso;
@@ -38,13 +37,6 @@ public class MealRowModule {
     @Named("mealItemRoot")
     public View rootView() {
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
-    }
-
-    @Provides
-    @Named("mealRow")
-    public MealItemHolder mealItemHolder(MealItemHolder holder) {
-        holder.fillParent(parent);
-        return holder;
     }
 
     @Provides

@@ -60,6 +60,8 @@ public class MealItemHolder extends RecyclerView.ViewHolder {
     View editButton;
     @BindView(R.id.overview_item_delete)
     View deleteButton;
+    @BindView(R.id.overview_item_button)
+    View openButton;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -114,7 +116,7 @@ public class MealItemHolder extends RecyclerView.ViewHolder {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
         subscriptions.add(
-                RxView.clicks(content).map(Functions.into(OPEN))
+                RxView.clicks(openButton).map(Functions.into(OPEN))
                         .mergeWith(RxView.clicks(editButton).map(Functions.into(EDIT)))
                         .mergeWith(RxView.clicks(deleteButton).map(Functions.into(DELETE)))
                         .map(type -> MealInteraction.of(type, this))

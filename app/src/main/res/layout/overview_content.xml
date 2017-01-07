@@ -8,6 +8,35 @@
     tools:context=".activities.overview.OverviewActivity"
     tools:showIn="@layout/overview_app_bar">
 
+    <FrameLayout
+        android:id="@+id/overview_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_empty_background"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/text_background_dark_rounded"
+            android:fontFamily="sans-serif-medium"
+            android:padding="16dp"
+            android:text="@string/overview_empty_meals"
+            android:textAllCaps="false"
+            android:textColor="?android:textColorPrimaryInverse"
+            android:textSize="15sp" />
+    </FrameLayout>
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -45,33 +74,5 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/overview_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_empty_background"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/text_background_dark_rounded"
-            android:fontFamily="sans-serif-medium"
-            android:padding="16dp"
-            android:text="@string/overview_empty_meals"
-            android:textAllCaps="false"
-            android:textColor="?android:textColorPrimaryInverse"
-            android:textSize="15sp" />
-    </FrameLayout>
 
 </FrameLayout>

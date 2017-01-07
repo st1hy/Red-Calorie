@@ -153,7 +153,9 @@ public class MealsPresenter extends RecyclerAdapterWrapper<MealItemHolder>
     public MealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MealRowComponent component = mealRowComponentFactory.newMealRowComponent(
                 new MealRowModule(mealItemLayout, parent));
-        return component.getHolder();
+        MealItemHolder holder = component.getHolder();
+        holder.fillParent(parent);
+        return holder;
     }
 
     @Override

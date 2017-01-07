@@ -37,12 +37,24 @@ public class ScrollingItemDelegate {
      * Changes width of center view to match parent.
      */
     public void fillParent(@NonNull final ViewGroup parent) {
-        int parentWidth = parent.getWidth();
-        ViewGroup.LayoutParams layoutParams = center.getLayoutParams();
-        layoutParams.width = parentWidth;
-        center.setLayoutParams(layoutParams);
+        fillParent(parent, false);
     }
 
+    private void fillParent(@NonNull final ViewGroup parent, boolean delayed) {
+        int parentWidth = parent.getWidth();
+        ViewGroup.LayoutParams layoutParams = center.getLayoutParams();
+        if (parentWidth == 0) {
+            subscriptions.add(RxView.preDraws(parent, Functions.FUNC0_ALWAYS_TRUE)
+                    .take(1)
+                    .subscribe(aVoid -> fillParent(parent, true)));
+        } else {
+            layoutParams.width = parentWidth;
+            center.setLayoutParams(layoutParams);
+            if (delayed) {
+                requestResetScroll();
+            }
+        }
+    }
 
     public void onAttached() {
         resetScroll();
@@ -76,10 +88,14 @@ public class ScrollingItemDelegate {
         if (center.getLeft() != 0) {
             resetScrollInternal();
         } else {
-            subscriptions.add(RxView.preDraws(center, Functions.FUNC0_ALWAYS_TRUE)
-                    .take(1)
-                    .subscribe(aVoid -> resetScroll()));
+            requestResetScroll();
         }
+    }
+
+    private void requestResetScroll() {
+        subscriptions.add(RxView.preDraws(center, Functions.FUNC0_ALWAYS_TRUE)
+                .take(1)
+                .subscribe(aVoid -> resetScroll()));
     }
 
     private void resetScrollInternal() {
