@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
@@ -60,12 +61,15 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.setTime;
 import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 
@@ -73,8 +77,8 @@ import static org.hamcrest.Matchers.hasSize;
 @LargeTest
 public class OverviewActivityTest {
     public static final Meal[] exampleMeals = new Meal[]{
-            new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now()),
-            new Meal(2L, "Meal 2", Uri.EMPTY, DateTime.now()),
+            new Meal(1L, "Meal 1", Uri.EMPTY, DateTime.now().withTime(15,30,0,0)),
+            new Meal(2L, "Meal 2", Uri.EMPTY, DateTime.now().withTime(10, 59, 0, 0)),
     };
     public static final Ingredient[] exampleIngredients = new Ingredient[]{
             new Ingredient(
@@ -261,9 +265,13 @@ public class OverviewActivityTest {
                 .perform(clearText());
         onView(withId(R.id.add_meal_name))
                 .perform(typeTextIntoFocusedView("Meal edited"));
+        onView(withId(R.id.add_meal_time_value)).perform(click());
+        onView(withClassName(equalTo(TimePicker.class.getName()))).perform(setTime(20,43));
+        onView(withText("OK")).perform(click());
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
+        onView(withText("20:43")).check(matches(isDisplayed()));
     }
 
     @Test

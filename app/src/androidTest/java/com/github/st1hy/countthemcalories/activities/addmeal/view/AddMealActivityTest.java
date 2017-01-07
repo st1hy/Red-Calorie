@@ -10,11 +10,12 @@ import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker;
@@ -50,9 +51,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.github.st1hy.countthemcalories.actions.CTCViewActions.setTime;
 import static com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest.exampleIngredients;
 import static com.github.st1hy.countthemcalories.core.headerpicture.HeaderPicturePickerUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
@@ -326,4 +329,13 @@ public class AddMealActivityTest {
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
         onView(withText("1 g")).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void testChangeTime() {
+        onView(withId(R.id.add_meal_time_value)).perform(click());
+        onView(withClassName(equalTo(TimePicker.class.getName()))).perform(setTime(12, 12));
+        onView(withText("OK")).perform(click());
+        onView(allOf(withId(R.id.add_meal_time_value), withText("12:12"))).check(matches(isDisplayed()));
+    }
+
 }

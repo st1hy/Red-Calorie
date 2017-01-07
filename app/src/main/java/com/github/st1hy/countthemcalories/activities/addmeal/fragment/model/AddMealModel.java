@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -28,6 +30,10 @@ public class AddMealModel implements PictureModel {
     private final Resources resources;
     @NonNull
     private final DefaultMealName defaultMealName;
+    @NonNull
+    private final PhysicalQuantitiesModel quantitiesModel;
+    @NonNull
+    private final DateTimeUtils dateTimeUtils;
 
     private final Meal meal;
 
@@ -36,11 +42,15 @@ public class AddMealModel implements PictureModel {
                         @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Resources resources,
                         @NonNull DefaultMealName defaultMealName,
+                        @NonNull PhysicalQuantitiesModel quantitiesModel,
+                        @NonNull DateTimeUtils dateTimeUtils,
                         @NonNull Meal meal) {
         this.ingredientsListModel = ingredientsListModel;
         this.databaseModel = databaseModel;
         this.resources = resources;
         this.defaultMealName = defaultMealName;
+        this.quantitiesModel = quantitiesModel;
+        this.dateTimeUtils = dateTimeUtils;
         this.meal = meal;
 
     }
@@ -90,8 +100,24 @@ public class AddMealModel implements PictureModel {
 
     @NonNull
     public String getMealNameHint() {
-        DateTime time = meal.getCreationDate();
-        if (time == null) time = DateTime.now();
-        return defaultMealName.getBestGuessMealNameAt(time);
+        return defaultMealName.getBestGuessMealNameAt(getDisplayTime());
+    }
+
+    @NonNull
+    public String formatTime(DateTime dateTime) {
+        return quantitiesModel.formatTime(dateTime);
+    }
+
+    public long getTimeToNextMinuteMils() {
+        return dateTimeUtils.getMillisToNextFullMinute();
+    }
+
+    @NonNull
+    public DateTime getDisplayTime() {
+        DateTime creationDate = meal.getCreationDate();
+        if (creationDate == null) {
+            creationDate = DateTime.now();
+        }
+        return creationDate;
     }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 
+import org.joda.time.DateTime;
+
 import rx.Observable;
 
 public interface AddMealView extends AddMealScreen {
@@ -25,4 +27,14 @@ public interface AddMealView extends AddMealScreen {
     void setTotalEnergy(@NonNull String totalEnergy);
 
     void setHint(@NonNull String mealNameNow);
+
+    @NonNull
+    @CheckResult
+    Observable<Void> mealTimeClicked();
+
+    void setMealTime(@NonNull String time);
+
+    @NonNull
+    @CheckResult
+    Observable.Transformer<Void, DateTime> openTimePicker(DateTime currentTime);
 }

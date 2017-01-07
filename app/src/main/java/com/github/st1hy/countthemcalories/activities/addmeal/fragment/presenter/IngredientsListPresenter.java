@@ -201,6 +201,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
     private void notifyInserted(int position) {
         notifyItemInserted(position);
         view.scrollTo(position);
+        view.hideSnackbarError();
         onDataSetChanged();
     }
 

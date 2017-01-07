@@ -86,4 +86,5 @@
     <string name="add_meal_name_lunch">Lunch</string>
     <string name="add_meal_name_dinner">Dinner</string>
     <string name="add_meal_name_supper">Supper</string>
+    <string name="add_meal_time_desc">Meal time:</string>
 </resources>

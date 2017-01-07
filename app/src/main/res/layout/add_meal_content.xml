@@ -37,6 +37,33 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical|start"
+                    android:minHeight="48dp"
+                    android:text="@string/add_meal_time_desc"
+                    android:textSize="14sp" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/add_meal_time_value"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:gravity="end|center_vertical"
+                    android:textIsSelectable="false"
+                    android:textSize="18sp"
+                    tools:text="20:56" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:minHeight="48dp">
 
@@ -45,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
-                    android:layout_gravity="center_vertical|bottom"
+                    android:layout_gravity="center_vertical"
                     android:text="@string/ingredients_title"
                     android:textSize="14sp" />
 
@@ -61,7 +88,7 @@
                     android:gravity="bottom"
                     android:textColor="?android:textColorPrimaryInverse"
                     android:textIsSelectable="false"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     tools:text="Total: 250 kcal" />
             </LinearLayout>
 

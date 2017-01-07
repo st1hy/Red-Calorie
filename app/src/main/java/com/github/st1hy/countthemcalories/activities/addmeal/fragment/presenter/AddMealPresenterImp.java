@@ -6,20 +6,21 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddM
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
-import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
@@ -43,8 +44,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
                                @NonNull AddMealModel model,
                                @NonNull Meal meal,
                                @NonNull SelectPicturePresenter picturePresenter,
-                               @NonNull Observable<AddMealMenuAction> menuActionObservable,
-                               @NonNull DefaultMealName defaultMealName) {
+                               @NonNull Observable<AddMealMenuAction> menuActionObservable) {
         this.view = view;
         this.model = model;
         this.meal = meal;
@@ -71,13 +71,14 @@ public class AddMealPresenterImp implements AddMealPresenter {
                         .flatMap(aVoid1 -> model.saveToDatabase())
                         .subscribe(v -> view.onMealSaved())
         );
+        setupTime();
     }
-
 
     @Override
     public void onStop() {
         subscriptions.clear();
     }
+
 
     private boolean validateMeal() {
         return validateIngredients();
@@ -92,6 +93,31 @@ public class AddMealPresenterImp implements AddMealPresenter {
 
     private void subscribe(@NonNull Subscription subscription) {
         subscriptions.add(subscription);
+    }
+
+    private void setupTime() {
+        setMealTime(model.getDisplayTime());
+        if (meal.getCreationDate() == null) {
+            subscribe(
+                    Observable.interval(model.getTimeToNextMinuteMils(), 60_000L,
+                            TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                            .takeWhile(ignore -> meal.getCreationDate() == null)
+                            .map(ignore -> DateTime.now())
+                            .subscribe(this::setMealTime)
+            );
+        }
+        subscribe(
+                view.mealTimeClicked()
+                        .compose(view.openTimePicker(model.getDisplayTime()))
+                        .subscribe(selectedTime -> {
+                            meal.setCreationDate(selectedTime);
+                            setMealTime(selectedTime);
+                        })
+        );
+    }
+
+    private void setMealTime(DateTime now) {
+        view.setMealTime(model.formatTime(now));
     }
 
 }

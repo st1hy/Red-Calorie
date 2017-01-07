@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.view;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,9 +12,12 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenDelegate;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
+import com.github.st1hy.countthemcalories.core.time.RxTimePicker;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,11 +39,17 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     Button addIngredientButton;
     @BindView(R.id.add_meal_total_calories)
     TextView totalCalories;
+    @BindView(R.id.add_meal_time_value)
+    Button mealTime;
+    @NonNull
+    private final Context context;
 
     @Inject
     public AddMealViewController(@NonNull @Named("fragmentRootView") View rootView,
-                                 @NonNull AddMealScreen delegate) {
+                                 @NonNull AddMealScreen delegate,
+                                 @Named("activityContext") @NonNull Context context) {
         super(delegate);
+        this.context = context;
         ButterKnife.bind(this, rootView);
     }
 
@@ -82,4 +92,23 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     public void setHint(@NonNull String mealNameNow) {
         name.setHint(mealNameNow);
     }
+
+    @NonNull
+    @Override
+    public Observable<Void> mealTimeClicked() {
+        return RxView.clicks(mealTime);
+    }
+
+    @Override
+    public void setMealTime(@NonNull String time) {
+        mealTime.setText(time);
+    }
+
+    @NonNull
+    @Override
+    public Observable.Transformer<Void, DateTime> openTimePicker(DateTime currentTime) {
+        return voidObservable -> voidObservable
+                .flatMap(aVoid -> RxTimePicker.openPicker(context, currentTime));
+    }
+
 }

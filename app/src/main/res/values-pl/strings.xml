@@ -76,4 +76,5 @@
     <string name="add_meal_name_dinner">Obiad</string>
     <string name="add_meal_name_supper">Kolacja</string>
     <string name="add_meal_name_lunch">Lunch</string>
+    <string name="add_meal_time_desc">Czas posiłku:</string>
 </resources>
