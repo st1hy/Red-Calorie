@@ -4,7 +4,12 @@ Android app for keeping your calories in check.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state 1.3
+
+## Current state 1.3.1
+* Added meal time edition.
+* Added default meal names that depend on meal creation time.
+
+### 1.3
 * General code redesign aiming at "simplification" and "maintainability"
 * ~~No interesting function added but bugs~~
 * Removed contribute page, material design improvement
