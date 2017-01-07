@@ -4,15 +4,16 @@ Android app for keeping your calories in check.
 
 Application is available on [Google Play](https://play.google.com/store/apps/details?id=com.github.st1hy.countthemcalories)
 
-## Current state 1.3 beta
+## Current state 1.3
 * General code redesign aiming at "simplification" and "maintainability"
-* No interesting function added but bugs
+* ~~No interesting function added but bugs~~
+* Removed contribute page, material design improvement
 * Removed Robolectric tests and most of mockito tests: 
 1st constantly broke when upgrading support library, 
 2nd after redesign become impossible to maintain (reverse implementation will do that). 
 * Espresso tests survived pretty much without major change. Espresso for the win.
 
-## 1.2.3
+### 1.2.3
 * Fixed incorrectly starting multiple activities in some edge cases
 * Fixed missing view refresh when ingredient was removed in a meal.
 * Improved search flow: when user cannot find the searched result and adds new item default name is the same as the query.
