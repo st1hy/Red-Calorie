@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
+import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 
 import org.joda.time.DateTime;
 
@@ -24,6 +26,8 @@ public class AddMealModel implements PictureModel {
     private final MealIngredientsListModel ingredientsListModel;
     private final RxMealsDatabaseModel databaseModel;
     private final Resources resources;
+    @NonNull
+    private final DefaultMealName defaultMealName;
 
     private final Meal meal;
 
@@ -31,10 +35,12 @@ public class AddMealModel implements PictureModel {
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
                         @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Resources resources,
+                        @NonNull DefaultMealName defaultMealName,
                         @NonNull Meal meal) {
         this.ingredientsListModel = ingredientsListModel;
         this.databaseModel = databaseModel;
         this.resources = resources;
+        this.defaultMealName = defaultMealName;
         this.meal = meal;
 
     }
@@ -61,15 +67,13 @@ public class AddMealModel implements PictureModel {
 
     @NonNull
     public Observable<Void> saveToDatabase() {
-        if (meal.getCreationDate() == null) meal.setCreationDate(DateTime.now());
+        if (meal.getCreationDate() == null) {
+            meal.setCreationDate(DateTime.now());
+        }
+        if (Strings.isNullOrEmpty(meal.getName())) {
+            meal.setName(defaultMealName.getBestGuessMealNameAt(meal.getCreationDate()));
+        }
         return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
-    }
-
-    @NonNull
-    public Optional<String> getNameError() {
-        return meal.getName().trim().isEmpty() ?
-                Optional.of(resources.getString(R.string.add_meal_name_empty_error)) :
-                Optional.<String>absent();
     }
 
     @NonNull
@@ -82,5 +86,12 @@ public class AddMealModel implements PictureModel {
     @Override
     public void setImageUri(@NonNull Uri uri) {
         meal.setImageUri(uri);
+    }
+
+    @NonNull
+    public String getMealNameHint() {
+        DateTime time = meal.getCreationDate();
+        if (time == null) time = DateTime.now();
+        return defaultMealName.getBestGuessMealNameAt(time);
     }
 }

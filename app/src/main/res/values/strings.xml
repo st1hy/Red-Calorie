@@ -20,7 +20,6 @@
 
     <string name="add_meal_title">Add new meal</string>
     <string name="add_meal_save_action">Save</string>
-    <string name="add_meal_name_hint">Meal name</string>
     <string name="add_meal_photo_description">Photography of a meal</string>
     <string name="add_meal_image_select_from_gallery">Select picture from gallery</string>
     <string name="add_meal_image_select_from_camera">Make a picture</string>
@@ -31,7 +30,6 @@
     <string name="add_meal_ingredient_accept_description">Finish editing ingredient amount</string>
     <string name="add_meal_ingredient_remove_description">Remove this ingredient</string>
     <string name="add_meal_ingredient_amount_hint">Amount i.e 200 g or ml</string>
-    <string name="add_meal_name_empty_error">Name cannot be empty</string>
     <string name="add_meal_ingredients_empty_error">You must add at least one ingredient</string>
 
     <string name="ingredients_title">Ingredients</string>
@@ -84,5 +82,8 @@
     <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
     <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
     <string name="search_hint">Search</string>
-
+    <string name="add_meal_name_breakfast">Breakfast</string>
+    <string name="add_meal_name_lunch">Lunch</string>
+    <string name="add_meal_name_dinner">Dinner</string>
+    <string name="add_meal_name_supper">Supper</string>
 </resources>

@@ -142,7 +142,7 @@ public class OverviewActivityTest {
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
-        onView(withHint(R.string.add_meal_name_hint)).perform(typeTextIntoFocusedView("Meal 3"));
+        onView(withId(R.id.add_meal_name)).perform(typeTextIntoFocusedView("Meal 3"));
         closeSoftKeyboard();
         onView(withId(R.id.add_meal_fab_add_ingredient)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)));
@@ -259,7 +259,7 @@ public class OverviewActivityTest {
         onView(withText(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()))
                 .perform(clearText());
-        onView(withHint(R.string.add_meal_name_hint))
+        onView(withId(R.id.add_meal_name))
                 .perform(typeTextIntoFocusedView("Meal edited"));
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));

@@ -79,12 +79,7 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     }
 
     @Override
-    public void showNameError(@NonNull String error) {
-        name.setError(error);
-    }
-
-    @Override
-    public void hideNameError() {
-        name.setError(null);
+    public void setHint(@NonNull String mealNameNow) {
+        name.setHint(mealNameNow);
     }
 }

@@ -38,7 +38,7 @@ public class ProductionOpenHelperTest {
 
     @Test
     public void testUpgrade() throws Exception {
-        when(migrationHelper.onUpgrade(any(Database.class),anyInt(),anyInt())).thenReturn(true);
+        when(migrationHelper.onUpgrade(any(Database.class), anyInt(), anyInt())).thenReturn(true);
 
         openHelper.onUpgrade(db, from, to);
 
@@ -48,7 +48,7 @@ public class ProductionOpenHelperTest {
 
     @Test
     public void testUpgradeFailed() throws Exception {
-        when(migrationHelper.onUpgrade(any(Database.class),anyInt(),anyInt())).thenReturn(false);
+        when(migrationHelper.onUpgrade(any(Database.class), anyInt(), anyInt())).thenReturn(false);
 
         openHelper.onUpgrade(db, from, to);
 

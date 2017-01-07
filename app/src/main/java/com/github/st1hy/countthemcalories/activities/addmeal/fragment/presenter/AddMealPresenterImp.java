@@ -6,11 +6,15 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddM
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
+import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -39,7 +43,8 @@ public class AddMealPresenterImp implements AddMealPresenter {
                                @NonNull AddMealModel model,
                                @NonNull Meal meal,
                                @NonNull SelectPicturePresenter picturePresenter,
-                               @NonNull Observable<AddMealMenuAction> menuActionObservable) {
+                               @NonNull Observable<AddMealMenuAction> menuActionObservable,
+                               @NonNull DefaultMealName defaultMealName) {
         this.view = view;
         this.model = model;
         this.meal = meal;
@@ -50,14 +55,13 @@ public class AddMealPresenterImp implements AddMealPresenter {
     @Override
     public void onStart() {
         picturePresenter.loadImageUri(meal.getImageUri());
-
         view.setName(meal.getName());
+        view.setHint(model.getMealNameHint());
         subscribe(
                 view.getNameObservable()
                         .skip(1)
                         .subscribe(charSequence -> {
                             meal.setName(charSequence.toString());
-                            validateName();
                         })
         );
         subscribe(
@@ -69,20 +73,14 @@ public class AddMealPresenterImp implements AddMealPresenter {
         );
     }
 
+
     @Override
     public void onStop() {
         subscriptions.clear();
     }
 
     private boolean validateMeal() {
-        return validateName() & validateIngredients();
-    }
-
-    private boolean validateName() {
-        Optional<String> nameError = model.getNameError();
-        if (nameError.isPresent()) view.showNameError(nameError.get());
-        else view.hideNameError();
-        return !nameError.isPresent();
+        return validateIngredients();
     }
 
     private boolean validateIngredients() {

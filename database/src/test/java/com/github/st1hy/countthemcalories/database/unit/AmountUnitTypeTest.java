@@ -16,7 +16,7 @@ public class AmountUnitTypeTest {
 
     @Test
     public void testMatchingUnitsWithIds() {
-        for (AmountUnitType type: AmountUnitType.values()) {
+        for (AmountUnitType type : AmountUnitType.values()) {
             int id = type.getId();
             assertThat(AmountUnitType.fromId(id), equalTo(type));
         }

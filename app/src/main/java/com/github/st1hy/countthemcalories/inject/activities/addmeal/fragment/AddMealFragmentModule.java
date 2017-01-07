@@ -20,6 +20,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
 
 import org.parceler.Parcels;
 
@@ -36,7 +37,10 @@ import rx.subjects.PublishSubject;
 
 import static org.parceler.Parcels.unwrap;
 
-@Module(includes = AddMealFragmentBindings.class)
+@Module(includes = {
+        AddMealFragmentBindings.class,
+        DefaultMealNameModule.class
+})
 public class AddMealFragmentModule {
 
     public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";

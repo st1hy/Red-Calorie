@@ -24,8 +24,5 @@ public interface AddMealView extends AddMealScreen {
 
     void setTotalEnergy(@NonNull String totalEnergy);
 
-    void showNameError(@NonNull String error);
-
-    void hideNameError();
-
+    void setHint(@NonNull String mealNameNow);
 }

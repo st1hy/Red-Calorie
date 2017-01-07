@@ -25,7 +25,7 @@
                 android:id="@+id/add_meal_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_meal_name_hint"
+                tools:hint="Breakfast"
                 android:inputType="textCapSentences"
                 android:lines="1"
                 android:maxLines="1"

@@ -16,7 +16,7 @@ public class BigDecimalPropertyConverterTest {
 
     @Test
     public void testConversion() throws Exception {
-        final BigDecimal value = BigDecimal.valueOf(232325,-1);
+        final BigDecimal value = BigDecimal.valueOf(232325, -1);
         String databaseValue = converter.convertToDatabaseValue(value);
         BigDecimal fromDatabase = converter.convertToEntityProperty(databaseValue);
         assertNotNull(fromDatabase);

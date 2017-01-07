@@ -23,8 +23,6 @@
     <string name="add_meal_ingredient_photo_description">Zdjęcie jednego ze składników</string>
     <string name="add_meal_ingredient_remove_description">Usuń ten składnik</string>
     <string name="add_meal_ingredients_empty_error">Musisz dodać co najmniej jeden składnik</string>
-    <string name="add_meal_name_empty_error">Nazwa nie może być pusta</string>
-    <string name="add_meal_name_hint">Nazwa posiłku</string>
     <string name="add_meal_photo_description">Zdjęcie posiłku</string>
     <string name="add_meal_save_action">Zapisz</string>
     <string name="add_meal_title">Dodaj nowy posiłek</string>
@@ -74,4 +72,8 @@
     <string name="tags_undo_add_message">Dodano nową kategorię</string>
     <string name="tags_undo_delete_message">Kategoria została usunięta</string>
     <string name="undo">Cofnij</string>
+    <string name="add_meal_name_breakfast">Śniadanie</string>
+    <string name="add_meal_name_dinner">Obiad</string>
+    <string name="add_meal_name_supper">Kolacja</string>
+    <string name="add_meal_name_lunch">Lunch</string>
 </resources>
