@@ -149,7 +149,6 @@ public class AddMealFragmentModule {
                 R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }

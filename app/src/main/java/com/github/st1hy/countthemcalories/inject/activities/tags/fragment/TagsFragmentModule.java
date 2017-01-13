@@ -47,7 +47,6 @@ public class TagsFragmentModule {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }

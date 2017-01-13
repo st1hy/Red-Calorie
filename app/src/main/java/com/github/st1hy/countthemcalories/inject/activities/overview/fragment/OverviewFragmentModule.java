@@ -39,7 +39,6 @@ public class OverviewFragmentModule {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.overview_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }

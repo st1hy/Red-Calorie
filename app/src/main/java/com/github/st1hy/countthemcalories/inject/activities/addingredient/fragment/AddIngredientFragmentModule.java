@@ -131,7 +131,6 @@ public class AddIngredientFragmentModule {
                 R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(new LinearLayoutManager(context));
-        tagsRecycler.setNestedScrollingEnabled(false);
         tagsRecycler.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return tagsRecycler;
     }

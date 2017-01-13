@@ -45,7 +45,6 @@ public class IngredientsFragmentModule {
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.ingredients_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }
