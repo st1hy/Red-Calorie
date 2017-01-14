@@ -10,47 +10,57 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/tags_item_delete_frame"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/tags_item_delete"
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <FrameLayout
+                android:id="@+id/tags_item_delete_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/tags_remove_description"
-                android:minWidth="80dp"
-                app:srcCompat="@drawable/ic_delete_24px"
-                android:tint="@color/colorBackground" />
-        </FrameLayout>
+                android:background="@color/colorPrimary">
 
-        <include
-            layout="@layout/tags_item"
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/tags_item_delete"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/tags_remove_description"
+                    android:minWidth="80dp"
+                    android:tint="@color/colorBackground"
+                    app:srcCompat="@drawable/ic_delete_24px" />
+            </FrameLayout>
+
+            <include
+                layout="@layout/tags_item_inner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:id="@+id/tags_item_edit_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/tags_item_edit"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/tags_edit_description"
+                    android:minWidth="80dp"
+                    android:tint="@color/colorBackground"
+                    app:srcCompat="@drawable/ic_edit_24px" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <View android:layout_height="1dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:background="@drawable/default_separator"/>
 
-        <FrameLayout
-            android:id="@+id/tags_item_edit_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent">
-
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/tags_item_edit"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/tags_edit_description"
-                android:minWidth="80dp"
-                app:srcCompat="@drawable/ic_edit_24px"
-                android:tint="@color/colorBackground" />
-        </FrameLayout>
     </LinearLayout>
-
 </HorizontalScrollView>

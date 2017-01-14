@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/group_card_view_horizontally_borderless_margin"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="3dp"
+        android:layout_height="3dp"
+        android:rotation="90"
+        android:background="@drawable/shadow_corner"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@drawable/shadow_bottom" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_bottom_space" />
+    </LinearLayout>
+    <View
+        android:layout_width="3dp"
+        android:layout_height="3dp"
+        android:background="@drawable/shadow_corner"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/group_card_view_horizontally_borderless_margin"
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -12,11 +12,8 @@ public interface OnTagInteraction {
 
     void onTagClicked(int position, @NonNull Tag tag);
 
-    void onDeleteClicked(int position, @NonNull Tag tag);
-
     @NonNull
     @CheckResult
     Observable<RecyclerEvent> getEvents();
 
-    void onEditClicked(int position, @NonNull Tag tag);
 }

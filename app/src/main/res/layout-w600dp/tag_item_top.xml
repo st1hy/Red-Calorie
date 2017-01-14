@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/group_card_view_horizontally_borderless_margin"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="3dp"
+        android:layout_height="2dp"
+        android:alpha="0.8"
+        android:rotation="180"
+        android:background="@drawable/shadow_corner"
+        android:layout_gravity="bottom"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_vertical_margin" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:alpha="0.8"
+            android:rotation="180"
+            android:background="@drawable/shadow_bottom" />
+    </LinearLayout>
+    <View
+        android:layout_width="2dp"
+        android:layout_height="2dp"
+        android:rotation="270"
+        android:background="@drawable/shadow_corner"
+        android:layout_gravity="bottom"/>
+    <android.support.v4.widget.Space
+        android:layout_width="1dp"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/group_card_view_horizontally_borderless_margin"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

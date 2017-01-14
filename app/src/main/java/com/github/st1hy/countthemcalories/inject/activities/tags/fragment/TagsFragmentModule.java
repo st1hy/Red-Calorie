@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.inject.activities.tags.fragment;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -47,7 +46,6 @@ public class TagsFragmentModule {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }
 

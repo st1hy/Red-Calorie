@@ -40,6 +40,8 @@ public class DatabaseTest {
     @Rule
     public final TestRule rule = RuleChain.outerRule(componentRule).around(main);
 
+    private static final int SIZE = 100_000;
+
 
     @Before
     public void setUp() throws Exception {
@@ -58,8 +60,8 @@ public class DatabaseTest {
 
     @NonNull
     private Iterable<Tag> getEntries() {
-        ArrayList<Tag> tags = new ArrayList<>(100_000);
-        for (long i = 0; i < 100_000; i++) {
+        ArrayList<Tag> tags = new ArrayList<>(SIZE);
+        for (long i = 0; i < SIZE; i++) {
             tags.add(new Tag(i, "Tag " + i));
         }
         return tags;
@@ -72,8 +74,8 @@ public class DatabaseTest {
 
     @NonNull
     private Iterable<IngredientTemplate> getIngredientEntries() {
-        ArrayList<IngredientTemplate> ingredients = new ArrayList<>(100_000);
-        for (int i = 0; i < 100_000; i++) {
+        ArrayList<IngredientTemplate> ingredients = new ArrayList<>(SIZE);
+        for (int i = 0; i < SIZE; i++) {
             AmountUnitType type = i % 2 == 0 ? AmountUnitType.MASS : AmountUnitType.VOLUME;
             BigDecimal amount = new BigDecimal("" + i % 71 + "." + i % 97);
             ingredients.add(new IngredientTemplate((long)i, "Ingredient "+ i, Uri.EMPTY, DateTime.now(), type, amount));

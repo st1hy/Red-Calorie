@@ -15,6 +15,8 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsVie
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagSpaceHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
@@ -42,7 +44,12 @@ import timber.log.Timber;
 @PerFragment
 public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction {
 
-    private static final int item_layout = R.layout.tags_item_scrolling;
+    private static final int item_layout = R.layout.tags_item_outer;
+    private static final int space_top = R.layout.tag_item_top;
+    private static final int space_bottom = R.layout.tag_item_bottom;
+    private static final int BOTTOM_ITEM_PADDING = 1;
+    private static final int TOP_ITEM_PADDING = 1;
+    private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING + TOP_ITEM_PADDING;
 
     @NonNull
     private final TagsView view;
@@ -56,7 +63,6 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private final TagsDatabaseCommands commands;
     @NonNull
     private final UndoView undoView;
-
 
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
@@ -93,15 +99,34 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position < TOP_ITEM_PADDING) {
+            return space_top;
+        } else if (position < TOP_ITEM_PADDING + getDaoItemCount()) {
+            return item_layout;
+        } else {
+            return space_bottom;
+        }
+    }
+
+    @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(item_layout, parent, false);
-        TagViewHolder item = new TagViewHolder(view, this);
-        item.fillParent(parent);
-        return item;
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        if (viewType == item_layout) {
+            return new TagItemHolder(view, this);
+        } else {
+            return new TagSpaceHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
+        if (holder instanceof TagItemHolder) {
+            onBindItemHolder((TagItemHolder) holder, position - TOP_ITEM_PADDING);
+        }
+    }
+
+    private void onBindItemHolder(TagItemHolder holder, int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
@@ -134,7 +159,6 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         }
     }
 
-    @Override
     public void onEditClicked(final int position, @NonNull final Tag tag) {
         addSubscription(
                 view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getName())
@@ -166,6 +190,10 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
+    public int getItemCount() {
+        return getDaoItemCount() + ADDITIONAL_ITEMS;
+    }
+
     public void onDeleteClicked(final int position, @NonNull final Tag tag) {
         addSubscription(
                 databaseModel.getById(tag.getId())
@@ -227,7 +255,6 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private void onAddTagClicked(@NonNull Observable<Void> clicks) {
         addSubscription(
                 clicks.subscribeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(aVoid -> Timber.v("Add dao clicked"))
                         .flatMap(aVoid1 -> view.newTagDialog(
                                 viewModel.getNewTagDialogTitle(), lastQuery)
                         )

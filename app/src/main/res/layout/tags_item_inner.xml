@@ -27,4 +27,9 @@
             android:layout_gravity="center_vertical"
             tools:text="My tag name"/>
     </FrameLayout>
+
+    <View android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/default_separator"/>
+
 </LinearLayout>
