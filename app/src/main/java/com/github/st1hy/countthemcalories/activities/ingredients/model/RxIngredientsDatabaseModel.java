@@ -117,6 +117,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                                                             @NonNull final Collection<Long> tagIds) {
         return () -> {
             dao().insertOrReplace(ingredientTemplate);
+            ingredientTemplate.resetTags();
             List<JointIngredientTag> jTags = ingredientTemplate.getTags();
             for (JointIngredientTag jTag : jTags) {
                 if (!tagIds.contains(jTag.getTagId())) {

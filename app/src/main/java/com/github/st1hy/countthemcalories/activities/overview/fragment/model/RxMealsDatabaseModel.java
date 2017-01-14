@@ -63,19 +63,19 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @NonNull
-    public Meal performInsertOrUpdate(@NonNull Meal meal, @NonNull Collection<Ingredient> ingredients) {
+    public Meal performInsertOrUpdate(@NonNull Meal meal, @NonNull Collection<Ingredient> newIngredients) {
         Meal result = performInsert(meal);
         IngredientDao ingredientDao = session().getIngredientDao();
-        List<Ingredient> mealIngredients = meal.getIngredients();
-        for (Ingredient mealIngredient : mealIngredients) {
-            if (!ingredients.contains(mealIngredient)) {
+        List<Ingredient> oldIngredients = meal.getIngredients();
+        for (Ingredient mealIngredient : oldIngredients) {
+            if (!newIngredients.contains(mealIngredient)) {
                 IngredientTemplate ingredientType = mealIngredient.getIngredientType();
                 List<Ingredient> childIngredients = ingredientType.getChildIngredients();
                 mealIngredient.delete();
                 childIngredients.remove(mealIngredient);
             }
         }
-        for (Ingredient ingredient : ingredients) {
+        for (Ingredient ingredient : newIngredients) {
             ingredient.setPartOfMeal(meal);
             ingredientDao.insertOrReplace(ingredient);
         }
@@ -119,6 +119,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     @Override
     protected Meal performInsert(@NonNull Meal meal) {
         dao().insertOrReplace(meal);
+        meal.resetIngredients();
         meal.getIngredients();
         return meal;
     }

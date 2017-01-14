@@ -69,6 +69,7 @@ import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMain
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.setTime;
 import static com.github.st1hy.countthemcalories.matchers.MenuItemMatchers.menuItemIsChecked;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -254,7 +255,20 @@ public class OverviewActivityTest {
 
         onView(allOf(withId(R.id.overview_item_edit), isDisplayed())).perform(click());
 
-        checkEditActivity();
+        checkEditActivityShort();
+    }
+
+    private void checkEditActivityShort() {
+        intended(hasComponent(new ComponentName(getTargetContext(), EditMealActivity.class)));
+
+        onView(withText(exampleMeals[0].getName()))
+                .check(matches(isDisplayed()))
+                .perform(clearText());
+        onView(withId(R.id.add_meal_name))
+                .perform(typeTextIntoFocusedView("Meal edited"));
+        onView(withText(R.string.add_meal_save_action)).perform(click());
+        onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
+        onView(withText("Meal edited")).check(matches(isDisplayed()));
     }
 
     private void checkEditActivity() {
@@ -268,10 +282,16 @@ public class OverviewActivityTest {
         onView(withId(R.id.add_meal_time_value)).perform(click());
         onView(withClassName(equalTo(TimePicker.class.getName()))).perform(setTime(20,43));
         onView(withText("OK")).perform(click());
+
+        onView(withText("Ingredient 1")).perform(click());
+        onView(withId(R.id.add_meal_ingredient_remove)).perform(click());
+        onView(withText("Ingredient 1")).check(doesNotExist());
+
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
         onView(withText("20:43")).check(matches(isDisplayed()));
+        onView(withText(containsString("Ingredient 1"))).check(doesNotExist());
     }
 
     @Test
