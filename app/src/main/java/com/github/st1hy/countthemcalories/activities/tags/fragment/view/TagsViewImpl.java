@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -42,6 +45,9 @@ public class TagsViewImpl implements TagsView {
     View emptyTags;
     @BindView(R.id.tags_empty_message)
     TextView emptyTagsMessage;
+
+    @Inject
+    ShowHideAnimation scrollToTopAnimation;
 
     @Inject
     public TagsViewImpl(@NonNull TagsScreen screen,
@@ -138,6 +144,33 @@ public class TagsViewImpl implements TagsView {
     @NonNull
     public Observable<CharSequence> getQueryObservable() {
         return screen.getQueryObservable();
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> scrollToTop() {
+        return RxView.clicks(scrollToTopAnimation.getView());
+    }
+
+    @Override
+    public void setScrollToTopVisibility(@NonNull Visibility visibility) {
+        if (visibility == Visibility.VISIBLE) {
+            scrollToTopAnimation.show();
+        } else {
+            scrollToTopAnimation.hide();
+        }
+    }
+
+    @NonNull
+    @Override
+    public Observable<Integer> firstVisibleElementPosition() {
+        return RxRecyclerView.scrollEvents(recyclerView)
+                .map(ignore -> firstVisiblePosition());
+    }
+
+    private int firstVisiblePosition() {
+        return ((LinearLayoutManager) recyclerView.getLayoutManager())
+                .findFirstCompletelyVisibleItemPosition();
     }
 
 }

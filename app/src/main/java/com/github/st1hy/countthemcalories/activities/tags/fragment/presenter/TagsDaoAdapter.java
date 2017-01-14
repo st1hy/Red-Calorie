@@ -57,6 +57,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @NonNull
     private final UndoView undoView;
 
+
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
                           @NonNull RxTagsDatabaseModel databaseModel,
@@ -78,6 +79,17 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         super.onStart();
         onAddTagClicked(view.getAddTagClickedObservable());
         onSearch(view.getQueryObservable());
+        addSubscription(
+                view.firstVisibleElementPosition()
+                        .map(position -> position > 0)
+                        .distinctUntilChanged()
+                        .map(Visibility::of)
+                        .subscribe(view::setScrollToTopVisibility)
+        );
+        addSubscription(
+                view.scrollToTop()
+                        .subscribe(ignore -> view.scrollToPosition(0))
+        );
     }
 
     @Override

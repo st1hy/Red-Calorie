@@ -51,5 +51,10 @@ public class TagsFragmentModule {
         return recyclerView;
     }
 
+    @Provides
+    @Named("animated")
+    public static View scrollToTop(@Named("fragmentRootView") View root) {
+        return root.findViewById(R.id.scroll_to_top);
+    }
 
 }

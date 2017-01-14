@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.core.viewcontrol;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
@@ -95,6 +96,7 @@ public class HorizontalScrollObservable {
     }
 
     @NonNull
+    @CheckResult
     private Observable<ViewScrollChangeEvent> getScrollingObservable() {
         Observable<ViewScrollChangeEvent> observable;
         if (utils.hasMarshmallow()) {
