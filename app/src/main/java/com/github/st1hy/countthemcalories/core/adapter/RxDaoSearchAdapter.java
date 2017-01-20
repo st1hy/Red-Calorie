@@ -48,7 +48,7 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
                     return cursor11.map(cursor1 -> Pair.create(query, cursor1));
                 })
                 .doOnError(e -> Timber.e(e, "Search exploded"))
-                .retry()
+                .retry(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     Timber.v("Db cursor query ended");

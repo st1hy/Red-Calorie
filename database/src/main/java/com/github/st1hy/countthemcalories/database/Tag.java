@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.Transient;
 import org.parceler.Parcel;
 
 import java.util.List;
@@ -37,6 +38,9 @@ public class Tag {
     @Generated(hash = 2076396065)
     private transient TagDao myDao;
 
+    @Transient
+    int ingredientCount = -1;
+
     public Tag(Long id) {
         this.id = id;
     }
@@ -57,6 +61,14 @@ public class Tag {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getIngredientCount() {
+        return ingredientCount;
+    }
+
+    public void setIngredientCount(int ingredientCount) {
+        this.ingredientCount = ingredientCount;
     }
 
     @NotNull

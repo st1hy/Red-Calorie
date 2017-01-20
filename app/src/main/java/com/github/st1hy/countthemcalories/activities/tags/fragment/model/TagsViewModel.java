@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.model;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
@@ -8,8 +10,11 @@ import javax.inject.Inject;
 
 public class TagsViewModel {
 
+    private final Resources resources;
+
     @Inject
-    public TagsViewModel() {
+    public TagsViewModel(@NonNull Resources resources) {
+        this.resources = resources;
     }
 
     @StringRes
@@ -40,5 +45,10 @@ public class TagsViewModel {
     @StringRes
     public int getSearchResultEmptyMessage() {
         return R.string.tags_search_result_empty;
+    }
+
+    @NonNull
+    public String getCounterFor(int ingredientCount) {
+        return resources.getString(R.string.tags_ingredient_counter, ingredientCount);
     }
 }

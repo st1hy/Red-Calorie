@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.database.Tag;
 
@@ -16,13 +17,19 @@ public class TagItemHolder extends TagViewHolder {
 
     @BindView(R.id.tags_item_name)
     TextView name;
+    @BindView(R.id.tags_item_count)
+    TextView counter;
 
+    private final TagsViewModel viewModel;
     private final OnTagInteraction callback;
     private final Tag tag = new Tag();
     private final PositionDelegate position = new PositionDelegate();
 
-    public TagItemHolder(@NonNull View itemView, @NonNull OnTagInteraction callback) {
+    public TagItemHolder(@NonNull View itemView,
+                         @NonNull TagsViewModel viewModel,
+                         @NonNull OnTagInteraction callback) {
         super(itemView);
+        this.viewModel = viewModel;
         this.callback = callback;
         ButterKnife.bind(this, itemView);
     }
@@ -40,6 +47,7 @@ public class TagItemHolder extends TagViewHolder {
     public void bind(int position, @NonNull Tag tag) {
         this.position.set(position);
         name.setText(tag.getName());
+        counter.setText(viewModel.getCounterFor(tag.getIngredientCount()));
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.jakewharton.rxbinding.internal.Functions;
+import com.jakewharton.rxbinding.view.RxView;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -17,16 +20,20 @@ public class ShowHideAnimation {
     }
 
     public void show() {
-        view.setVisibility(View.VISIBLE);
         view.animate().translationY(0)
                 .setDuration(200)
                 .start();
     }
 
     public void hide() {
-        view.animate().translationY(view.getHeight())
-                .setDuration(200)
-                .start();
+        if (view.getHeight() == 0) {
+            RxView.preDraws(view, Functions.FUNC0_ALWAYS_TRUE)
+                    .first().subscribe(aVoid -> hide());
+        } else {
+            view.animate().translationY(view.getHeight() * 2)
+                    .setDuration(200)
+                    .start();
+        }
     }
 
     @NonNull

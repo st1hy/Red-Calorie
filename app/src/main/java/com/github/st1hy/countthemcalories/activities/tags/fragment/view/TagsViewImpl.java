@@ -28,6 +28,7 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -148,12 +149,13 @@ public class TagsViewImpl implements TagsView {
 
     @NonNull
     @Override
-    public Observable<Void> scrollToTop() {
+    public Observable<Void> scrollToTopObservable() {
         return RxView.clicks(scrollToTopAnimation.getView());
     }
 
     @Override
     public void setScrollToTopVisibility(@NonNull Visibility visibility) {
+        Timber.d("Show scroll to top: %s", visibility);
         if (visibility == Visibility.VISIBLE) {
             scrollToTopAnimation.show();
         } else {
@@ -163,9 +165,11 @@ public class TagsViewImpl implements TagsView {
 
     @NonNull
     @Override
-    public Observable<Integer> firstVisibleElementPosition() {
-        return RxRecyclerView.scrollEvents(recyclerView)
-                .map(ignore -> firstVisiblePosition());
+    public Observable<Integer> firstVisibleElementPositionObservable() {
+        return Observable.just(firstVisiblePosition()).concatWith(
+                RxRecyclerView.scrollEvents(recyclerView)
+                        .map(ignore -> firstVisiblePosition())
+        );
     }
 
     private int firstVisiblePosition() {

@@ -8,13 +8,12 @@ import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
+import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.CursorQuery;
-import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +33,7 @@ import rx.Observable;
 public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     private final Lazy<TagDao> dao;
     private List<String> lastExcluded = Collections.emptyList();
+    private static final String COLUMN_COUNT = "cntr";
 
     @Inject
     public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
@@ -52,6 +52,8 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     @Override
     public void performReadEntity(@NonNull Cursor cursor, @NonNull Tag output) {
         dao().readEntity(cursor, output, 0);
+        int counter = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COUNT));
+        output.setIngredientCount(counter);
     }
 
     @NonNull
@@ -101,18 +103,50 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     @NonNull
     @Override
     protected CursorQuery allSortedByName() {
-        return dao().queryBuilder()
-                .orderAsc(TagDao.Properties.Name)
-                .buildCursor();
+
+        return CursorQuery.internalCreate(
+                dao(), "SELECT " +
+                        "T." + TagDao.Properties.Id.columnName + ", " +
+                        "T." + TagDao.Properties.Name.columnName + ", " +
+                        "(" +
+                        "SELECT " +
+                        "count(*) " +
+                        " FROM " +
+                        JointIngredientTagDao.TABLENAME + " I " +
+                        " WHERE " +
+                        " T." + TagDao.Properties.Id.columnName +
+                        " = " +
+                        " I." + JointIngredientTagDao.Properties.TagId.columnName +
+                        ") " + COLUMN_COUNT +
+                        " FROM " +
+                        TagDao.TABLENAME + " T " +
+                        "ORDER BY " + TagDao.Properties.Name.columnName + " ASC;"
+                , new Object[]{});
     }
 
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        return dao().queryBuilder()
-                .where(TagDao.Properties.Name.like(""))
-                .orderAsc(TagDao.Properties.Name)
-                .buildCursor();
+        return CursorQuery.internalCreate(
+                dao(), "SELECT " +
+                        "T." + TagDao.Properties.Id.columnName + ", " +
+                        "T." + TagDao.Properties.Name.columnName + ", " +
+                        "(" +
+                        "SELECT " +
+                        "count(*) " +
+                        " FROM " +
+                        JointIngredientTagDao.TABLENAME + " I " +
+                        " WHERE " +
+                        " T." + TagDao.Properties.Id.columnName +
+                        " = " +
+                        " I." + JointIngredientTagDao.Properties.TagId.columnName +
+                        ") " + COLUMN_COUNT +
+                        " FROM " +
+                        TagDao.TABLENAME + " T " +
+                        "WHERE " +
+                        "T." + TagDao.Properties.Name.columnName + " LIKE ? " +
+                        "ORDER BY " + TagDao.Properties.Name.columnName + " ASC;"
+                , new Object[]{""});
     }
 
     @NonNull
@@ -134,7 +168,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     private Callable<Cursor> filteredExclude(@NonNull final String partOfName,
                                              @NonNull final Collection<String> excludedTags) {
         if (excludedTags.isEmpty()) return query(getQueryOf(partOfName));
-        else return query(filteredExcludeQueryCall(partOfName, excludedTags));
+        else return query(() -> filteredExcludeSortedQuery(partOfName, excludedTags));
     }
 
     @NonNull
@@ -143,29 +177,50 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         if (lastExcluded.isEmpty()) {
             return super.lastQuery();
         } else {
-            return filteredExcludeQueryCall(lastFilter, lastExcluded);
+            return () -> filteredExcludeSortedQuery(lastFilter, lastExcluded);
         }
-    }
-
-    @NonNull
-    private Callable<CursorQuery> filteredExcludeQueryCall(@NonNull final String partOfName, @NonNull final Collection<String> excludedTags) {
-        return () -> filteredExcludeSortedQuery(partOfName, excludedTags);
     }
 
     @NonNull
     private CursorQuery filteredExcludeSortedQuery(@NonNull final String partOfName,
                                                    @NonNull final Collection<String> excludedTags) {
         cacheLastQuery(partOfName, excludedTags);
-        QueryBuilder<Tag> builder = dao().queryBuilder();
-        final WhereCondition notInList = TagDao.Properties.Name.notIn(excludedTags);
-        if (!partOfName.isEmpty()) {
-            builder = builder.where(TagDao.Properties.Name.like("%" + partOfName + "%"), notInList);
-        } else {
-            builder = builder.where(notInList);
+
+        StringBuilder sql = new StringBuilder(400);
+        sql.append("SELECT ");
+        sql.append("T.").append(TagDao.Properties.Id.columnName).append(", ");
+        sql.append("T.").append(TagDao.Properties.Name.columnName).append(", ");
+        sql.append("(")
+                .append("SELECT ")
+                .append("count(*) ")
+                .append(" FROM ")
+                .append(JointIngredientTagDao.TABLENAME).append(" I ")
+                .append(" WHERE ")
+                .append(" T.").append(TagDao.Properties.Id.columnName)
+                .append(" = ")
+                .append(" I.").append(JointIngredientTagDao.Properties.TagId.columnName)
+                .append(") ").append(COLUMN_COUNT);
+        sql.append(" FROM ");
+        sql.append(TagDao.TABLENAME).append(" T ");
+        sql.append("WHERE ");
+        sql.append("T.").append(TagDao.Properties.Name.columnName).append(" LIKE ? ");
+        if (!excludedTags.isEmpty()) {
+            sql.append(" AND ");
+            sql.append("T.").append(TagDao.Properties.Name.columnName);
+            sql.append(" NOT IN ").append("(");
+            for (int i = 0, n = excludedTags.size(); i < n; i++) {
+                sql.append("?");
+                if (i < n - 1) sql.append(",");
+            }
+            sql.append(")");
+
         }
-        return builder
-                .orderAsc(TagDao.Properties.Name)
-                .buildCursor();
+        sql.append(" ORDER BY ");
+        sql.append(TagDao.Properties.Name.columnName).append(" ASC;");
+        List<Object> list = new ArrayList<>(1 + excludedTags.size());
+        list.add("%" + partOfName + "%");
+        list.addAll(excludedTags);
+        return CursorQuery.internalCreate(dao(), sql.toString(), list.toArray());
     }
 
     @Override
@@ -180,4 +235,6 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         lastExcluded = excludedTags.isEmpty() ? Collections.emptyList()
                 : new ArrayList<>(excludedTags);
     }
+
+
 }

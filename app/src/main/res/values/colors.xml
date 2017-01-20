@@ -6,4 +6,6 @@
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorAppBackground">#F8F8F8</color>
     <color name="shadowColor">#50808080</color>
+    <color name="checkboxUnselected">#E0E0E0</color>
+    <color name="checkboxSelected">@color/colorPrimaryDark</color>
 </resources>

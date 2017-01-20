@@ -86,14 +86,14 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         onAddTagClicked(view.getAddTagClickedObservable());
         onSearch(view.getQueryObservable());
         addSubscription(
-                view.firstVisibleElementPosition()
+                view.firstVisibleElementPositionObservable()
                         .map(position -> position > 0)
                         .distinctUntilChanged()
                         .map(Visibility::of)
                         .subscribe(view::setScrollToTopVisibility)
         );
         addSubscription(
-                view.scrollToTop()
+                view.scrollToTopObservable()
                         .subscribe(ignore -> view.scrollToPosition(0))
         );
     }
@@ -113,7 +113,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
-            return new TagItemHolder(view, this);
+            return new TagItemHolder(view, viewModel, this);
         } else {
             return new TagSpaceHolder(view);
         }
@@ -133,6 +133,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
             Tag tag = holder.getReusableTag();
             databaseModel.performReadEntity(cursor, tag);
             holder.bind(position, tag);
+
         } else {
             Timber.w("Cursor closed duding binding views.");
         }
@@ -191,7 +192,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public int getItemCount() {
-        return getDaoItemCount() + ADDITIONAL_ITEMS;
+        int daoItemCount = getDaoItemCount();
+        return daoItemCount > 0 ? daoItemCount + ADDITIONAL_ITEMS : 0;
     }
 
     public void onDeleteClicked(final int position, @NonNull final Tag tag) {
