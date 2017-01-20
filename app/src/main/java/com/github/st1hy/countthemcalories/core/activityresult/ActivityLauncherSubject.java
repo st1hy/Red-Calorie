@@ -1,10 +1,15 @@
 package com.github.st1hy.countthemcalories.core.activityresult;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.CheckResult;
+import android.support.annotation.NonNull;
+
+import rx.Observable;
 
 public interface ActivityLauncherSubject {
 
-    void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options);
+    @CheckResult
+    Observable<ActivityResult> startActivityForResult(@NonNull StartParams startParams);
+
+    @CheckResult
+    Observable<? extends ActivityResult> attachToExistingRequest(int requestCode);
 }

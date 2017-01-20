@@ -28,6 +28,7 @@ public abstract class ActivityLauncherModule {
                 .findFragmentByTag(IntentHandlerFragment.TAG);
         if (fragment == null) {
             fragment = new IntentHandlerFragment();
+            fragment.setRetainInstance(true);
             fragmentManager.beginTransaction()
                     .add(fragment, IntentHandlerFragment.TAG)
                     .commitNow();
