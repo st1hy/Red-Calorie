@@ -28,8 +28,10 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Strings;
+import com.l4digital.fastscroll.FastScroller;
 
 import java.util.Collection;
 
@@ -42,14 +44,13 @@ import rx.functions.Func1;
 import timber.log.Timber;
 
 @PerFragment
-public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction {
+public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction,
+        FastScroller.SectionIndexer {
 
-    private static final int item_layout = R.layout.tags_item_outer;
-    private static final int space_top = R.layout.tag_item_top;
+    private static final int item_layout = R.layout.tags_item_scrolling;
     private static final int space_bottom = R.layout.tag_item_bottom;
     private static final int BOTTOM_ITEM_PADDING = 1;
-    private static final int TOP_ITEM_PADDING = 1;
-    private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING + TOP_ITEM_PADDING;
+    private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING;
 
     @NonNull
     private final TagsView view;
@@ -100,9 +101,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public int getItemViewType(int position) {
-        if (position < TOP_ITEM_PADDING) {
-            return space_top;
-        } else if (position < TOP_ITEM_PADDING + getDaoItemCount()) {
+        if (position < getDaoItemCount()) {
             return item_layout;
         } else {
             return space_bottom;
@@ -113,7 +112,9 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         if (viewType == item_layout) {
-            return new TagItemHolder(view, viewModel, this);
+            TagItemHolder holder = new TagItemHolder(view, viewModel, this);
+            holder.fillParent(parent);
+            return holder;
         } else {
             return new TagSpaceHolder(view);
         }
@@ -122,7 +123,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
         if (holder instanceof TagItemHolder) {
-            onBindItemHolder((TagItemHolder) holder, position - TOP_ITEM_PADDING);
+            onBindItemHolder((TagItemHolder) holder, position);
         }
     }
 
@@ -160,6 +161,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         }
     }
 
+    @Override
     public void onEditClicked(final int position, @NonNull final Tag tag) {
         addSubscription(
                 view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getName())
@@ -196,6 +198,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         return daoItemCount > 0 ? daoItemCount + ADDITIONAL_ITEMS : 0;
     }
 
+    @Override
     public void onDeleteClicked(final int position, @NonNull final Tag tag) {
         addSubscription(
                 databaseModel.getById(tag.getId())
@@ -304,4 +307,18 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         };
     }
 
+    @Override
+    public String getSectionText(int position) {
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            if (position >= getDaoItemCount()) {
+                position = getDaoItemCount() - 1;
+            }
+            cursor.moveToPosition(position);
+            String string = cursor.getString(cursor.getColumnIndexOrThrow(TagDao.Properties.Name.columnName));
+            return string.substring(0, 1);
+        } else {
+            return "";
+        }
+    }
 }

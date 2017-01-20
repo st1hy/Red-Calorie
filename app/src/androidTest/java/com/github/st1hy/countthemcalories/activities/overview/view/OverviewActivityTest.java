@@ -8,6 +8,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
@@ -59,6 +60,7 @@ import static android.support.test.espresso.intent.Intents.assertNoUnverifiedInt
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -226,7 +228,7 @@ public class OverviewActivityTest {
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_tags));
         intended(hasComponent(new ComponentName(getTargetContext(), TagsActivity.class)));
-        onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.tags_recycler), isAssignableFrom(RecyclerView.class))).check(matches(isDisplayed()));
         pressBack();
         onView(withId(R.id.nav_view))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)));

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
@@ -44,6 +45,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasDat
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.hasFocus;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
@@ -199,7 +201,7 @@ public class AddIngredientActivityTest {
         onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
                 .perform(betterScrollTo())
                 .perform(click());
-        onView(withId(R.id.tags_recycler)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.tags_recycler), isAssignableFrom(RecyclerView.class))).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()))
                 .perform(click());
