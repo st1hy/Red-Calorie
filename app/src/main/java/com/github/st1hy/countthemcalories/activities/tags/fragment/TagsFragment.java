@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentModule;
@@ -25,6 +26,8 @@ public class TagsFragment extends BaseFragment {
     @Inject
     TagsDaoAdapter adapter;
     @Inject
+    TagsStateSaver saver;
+    @Inject
     RecyclerView recyclerView; //injects adapter
 
     public void setComponentFactory(TagsFragmentComponentFactory componentFactory) {
@@ -40,7 +43,7 @@ public class TagsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newTagsFragmentComponent(new TagsFragmentModule(this))
+        componentFactory.newTagsFragmentComponent(new TagsFragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }
@@ -55,5 +58,11 @@ public class TagsFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         adapter.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saver.onSaveState(outState);
     }
 }

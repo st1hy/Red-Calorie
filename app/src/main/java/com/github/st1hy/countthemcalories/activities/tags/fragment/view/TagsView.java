@@ -30,13 +30,4 @@ public interface TagsView extends TagsScreen {
 
     void setNoTagsMessage(@StringRes int messageResId);
 
-    @NonNull
-    @CheckResult
-    Observable<Void> scrollToTopObservable();
-
-    void setScrollToTopVisibility(@NonNull Visibility visibility);
-
-    @CheckResult
-    @NonNull
-    Observable<Integer> firstVisibleElementPositionObservable();
 }

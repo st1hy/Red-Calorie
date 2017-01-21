@@ -4,16 +4,19 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.core.deps.guava.collect.Lists;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -21,12 +24,14 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
+import org.parceler.Parcels;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
@@ -41,10 +46,13 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -82,7 +90,7 @@ public class TagsActivityTest {
     public void testAddNewTag() throws Exception {
         main.launchActivity(null);
         final String tagName = "My tag name";
-        onView(ViewMatchers.withId(R.id.tags_add_new)).check(matches(isDisplayed()))
+        onView(ViewMatchers.withId(R.id.tags_fab_add_new)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(R.string.tags_new_tag_dialog)).check(matches(isDisplayed()));
         onView(withHint(R.string.tags_new_tag_hint)).check(matches(isDisplayed()))
@@ -131,13 +139,21 @@ public class TagsActivityTest {
     }
 
     @Test
-    public void testExcludeTags() throws Exception {
+    public void testSelectedTags() throws Exception {
         Intent intent = new Intent(TagsActivity.ACTION_PICK_TAG);
-        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{exampleTags[0].getName()});
+        intent.putExtra(TagsActivity.EXTRA_SELECTED_TAGS, Parcels.wrap(new Tags(Lists.newArrayList(exampleTags[0]))));
         main.launchActivity(intent);
-        onView(withText(exampleTags[0].getName())).check(doesNotExist());
-        onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
-        onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
+        onView(tagsCheckboxFor(exampleTags[0])).check(matches(isChecked()));
+        onView(tagsCheckboxFor(exampleTags[1])).check(matches(isNotChecked()));
+        onView(tagsCheckboxFor(exampleTags[2]))
+                .check(matches(isNotChecked()))
+                .perform(click())
+                .check(matches(isChecked()));
+        onView(withId(R.id.tags_fab_confirm)).check(matches(isDisplayed()));
+    }
+
+    private static Matcher<View> tagsCheckboxFor(Tag tag) {
+        return allOf(withId(R.id.tags_item_checkbox), withParent(withChild(withText(tag.getName()))));
     }
 
     @Test
@@ -186,7 +202,7 @@ public class TagsActivityTest {
                 .perform(typeTextIntoFocusedView(newTag))
                 .perform(loopMainThreadForAtLeast(500));//debounce
         onView(withId(R.id.tags_empty)).check(matches(isDisplayed()));
-        onView(withId(R.id.tags_add_new)).perform(click());
+        onView(withId(R.id.tags_fab_add_new)).perform(click());
         onView(allOf(withId(R.id.tags_dialog_name), withText(newTag)))
                 .check(matches(isDisplayed()));
     }

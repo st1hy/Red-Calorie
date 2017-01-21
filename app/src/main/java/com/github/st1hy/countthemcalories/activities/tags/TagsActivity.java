@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 public class TagsActivity extends BaseActivity {
     public static final String ACTION_PICK_TAG = "pick tag";
-    public static final String EXTRA_EXCLUDE_TAG_STRING_ARRAY = "exclude tag ids";
-    public static final String EXTRA_TAG = "extra tag";
+    public static final String EXTRA_SELECTED_TAGS = "selected tags";
+    public static final String EXTRA_TAGS = "extra tag";
 
     @Inject
     TagsFragment fragment; //injects new fragment

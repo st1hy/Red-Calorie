@@ -3,15 +3,20 @@ package com.github.st1hy.countthemcalories.activities.tags.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
+import com.github.st1hy.countthemcalories.core.baseview.Click;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
-import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -32,8 +37,10 @@ public class TagsScreenImpl implements TagsScreen {
     private final Activity activity;
     @NonNull
     private final TokenSearchView searchView;
-    @BindView(R.id.tags_add_new)
-    FloatingActionButton fab;
+    @BindView(R.id.tags_fab_add_new)
+    FloatingActionButton addNew;
+    @BindView(R.id.tags_fab_confirm)
+    FloatingActionButton confirm;
 
     @Inject
     public TagsScreenImpl(@NonNull Activity activity,
@@ -45,8 +52,8 @@ public class TagsScreenImpl implements TagsScreen {
 
     @NonNull
     @Override
-    public Observable<Void> getAddTagClickedObservable() {
-        return RxView.clicks(fab);
+    public Observable<Click> addTagClickedObservable() {
+        return RxView.clicks(addNew).map(Functions.into(Click.get()));
     }
 
 
@@ -64,10 +71,33 @@ public class TagsScreenImpl implements TagsScreen {
     }
 
     @Override
-    public void onTagSelected(@NonNull Tag tag) {
+    public void onTagsSelected(@NonNull Tags tags) {
         Intent data = new Intent();
-        data.putExtra(TagsActivity.EXTRA_TAG, Parcels.wrap(tag));
+        data.putExtra(TagsActivity.EXTRA_TAGS, Parcels.wrap(tags));
         activity.setResult(RESULT_OK, data);
         activity.finish();
+    }
+
+
+    @Override
+    public void setConfirmButtonVisibility(@NonNull Visibility visibility) {
+        //noinspection WrongConstant
+        confirm.setVisibility(visibility.getVisibility());
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) addNew.getLayoutParams();
+        if (visibility.isVisible()) {
+            addNew.setSize(FloatingActionButton.SIZE_MINI);
+            layoutParams.setAnchorId(R.id.confirm_space);
+
+        } else {
+            addNew.setSize(FloatingActionButton.SIZE_NORMAL);
+            layoutParams.setAnchorId(View.NO_ID);
+        }
+        addNew.setLayoutParams(layoutParams);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Click> confirmClickedObservable() {
+        return RxView.clicks(confirm).map(Functions.into(Click.get()));
     }
 }

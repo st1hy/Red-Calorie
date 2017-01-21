@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:background="@drawable/add_ingredient_tag_background">
+
+    <android.support.v4.widget.Space
+        android:layout_width="18dp"
+        android:layout_height="0dp" />
 
     <TextView
         android:id="@+id/add_ingredient_category_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="?android:textColorPrimary"
         android:textIsSelectable="false"
+        android:textColor="?android:textColorPrimaryInverse"
+        android:fontFamily="sans-serif"
         android:textSize="16sp"
-        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
-        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
-        tools:text="Name" />
+        tools:text="My tag"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="16dp"
+        android:layout_height="0dp" />
 
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/add_ingredient_category_remove"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="@dimen/add_ingredient_content_button_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:contentDescription="@string/add_ingredient_remove_category"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:srcCompat="@drawable/ic_clear_24px"
-        android:tint="@android:color/darker_gray" />
+        android:tint="@color/colorBackground"
+        android:background="@drawable/add_ingredient_tag_delete_background"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:contentDescription="@string/add_ingredient_remove_category" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="4dp"
+        android:layout_height="0dp" />
+
 
 </LinearLayout>

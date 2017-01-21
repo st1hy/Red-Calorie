@@ -2,9 +2,9 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,13 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
+import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
-import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import timber.log.Timber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,9 +44,6 @@ public class TagsViewImpl implements TagsView {
     View emptyTags;
     @BindView(R.id.tags_empty_message)
     TextView emptyTagsMessage;
-
-    @Inject
-    ShowHideAnimation scrollToTopAnimation;
 
     @Inject
     public TagsViewImpl(@NonNull TagsScreen screen,
@@ -131,14 +126,14 @@ public class TagsViewImpl implements TagsView {
     }
 
     @Override
-    public void onTagSelected(@NonNull Tag tag) {
-        screen.onTagSelected(tag);
+    public void onTagsSelected(@NonNull Tags tag) {
+        screen.onTagsSelected(tag);
     }
 
     @Override
     @NonNull
-    public Observable<Void> getAddTagClickedObservable() {
-        return screen.getAddTagClickedObservable();
+    public Observable<Click> addTagClickedObservable() {
+        return screen.addTagClickedObservable();
     }
 
     @Override
@@ -147,34 +142,15 @@ public class TagsViewImpl implements TagsView {
         return screen.getQueryObservable();
     }
 
+    @Override
+    public void setConfirmButtonVisibility(@NonNull Visibility visibility) {
+        screen.setConfirmButtonVisibility(visibility);
+    }
+
+    @Override
     @NonNull
-    @Override
-    public Observable<Void> scrollToTopObservable() {
-        return RxView.clicks(scrollToTopAnimation.getView());
+    @CheckResult
+    public Observable<Click> confirmClickedObservable() {
+        return screen.confirmClickedObservable();
     }
-
-    @Override
-    public void setScrollToTopVisibility(@NonNull Visibility visibility) {
-        Timber.d("Show scroll to top: %s", visibility);
-        if (visibility == Visibility.VISIBLE) {
-            scrollToTopAnimation.show();
-        } else {
-            scrollToTopAnimation.hide();
-        }
-    }
-
-    @NonNull
-    @Override
-    public Observable<Integer> firstVisibleElementPositionObservable() {
-        return Observable.just(firstVisiblePosition()).concatWith(
-                RxRecyclerView.scrollEvents(recyclerView)
-                        .map(ignore -> firstVisiblePosition())
-        );
-    }
-
-    private int firstVisiblePosition() {
-        return ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstCompletelyVisibleItemPosition();
-    }
-
 }

@@ -1,32 +1,48 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.model;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
+import com.github.st1hy.countthemcalories.database.Tag;
+import com.google.common.collect.ImmutableList;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
+import java.util.Set;
+
+@Parcel
 public class TagsFragmentModel {
 
-    final Bundle arguments;
+    final boolean isInSelectMode;
+    final Set<Tag> selectedTags;
 
-    public TagsFragmentModel(@NonNull Bundle arguments) {
-        this.arguments = arguments;
+    @ParcelConstructor
+    public TagsFragmentModel(boolean isInSelectMode,
+                             Set<Tag> selectedTags) {
+        this.isInSelectMode = isInSelectMode;
+        this.selectedTags = selectedTags;
     }
 
     public boolean isInSelectMode() {
-        return arguments.getBoolean(TagsFragment.ARG_PICK_BOOL, false);
+        return isInSelectMode;
     }
 
     @NonNull
-    public Collection<String> getExcludedTagIds() {
-        String[] tags = arguments.getStringArray(TagsFragment.ARG_EXCLUDED_TAGS_STRING_ARRAY);
-        if (tags != null) {
-            return Arrays.asList(tags);
+    public Tags getTags() {
+        return new Tags(ImmutableList.copyOf(selectedTags));
+    }
+
+    public boolean isSelected(@NonNull Tag tag) {
+        return selectedTags.contains(tag);
+    }
+
+    public void setSelected(@NonNull Tag tag, boolean isSelected) {
+        if (isSelected) {
+            if (!selectedTags.contains(tag)) {
+                selectedTags.add(new Tag(tag));
+            }
+        } else {
+            selectedTags.remove(tag);
         }
-        return Collections.emptyList();
     }
 }

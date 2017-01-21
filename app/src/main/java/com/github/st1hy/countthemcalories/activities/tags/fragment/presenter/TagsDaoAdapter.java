@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
 
 import android.database.Cursor;
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
@@ -18,8 +17,8 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.On
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagSpaceHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
+import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
@@ -33,14 +32,13 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Strings;
 import com.l4digital.fastscroll.FastScroller;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 @PerFragment
@@ -65,6 +63,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @NonNull
     private final UndoView undoView;
 
+    private final PublishSubject<TagViewHolder> stateChanges = PublishSubject.create();
+
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
                           @NonNull RxTagsDatabaseModel databaseModel,
@@ -84,18 +84,18 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onStart() {
         super.onStart();
-        onAddTagClicked(view.getAddTagClickedObservable());
+        onAddTagClicked(view.addTagClickedObservable());
         onSearch(view.getQueryObservable());
         addSubscription(
-                view.firstVisibleElementPositionObservable()
-                        .map(position -> position > 0)
-                        .distinctUntilChanged()
-                        .map(Visibility::of)
-                        .subscribe(view::setScrollToTopVisibility)
+                stateChanges
+                        .filter(holder -> holder instanceof TagItemHolder)
+                        .cast(TagItemHolder.class)
+                        .subscribe(this::onViewHolderStateChanged)
         );
+        view.setConfirmButtonVisibility(Visibility.of(fragmentModel.isInSelectMode()));
         addSubscription(
-                view.scrollToTopObservable()
-                        .subscribe(ignore -> view.scrollToPosition(0))
+                view.confirmClickedObservable()
+                        .subscribe(click -> view.onTagsSelected(fragmentModel.getTags()))
         );
     }
 
@@ -134,7 +134,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
             Tag tag = holder.getReusableTag();
             databaseModel.performReadEntity(cursor, tag);
             holder.bind(position, tag);
-
+            holder.setSelectable(fragmentModel.isInSelectMode());
+            holder.setChecked(fragmentModel.isSelected(tag));
         } else {
             Timber.w("Cursor closed duding binding views.");
         }
@@ -143,7 +144,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onViewAttachedToWindow(TagViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        holder.onAttached();
+        holder.onAttached(getEventSubject(), stateChanges);
     }
 
     @Override
@@ -153,16 +154,20 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
-    public void onTagClicked(int position, @NonNull Tag tag) {
+    public void onTagClicked(int position, @NonNull TagItemHolder holder) {
+        Tag tag = holder.getReusableTag();
         if (fragmentModel.isInSelectMode()) {
-            view.onTagSelected(tag);
+            boolean isChecked = !holder.isChecked();
+            holder.setChecked(isChecked);
+            fragmentModel.setSelected(tag, isChecked);
         } else {
             view.openIngredientsFilteredBy(tag.getName());
         }
     }
 
     @Override
-    public void onEditClicked(final int position, @NonNull final Tag tag) {
+    public void onEditClicked(final int position, @NonNull TagItemHolder holder) {
+        Tag tag = holder.getReusableTag();
         addSubscription(
                 view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getName())
                         .flatMap(newName -> {
@@ -199,7 +204,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
-    public void onDeleteClicked(final int position, @NonNull final Tag tag) {
+    public void onDeleteClicked(final int position, @NonNull TagItemHolder holder) {
+        Tag tag = holder.getReusableTag();
         addSubscription(
                 databaseModel.getById(tag.getId())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -224,12 +230,6 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    @Override
-    public Observable<RecyclerEvent> getEvents() {
-        return getEventSubject();
-    }
-
-    @NonNull
     private Action1<Cursor> onTagRemoved(final int position) {
         return cursor -> {
             onCursorUpdate(lastQuery, cursor);
@@ -241,14 +241,6 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         };
     }
 
-    @CheckResult
-    @NonNull
-    @Override
-    protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
-        Collection<String> excludedTags = fragmentModel.getExcludedTagIds();
-        return databaseModel.getAllFiltered(filter, excludedTags);
-    }
-
     @Override
     protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
         super.onCursorUpdate(query, cursor);
@@ -257,10 +249,10 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         view.setNoTagsVisibility(Visibility.of(cursor.getCount() == 0));
     }
 
-    private void onAddTagClicked(@NonNull Observable<Void> clicks) {
+    private void onAddTagClicked(@NonNull Observable<Click> clicks) {
         addSubscription(
                 clicks.subscribeOn(AndroidSchedulers.mainThread())
-                        .flatMap(aVoid1 -> view.newTagDialog(
+                        .flatMap(click -> view.newTagDialog(
                                 viewModel.getNewTagDialogTitle(), lastQuery)
                         )
                         .map(String::trim)
@@ -320,5 +312,12 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         } else {
             return "";
         }
+    }
+
+    private void onViewHolderStateChanged(TagItemHolder tagItemHolder) {
+        Tag reusableTag = tagItemHolder.getReusableTag();
+        boolean isChecked = tagItemHolder.isChecked();
+        fragmentModel.setSelected(reusableTag, isChecked);
+
     }
 }

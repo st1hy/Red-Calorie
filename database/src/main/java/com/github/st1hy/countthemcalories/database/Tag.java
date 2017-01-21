@@ -55,6 +55,15 @@ public class Tag {
     public Tag() {
     }
 
+    public Tag(Tag tag) {
+        this.id = tag.id;
+        this.name = tag.name;
+        this.ingredientTypes = tag.ingredientTypes;
+        this.daoSession = tag.daoSession;
+        this.myDao = tag.myDao;
+        this.ingredientCount = tag.ingredientCount;
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,6 +87,33 @@ public class Tag {
 
     public void setName(@NotNull String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag tag = (Tag) o;
+
+        if (id != null ? !id.equals(tag.id) : tag.id != null) return false;
+        return name != null ? name.equals(tag.name) : tag.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                '}';
     }
 
     /**

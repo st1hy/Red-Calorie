@@ -11,108 +11,102 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/add_ingredient_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_ingredient_name_hint"
+                android:inputType="textCapSentences"
+                android:paddingEnd="@dimen/add_ingredient_name_search_width"
+                android:paddingRight="@dimen/add_ingredient_name_search_width"
+                android:textSize="20sp"
+                tools:ignore="RtlSymmetry">
+
+                <requestFocus />
+            </EditText>
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_ingredient_name_search"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="@dimen/add_ingredient_name_search_width"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/add_ingredient_name"
+                android:layout_alignEnd="@id/add_ingredient_name"
+                android:layout_alignRight="@id/add_ingredient_name"
+                android:layout_alignTop="@id/add_ingredient_name"
+                android:contentDescription="@string/add_ingredient_search_name_desc"
+                android:tint="@color/colorAccent"
+                app:srcCompat="@drawable/ic_search_24px" />
+
+        </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+            android:gravity="center">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/add_ingredient_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/add_ingredient_name_hint"
-                    android:inputType="textCapSentences"
-                    android:paddingEnd="@dimen/add_ingredient_name_search_width"
-                    android:paddingRight="@dimen/add_ingredient_name_search_width"
-                    android:textSize="20sp"
-                    tools:ignore="RtlSymmetry">
-
-                    <requestFocus />
-                </EditText>
-
-                <android.support.v7.widget.AppCompatImageButton
-                    android:id="@+id/add_ingredient_name_search"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="@dimen/add_ingredient_name_search_width"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/add_ingredient_name"
-                    android:layout_alignEnd="@id/add_ingredient_name"
-                    android:layout_alignRight="@id/add_ingredient_name"
-                    android:layout_alignTop="@id/add_ingredient_name"
-                    android:contentDescription="@string/add_ingredient_search_name_desc"
-                    android:tint="@color/colorAccent"
-                    app:srcCompat="@drawable/ic_search_24px" />
-
-            </RelativeLayout>
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="8dp" />
-
-            <android.support.v4.widget.Space
+            <EditText
+                android:id="@+id/add_ingredient_energy_density"
                 android:layout_width="0dp"
-                android:layout_height="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:layout_weight="1"
+                android:hint="@string/add_ingredient_energy_density_hint"
+                android:inputType="numberDecimal" />
 
-                <EditText
-                    android:id="@+id/add_ingredient_energy_density"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/add_ingredient_energy_density_hint"
-                    android:inputType="numberDecimal" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/add_ingredient_unit"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAllCaps="false"
-                    android:textIsSelectable="false"
-                    tools:text="kcal / 100 g" />
-            </LinearLayout>
-
-            <android.support.v4.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="8dp" />
-
-            <TextView
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/add_ingredient_unit"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center_vertical"
-                android:minHeight="48dp"
-                android:text="@string/add_ingredient_categories_name"
-                android:textSize="14sp" />
+                android:textAllCaps="false"
+                android:textIsSelectable="false"
+                tools:text="kcal / 100 g" />
         </LinearLayout>
 
-        <android.support.v7.widget.CardView
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:minHeight="48dp"
+            android:text="@string/add_ingredient_categories_name"
+            android:textSize="14sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_ingredient_categories_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/group_card_view_horizontally_borderless_margin"
-            android:layout_marginRight="@dimen/group_card_view_horizontally_borderless_margin"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="@dimen/group_card_view_horizontally_borderless_elevation"
-            app:cardUseCompatPadding="true">
+            tools:listitem="@layout/add_ingredient_tag" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_ingredient_categories_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/add_ingredient_tag" />
-        </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/add_ingredient_categories_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_categories_to_display"/>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_bottom_space" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
@@ -124,15 +125,43 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public static RecyclerView recyclerView(View rootView,
-                                            RecyclerViewAdapterDelegate adapter,
-                                            @Named("activityContext") Context context) {
+    public static RecyclerView recyclerView(
+            View rootView,
+            RecyclerViewAdapterDelegate adapter,
+            RecyclerView.LayoutManager layoutManager,
+            @Named("horizontalDivider") RecyclerView.ItemDecoration horizontalDivider,
+            @Named("verticalDivider") RecyclerView.ItemDecoration verticalDivider) {
+
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(
                 R.id.add_ingredient_categories_recycler);
         tagsRecycler.setAdapter(adapter);
-        tagsRecycler.setLayoutManager(new LinearLayoutManager(context));
-        tagsRecycler.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        tagsRecycler.setLayoutManager(layoutManager);
+        tagsRecycler.addItemDecoration(horizontalDivider);
+        tagsRecycler.addItemDecoration(verticalDivider);
         return tagsRecycler;
+    }
+
+    @Provides
+    public RecyclerView.LayoutManager layoutManager(@Named("activityContext") Context context) {
+        return ChipsLayoutManager.newBuilder(context).build();
+    }
+
+    @Provides
+    @Named("horizontalDivider")
+    public static RecyclerView.ItemDecoration horizontalDivider(@Named("activityContext") Context context) {
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL);
+        itemDecoration.setDrawable(AppCompatDrawableManager.get()
+                .getDrawable(context, R.drawable.invisible_divider));
+        return itemDecoration;
+    }
+
+    @Provides
+    @Named("verticalDivider")
+    public static RecyclerView.ItemDecoration verticalDivider(@Named("activityContext") Context context) {
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(AppCompatDrawableManager.get()
+                .getDrawable(context, R.drawable.invisible_divider));
+        return itemDecoration;
     }
 
     @Provides

@@ -5,23 +5,25 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
 
-import java.util.Collection;
-
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 
 import static android.app.Activity.RESULT_OK;
@@ -36,11 +38,15 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @NonNull
     private final ActivityLauncher activityLauncher;
 
+    @BindView(R.id.add_ingredient_fab_add_tag)
+    FloatingActionButton addTagFab;
+
     @Inject
     public AddIngredientScreenImpl(@NonNull Activity activity,
                                    @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
         this.activityLauncher = activityLauncher;
+        ButterKnife.bind(this, activity);
     }
 
     @Override
@@ -55,15 +61,13 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     @Override
     @NonNull
     @CheckResult
-    public Observable.Transformer<SelectTagParams, Tag> selectTag() {
+    public Observable.Transformer<Tags, Tags> selectTags() {
         return paramsObservable -> paramsObservable
-                .map(selectTagParams -> {
+                .map(tags -> {
                     Intent intent = new Intent(activity, TagsActivity.class);
                     intent.setAction(TagsActivity.ACTION_PICK_TAG);
-                    Collection<String> excludedTags = selectTagParams.getExcludedTags();
-                    if (!excludedTags.isEmpty()) {
-                        String[] tags = excludedTags.toArray(new String[excludedTags.size()]);
-                        intent.putExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, tags);
+                    if (!tags.isEmpty()) {
+                        intent.putExtra(TagsActivity.EXTRA_SELECTED_TAGS, Parcels.wrap(tags));
                     }
                     return StartParams.of(intent, REQUEST_PICK_TAG);
                 })
@@ -72,12 +76,18 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
                 .map(activityResult -> {
                     Intent data = activityResult.getData();
                     if (data == null) return null;
-                    return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAG));
+                    return Parcels.unwrap(data.getParcelableExtra(TagsActivity.EXTRA_TAGS));
                 });
     }
 
     @Override
     public void showInWebBrowser(@NonNull Uri address) {
         activity.startActivity(new Intent(Intent.ACTION_VIEW, address));
+    }
+
+    @NonNull
+    @Override
+    public Observable<Void> addTagObservable() {
+        return RxView.clicks(addTagFab);
     }
 }

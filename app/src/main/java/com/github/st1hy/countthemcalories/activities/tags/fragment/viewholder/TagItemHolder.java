@@ -3,18 +3,24 @@ package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
+import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class TagItemHolder extends TagViewHolder {
 
@@ -22,7 +28,8 @@ public class TagItemHolder extends TagViewHolder {
     TextView name;
     @BindView(R.id.tags_item_count)
     TextView counter;
-
+    @BindView(R.id.tags_item_checkbox)
+    CheckBox checkBox;
 
     @BindView(R.id.tags_item_scrollview)
     HorizontalScrollView scrollView;
@@ -56,18 +63,18 @@ public class TagItemHolder extends TagViewHolder {
 
     @OnClick(R.id.tag_item_button)
     public void onClick() {
-        callback.onTagClicked(position.get(), tag);
+        callback.onTagClicked(position.get(), this);
     }
 
 
     @OnClick(R.id.tags_item_delete)
     public void onDeleteClicked() {
-        callback.onDeleteClicked(position.get(), tag);
+        callback.onDeleteClicked(position.get(), this);
     }
 
     @OnClick(R.id.tags_item_edit)
     public void onEditClicked() {
-        callback.onEditClicked(position.get(), tag);
+        callback.onEditClicked(position.get(), this);
     }
 
     @NonNull
@@ -82,9 +89,16 @@ public class TagItemHolder extends TagViewHolder {
     }
 
     @Override
-    public void onAttached() {
-        position.onAttached(callback.getEvents());
+    public void onAttached(@NonNull Observable<RecyclerEvent> events,
+                           @NonNull PublishSubject<TagViewHolder> stateChanges) {
+        position.onAttached(events);
         scrollingItemDelegate.onAttached();
+        scrollingItemDelegate.subscribe(
+                RxCompoundButton.checkedChanges(checkBox)
+                        .map(isChecked -> TagItemHolder.this)
+                        .compose(Transformers.channel(stateChanges))
+                        .subscribe()
+        );
     }
 
     @Override
@@ -95,5 +109,17 @@ public class TagItemHolder extends TagViewHolder {
 
     public void fillParent(@NonNull ViewGroup parent) {
         scrollingItemDelegate.fillParent(parent);
+    }
+
+    public void setSelectable(boolean inSelectMode) {
+        checkBox.setEnabled(inSelectMode);
+    }
+
+    public void setChecked(boolean isSelected) {
+        checkBox.setChecked(isSelected);
+    }
+
+    public boolean isChecked() {
+        return checkBox.isChecked();
     }
 }

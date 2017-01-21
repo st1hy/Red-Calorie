@@ -18,4 +18,8 @@ public enum Visibility {
     public static Visibility of(boolean isVisible) {
         return isVisible ? VISIBLE : GONE;
     }
+
+    public boolean isVisible() {
+        return this == VISIBLE;
+    }
 }

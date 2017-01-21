@@ -4,9 +4,8 @@ import android.net.Uri;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Tag;
 
 import rx.Observable;
 
@@ -16,8 +15,12 @@ public interface AddIngredientScreen {
 
     @NonNull
     @CheckResult
-    Observable.Transformer<SelectTagParams, Tag> selectTag();
+    Observable.Transformer<Tags, Tags> selectTags();
 
     void showInWebBrowser(@NonNull Uri address);
+
+    @NonNull
+    @CheckResult
+    Observable<Void> addTagObservable();
 
 }

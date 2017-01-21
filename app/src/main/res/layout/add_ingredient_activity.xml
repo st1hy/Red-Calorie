@@ -18,4 +18,15 @@
         <!--<include layout="@layout/add_ingredient_content" />-->
     </FrameLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_ingredient_fab_add_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/colorBackground"
+        android:layout_gravity="bottom"
+        app:pressedTranslationZ="12dp"
+        app:elevation="6dp"
+        app:srcCompat="@drawable/ic_add_24px" />
+
 </android.support.design.widget.CoordinatorLayout>

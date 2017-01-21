@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.addingredient.fragment.view;
 
 import android.content.res.Resources;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenDelegate;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.view.RxView;
@@ -40,6 +42,8 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     Button energyDensityUnit;
     @BindView(R.id.add_ingredient_name_search)
     View searchName;
+    @BindView(R.id.add_ingredient_categories_empty)
+    View noCategories;
 
     private final Map<InputType, EditText> inputMap;
 
@@ -123,5 +127,18 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     @Override
     public Observable<Void> getSelectTypeObservable() {
         return RxView.clicks(energyDensityUnit);
+    }
+
+    @Override
+    public void setNoCategoriesVisibility(@NonNull Visibility visibility) {
+        //noinspection WrongConstant
+        noCategories.setVisibility(visibility.getVisibility());
+    }
+
+    @Override
+    @NonNull
+    @CheckResult
+    public Observable<Void> addTagObservable() {
+        return screen.addTagObservable();
     }
 }

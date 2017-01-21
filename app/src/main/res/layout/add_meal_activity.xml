@@ -24,10 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorBackground"
-        app:layout_anchor="@+id/image_header_app_bar"
-        app:layout_anchorGravity="bottom|right|end"
+        android:layout_gravity="bottom"
         app:pressedTranslationZ="12dp"
         app:elevation="6dp"
-        app:srcCompat="@drawable/ic_add_48px_no_padding" />
+        app:srcCompat="@drawable/ic_add_24px" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -15,6 +15,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
@@ -22,6 +23,7 @@ import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
+import com.google.common.collect.Lists;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -51,13 +53,14 @@ import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.github.st1hy.countthemcalories.actions.CTCViewActions.betterScrollTo;
 import static com.github.st1hy.countthemcalories.core.headerpicture.HeaderPicturePickerUtils.injectUriOnMatch;
 import static com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker.resourceToUri;
 import static com.github.st1hy.countthemcalories.matchers.CTCMatchers.galleryIntentMatcher;
 import static com.github.st1hy.countthemcalories.matchers.ImageViewMatchers.withDrawable;
+import static com.github.st1hy.countthemcalories.matchers.ParcelMatchers.unparceled;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 
@@ -103,7 +106,7 @@ public class AddIngredientActivityTest {
         onView(withHint(R.string.add_ingredient_name_hint)).check(matches(isDisplayed()))
                 .check(matches(hasFocus()));
         onView(withHint(R.string.add_ingredient_energy_density_hint)).check(matches(isDisplayed()));
-        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_ingredient_fab_add_tag)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -198,24 +201,25 @@ public class AddIngredientActivityTest {
     @Test
     public void testAddTag() throws Exception {
         closeSoftKeyboard();
-        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
-                .perform(betterScrollTo())
+        onView(withId(R.id.add_ingredient_fab_add_tag)).check(matches(isDisplayed()))
                 .perform(click());
         onView(allOf(withId(R.id.tags_recycler), isAssignableFrom(RecyclerView.class))).check(matches(isDisplayed()));
         intended(hasAction(TagsActivity.ACTION_PICK_TAG));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()))
                 .perform(click());
+        onView(withId(R.id.tags_fab_confirm)).perform(click());
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
 
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testAddCurrentTagsToExcludedFromSearch() throws Exception {
+    public void testAddCurrentTagsToSelectedFromSearch() throws Exception {
         testAddTag();
-        onView(withId(R.id.add_ingredient_category_add)).check(matches(isDisplayed()))
+        onView(withId(R.id.add_ingredient_fab_add_tag)).check(matches(isDisplayed()))
                 .perform(click());
-        intended(hasExtra(TagsActivity.EXTRA_EXCLUDE_TAG_STRING_ARRAY, new String[]{exampleTags[1].getName()}));
+        intended(hasExtra(equalTo(TagsActivity.EXTRA_SELECTED_TAGS),
+                unparceled(equalTo(new Tags(Lists.newArrayList(exampleTags[1]))))));
     }
 
     @Test

@@ -43,11 +43,11 @@
         android:id="@+id/ingredients_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorBackground"
         app:pressedTranslationZ="12dp"
         app:elevation="6dp"
-        app:srcCompat="@drawable/ic_add_48px_no_padding" />
+        app:srcCompat="@drawable/ic_add_24px" />
 
 </android.support.design.widget.CoordinatorLayout>

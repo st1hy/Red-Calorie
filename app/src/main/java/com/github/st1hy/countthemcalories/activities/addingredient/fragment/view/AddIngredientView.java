@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 
 import rx.Observable;
 
@@ -38,4 +39,6 @@ public interface AddIngredientView extends AddIngredientScreen {
     @NonNull
     @CheckResult
     Observable<Void> getSelectTypeObservable();
+
+    void setNoCategoriesVisibility(@NonNull Visibility visibility);
 }

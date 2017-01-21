@@ -4,9 +4,8 @@ import android.net.Uri;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.model.SelectTagParams;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Tag;
 
 import rx.Observable;
 
@@ -22,8 +21,8 @@ public abstract class AddIngredientScreenDelegate implements AddIngredientScreen
     @Override
     @NonNull
     @CheckResult
-    public Observable.Transformer<SelectTagParams, Tag> selectTag() {
-        return getDelegate().selectTag();
+    public Observable.Transformer<Tags, Tags> selectTags() {
+        return getDelegate().selectTags();
     }
 
     @Override
