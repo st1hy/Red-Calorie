@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.EditIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.addingredient.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewActivityTest;
@@ -172,8 +171,6 @@ public class IngredientActivityTest {
         onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withId(R.id.ingredients_fab)).check(matches(isDisplayed()))
                 .perform(click());
-        intended(hasComponent(new ComponentName(getTargetContext(), SelectIngredientTypeActivity.class)));
-        onView(withId(R.id.select_ingredient_type_meal)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddIngredientActivity.class)));
         onView(withText(R.string.add_ingredient_save_action)).check(matches(isDisplayed()))
                 .perform(click());
@@ -329,7 +326,6 @@ public class IngredientActivityTest {
                 .perform(loopMainThreadForAtLeast(500)); //Debounce
         onView(withId(R.id.ingredients_empty)).check(matches(isDisplayed()));
         onView(withId(R.id.ingredients_fab)).perform(click());
-        onView(withId(R.id.select_ingredient_type_meal)).perform(click());
         intended(allOf(
                 hasComponent(new ComponentName(main.getActivity(), AddIngredientActivity.class)),
                 hasExtra(AddIngredientActivity.ARG_EXTRA_NAME, extraName)

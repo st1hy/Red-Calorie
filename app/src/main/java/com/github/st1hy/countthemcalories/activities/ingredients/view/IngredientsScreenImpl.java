@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.EditIngredientActivity;
-import com.github.st1hy.countthemcalories.activities.addingredient.SelectIngredientTypeActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
@@ -36,7 +35,6 @@ import static com.github.st1hy.countthemcalories.activities.addingredient.AddIng
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_ADD_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_EDIT;
-import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_SELECT_TYPE;
 
 @PerActivity
 public class IngredientsScreenImpl implements IngredientsScreen {
@@ -102,28 +100,6 @@ public class IngredientsScreenImpl implements IngredientsScreen {
         activity.startActivity(intent);
     }
 
-    @Override
-    @NonNull
-    @CheckResult
-    public Observable.Transformer<Void, AddIngredientType> selectIngredientType() {
-        return voidObservable -> voidObservable
-                .map(aVoid -> {
-                    Intent intent = new Intent(activity,
-                            SelectIngredientTypeActivity.class);
-                    return StartParams.of(intent, REQUEST_SELECT_TYPE);
-                })
-                .compose(activityLauncher.startActivityForResult(REQUEST_SELECT_TYPE))
-                .map(activityResult -> {
-                    switch (activityResult.getResultCode()) {
-                        case SelectIngredientTypeActivity.RESULT_DRINK:
-                            return AddIngredientType.DRINK;
-                        case SelectIngredientTypeActivity.RESULT_MEAL:
-                            return AddIngredientType.MEAL;
-                        default:
-                            return null;
-                    }
-                }).filter(Functions.NOT_NULL);
-    }
 
     @Override
     public void editIngredientTemplate(long requestID, @NonNull IngredientTemplate ingredientTemplate) {

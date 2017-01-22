@@ -4,7 +4,6 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
@@ -37,12 +36,6 @@ abstract class IngredientsViewDelegate implements IngredientsView {
         undoView.hideUndoMessage();
     }
 
-    @Override
-    @NonNull
-    @CheckResult
-    public Observable.Transformer<Void, AddIngredientType> selectIngredientType() {
-        return screen.selectIngredientType();
-    }
 
     @Override
     @NonNull

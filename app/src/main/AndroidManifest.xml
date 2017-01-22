@@ -67,10 +67,6 @@
             android:windowSoftInputMode="stateUnchanged|adjustResize"
             android:theme="@style/AppTheme.Semitransparent"
             />
-        <activity android:name=".activities.addingredient.SelectIngredientTypeActivity"
-            android:label="@string/select_ingredient_type_title"
-            android:theme="@style/AppTheme.Dialog"
-            />
         <activity android:name=".activities.mealdetail.MealDetailActivity"
             android:label="@string/meal_details_title"
             android:theme="@style/AppTheme.Semitransparent"

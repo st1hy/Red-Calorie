@@ -76,9 +76,6 @@
     <string name="settings_unit_mass_title">Select preferred unit of mass</string>
     <string name="settings_unit_volume_title">Select preferred unit of volume</string>
 
-    <string name="select_ingredient_type_title">Select ingredient type</string>
-    <string name="select_ingredient_type_drink_description">A drink or anything liquid</string>
-    <string name="select_ingredient_type_meal_description">A meal or anything solid</string>
     <string name="search_hint">Search</string>
     <string name="add_meal_name_breakfast">Breakfast</string>
     <string name="add_meal_name_lunch">Lunch</string>

@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment.prese
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
@@ -39,10 +40,9 @@ public class IngredientsPresenterImpl implements IngredientsPresenter {
     public void onStart() {
         subscribe(
                 view.getOnAddIngredientClickedObservable()
-                        .compose(view.selectIngredientType())
-                        .map(type -> {
+                        .map(any -> {
                             String extraName = recentSearchResult.get().getQuery();
-                            return new AddIngredientParams(type, extraName);
+                            return new AddIngredientParams(AddIngredientType.MEAL, extraName);
                         })
                         .compose(view.addNewIngredient())
                         .subscribe(ingredientTemplate -> {

@@ -7,7 +7,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="select_ingredient_option_size">140dp</dimen>
     <dimen name="list_item_image_size">80dp</dimen>
     <dimen name="list_item_image_half_size">40dp</dimen>
     <dimen name="ingredient_detail_title_size">18sp</dimen>
