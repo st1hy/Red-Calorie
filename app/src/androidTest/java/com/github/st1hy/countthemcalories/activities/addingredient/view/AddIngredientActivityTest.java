@@ -136,15 +136,11 @@ public class AddIngredientActivityTest {
     public void testRemoveImage() throws Exception {
         testSelectImageFromGallery();
 
-        onView(withId(R.id.image_header_overlay_top)).check(matches(isDisplayed()));
-        onView(withId(R.id.image_header_overlay_bottom)).check(matches(isDisplayed()));
         onView(withId(R.id.image_header_image_view)).perform(click());
         onView(withText(R.string.add_ingredient_image_remove)).perform(click());
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
-                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));
-        onView(withId(R.id.image_header_overlay_top)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.image_header_overlay_bottom)).check(matches(not(isDisplayed())));
+                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));;
     }
 
     @Test
