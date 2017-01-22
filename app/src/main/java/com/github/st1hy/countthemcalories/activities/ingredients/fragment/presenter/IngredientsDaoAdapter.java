@@ -25,9 +25,11 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.l4digital.fastscroll.FastScroller;
 import com.squareup.picasso.Picasso;
 
 import java.util.LinkedList;
@@ -44,7 +46,7 @@ import static com.github.st1hy.countthemcalories.activities.ingredients.fragment
 
 @PerFragment
 public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
-        implements IngredientViewHolder.Callback {
+        implements IngredientViewHolder.Callback, FastScroller.SectionIndexer {
     @LayoutRes
     private static final int item_layout = R.layout.ingredients_item_scrolling;
 
@@ -272,6 +274,18 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(ingredient.getImageUri());
+    }
+
+    @Override
+    public String getSectionText(int position) {
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            int index = cursor.getColumnIndexOrThrow(IngredientTemplateDao.Properties.Name.columnName);
+            return cursor.getString(index).substring(0,1);
+        } else {
+            return "";
+        }
     }
 
     private static class QueryFinished {
