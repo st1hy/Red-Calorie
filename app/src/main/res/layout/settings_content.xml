@@ -9,11 +9,23 @@
     tools:showIn="@layout/settings_app_bar"
     tools:context=".activities.settings.SettingsActivity">
 
-    <include layout="@layout/settings_select_unit"
-        android:id="@+id/settings_unit_energy"/>
-    <include layout="@layout/settings_select_unit"
-        android:id="@+id/settings_unit_mass" />
-    <include layout="@layout/settings_select_unit"
-        android:id="@+id/settings_unit_volume" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_unit_energy">
+        <include layout="@layout/settings_select_unit"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_unit_mass">
+        <include layout="@layout/settings_select_unit"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_unit_volume">
+        <include layout="@layout/settings_select_unit"/>
+    </FrameLayout>
 
 </LinearLayout>

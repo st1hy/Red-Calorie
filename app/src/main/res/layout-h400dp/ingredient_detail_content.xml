@@ -1,144 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minWidth="400dp"
-    android:orientation="vertical"
     android:clickable="true"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:minWidth="400dp"
+    android:orientation="vertical">
 
-
-    <android.support.v7.widget.CardView
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/add_meal_ingredient_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardUseCompatPadding="true">
+        android:layout_height="140dp"
+        android:contentDescription="@string/add_meal_ingredient_photo_description"
+        android:scaleType="fitCenter"
+        android:transitionName="ingredient-shared-view-image"
+        app:srcCompat="@drawable/ic_fork_and_knife_wide" />
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/add_meal_ingredient_image"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:transitionName="ingredient-shared-view-image"
-            android:contentDescription="@string/add_meal_ingredient_photo_description"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_fork_and_knife_wide" />
-    </android.support.v7.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/shadow_bottom" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <TextView
-            android:id="@+id/add_meal_ingredient_item_name"
-            style="@style/Base.TextAppearance.AppCompat.Body2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/ingredient_detail_title_size"
-            android:transitionName="ingredient-shared-view-name"
-            tools:text="Example ingredient name"
-            tools:targetApi="lollipop" />
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/add_meal_ingredient_item_name"
+                style="@style/Base.TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/ingredient_detail_title_size"
+                android:transitionName="ingredient-shared-view-name"
+                tools:targetApi="lollipop"
+                tools:text="Example ingredient name" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <TextView
+                android:id="@+id/add_meal_ingredient_energy_density"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false"
+                android:transitionName="ingredient-shared-view-density"
+                tools:targetApi="lollipop"
+                tools:text="400 kcal / 100 g" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <TextView
+                android:id="@+id/add_meal_ingredient_calorie_count"
+                style="@style/Base.TextAppearance.AppCompat.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?colorAccent"
+                android:textIsSelectable="false"
+                android:textSize="18sp"
+                android:transitionName="ingredient-shared-view-calories"
+                tools:targetApi="lollipop"
+                tools:text="160 kcal" />
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="8dp" />
 
-        <TextView
-            android:id="@+id/add_meal_ingredient_energy_density"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="false"
-            android:transitionName="ingredient-shared-view-density"
-            tools:text="400 kcal / 100 g"
-            tools:targetApi="lollipop" />
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/add_meal_ingredient_edit_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/add_meal_ingredient_amount_hint"
+                android:inputType="numberDecimal"
+                tools:hint="Amount i.e 200 g or ml">
+
+            </EditText>
+
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/add_meal_ingredient_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="18sp"
+                tools:text="g" />
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="8dp" />
+            android:layout_height="16dp" />
 
-        <TextView
-            android:id="@+id/add_meal_ingredient_calorie_count"
-            style="@style/Base.TextAppearance.AppCompat.Body2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            style="@style/Widget.AppCompat.ButtonBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
-            android:textIsSelectable="false"
-            android:transitionName="ingredient-shared-view-calories"
-            android:textSize="18sp"
-            tools:text="160 kcal"
-            tools:targetApi="lollipop" />
-    </LinearLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/add_meal_ingredient_edit_amount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/add_meal_ingredient_amount_hint"
-            android:inputType="numberDecimal"
-            tools:hint="Amount i.e 200 g or ml">
-
-        </EditText>
-
-        <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/add_meal_ingredient_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="18sp"
-            tools:text="g" />
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_meal_ingredient_remove"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:contentDescription="@string/add_meal_ingredient_remove_description"
+                app:srcCompat="@drawable/ic_delete_24px" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/add_meal_ingredient_accept"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/add_meal_ingredient_accept_description"
+                app:srcCompat="@drawable/ic_done_24px" />
+        </LinearLayout>
     </LinearLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
-
-    <LinearLayout
-        style="@style/Widget.AppCompat.ButtonBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/add_meal_ingredient_remove"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="1"
-            android:contentDescription="@string/add_meal_ingredient_remove_description"
-            app:srcCompat="@drawable/ic_delete_24px" />
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/add_meal_ingredient_accept"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/add_meal_ingredient_accept_description"
-            app:srcCompat="@drawable/ic_done_24px" />
-    </LinearLayout>
 </LinearLayout>

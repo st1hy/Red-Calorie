@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.inject.activities.ingredients.fragmen
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -45,7 +44,6 @@ public class IngredientsFragmentModule {
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.ingredients_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }
 

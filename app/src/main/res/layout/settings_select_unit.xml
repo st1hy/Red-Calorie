@@ -1,63 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_unit_item_root"
+    style="@style/Base.Widget.AppCompat.Button.Borderless"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:minHeight="?actionBarSize"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:showIn="@layout/settings_content">
 
-    <LinearLayout
-        android:id="@+id/settings_unit_item_root"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/settings_unit_item_title"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="?actionBarSize"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:clickable="true"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:orientation="vertical">
+        android:textIsSelectable="false"
+        android:textSize="18sp"
+        tools:text="@string/settings_unit_energy_title" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/settings_unit_item_title"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_current_unit"
+            android:textSize="14sp" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="8dp"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/settings_unit_item_current_unit"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textIsSelectable="false"
-            android:textSize="18sp"
-            tools:text="@string/settings_unit_energy_title"
-            style="@style/TextAppearance.AppCompat.Body2" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_current_unit"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1" />
-
-            <android.support.v4.widget.Space
-                android:layout_width="8dp"
-                android:layout_height="0dp" />
-
-            <TextView
-                android:id="@+id/settings_unit_item_current_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="kcal"
-                android:textIsSelectable="false"
-                android:textSize="14sp"
-                style="@style/TextAppearance.AppCompat.Body1" />
-        </LinearLayout>
+            android:textSize="14sp"
+            tools:text="kcal" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="@drawable/default_separator" />
 </LinearLayout>

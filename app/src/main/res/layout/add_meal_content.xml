@@ -92,27 +92,19 @@
                     tools:text="Total: 250 kcal" />
             </LinearLayout>
 
+
         </LinearLayout>
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
             android:layout_height="4dp" />
 
-        <android.support.v7.widget.CardView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/add_meal_ingredients_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="@dimen/group_card_view_horizontally_borderless_elevation"
-            android:layout_marginLeft="@dimen/group_card_view_horizontally_borderless_margin"
-            android:layout_marginRight="@dimen/group_card_view_horizontally_borderless_margin"
-            app:cardUseCompatPadding="true">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/add_meal_ingredients_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/add_meal_ingredient_item" />
-        </android.support.v7.widget.CardView>
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/add_meal_ingredient_item" />
 
         <LinearLayout
             android:id="@+id/add_meal_empty_ingredients"
@@ -131,5 +123,8 @@
                 android:text="@string/add_meal_button_add_ingredient" />
 
         </LinearLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_bottom_space" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
