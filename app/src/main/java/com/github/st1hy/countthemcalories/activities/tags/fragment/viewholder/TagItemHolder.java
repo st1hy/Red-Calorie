@@ -1,6 +1,10 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
 
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -117,6 +121,14 @@ public class TagItemHolder extends TagViewHolder {
 
     public void setChecked(boolean isSelected) {
         checkBox.setChecked(isSelected);
+    }
+
+    public void setCheckedTint(@ColorInt int color) {
+        Drawable buttonDrawable = CompoundButtonCompat.getButtonDrawable(checkBox);
+        if (buttonDrawable != null) {
+            DrawableCompat.setTint(buttonDrawable, color);
+            checkBox.setButtonDrawable(buttonDrawable);
+        }
     }
 
     public boolean isChecked() {

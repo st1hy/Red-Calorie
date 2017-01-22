@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Count Them Calories</string>
-    <string name="add_ingredient_add_category">Dodaj kategorię</string>
+    <string name="app_name">Red Calorie</string>
     <string name="add_ingredient_energy_density_error_empty">Musisz podać ilość!</string>
     <string name="add_ingredient_energy_density_error_zero">Ilość musi być większa od zera!</string>
     <string name="add_ingredient_energy_density_hint">Ilość kalorii</string>
@@ -42,7 +41,6 @@
     <string name="nav_overview">Przegląd</string>
     <string name="navigation_drawer_close">Zamnkij panel do nawigacji</string>
     <string name="navigation_drawer_open">Otwórz panel do nawigacji</string>
-    <string name="navigation_drawer_title_subtext">Powinieneś naprawdę zacząć je liczyć.</string>
     <string name="overview_empty_meals">Nie zjadłeś dzisiaj jeszcze żadnego posiku.</string>
     <string name="overview_meal_edit_description">Edytuj posiłek</string>
     <string name="overview_meal_photo_description">Zdjęcie posiłku</string>

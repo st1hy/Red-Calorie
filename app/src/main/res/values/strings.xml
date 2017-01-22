@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">Count Them Calories</string>
+    <string name="app_name">Red Calorie</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="navigation_drawer_title_subtext">You should really count them, you know?</string>
-    
+
     <string name="nav_overview">Overview</string>
 
     <string name="undo">Undo</string>
@@ -48,7 +47,6 @@
     <string name="add_ingredient_title">Add Ingredient</string>
     <string name="add_ingredient_name_hint">Name</string>
     <string name="add_ingredient_remove_category">Remove category</string>
-    <string name="add_ingredient_add_category">Add category</string>
     <string name="add_ingredient_energy_density_hint">Amount of calories</string>
     <string name="add_ingredient_image_select_title">Select picture for your ingredient</string>
     <string name="add_ingredient_name_error_empty">Name cannot be empty!</string>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.ColorGenerator;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
@@ -62,6 +63,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private final TagsDatabaseCommands commands;
     @NonNull
     private final UndoView undoView;
+    @Inject
+    ColorGenerator colorGenerator;
 
     private final PublishSubject<TagViewHolder> stateChanges = PublishSubject.create();
 
@@ -136,6 +139,9 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
             holder.bind(position, tag);
             holder.setSelectable(fragmentModel.isInSelectMode());
             holder.setChecked(fragmentModel.isSelected(tag));
+            if (!fragmentModel.isInSelectMode()) {
+                holder.setCheckedTint(colorGenerator.getColorFor(tag.getId()));
+            }
         } else {
             Timber.w("Cursor closed duding binding views.");
         }
