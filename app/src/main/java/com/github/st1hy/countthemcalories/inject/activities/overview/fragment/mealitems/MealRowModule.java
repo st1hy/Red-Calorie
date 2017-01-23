@@ -8,12 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
-import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,14 +36,8 @@ public class MealRowModule {
     }
 
     @Provides
-    public static ImageHolderDelegate imageHolderDelegate(Picasso picasso,
-                                                          PermissionsHelper permissionHelper,
-                                                          Provider<ImageView> imageView) {
-        return new ImageHolderDelegate(picasso, permissionHelper, imageView);
-    }
-
-    @Provides
     @PerMealRow
+    @Named("imageLoaderImageView")
     public static ImageView image(@Named("mealItemRoot") View rootView) {
         return (ImageView) rootView.findViewById(R.id.overview_item_image);
     }

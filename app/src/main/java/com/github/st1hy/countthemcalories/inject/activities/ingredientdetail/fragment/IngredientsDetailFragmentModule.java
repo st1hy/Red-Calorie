@@ -58,6 +58,8 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
+    @PerFragment
+    @Named("imageLoaderImageView")
     public static ImageView provideImageView(IngredientDetailView view) {
         return view.getImageView();
     }

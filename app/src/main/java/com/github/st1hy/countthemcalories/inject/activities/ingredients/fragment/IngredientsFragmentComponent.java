@@ -2,6 +2,8 @@ package com.github.st1hy.countthemcalories.inject.activities.ingredients.fragmen
 
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder.IngredientViewHolderComponent;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder.IngredientViewHolderModule;
 import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
 
@@ -16,4 +18,6 @@ import dagger.Subcomponent;
 public interface IngredientsFragmentComponent {
 
     void inject(IngredientsFragment fragment);
+
+    IngredientViewHolderComponent newIngredientViewHolderComponent(IngredientViewHolderModule module);
 }

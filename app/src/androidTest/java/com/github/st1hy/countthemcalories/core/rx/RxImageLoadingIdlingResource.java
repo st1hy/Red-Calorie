@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
-public class RxPicassoIdlingResource {
-    final CountingIdlingResource idlingResource = new CountingIdlingResource("Picasso loader");
+public class RxImageLoadingIdlingResource {
+    final CountingIdlingResource idlingResource = new CountingIdlingResource("ImageLoader");
 
-    private RxPicassoIdlingResource() {
-        RxPicasso.Hook.setHook(new RxPicasso.Hook() {
+    private RxImageLoadingIdlingResource() {
+        RxImageLoader.Hook.setHook(new RxImageLoader.Hook() {
             @Override
             public void onImageLoadingStarted() {
                 idlingResource.increment();
@@ -22,14 +22,14 @@ public class RxPicassoIdlingResource {
     }
 
     @NonNull
-    public static RxPicassoIdlingResource registerAndGet() {
-        RxPicassoIdlingResource rxPicassoIdlingResource = new RxPicassoIdlingResource();
-        Espresso.registerIdlingResources(rxPicassoIdlingResource.idlingResource);
-        return rxPicassoIdlingResource;
+    public static RxImageLoadingIdlingResource registerAndGet() {
+        RxImageLoadingIdlingResource rxImageLoadingIdlingResource = new RxImageLoadingIdlingResource();
+        Espresso.registerIdlingResources(rxImageLoadingIdlingResource.idlingResource);
+        return rxImageLoadingIdlingResource;
     }
 
     public void unregister() {
-        RxPicasso.Hook.setHook(null);
+        RxImageLoader.Hook.setHook(null);
         Espresso.unregisterIdlingResources(idlingResource);
     }
 }

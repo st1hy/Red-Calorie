@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.core.headerpicture.imageholder;
 
 import android.Manifest;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -9,11 +10,12 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso.PicassoEvent;
+import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
+import com.github.st1hy.countthemcalories.core.rx.RxImageLoader.ImageLoadingEvent;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import rx.Observable;
@@ -26,19 +28,21 @@ import rx.subscriptions.CompositeSubscription;
 import static com.github.st1hy.countthemcalories.core.permissions.Permission.GRANTED;
 
 /**
- * Wraps image loading using picasso and permission checking for reading external storage.
+ * Wraps image loading using ImageLoader and permission checking for reading external storage.
  * <p/>
- * If Picasso cannot load image, permission is missing or if provided image is absent,
+ * If ImageLoader cannot load image, permission is missing or if provided image is absent,
  * placeholder is used instead.
  */
 public class ImageHolderDelegate {
 
-    @NonNull
-    protected final Picasso picasso;
-    @NonNull
-    protected final PermissionsHelper permissionsHelper;
-    @NonNull
-    protected final Provider<ImageView> imageViewProvider;
+    @Inject
+    @Named("appContext")
+    Context appContext;
+    @Inject
+    PermissionsHelper permissionsHelper;
+    @Inject
+    @Named("imageLoaderImageView")
+    Provider<ImageView> imageViewProvider;
 
     private final Subject<Uri, Uri> imageUriSubject = BehaviorSubject.create();
     private final Subject<LoadedSource, LoadedSource> loadedSourceSubject = PublishSubject.create();
@@ -49,10 +53,14 @@ public class ImageHolderDelegate {
     @DrawableRes
     private int placeholderResId = R.drawable.ic_fork_and_knife_wide;
 
-    public ImageHolderDelegate(@NonNull Picasso picasso,
+    @Inject
+    public ImageHolderDelegate() {
+    }
+
+    public ImageHolderDelegate(@NonNull Context appContext,
                                @NonNull PermissionsHelper permissionsHelper,
                                @NonNull Provider<ImageView> imageViewProvider) {
-        this.picasso = picasso;
+        this.appContext = appContext;
         this.permissionsHelper = permissionsHelper;
         this.imageViewProvider = imageViewProvider;
     }
@@ -89,15 +97,15 @@ public class ImageHolderDelegate {
                 .switchMap(checkPermission())
                 .switchMap(uri -> {
                     if (isEmpty(uri)) {
-                        return Observable.just(PicassoEvent.ERROR);
+                        return Observable.just(ImageLoadingEvent.ERROR);
                     } else {
                         return loadImage(uri);
                     }
                 })
-                .doOnNext((picassoEvent) -> {
-                    switch (picassoEvent) {
+                .doOnNext((imageLoadingEvent) -> {
+                    switch (imageLoadingEvent) {
                         case SUCCESS:
-                            loadedSourceSubject.onNext(LoadedSource.PICASSO);
+                            loadedSourceSubject.onNext(LoadedSource.LOADED_SOURCE);
                             break;
                         case ERROR:
                         default:
@@ -123,17 +131,16 @@ public class ImageHolderDelegate {
     }
 
     /**
-     * Implementation of image loading with RxPicasso
+     * Implementation of image loading with RxImageLoader
      *
      * @param uri not null image uri
      * @return observable for image loading
      */
     @NonNull
-    protected Observable<PicassoEvent> loadImage(@NonNull Uri uri) {
-        return RxPicasso.Builder.with(picasso, uri)
+    protected Observable<ImageLoadingEvent> loadImage(@NonNull Uri uri) {
+        return RxImageLoader.Builder.with(appContext, uri)
                 .placeholder(placeholderResId)
                 .centerCrop()
-                .fit()
                 .into(imageViewProvider.get())
                 .asObservable();
     }

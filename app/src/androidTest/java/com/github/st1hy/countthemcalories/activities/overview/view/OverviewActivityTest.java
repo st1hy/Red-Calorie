@@ -153,7 +153,8 @@ public class OverviewActivityTest {
         closeSoftKeyboard();
         onView(withId(R.id.add_meal_fab_add_ingredient)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content), isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withText(IngredientActivityTest.exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientDetailActivity.class)));
@@ -198,7 +199,8 @@ public class OverviewActivityTest {
                 .check(matches(isDisplayed()))
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_ingredients));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
         intended(hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class)));
         pressBack();

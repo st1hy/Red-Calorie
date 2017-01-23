@@ -2,14 +2,10 @@ package com.github.st1hy.countthemcalories.core.headerpicture.imageholder;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicasso;
-import com.squareup.picasso.Picasso;
+import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import rx.Observable;
 
@@ -20,18 +16,15 @@ import rx.Observable;
 public class WithoutPlaceholderImageHolderDelegate extends ImageHolderDelegate {
 
     @Inject
-    public WithoutPlaceholderImageHolderDelegate(@NonNull Picasso picasso,
-                                                 @NonNull PermissionsHelper permissionsHelper,
-                                                 @NonNull Provider<ImageView> imageViewProvider) {
-        super(picasso, permissionsHelper, imageViewProvider);
+    public WithoutPlaceholderImageHolderDelegate() {
+        super();
     }
 
     @NonNull
     @Override
-    protected Observable<RxPicasso.PicassoEvent> loadImage(@NonNull Uri uri) {
-        return RxPicasso.Builder.with(picasso, uri)
+    protected Observable<RxImageLoader.ImageLoadingEvent> loadImage(@NonNull Uri uri) {
+        return RxImageLoader.Builder.with(appContext, uri)
                 .centerCrop()
-                .fit()
                 .into(imageViewProvider.get())
                 .asObservable();
     }

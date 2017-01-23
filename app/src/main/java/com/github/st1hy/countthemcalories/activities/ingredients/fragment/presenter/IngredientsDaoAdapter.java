@@ -18,7 +18,6 @@ import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -29,8 +28,9 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponent;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder.IngredientViewHolderModule;
 import com.l4digital.fastscroll.FastScroller;
-import com.squareup.picasso.Picasso;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -59,15 +59,13 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @NonNull
     private final IngredientsDatabaseCommands commands;
     @NonNull
-    private final Picasso picasso;
-    @NonNull
-    private final PermissionsHelper permissionsHelper;
-    @NonNull
     private final LastSearchResult recentSearchResult;
     @NonNull
     private final Observable<SearchResult> searchResultObservable;
     @NonNull
     private final DialogView dialogView;
+    @NonNull
+    private final IngredientsFragmentComponent component;
 
     private final Queue<Long> addedItems = new LinkedList<>();
 
@@ -76,20 +74,18 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                                  @NonNull IngredientsFragmentModel model,
                                  @NonNull RxIngredientsDatabaseModel databaseModel,
                                  @NonNull IngredientsDatabaseCommands commands,
-                                 @NonNull Picasso picasso,
-                                 @NonNull PermissionsHelper permissionsHelper,
                                  @NonNull LastSearchResult recentSearchResult,
                                  @NonNull Observable<SearchResult> searchResultObservable,
-                                 @NonNull DialogView dialogView) {
+                                 @NonNull DialogView dialogView,
+                                 @NonNull IngredientsFragmentComponent component) {
         this.view = view;
         this.model = model;
         this.databaseModel = databaseModel;
         this.commands = commands;
-        this.picasso = picasso;
-        this.permissionsHelper = permissionsHelper;
         this.recentSearchResult = recentSearchResult;
         this.searchResultObservable = searchResultObservable;
         this.dialogView = dialogView;
+        this.component = component;
     }
 
     @Override
@@ -102,7 +98,9 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
     @Override
     public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(item_layout, parent, false);
-        IngredientViewHolder holder = new IngredientViewHolder(view, this, picasso, permissionsHelper);
+        IngredientViewHolder holder = component
+                .newIngredientViewHolderComponent(new IngredientViewHolderModule(view, this))
+                .newIngredientViewHolder();
         holder.fillParent(parent);
         return holder;
     }

@@ -56,6 +56,7 @@ public class MealDetailsModule {
 
     @Provides
     @PerFragment
+    @Named("imageLoaderImageView")
     public static ImageView provideImageViewProvider(View rootView) {
         return (ImageView) rootView.findViewById(R.id.meal_detail_image);
     }

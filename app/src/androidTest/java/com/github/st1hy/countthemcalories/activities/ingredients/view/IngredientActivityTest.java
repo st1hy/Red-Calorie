@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
@@ -48,6 +49,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExt
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -158,7 +160,8 @@ public class IngredientActivityTest {
                 .inRoot(RootMatchers.withDecorView(not(is(main
                         .getActivity().getWindow().getDecorView()))))
                 .perform(click());
-        onView(withId(R.id.ingredients_content)).perform(loopMainThreadForAtLeast(500));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .perform(loopMainThreadForAtLeast(500));
         onView(withText(exampleIngredients[0].getName())).check(doesNotExist());
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[2].getName())).check(doesNotExist());
@@ -183,7 +186,8 @@ public class IngredientActivityTest {
                 .perform(typeTextIntoFocusedView("30"));
         onView(withText(R.string.add_ingredient_save_action)).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withText("New ingredient name")).check(matches(isDisplayed()));
 
         List<IngredientTemplate> ingredientTemplates = session.getIngredientTemplateDao().loadAll();

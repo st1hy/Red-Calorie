@@ -14,15 +14,15 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dagger.internal.InstanceFactory;
 import rx.Observable;
 
 public class IngredientViewHolder extends RecyclerView.ViewHolder {
@@ -52,12 +52,13 @@ public class IngredientViewHolder extends RecyclerView.ViewHolder {
     View content;
 
     private final PositionDelegate position = new PositionDelegate();
-    private final ImageHolderDelegate imageHolderDelegate;
 
-    public IngredientViewHolder(@NonNull View itemView,
-                                @NonNull Callback interaction,
-                                @NonNull Picasso picasso,
-                                @NonNull PermissionsHelper permissionsHelper) {
+    @Inject
+    ImageHolderDelegate imageHolderDelegate;
+
+    @Inject
+    public IngredientViewHolder(@NonNull @Named("ingredientRootView")View itemView,
+                                @NonNull Callback interaction) {
         super(itemView);
         this.callback = interaction;
         ButterKnife.bind(this, itemView);
@@ -67,8 +68,6 @@ public class IngredientViewHolder extends RecyclerView.ViewHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
-        imageHolderDelegate = new ImageHolderDelegate(picasso, permissionsHelper,
-                InstanceFactory.create(image));
     }
 
     @NonNull

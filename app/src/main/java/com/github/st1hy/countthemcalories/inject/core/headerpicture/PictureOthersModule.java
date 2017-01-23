@@ -37,6 +37,8 @@ public abstract class PictureOthersModule {
     }
 
     @Provides
+    @PerFragment
+    @Named("imageLoaderImageView")
     public static ImageView imageViewProvider(PictureView view) {
         return view.getImageView();
     }

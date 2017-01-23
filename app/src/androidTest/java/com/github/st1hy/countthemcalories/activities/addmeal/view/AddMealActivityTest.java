@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
@@ -19,7 +20,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.view.Ingredient
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker;
-import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
+import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
@@ -49,6 +50,7 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -116,7 +118,7 @@ public class AddMealActivityTest {
         Intent intent = new Intent();
         intent.setData(TestPicturePicker.resourceToUri(getContext(), android.R.drawable.ic_input_add));
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, intent));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
+        RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -131,7 +133,7 @@ public class AddMealActivityTest {
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
-        rxPicassoIdlingResource.unregister();
+        rxImageLoadingIdlingResource.unregister();
     }
 
     @Test
@@ -169,7 +171,7 @@ public class AddMealActivityTest {
                 injectUriOnMatch(activity, uri)
         );
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, null));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
+        RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -180,7 +182,7 @@ public class AddMealActivityTest {
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
-        rxPicassoIdlingResource.unregister();
+        rxImageLoadingIdlingResource.unregister();
     }
 
     @Test
@@ -224,7 +226,8 @@ public class AddMealActivityTest {
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
@@ -241,7 +244,7 @@ public class AddMealActivityTest {
     private void testAddIngredient() {
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content), isAssignableFrom(RecyclerView.class))).check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
@@ -256,7 +259,8 @@ public class AddMealActivityTest {
     }
 
     private void testAddIngredient2() {
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
@@ -306,7 +310,8 @@ public class AddMealActivityTest {
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
-        onView(withId(R.id.ingredients_content)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.ingredients_content),isAssignableFrom(RecyclerView.class)))
+                .check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));

@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
-import com.squareup.picasso.MediaStoreRequestHandlerNext;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,11 +29,4 @@ public class ApplicationModule {
     }
 
 
-    @Provides
-    @Singleton
-    public static Picasso providePicasso(@Named("appContext") Context context) {
-        return new Picasso.Builder(context)
-                .addRequestHandler(new MediaStoreRequestHandlerNext(context))
-                .build();
-    }
 }

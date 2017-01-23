@@ -70,7 +70,7 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
                 imageHolderDelegate.getLoadingObservable()
                         .subscribe((loadedSource) -> {
                             switch (loadedSource) {
-                                case PICASSO:
+                                case LOADED_SOURCE:
                                     view.showImageOverlay();
                                     break;
                                 case PLACEHOLDER:

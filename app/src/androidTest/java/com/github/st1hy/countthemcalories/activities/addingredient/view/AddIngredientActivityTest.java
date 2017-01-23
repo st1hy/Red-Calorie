@@ -18,7 +18,7 @@ import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.core.PermissionHelper;
-import com.github.st1hy.countthemcalories.core.rx.RxPicassoIdlingResource;
+import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
@@ -114,7 +114,7 @@ public class AddIngredientActivityTest {
         Intent intent = new Intent();
         intent.setData(resourceToUri(getContext(), android.R.drawable.ic_input_add));
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, intent));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
+        RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -129,7 +129,7 @@ public class AddIngredientActivityTest {
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
-        rxPicassoIdlingResource.unregister();
+        rxImageLoadingIdlingResource.unregister();
     }
 
     @Test
@@ -166,7 +166,7 @@ public class AddIngredientActivityTest {
         );
 
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_OK, null));
-        RxPicassoIdlingResource rxPicassoIdlingResource = RxPicassoIdlingResource.registerAndGet();
+        RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
         PermissionHelper.allowPermissionsIfNeeded();
@@ -177,7 +177,7 @@ public class AddIngredientActivityTest {
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
                 .check(matches(withDrawable(any(BitmapDrawable.class))));
-        rxPicassoIdlingResource.unregister();
+        rxImageLoadingIdlingResource.unregister();
     }
 
     @Test
