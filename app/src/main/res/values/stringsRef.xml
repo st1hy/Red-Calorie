@@ -6,7 +6,6 @@
     <string name="nav_categories" translatable="false">@string/tags_title</string>
     <string name="nav_settings" translatable="false">@string/action_settings</string>
 
-    <string name="add_meal_button_add_ingredient" translatable="false">@string/add_ingredient_title</string>
     <string name="add_meal_amount_error_empty" translatable="false">@string/add_ingredient_energy_density_error_empty</string>
     <string name="add_meal_amount_error_zero" translatable="false">@string/add_ingredient_energy_density_error_zero</string>
 

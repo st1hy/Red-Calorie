@@ -6,8 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="0dp"
-    android:minHeight="?listPreferredItemHeight"
-    android:background="@color/colorBackground">
+    android:minHeight="?listPreferredItemHeight">
 
     <LinearLayout
         android:id="@+id/overview_item_button"
@@ -17,17 +16,17 @@
         android:layout_margin="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
-        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
-        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding">
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
             app:cardBackgroundColor="@android:color/transparent"
-            app:cardCornerRadius="4dp"
+            app:cardCornerRadius="@dimen/list_item_image_half_size"
             app:cardElevation="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp">
@@ -44,8 +43,8 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="0dp" />
+            android:layout_width="16dp"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_width="0dp"

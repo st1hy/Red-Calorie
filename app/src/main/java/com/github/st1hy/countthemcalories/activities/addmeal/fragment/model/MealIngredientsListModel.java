@@ -74,4 +74,13 @@ public class MealIngredientsListModel {
     public Ingredient getExtraIngredient() {
         return extraIngredient;
     }
+
+    @Nullable
+    public Ingredient findIngredientByTypeId(Long id) {
+        for (Ingredient ingredient: ingredients) {
+            if (ingredient.getIngredientTypeOrNull().getId().equals(id))
+                return ingredient;
+        }
+        return null;
+    }
 }

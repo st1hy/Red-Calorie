@@ -41,4 +41,12 @@ public class ShowIngredientsInfo {
     public List<Pair<View, String>> getSharedElements() {
         return sharedElements;
     }
+
+    @Override
+    public String toString() {
+        return "ShowIngredientsInfo{" +
+                "id=" + id +
+                ", ingredient=" + ingredient +
+                '}';
+    }
 }

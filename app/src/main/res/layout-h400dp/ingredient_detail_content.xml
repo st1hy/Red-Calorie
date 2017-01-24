@@ -17,11 +17,6 @@
         android:transitionName="ingredient-shared-view-image"
         app:srcCompat="@drawable/ic_fork_and_knife_wide" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="@drawable/shadow_bottom" />
-
 
     <LinearLayout
         android:layout_width="match_parent"

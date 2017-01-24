@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.inject.activities.overview.fragment;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -39,7 +38,6 @@ public class OverviewFragmentModule {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.overview_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         return recyclerView;
     }
 

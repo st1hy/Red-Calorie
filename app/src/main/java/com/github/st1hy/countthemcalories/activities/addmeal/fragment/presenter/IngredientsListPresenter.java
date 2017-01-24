@@ -83,22 +83,21 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
                                 Collections.emptyList()))
                         .mergeWith(
                                 ingredientClicks
-                                        .doOnNext(holder -> {
-                                            disabledItem = holder;
-                                            holder.setEnabled(false);
-                                        })
+                                        .filter(any -> disabledItem == null) //ignore when any change in progress
                                         .map(viewHolder -> {
                                             Ingredient ingredient = viewHolder.getIngredient();
                                             final int position = model.indexOf(ingredient);
+                                            //ignore item currently changing
+                                            if (position != -1) {
+                                                disabledItem = viewHolder;
+                                                viewHolder.setEnabled(false);
+                                            }
                                             final List<Pair<View, String>> sharedViews = ImmutableList.of(
                                                     pairOf(viewHolder.getImage(), "ingredient-shared-view-image")
-//                                            pairOf(viewHolder.getRoot(), "ingredient-shared-view"),
-//                                            pairOf(viewHolder.getName(), "ingredient-shared-view-name"),
-//                                            pairOf(viewHolder.getCalories(), "ingredient-shared-view-calories"),
-//                                            pairOf(viewHolder.getDensity(), "ingredient-shared-view-density")
                                             );
                                             return ShowIngredientsInfo.of(position, ingredient, sharedViews);
                                         })
+                                        .filter(info -> info.getId() != -1) //ignore item currently changing
                         )
                         .compose(view.showIngredientDetails())
                         .doOnNext(action -> {
@@ -189,13 +188,25 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
 
     private void onIngredientEdited(long requestId, @NonNull Ingredient ingredient) {
         int position = (int) requestId;
-        model.modifyIngredient(position, ingredient);
-        notifyChanged(position);
+        Ingredient current = model.getItemAt(position);
+        if (current.getAmount().compareTo(ingredient.getAmount()) != 0) {
+            model.modifyIngredient(position, ingredient);
+            notifyChanged(position);
+        }
     }
 
     private void onIngredientAdded(@NonNull Ingredient ingredient) {
-        int position = model.addIngredient(ingredient);
-        notifyInserted(position);
+        Long id = ingredient.getIngredientTypeOrNull().getId();
+        Ingredient oldIngredient = model.findIngredientByTypeId(id);
+        if (oldIngredient != null) {
+            BigDecimal amount = oldIngredient.getAmount()
+                    .add(ingredient.getAmount());
+            oldIngredient.setAmount(amount);
+            notifyChanged(model.indexOf(oldIngredient));
+        } else {
+            int position = model.addIngredient(ingredient);
+            notifyInserted(position);
+        }
     }
 
     private void notifyInserted(int position) {

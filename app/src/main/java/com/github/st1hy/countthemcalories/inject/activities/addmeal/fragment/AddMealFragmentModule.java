@@ -147,7 +147,11 @@ public class AddMealFragmentModule {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(
                 R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setAutoMeasureEnabled(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(false);
         return recyclerView;
     }
 

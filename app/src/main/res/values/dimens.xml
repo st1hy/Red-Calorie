@@ -12,9 +12,6 @@
     <dimen name="ingredient_detail_title_size">18sp</dimen>
     <dimen name="add_ingredient_name_search_width">40dp</dimen>
     <dimen name="list_item_bottom_space">80dip</dimen>
-    <dimen name="group_card_view_horizontally_borderless_margin">0dp</dimen>
-    <dimen name="group_card_view_horizontally_borderless_horizontal_padding">@dimen/activity_horizontal_margin</dimen>
-    <dimen name="group_card_view_horizontally_borderless_elevation">2dp</dimen>
 
     <dimen name="fastscroll_bubble_size">72dp</dimen>
     <dimen name="fastscroll_bubble_textsize">40sp</dimen>
