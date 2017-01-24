@@ -5,7 +5,6 @@
     <color name="colorAccent">#2553a7</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorAppBackground">#F8F8F8</color>
-    <color name="checkboxDisabled">#E0E0E0</color>
-    <color name="checkboxUnselected">#302553a7</color>
-    <color name="checkboxSelected">@color/colorAccent</color>
+    <color name="checkboxUnselected">#E0E0E0</color>
+    <color name="checkboxSelected">@color/colorPrimaryDark</color>
 </resources>

@@ -47,7 +47,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         FastScroller.SectionIndexer {
 
     private static final int item_layout = R.layout.tags_item_scrolling;
-    private static final int space_bottom = R.layout.tag_item_bottom;
+    private static final int space_bottom = R.layout.list_item_bottom;
     private static final int BOTTOM_ITEM_PADDING = 1;
     private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING;
 

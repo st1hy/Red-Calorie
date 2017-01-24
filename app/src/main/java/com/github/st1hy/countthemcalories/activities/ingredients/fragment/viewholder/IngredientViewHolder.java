@@ -3,7 +3,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewh
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 
-public class IngredientViewHolder extends RecyclerView.ViewHolder {
+public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
     private final IngredientTemplate reusableIngredient = new IngredientTemplate();
 
@@ -58,7 +57,7 @@ public class IngredientViewHolder extends RecyclerView.ViewHolder {
 
     @Inject
     public IngredientViewHolder(@NonNull @Named("ingredientRootView")View itemView,
-                                @NonNull Callback interaction) {
+                                         @NonNull Callback interaction) {
         super(itemView);
         this.callback = interaction;
         ButterKnife.bind(this, itemView);

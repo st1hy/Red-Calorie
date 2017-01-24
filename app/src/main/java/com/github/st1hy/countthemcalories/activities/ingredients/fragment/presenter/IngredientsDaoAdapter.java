@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.AbstractIngredientsViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
@@ -29,6 +30,7 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponent;
+import com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder.IngredientViewHolderComponent;
 import com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder.IngredientViewHolderModule;
 import com.l4digital.fastscroll.FastScroller;
 
@@ -45,10 +47,14 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
 
 @PerFragment
-public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientViewHolder>
+public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIngredientsViewHolder>
         implements IngredientViewHolder.Callback, FastScroller.SectionIndexer {
+
     @LayoutRes
-    private static final int item_layout = R.layout.ingredients_item_scrolling;
+    private static final int ingredient_item_layout = R.layout.ingredients_item_scrolling;
+    @LayoutRes
+    private static final int space_layout = R.layout.list_item_bottom;
+    private static final int SPACE_BOTTOM = 1;
 
     @NonNull
     private final IngredientsView view;
@@ -94,42 +100,50 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         addSubscription(searchIngredients(searchResultObservable));
     }
 
-
     @Override
-    public IngredientViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(item_layout, parent, false);
-        IngredientViewHolder holder = component
-                .newIngredientViewHolderComponent(new IngredientViewHolderModule(view, this))
-                .newIngredientViewHolder();
-        holder.fillParent(parent);
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(IngredientViewHolder holder, int position) {
-        Cursor cursor = getCursor();
-        if (cursor != null) {
-            cursor.moveToPosition(position);
-            IngredientTemplate ingredient = holder.getReusableIngredient();
-            databaseModel.performReadEntity(cursor, ingredient);
-            holder.setPosition(position);
-            holder.setName(ingredient.getName());
-            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
-            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
-            onBindImage(ingredient, holder);
+    public int getItemViewType(int position) {
+        if (position < getDaoItemCount()) {
+            return ingredient_item_layout;
         } else {
-            Timber.w("Cursor closed during binding views.");
+            return space_layout;
         }
     }
 
     @Override
-    public void onViewAttachedToWindow(IngredientViewHolder holder) {
+    public int getItemCount() {
+        int itemCount = super.getItemCount();
+        return itemCount == 0 ? 0 : itemCount + SPACE_BOTTOM;
+    }
+
+    @Override
+    public AbstractIngredientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        IngredientViewHolderComponent holderComponent = component
+                .newIngredientViewHolderComponent(new IngredientViewHolderModule(view, this));
+        if (viewType == ingredient_item_layout) {
+            IngredientViewHolder holder = holderComponent.newIngredientViewHolder();
+            holder.fillParent(parent);
+            return holder;
+        } else {
+            return holderComponent.newSpaceViewHolder();
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(AbstractIngredientsViewHolder holder, int position) {
+        if (holder instanceof  IngredientViewHolder) {
+            onBindViewHolder((IngredientViewHolder) holder, position);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(AbstractIngredientsViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         holder.onAttached();
     }
 
     @Override
-    public void onViewDetachedFromWindow(IngredientViewHolder holder) {
+    public void onViewDetachedFromWindow(AbstractIngredientsViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         holder.onDetached();
     }
@@ -237,13 +251,13 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
                 });
     }
 
-
     private void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
         onCursorUpdate(cursor);
         boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
         view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
         view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
+
 
     public void onIngredientAdded(long addedIngredientId) {
         addedItems.offer(addedIngredientId);
@@ -267,15 +281,30 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<IngredientV
         return cursorPosition != -1;
     }
 
-    private void onBindImage(@NonNull IngredientTemplate ingredient,
-                             @NonNull IngredientViewHolder holder) {
-        holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
-                R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
-        holder.setImageUri(ingredient.getImageUri());
+    private void onBindViewHolder(IngredientViewHolder holder, int position) {
+        Cursor cursor = getCursor();
+        if (cursor != null) {
+            cursor.moveToPosition(position);
+            IngredientTemplate ingredient = holder.getReusableIngredient();
+            databaseModel.performReadEntity(cursor, ingredient);
+            holder.setPosition(position);
+            holder.setName(ingredient.getName());
+            final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
+            holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
+
+            holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
+                    R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
+            holder.setImageUri(ingredient.getImageUri());
+        } else {
+            Timber.w("Cursor closed during binding views.");
+        }
     }
 
     @Override
     public String getSectionText(int position) {
+        if (position >= getDaoItemCount()) {
+            position = getDaoItemCount() - 1;
+        }
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);

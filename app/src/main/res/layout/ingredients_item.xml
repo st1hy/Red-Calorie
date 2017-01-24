@@ -16,8 +16,8 @@
         android:layout_margin="0dp"
         android:orientation="horizontal"
         android:paddingBottom="4dp"
-        android:paddingLeft="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
-        android:paddingRight="@dimen/group_card_view_horizontally_borderless_horizontal_padding"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="4dp">
 
 
@@ -39,7 +39,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v4.widget.Space
-            android:layout_width="8dp"
+            android:layout_width="16dp"
             android:layout_height="match_parent" />
 
         <LinearLayout

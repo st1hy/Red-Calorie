@@ -35,8 +35,6 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     EditText name;
     @BindView(R.id.add_meal_empty_ingredients)
     View emptyIngredients;
-    @BindView(R.id.add_meal_button_add_ingredient)
-    Button addIngredientButton;
     @BindView(R.id.add_meal_total_calories)
     TextView totalCalories;
     @BindView(R.id.add_meal_time_value)
@@ -56,8 +54,7 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     @NonNull
     @Override
     public Observable<Void> getAddIngredientButtonObservable() {
-        return super.getAddIngredientButtonObservable()
-                .mergeWith(RxView.clicks(addIngredientButton));
+        return super.getAddIngredientButtonObservable();
     }
 
     @Override

@@ -211,18 +211,11 @@ public class AddMealActivityTest {
         testAddIngredient2();
     }
 
-    @Test
-    public void testAddIngredientButton() throws Exception {
-        onView(withId(R.id.add_meal_name)).perform(closeSoftKeyboard());
-        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
-                .perform(click());
-        testAddIngredient();
-    }
 
     @Test
     public void testAddIngredientCancel() throws Exception {
         onView(withId(R.id.add_meal_name)).perform(closeSoftKeyboard());
-        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
+        onView(withId(R.id.add_meal_fab_add_ingredient)).check(matches(isDisplayed()))
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));
@@ -276,7 +269,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testEditIngredient() throws Exception {
-        testAddIngredientButton();
+        testAddIngredientFab();
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
@@ -293,7 +286,7 @@ public class AddMealActivityTest {
 
     @Test
     public void testRemoveIngredient() throws Exception {
-        testAddIngredientButton();
+        testAddIngredientFab();
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
@@ -306,7 +299,7 @@ public class AddMealActivityTest {
     @Test
     public void testAddIngredientWithIncorrectValue() throws Exception {
         onView(withId(R.id.add_meal_name)).perform(closeSoftKeyboard());
-        onView(withId(R.id.add_meal_button_add_ingredient)).check(matches(isDisplayed()))
+        onView(withId(R.id.add_meal_fab_add_ingredient)).check(matches(isDisplayed()))
                 .perform(click());
         intended(allOf(hasAction(IngredientsActivity.ACTION_SELECT_INGREDIENT),
                 hasComponent(new ComponentName(getTargetContext(), IngredientsActivity.class))));

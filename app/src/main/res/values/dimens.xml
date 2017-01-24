@@ -15,4 +15,7 @@
     <dimen name="group_card_view_horizontally_borderless_margin">0dp</dimen>
     <dimen name="group_card_view_horizontally_borderless_horizontal_padding">@dimen/activity_horizontal_margin</dimen>
     <dimen name="group_card_view_horizontally_borderless_elevation">2dp</dimen>
+
+    <dimen name="fastscroll_bubble_size">72dp</dimen>
+    <dimen name="fastscroll_bubble_textsize">40sp</dimen>
 </resources>
