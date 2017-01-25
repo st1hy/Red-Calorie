@@ -1,5 +1,5 @@
 ![Red Calories](web_ctc_logo.png)
-# Red Calories [![Build Status](https://travis-ci.org/st1hy/Count-Them-Calories.svg?branch=master)](https://travis-ci.org/st1hy/Count-Them-Calories)
+# Red Calories [![Build Status](https://travis-ci.org/st1hy/Red-Calories.svg?branch=master)](https://travis-ci.org/st1hy/Red-Calories)
 Android app for keeping your calories in check.
 Previous known as: Count Them Calories
 
