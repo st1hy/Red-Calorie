@@ -44,7 +44,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each {
             output ->
-                def String newApkName = "Red Calories " +
+                def String newApkName = "Red Calorie " +
                         "${variant.versionName} (${variant.versionCode}).apk"
 
                 def String dir = output.outputFile.parent;
