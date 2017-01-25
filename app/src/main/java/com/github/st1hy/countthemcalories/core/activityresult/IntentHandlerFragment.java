@@ -19,7 +19,7 @@ public class IntentHandlerFragment extends BaseFragment implements ActivityLaunc
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        QueueSubject<ActivityResult> subject = prepareSubject(requestCode);
+        QueueSubject<ActivityResult> subject = getSubject(requestCode);
         subject.onNext(new ActivityResult(requestCode, resultCode, data));
     }
 
@@ -37,7 +37,7 @@ public class IntentHandlerFragment extends BaseFragment implements ActivityLaunc
         int requestCode = startParams.getRequestCode();
         if (requestCode < 0)
             throw new IllegalArgumentException("requestCode must be greater than 0");
-        Observable<ActivityResult> observable = prepareSubject(requestCode);
+        Observable<ActivityResult> observable = getSubject(requestCode);
         Intent intent = startParams.getIntent();
         Bundle options = startParams.getOptions();
         try {
@@ -48,7 +48,9 @@ public class IntentHandlerFragment extends BaseFragment implements ActivityLaunc
         return observable;
     }
 
-    QueueSubject<ActivityResult> prepareSubject(final int requestCode) {
+    @NonNull
+    @CheckResult
+    private QueueSubject<ActivityResult> getSubject(final int requestCode) {
         QueueSubject<ActivityResult> subject = results.get(requestCode);
         if (subject == null) {
             subject = QueueSubject.create();
@@ -58,8 +60,8 @@ public class IntentHandlerFragment extends BaseFragment implements ActivityLaunc
     }
 
 
-    void onError(int requestCode, ActivityNotFoundException exception) {
-        results.get(requestCode).onError(exception);
+    private void onError(int requestCode, @NonNull ActivityNotFoundException exception) {
+        getSubject(requestCode).onError(exception);
     }
 
 }
