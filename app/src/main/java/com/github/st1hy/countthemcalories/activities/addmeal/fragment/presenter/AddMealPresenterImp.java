@@ -56,7 +56,6 @@ public class AddMealPresenterImp implements AddMealPresenter {
     public void onStart() {
         picturePresenter.loadImageUri(meal.getImageUri());
         view.setName(meal.getName());
-        view.setHint(model.getMealNameHint());
         subscribe(
                 view.getNameObservable()
                         .skip(1)
@@ -118,6 +117,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
 
     private void setMealTime(DateTime now) {
         view.setMealTime(model.formatTime(now));
+        view.setHint(model.getMealNameHint());
     }
 
 }
