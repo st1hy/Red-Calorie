@@ -45,6 +45,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     public Observable<Cursor> updateRefresh(@NonNull Tag tag) {
         return fromDatabaseTask(() -> {
             dao().update(tag);
+            session().clear(); //clears ingredients cache
             return refresh().call();
         });
     }

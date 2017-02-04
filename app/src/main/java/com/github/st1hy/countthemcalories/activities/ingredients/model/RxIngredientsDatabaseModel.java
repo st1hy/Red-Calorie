@@ -133,6 +133,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
             dao().update(ingredientTemplate);
             ingredientTemplate.resetTags();
             ingredientTemplate.getTags();
+            session().clear(); //reset ingredients cache so it updates them correctly
             return ingredientTemplate;
         };
     }
