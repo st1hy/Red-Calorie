@@ -35,7 +35,6 @@ public class Tags {
         Tags tags1 = (Tags) o;
 
         return tags.equals(tags1.tags);
-
     }
 
     @Override
