@@ -20,7 +20,7 @@ public class MealIngredientsListModel {
 
     @ParcelConstructor
     public MealIngredientsListModel(@NonNull List<Ingredient> ingredients,
-                                    Ingredient extraIngredient) {
+                                    @Nullable Ingredient extraIngredient) {
         this.ingredients = ingredients;
         this.extraIngredient = extraIngredient;
     }

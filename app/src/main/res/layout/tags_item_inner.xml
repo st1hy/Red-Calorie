@@ -16,7 +16,7 @@
         android:id="@+id/tags_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:button="@drawable/ic_check_circle_black_48dp"
+        android:button="@drawable/checkbox_selector"
         android:enabled="false"
         app:buttonTint="@color/checkbox_selector" />
 
