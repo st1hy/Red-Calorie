@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.inject.activities.overview;
 
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
+import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
@@ -16,7 +17,7 @@ import dagger.Subcomponent;
         UndoModule.class,
         ActivityLauncherModule.class
 })
-public interface OverviewActivityComponent extends OverviewFragmentComponentFactory {
+public interface OverviewActivityComponent extends OverviewFragmentComponentFactory, GraphComponentFactory {
 
     void inject(OverviewActivity activity);
 

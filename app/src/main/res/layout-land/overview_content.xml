@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/overview_app_bar"
+    android:baselineAligned="false">
+
+    <fragment
+        class="com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment"
+        android:id="@+id/overview_graph"
+        android:tag="overview_graph_fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        tools:layout="@layout/overview_graph_fragment" />
+
+    <fragment
+        class="com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment"
+        android:id="@+id/overview_content_fragment"
+        android:tag="overview_content_fragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        tools:layout="@layout/overview_list" />
+</LinearLayout>

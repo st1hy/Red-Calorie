@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#c30d1e</color>
-    <color name="colorPrimaryDark">#690710</color>
+    <color name="colorPrimary">#A90B1A</color>
+    <color name="colorPrimaryDark">#68000A</color>
     <color name="colorAccent">#2553a7</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorAppBackground">#F8F8F8</color>
     <color name="checkboxUnselected">#E0E0E0</color>
-    <color name="checkboxSelected">@color/colorPrimaryDark</color>
+    <color name="checkboxSelected">@color/colorAccent</color>
+
+    <color name="gcDefaultColor">@color/colorPrimary</color>
+    <color name="gcLineColor">@color/colorAppBackground</color>
 </resources>

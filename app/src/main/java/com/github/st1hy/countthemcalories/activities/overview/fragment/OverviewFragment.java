@@ -33,7 +33,7 @@ public class OverviewFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.overview_content, container, false);
+        return inflater.inflate(R.layout.overview_list, container, false);
     }
 
 

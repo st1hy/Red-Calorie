@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="GraphColumn.Default">
+        <item name="gc_orientation">left_to_right</item>
+    </style>
+</resources>

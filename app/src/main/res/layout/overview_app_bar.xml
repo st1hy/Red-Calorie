@@ -41,24 +41,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        class="com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment"
-        android:id="@+id/overview_content_fragment"
-        android:tag="overview_content_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout="@layout/overview_content"/>
+    <include layout="@layout/overview_content" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/overview_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/fab_margin"
-        android:tint="@color/colorBackground"
-        app:pressedTranslationZ="12dp"
-        app:elevation="6dp"
-        app:srcCompat="@drawable/ic_add_24px" />
+    <include layout="@layout/overview_fab" />
 
 </android.support.design.widget.CoordinatorLayout>
