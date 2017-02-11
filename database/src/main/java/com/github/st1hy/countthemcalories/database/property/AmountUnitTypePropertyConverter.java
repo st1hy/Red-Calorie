@@ -6,6 +6,8 @@ import org.greenrobot.greendao.converter.PropertyConverter;
 
 public class AmountUnitTypePropertyConverter implements PropertyConverter<AmountUnitType, Integer> {
 
+    public static final AmountUnitTypePropertyConverter INSTANCE = new AmountUnitTypePropertyConverter();
+
     @Override
     public AmountUnitType convertToEntityProperty(Integer databaseValue) {
         return AmountUnitType.fromId(databaseValue);

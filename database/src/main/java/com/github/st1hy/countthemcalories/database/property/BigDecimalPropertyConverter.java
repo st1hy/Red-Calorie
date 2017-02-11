@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 
 public class BigDecimalPropertyConverter implements PropertyConverter<BigDecimal, String> {
 
+    public static final BigDecimalPropertyConverter INSTANCE = new BigDecimalPropertyConverter();
+
     @Override
     @Nullable
     public BigDecimal convertToEntityProperty(@Nullable String databaseValue) {

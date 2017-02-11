@@ -1,9 +1,38 @@
 package com.github.st1hy.countthemcalories.activities.overview.graph.inject;
 
-import dagger.Module;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-@Module
+import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment;
+import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+
+import javax.inject.Named;
+
+import dagger.Module;
+import dagger.Provides;
+
+@Module(includes = GraphBinding.class)
 public class GraphModule {
 
+    private final GraphFragment fragment;
 
+    public GraphModule(@NonNull GraphFragment fragment) {
+        this.fragment = fragment;
+    }
+
+    @Provides
+    @Named("fragmentRoot")
+    public View rootView() {
+        return fragment.getView();
+    }
+
+    @Provides
+    public static RecyclerView recyclerView(@Named("fragmentRoot") View view,
+                                            RecyclerViewAdapterDelegate adapter) {
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.graph_recycler);
+        recyclerView.setAdapter(adapter);
+        return recyclerView;
+    }
 }

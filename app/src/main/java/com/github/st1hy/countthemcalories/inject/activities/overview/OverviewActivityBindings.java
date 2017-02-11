@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
 import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
@@ -28,4 +29,7 @@ public abstract class OverviewActivityBindings {
 
     @Binds
     public abstract OverviewFragmentComponentFactory fragmentComponentFactory(OverviewActivityComponent component);
+
+    @Binds
+    public abstract GraphComponentFactory graphComponentFactory(OverviewActivityComponent component);
 }

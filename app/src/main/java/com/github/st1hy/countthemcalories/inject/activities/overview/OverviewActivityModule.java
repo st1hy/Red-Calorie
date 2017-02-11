@@ -8,8 +8,8 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
-import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
+import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment;
+import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
@@ -34,6 +34,17 @@ public class OverviewActivityModule {
 
         OverviewFragment fragment = (OverviewFragment) fragmentManager
                 .findFragmentById(R.id.overview_content_fragment);
+        fragment.setComponentFactory(componentFactory);
+        return fragment;
+    }
+
+    @Provides
+    public static GraphFragment provideGraphFragment(
+            FragmentManager fragmentManager,
+            GraphComponentFactory componentFactory) {
+
+        GraphFragment fragment = (GraphFragment) fragmentManager
+                .findFragmentById(R.id.overview_graph_fragment);
         fragment.setComponentFactory(componentFactory);
         return fragment;
     }

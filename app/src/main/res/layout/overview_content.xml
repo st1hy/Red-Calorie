@@ -18,7 +18,7 @@
         tools:layout="@layout/overview_list" />
 
     <fragment
-        android:id="@+id/overview_graph"
+        android:id="@+id/overview_graph_fragment"
         class="com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"

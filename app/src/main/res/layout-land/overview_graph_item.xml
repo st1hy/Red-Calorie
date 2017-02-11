@@ -20,7 +20,7 @@
         tools:text="02.12"/>
 
     <android.support.v4.widget.Space
-        android:layout_width="4dp"
+        android:layout_width="8dp"
         android:layout_height="match_parent" />
 
     <com.github.st1hy.countthemcalories.core.graph.GraphColumn

@@ -15,16 +15,14 @@ import java.util.concurrent.Callable;
 import dagger.Lazy;
 import rx.Observable;
 
-public abstract class RxDatabaseModel<T> implements SearchableDatabase {
-    private final Lazy<DaoSession> session;
+public abstract class RxDatabaseModel<T> extends AbstractRxDatabaseModel implements SearchableDatabase {
     private CursorQuery allSortedByNameQuery;
     private CursorQuery filteredSortedByNameQuery;
     protected String lastFilter = "";
 
     public RxDatabaseModel(@NonNull Lazy<DaoSession> session) {
-        this.session = session;
+        super(session);
     }
-
 
     /**
      * @return position of the item in cursor or -1 if item could not be found inside the cursor
@@ -77,19 +75,9 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
         return query(lastQuery());
     }
 
-    @NonNull
-    public <R> Observable<R> fromDatabaseTask(@NonNull Callable<R> task) {
-        return Observable.fromCallable(callInTx(task))
-                .subscribeOn(Schedulers.io());
-    }
 
     @NonNull
     public abstract T performGetById(long id);
-
-    @NonNull
-    public DaoSession session() {
-        return session.get();
-    }
 
     @NonNull
     protected abstract T performInsert(@NonNull T data);
@@ -109,10 +97,6 @@ public abstract class RxDatabaseModel<T> implements SearchableDatabase {
 
     protected abstract long getKey(@NonNull T t);
 
-    @NonNull
-    private <R> Callable<R> callInTx(@NonNull final Callable<R> task) {
-        return () -> session().callInTx(task);
-    }
 
     @NonNull
     private Callable<T> fromId(final long id) {
