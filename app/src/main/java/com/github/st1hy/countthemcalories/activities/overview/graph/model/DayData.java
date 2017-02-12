@@ -4,17 +4,14 @@ import android.support.annotation.NonNull;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
-
 public class DayData {
 
     @NonNull
     private final DateTime dateTime;
-    @NonNull
-    private final BigDecimal value;
+    private final float value;
     private boolean hasAnyData;
 
-    public DayData(@NonNull DateTime dateTime, @NonNull BigDecimal value, boolean hasAnyData) {
+    public DayData(@NonNull DateTime dateTime, float value, boolean hasAnyData) {
         this.dateTime = dateTime;
         this.value = value;
         this.hasAnyData = hasAnyData;
@@ -25,8 +22,7 @@ public class DayData {
         return dateTime;
     }
 
-    @NonNull
-    public BigDecimal getValue() {
+    public float getValue() {
         return value;
     }
 

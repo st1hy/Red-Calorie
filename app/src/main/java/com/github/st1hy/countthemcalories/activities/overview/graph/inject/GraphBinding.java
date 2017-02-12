@@ -10,6 +10,7 @@ import dagger.Module;
 @Module
 public abstract class GraphBinding {
 
+    @Binds
     public abstract GraphColumnComponentFactory columnFactory(GraphComponent component);
 
     @Binds

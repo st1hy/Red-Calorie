@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
 import com.github.st1hy.countthemcalories.activities.overview.graph.model.DayData;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphData;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphDayCursor;
+import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphDataLoader;
+import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphTimePeriod;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
@@ -28,18 +29,20 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    private GraphColumnComponentFactory columnFactory;
+    GraphColumnComponentFactory columnFactory;
     @Inject
-    private GraphData data;
+    GraphDataLoader data;
+    @Inject
+    PhysicalQuantitiesModel quantityModel;
 
-    private GraphDayCursor cursor;
+    private GraphTimePeriod timePeriod;
 
     @Inject
     public GraphDataAdapter() {
     }
 
     public void onStart() {
-        DateTime end = DateTime.now();
+        DateTime end = DateTime.now().plusDays(1);
         DateTime start = end.minusDays(30).withTimeAtStartOfDay();
         subscriptions.add(
             data.loadData(start, end)
@@ -52,20 +55,6 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         subscriptions.clear();
     }
 
-    private void onNewGraphData(@NonNull GraphDayCursor cursor) {
-        closeCursor();
-        this.cursor = cursor;
-        notifyDataSetChanged();
-    }
-
-    private void closeCursor() {
-        if (cursor != null) {
-            cursor.close();
-            cursor = null;
-            notifyDataSetChanged();
-        }
-    }
-
     @Override
     public GraphColumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(LAYOUT, parent, false);
@@ -74,14 +63,22 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
 
     @Override
     public void onBindViewHolder(GraphColumnViewHolder holder, int position) {
-        if (cursor != null) {
-            DayData day = cursor.getDayDataAt(position);
-            //TODO Continue writing data
+        if (timePeriod != null) {
+            DayData day = timePeriod.getDayDataAt(position);
+            holder.setName(quantityModel.formatDate(day.getDateTime()));
+            float value = day.getValue() / (1.5f * timePeriod.getMedian());
+            if (value > 1f) value = 1f;
+            holder.setValue(value);
         }
+    }
+
+    private void onNewGraphData(@NonNull GraphTimePeriod period) {
+        this.timePeriod = period;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return cursor != null ? cursor.getCount() : 0;
+        return timePeriod != null ? timePeriod.getCount() : 0;
     }
 }

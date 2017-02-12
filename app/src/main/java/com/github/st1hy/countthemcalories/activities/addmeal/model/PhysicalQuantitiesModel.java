@@ -214,4 +214,9 @@ public class PhysicalQuantitiesModel {
             return DateTimeFormat.forPattern("hh:mm aa").print(date);
         }
     }
+
+    @NonNull
+    public String formatDate(@NonNull DateTime dateTime) {
+        return DateTimeFormat.forPattern("dd.MM").print(dateTime);
+    }
 }
