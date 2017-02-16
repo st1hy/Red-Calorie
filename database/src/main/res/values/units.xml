@@ -12,5 +12,6 @@
 
     <string name="format_value_simple" tools:ignore="MissingTranslation">%1$s %2$s</string>
     <string name="format_value_fraction" tools:ignore="MissingTranslation">%1$s %2$s / %3$s</string>
+    <string name="format_unit_fraction" tools:ignore="MissingTranslation">%1$s / %2$s</string>
 
 </resources>

@@ -37,6 +37,8 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     TextView name;
     @BindView(R.id.ingredients_item_energy_density)
     TextView energyDensity;
+    @BindView(R.id.ingredients_item_energy_density_unit)
+    TextView energyDensityUnit;
     @BindView(R.id.ingredients_item_image)
     ImageView image;
 
@@ -81,6 +83,10 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
     public void setEnergyDensity(@NonNull String value) {
         this.energyDensity.setText(value);
+    }
+
+    public void setUnit(@NonNull String value) {
+        energyDensityUnit.setText(value);
     }
 
     @OnClick(R.id.ingredients_item_button)

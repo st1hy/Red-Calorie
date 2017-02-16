@@ -57,21 +57,26 @@ public class PhysicalQuantitiesModel {
     public String format(@NonNull EnergyDensity energyDensity) {
         String energyUnit = resources.getString(energyDensity.getEnergyUnit().getNameRes());
         String amountUnit = resources.getString(energyDensity.getAmountUnit().getNameRes());
-        String value = energyDensity.getValue()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString();
+        String value = formatValue(energyDensity);
         return resources.getString(R.string.format_value_fraction, value, energyUnit, amountUnit);
     }
 
     /**
-     * Converts energy density to preferred units and formats it.
-     * <p/>
-     * Internally calls {@link #format(EnergyDensity)}.
+     * Formats energy density as "{value} {energy_unit} / {amount_unit}"
      */
     @NonNull
-    public String convertAndFormat(@NonNull EnergyDensity energyDensity) {
-        return format(convertToPreferred(energyDensity));
+    public String formatValue(@NonNull EnergyDensity energyDensity) {
+        return energyDensity.getValue()
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
+    }
+
+    @NonNull
+    public String formatUnit(@NonNull EnergyDensity energyDensity) {
+        String energyUnit = resources.getString(energyDensity.getEnergyUnit().getNameRes());
+        String amountUnit = resources.getString(energyDensity.getAmountUnit().getNameRes());
+        return resources.getString(R.string.format_unit_fraction, energyUnit, amountUnit);
     }
 
     /**
@@ -156,11 +161,6 @@ public class PhysicalQuantitiesModel {
         return amount.multiply(from.getBase())
                 .divide(to.getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
                 .stripTrailingZeros();
-    }
-
-    @NonNull
-    public SettingsModel getSettingsModel() {
-        return settingsModel;
     }
 
     @NonNull

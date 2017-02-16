@@ -5,8 +5,8 @@
     android:id="@+id/overview_item_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="0dp"
-    android:minHeight="?listPreferredItemHeight">
+    android:minHeight="?listPreferredItemHeight"
+    android:padding="0dp">
 
     <LinearLayout
         android:id="@+id/overview_item_button"
@@ -16,10 +16,10 @@
         android:layout_margin="0dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
         android:paddingBottom="0dp"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
 
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
@@ -45,59 +45,66 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/overview_item_name"
-                style="@style/Base.TextAppearance.AppCompat.Body2"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:textSize="16sp"
-                tools:text="Example meal name" />
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/overview_item_ingredients"
+                <TextView
+                    android:id="@+id/overview_item_name"
+                    style="@style/Base.TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    android:textSize="16sp"
+                    tools:text="Example meal name" />
+
+                <TextView
+                    android:id="@+id/overview_item_ingredients"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    tools:text="Ingredient 1" />
+            </LinearLayout>
+
+
+            <android.support.v4.widget.Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                tools:text="Ingredient 1" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="end"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/overview_item_date"
+                    style="@style/Base.TextAppearance.AppCompat.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    android:textSize="12sp"
+                    tools:text="07:56: AM" />
 
-        <android.support.v4.widget.Space
-            android:layout_width="8dp"
-            android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/overview_item_energy"
+                    style="@style/Base.TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?colorAccent"
+                    android:textIsSelectable="false"
+                    android:textSize="16sp"
+                    tools:text="1750 kcal" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="end"
-            android:layout_weight="0">
-
-            <TextView
-                android:id="@+id/overview_item_date"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                android:textSize="12sp"
-                tools:text="07:56: AM" />
-
-            <TextView
-                android:id="@+id/overview_item_energy"
-                style="@style/Base.TextAppearance.AppCompat.Body2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?colorAccent"
-                android:textIsSelectable="false"
-                android:textSize="16sp"
-                tools:text="1750 kcal" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

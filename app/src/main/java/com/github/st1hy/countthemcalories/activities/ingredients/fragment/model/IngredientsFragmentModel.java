@@ -32,7 +32,13 @@ public class IngredientsFragmentModel {
 
     @NonNull
     public String getReadableEnergyDensity(@NonNull EnergyDensity energyDensity) {
-        return physicalQuantitiesModel.convertAndFormat(energyDensity);
+        return physicalQuantitiesModel.formatValue(physicalQuantitiesModel.convertToPreferred(energyDensity));
+    }
+
+    @NonNull
+    public String getUnit(@NonNull EnergyDensity energyDensity) {
+        EnergyDensity preferred = physicalQuantitiesModel.convertToPreferred(energyDensity);
+        return physicalQuantitiesModel.formatUnit(preferred);
     }
 
     @StringRes

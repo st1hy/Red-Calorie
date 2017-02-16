@@ -291,7 +291,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
             holder.setName(ingredient.getName());
             final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
             holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
-
+            holder.setUnit(model.getUnit(energyDensity));
             holder.setImagePlaceholder(ingredient.getAmountType() == AmountUnitType.VOLUME ?
                     R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
             holder.setImageUri(ingredient.getImageUri());
