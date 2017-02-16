@@ -66,7 +66,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         if (timePeriod != null) {
             DayData day = timePeriod.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
-            float value = day.getValue() / (1.5f * timePeriod.getMedian());
+            float value = day.getValue() / (2f * timePeriod.getMedian());
             if (value > 1f) value = 1f;
             holder.setValue(value);
         }
