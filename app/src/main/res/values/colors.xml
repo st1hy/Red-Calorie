@@ -10,4 +10,7 @@
 
     <color name="gcDefaultColor">@color/colorPrimary</color>
     <color name="gcLineColor">@color/colorAppBackground</color>
+
+    <color name="expandingFabColor">@color/colorAccent</color>
+    <color name="expandingFabColorPressed">#3563b7</color>
 </resources>

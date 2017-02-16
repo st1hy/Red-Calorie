@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.fragment.view;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
@@ -18,6 +19,7 @@ import javax.inject.Named;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.functions.Func1;
 
 @PerFragment
 public class OverviewViewImpl implements OverviewView {
@@ -69,5 +71,22 @@ public class OverviewViewImpl implements OverviewView {
     @Override
     public void setTotalEnergy(@NonNull String energy) {
         screen.setTotalEnergy(energy);
+    }
+
+    @NonNull
+    @Override
+    public Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled) {
+        return screen.touchOverlay(handled);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Boolean> fabMenuIsOpen() {
+        return screen.fabMenuIsOpen();
+    }
+
+    @Override
+    public void closeFloatingMenu() {
+        screen.closeFloatingMenu();
     }
 }

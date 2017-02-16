@@ -110,6 +110,7 @@ dependencies {
     provided "com.google.code.findbugs:jsr305:3.0.0"
 
     compile 'com.l4digital.fastscroll:fastscroll:1.0.1'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"

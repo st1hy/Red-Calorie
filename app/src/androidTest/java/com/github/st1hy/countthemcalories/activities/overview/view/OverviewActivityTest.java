@@ -145,7 +145,7 @@ public class OverviewActivityTest {
 
     @Test
     public void testCanAddNewMeal() {
-        onView(ViewMatchers.withId(R.id.overview_fab)).check(matches(isDisplayed()))
+        onView(ViewMatchers.withId(R.id.overview_fab_add_meal)).check(matches(isDisplayed()))
                 .perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
@@ -164,7 +164,7 @@ public class OverviewActivityTest {
                 .perform(ViewActions.closeSoftKeyboard());
         onView(withId(R.id.add_meal_ingredient_accept)).perform(click());
         onView(withText(R.string.add_meal_save_action)).perform(click());
-        onView(ViewMatchers.withId(R.id.overview_fab)).check(matches(isDisplayed()));
+        onView(ViewMatchers.withId(R.id.overview_fab_add_meal)).check(matches(isDisplayed()));
         onView(withText("Meal 3"))
                 .check(matches(isDisplayed()));
     }

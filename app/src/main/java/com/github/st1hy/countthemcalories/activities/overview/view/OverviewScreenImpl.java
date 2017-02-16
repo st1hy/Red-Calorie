@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
@@ -17,6 +19,7 @@ import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailPa
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
+import com.github.st1hy.countthemcalories.core.rx.RxFabMenu;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
@@ -29,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.functions.Func1;
 
 @PerActivity
 public class OverviewScreenImpl implements OverviewScreen {
@@ -40,8 +44,14 @@ public class OverviewScreenImpl implements OverviewScreen {
     @NonNull
     private final ActivityLauncher activityLauncher;
 
-    @BindView(R.id.overview_fab)
-    FloatingActionButton fab;
+    @BindView(R.id.overview_touch_overlay)
+    View touchOveray;
+    @BindView(R.id.overview_fab_menu)
+    FloatingActionsMenu fabMenu;
+    @BindView(R.id.overview_fab_add_weight)
+    View addWeight;
+    @BindView(R.id.overview_fab_add_meal)
+    View addMeal;
     @BindView(R.id.overview_total_energy)
     TextView totalEnergy;
 
@@ -56,7 +66,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     @NonNull
     @Override
     public Observable<Void> getAddNewMealObservable() {
-        return RxView.clicks(fab);
+        return RxView.clicks(addMeal);
     }
 
     @Override
@@ -96,6 +106,22 @@ public class OverviewScreenImpl implements OverviewScreen {
         totalEnergy.setText(energy);
     }
 
+    @NonNull
+    @Override
+    public Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled) {
+        return RxView.touches(touchOveray, handled);
+    }
+
+    @NonNull
+    @Override
+    public Observable<Boolean> fabMenuIsOpen() {
+        return RxFabMenu.menuIsOpen(fabMenu);
+    }
+
+    @Override
+    public void closeFloatingMenu() {
+        fabMenu.collapse();
+    }
 
     @NonNull
     private MealDetailAction getMealDetailResult(ActivityResult activityResult) {
@@ -116,5 +142,4 @@ public class OverviewScreenImpl implements OverviewScreen {
         }
         return action;
     }
-
 }

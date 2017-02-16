@@ -1,17 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/overview_fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_margin="@dimen/fab_margin"
-    android:tint="@color/colorBackground"
-    app:pressedTranslationZ="12dp"
-    app:elevation="6dp"
-    app:fabSize="auto"
-    app:layout_anchor="@+id/overview_content_fragment"
-    app:layout_anchorGravity="bottom|center"
-    app:srcCompat="@drawable/ic_add_24px"
-    tools:showIn="@layout/overview_app_bar" />
+    tools:showIn="@layout/overview_app_bar">
+
+    <View
+        android:id="@+id/overview_touch_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/overview_fab_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        fab:fab_addButtonColorNormal="@color/expandingFabColor"
+        fab:fab_addButtonColorPressed="@color/expandingFabColorPressed"
+        fab:fab_addButtonPlusIconColor="@color/colorAppBackground"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left"
+        fab:layout_anchor="@+id/overview_content_fragment"
+        fab:layout_anchorGravity="bottom|end">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/overview_fab_add_meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/expandingFabColor"
+            fab:fab_colorPressed="@color/expandingFabColorPressed"
+            fab:fab_icon="@drawable/ic_add_24px"
+            fab:fab_size="mini"
+            fab:fab_title="Add meal" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/overview_fab_add_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/expandingFabColor"
+            fab:fab_colorPressed="@color/expandingFabColorPressed"
+            fab:fab_icon="@drawable/ic_add_24px"
+            fab:fab_size="mini"
+            fab:fab_title="Add today's weight" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+</merge>
