@@ -50,4 +50,9 @@
         app:elevation="6dp"
         app:srcCompat="@drawable/ic_add_24px" />
 
+    <View
+        android:id="@+id/ingredients_touch_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </android.support.design.widget.CoordinatorLayout>

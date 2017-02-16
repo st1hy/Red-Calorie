@@ -28,6 +28,7 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
     private TextWatcher textWatcher;
     private OnSearchChanged onSearchChanged = null;
     private TokenCompleteTextView.TokenListener<String> childListener;
+    private DropDownDialogChangeListener dropDownDialogChangeListener;
 
     public TokenSearchTextView(Context context) {
         super(context);
@@ -95,6 +96,18 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
         for (String token : tokens) {
             addObject(token);
         }
+    }
+
+    @Override
+    public void showDropDown() {
+        super.showDropDown();
+        if (dropDownDialogChangeListener != null) dropDownDialogChangeListener.onDialogShown();
+    }
+
+    @Override
+    public void dismissDropDown() {
+        super.dismissDropDown();
+        if (dropDownDialogChangeListener != null) dropDownDialogChangeListener.onDialogDismissed();
     }
 
     @Override
@@ -171,4 +184,12 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
         }
     }
 
+    public void setOnDropDownDialogChangeListener(@Nullable DropDownDialogChangeListener listener) {
+        this.dropDownDialogChangeListener = listener;
+    }
+
+    public interface DropDownDialogChangeListener {
+        void onDialogShown();
+        void onDialogDismissed();
+    }
 }

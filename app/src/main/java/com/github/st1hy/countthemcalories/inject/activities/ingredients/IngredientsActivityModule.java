@@ -122,6 +122,13 @@ public class IngredientsActivityModule {
         return (TokenSearchView) activity.findViewById(R.id.ingredients_search_view);
     }
 
+    @PerActivity
+    @Provides
+    @Named("touchOverlay")
+    public static View touchOverlay(Activity activity) {
+        return activity.findViewById(R.id.ingredients_touch_overlay);
+    }
+
     @Provides
     @Named("suggestions")
     public static SearchSuggestionsAdapter suggestionsAdapter(SearchSuggestionsAdapter adapter,

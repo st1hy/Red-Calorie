@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -20,6 +21,8 @@ import com.github.st1hy.countthemcalories.R;
 
 import java.util.Collections;
 import java.util.List;
+
+import rx.Observable;
 
 public class TokenSearchView extends FrameLayout implements Searchable {
 
@@ -126,6 +129,16 @@ public class TokenSearchView extends FrameLayout implements Searchable {
 
     public <T extends ListAdapter & Filterable> void setSuggestionsAdapter(@Nullable T adapter) {
         searchView.setAdapter(adapter);
+    }
+
+    @NonNull
+    @CheckResult
+    public Observable<Boolean> dropDownChange() {
+        return RxTokenSearchTextView.dropDownDialogChange(searchView);
+    }
+
+    public void dismissDropDown() {
+        searchView.dismissDropDown();
     }
 
     private void setupWidth() {
