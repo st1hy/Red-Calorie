@@ -8,9 +8,7 @@
     android:minWidth="50dp"
     android:gravity="center"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp">
+    android:paddingBottom="8dp">
 
     <com.github.st1hy.countthemcalories.core.graph.GraphColumn
         android:id="@+id/graph_item_column"
@@ -30,5 +28,7 @@
         android:textSize="14sp"
         android:textColor="@color/colorAppBackground"
         android:layout_weight="0"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         tools:text="02.12"/>
 </LinearLayout>

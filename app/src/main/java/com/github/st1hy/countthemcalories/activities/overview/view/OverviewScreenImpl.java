@@ -45,7 +45,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     private final ActivityLauncher activityLauncher;
 
     @BindView(R.id.overview_touch_overlay)
-    View touchOveray;
+    View touchOverlay;
     @BindView(R.id.overview_fab_menu)
     FloatingActionsMenu fabMenu;
     @BindView(R.id.overview_fab_add_weight)
@@ -109,7 +109,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     @NonNull
     @Override
     public Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled) {
-        return RxView.touches(touchOveray, handled);
+        return RxView.touches(touchOverlay, handled);
     }
 
     @NonNull

@@ -13,4 +13,7 @@
 
     <color name="expandingFabColor">@color/colorAccent</color>
     <color name="expandingFabColorPressed">#3563b7</color>
+
+    <color name="shadow_start">#40101010</color>
+    <color name="shadow_end">#00000000</color>
 </resources>

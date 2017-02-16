@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/overview_app_bar">
 
-    <fragment
-        android:id="@+id/overview_content_fragment"
-        class="com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.7"
-        android:tag="overview_content_fragment"
-        tools:layout="@layout/overview_list" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <fragment
-        android:id="@+id/overview_graph_fragment"
-        class="com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:tag="overview_graph_fragment"
-        tools:layout="@layout/overview_graph_fragment" />
-</LinearLayout>
+        <fragment
+            android:id="@+id/overview_content_fragment"
+            class="com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:tag="overview_content_fragment"
+            tools:layout="@layout/overview_list" />
+
+        <fragment
+            android:id="@+id/overview_graph_fragment"
+            class="com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:tag="overview_graph_fragment"
+            tools:layout="@layout/overview_graph_fragment" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@drawable/shadow_bottom_to_top"
+        android:layout_gravity="top"
+        app:layout_anchorGravity="bottom"
+        app:layout_anchor="@+id/overview_content_fragment"/>
+</merge>

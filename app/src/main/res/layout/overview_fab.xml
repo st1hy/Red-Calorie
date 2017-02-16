@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/expandingFabColor"
             fab:fab_colorPressed="@color/expandingFabColorPressed"
-            fab:fab_icon="@drawable/ic_add_24px"
+            fab:fab_icon="@drawable/ic_weight"
             fab:fab_size="mini"
             fab:fab_title="Add today's weight" />
 
