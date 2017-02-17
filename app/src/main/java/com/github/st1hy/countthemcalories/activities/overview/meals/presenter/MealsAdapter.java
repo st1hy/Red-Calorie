@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
+import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.MealsViewModel;
@@ -49,10 +50,12 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.ofType;
 
 @PerFragment
-public class MealsAdapter extends RecyclerAdapterWrapper<MealItemHolder>
+public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         implements BasicLifecycle {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
+    private static final int mealItemLayoutBottom = R.layout.list_item_bottom;
+    private static final int BOTTOM_PADDING = 1;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -146,37 +149,60 @@ public class MealsAdapter extends RecyclerAdapterWrapper<MealItemHolder>
 
     @Override
     public int getItemCount() {
-        return list.size();
+        int listSize = list.size();
+        return listSize > 0 ? listSize + BOTTOM_PADDING : 0;
     }
 
     @Override
-    public MealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        if (position < list.size()) {
+            return mealItemLayout;
+        } else {
+            return mealItemLayoutBottom;
+        }
+    }
+
+    @Override
+    public AbstractMealItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MealRowComponent component = mealRowComponentFactory.newMealRowComponent(
-                new MealRowModule(mealItemLayout, parent));
-        MealItemHolder holder = component.getHolder();
-        holder.fillParent(parent);
-        return holder;
+                new MealRowModule(viewType, parent));
+        if (viewType == mealItemLayout) {
+            MealItemHolder holder = component.getMealHolder();
+            holder.fillParent(parent);
+            return holder;
+        } else {
+            return component.getSpaceHolder();
+        }
     }
 
     @Override
-    public void onBindViewHolder(MealItemHolder holder, int position) {
-        final Meal meal = list.get(position);
-        holder.setName(meal.getName());
-        holder.setMeal(meal);
-        holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
-        onBindIngredients(holder, meal.getIngredients());
-        onBindImage(meal, holder);
-        holder.setEnabled(true);
+    public void onBindViewHolder(AbstractMealItemHolder itemHolder, int position) {
+        if (itemHolder instanceof MealItemHolder) {
+            MealItemHolder holder = (MealItemHolder) itemHolder;
+            final Meal meal = list.get(position);
+            holder.setName(meal.getName());
+            holder.setMeal(meal);
+            holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
+            onBindIngredients(holder, meal.getIngredients());
+            onBindImage(meal, holder);
+            holder.setEnabled(true);
+        }
     }
 
     @Override
-    public void onViewAttachedToWindow(MealItemHolder holder) {
-        holder.onAttached(interactionSubject);
+    public void onViewAttachedToWindow(AbstractMealItemHolder itemHolder) {
+        if (itemHolder instanceof MealItemHolder) {
+            MealItemHolder holder = (MealItemHolder) itemHolder;
+            holder.onAttached(interactionSubject);
+        }
     }
 
     @Override
-    public void onViewDetachedFromWindow(MealItemHolder holder) {
-        holder.onDetached();
+    public void onViewDetachedFromWindow(AbstractMealItemHolder itemHolder) {
+        if (itemHolder instanceof MealItemHolder) {
+            MealItemHolder holder = (MealItemHolder) itemHolder;
+            holder.onDetached();
+        }
     }
 
     private void editMealWithId(long mealId) {

@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -31,7 +30,7 @@ import static com.github.st1hy.countthemcalories.activities.overview.meals.meali
 import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.OPEN;
 
 @PerMealRow
-public class MealItemHolder extends RecyclerView.ViewHolder {
+public class MealItemHolder extends AbstractMealItemHolder {
 
     private final ScrollingItemDelegate scrollingItemDelegate;
     private final ImageHolderDelegate imageHolderDelegate;
