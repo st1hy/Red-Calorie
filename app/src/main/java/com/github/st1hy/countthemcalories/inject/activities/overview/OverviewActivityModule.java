@@ -7,12 +7,10 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
-import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
 
 import javax.inject.Named;
 
@@ -25,17 +23,6 @@ public class OverviewActivityModule {
 
     public OverviewActivityModule(OverviewActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    public static MealsFragment provideOverviewFragment(
-            FragmentManager fragmentManager,
-            OverviewFragmentComponentFactory componentFactory) {
-
-        MealsFragment fragment = (MealsFragment) fragmentManager
-                .findFragmentById(R.id.overview_content_fragment);
-        fragment.setComponentFactory(componentFactory);
-        return fragment;
     }
 
     @Provides

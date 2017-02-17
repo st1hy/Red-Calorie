@@ -6,6 +6,7 @@ import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherImp;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherSubject;
 import com.github.st1hy.countthemcalories.core.activityresult.IntentHandlerFragment;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import dagger.Binds;
 import dagger.Module;
@@ -23,6 +24,7 @@ public abstract class ActivityLauncherModule {
     public abstract ActivityLauncherSubject activityLauncherSubject(IntentHandlerFragment fragment);
 
     @Provides
+    @PerActivity
     public static IntentHandlerFragment intentHandlerFragment(FragmentManager fragmentManager) {
         IntentHandlerFragment fragment = (IntentHandlerFragment) fragmentManager
                 .findFragmentByTag(IntentHandlerFragment.TAG);
@@ -31,7 +33,7 @@ public abstract class ActivityLauncherModule {
             fragment.setRetainInstance(true);
             fragmentManager.beginTransaction()
                     .add(fragment, IntentHandlerFragment.TAG)
-                    .commitNow();
+                    .commit();
         }
         return fragment;
     }

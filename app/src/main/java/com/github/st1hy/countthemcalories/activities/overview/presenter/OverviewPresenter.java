@@ -5,7 +5,7 @@ import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.activities.overview.addweight.AddWeightPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment;
-import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.MealsPagerPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
@@ -16,8 +16,6 @@ import javax.inject.Inject;
 public class OverviewPresenter {
 
     @Inject
-    MealsFragment content; //injects content fragment
-    @Inject
     GraphFragment graphFragment; //injects fragment dependencies
     @Inject
     DrawerPresenter drawerPresenter;
@@ -27,6 +25,8 @@ public class OverviewPresenter {
     DrawerView drawerView;
     @Inject
     AddWeightPresenter addWeightPresenter;
+    @Inject
+    MealsPagerPresenter pagerPresenter;
 
     @Inject
     public OverviewPresenter() {
@@ -40,11 +40,13 @@ public class OverviewPresenter {
         drawerPresenter.onStart();
         drawerView.registerToggle(drawerToggle);
         addWeightPresenter.onStart();
+        pagerPresenter.onStart();
     }
 
     public void onStop() {
         drawerPresenter.onStop();
         drawerView.unregisterDrawerToggle(drawerToggle);
         addWeightPresenter.onStop();
+        pagerPresenter.onStop();
     }
 }

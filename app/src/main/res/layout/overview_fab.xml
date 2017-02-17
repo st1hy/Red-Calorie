@@ -19,7 +19,7 @@
         fab:fab_addButtonPlusIconColor="@color/colorAppBackground"
         fab:fab_labelStyle="@style/menu_labels_style"
         fab:fab_labelsPosition="left"
-        fab:layout_anchor="@+id/overview_content_fragment"
+        fab:layout_anchor="@+id/overview_meals_content_container"
         fab:layout_anchorGravity="bottom|end">
 
         <com.getbase.floatingactionbutton.FloatingActionButton

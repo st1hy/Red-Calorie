@@ -20,14 +20,13 @@
             android:tag="overview_graph_fragment"
             tools:layout="@layout/overview_graph_fragment" />
 
-        <fragment
-            android:id="@+id/overview_content_fragment"
-            class="com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment"
+        <FrameLayout
+            android:id="@+id/overview_meals_content_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:tag="overview_content_fragment"
-            tools:layout="@layout/overview_list" />
+            android:layout_weight="0.7">
+            <include layout="@layout/overview_meals_list"/>
+        </FrameLayout>
     </LinearLayout>
 
     <View android:layout_width="4dp"
@@ -35,5 +34,5 @@
         android:background="@drawable/shadow_left_to_right"
         android:layout_gravity="end"
         app:layout_anchorGravity="bottom"
-        app:layout_anchor="@+id/overview_content_fragment"/>
+        app:layout_anchor="@+id/overview_meals_content_container"/>
 </merge>
