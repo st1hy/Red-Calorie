@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.model;
+package com.github.st1hy.countthemcalories.activities.overview.meals.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;

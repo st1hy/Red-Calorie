@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -15,7 +15,7 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.PerMealRow;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.PerMealRow;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
@@ -26,9 +26,9 @@ import butterknife.ButterKnife;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.DELETE;
-import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.EDIT;
-import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.Type.OPEN;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.DELETE;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.EDIT;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.OPEN;
 
 @PerMealRow
 public class MealItemHolder extends RecyclerView.ViewHolder {

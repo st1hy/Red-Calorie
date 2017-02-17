@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.overview.fragment;
+package com.github.st1hy.countthemcalories.inject.activities.overview.meals;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
+import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 
 import javax.inject.Named;
@@ -19,9 +19,9 @@ import dagger.Provides;
 public class OverviewFragmentModule {
 
     @NonNull
-    private final OverviewFragment fragment;
+    private final MealsFragment fragment;
 
-    public OverviewFragmentModule(@NonNull OverviewFragment fragment) {
+    public OverviewFragmentModule(@NonNull MealsFragment fragment) {
         this.fragment = fragment;
     }
 

@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
 
 import javax.inject.Named;
 

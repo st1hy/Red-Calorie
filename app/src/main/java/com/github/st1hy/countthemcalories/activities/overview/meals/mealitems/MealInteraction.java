@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;

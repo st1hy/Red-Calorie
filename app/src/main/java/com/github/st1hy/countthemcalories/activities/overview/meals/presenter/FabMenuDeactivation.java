@@ -1,8 +1,8 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
 
 import android.view.MotionEvent;
 
-import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 

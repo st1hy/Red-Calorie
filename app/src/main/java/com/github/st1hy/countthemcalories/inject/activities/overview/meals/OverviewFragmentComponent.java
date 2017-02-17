@@ -1,8 +1,8 @@
-package com.github.st1hy.countthemcalories.inject.activities.overview.fragment;
+package com.github.st1hy.countthemcalories.inject.activities.overview.meals;
 
-import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
+import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.MealRowComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.core.RecyclerViewAdapterDelegateModule;
 
@@ -16,5 +16,5 @@ import dagger.Subcomponent;
 })
 public interface OverviewFragmentComponent extends MealRowComponentFactory {
 
-    void inject(OverviewFragment fragment);
+    void inject(MealsFragment fragment);
 }

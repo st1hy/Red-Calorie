@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.MealsViewModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.commands.MealsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
+import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.MealsViewModel;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.commands.MealsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
@@ -26,9 +26,9 @@ import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.MealRowComponent;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.MealRowComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.mealitems.MealRowModule;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponent;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowModule;
 
 import org.joda.time.DateTime;
 
@@ -46,10 +46,10 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.overview.fragment.mealitems.MealInteraction.ofType;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.ofType;
 
 @PerFragment
-public class MealsPresenter extends RecyclerAdapterWrapper<MealItemHolder>
+public class MealsAdapter extends RecyclerAdapterWrapper<MealItemHolder>
         implements BasicLifecycle {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
@@ -79,13 +79,13 @@ public class MealsPresenter extends RecyclerAdapterWrapper<MealItemHolder>
     private MealItemHolder disabledHolder;
 
     @Inject
-    public MealsPresenter(@NonNull OverviewView view,
-                          @NonNull RxMealsDatabaseModel databaseModel,
-                          @NonNull PhysicalQuantitiesModel quantityModel,
-                          @NonNull MealsDatabaseCommands commands,
-                          @NonNull MealsViewModel viewModel,
-                          @NonNull UndoView undoView,
-                          @NonNull MealRowComponentFactory mealRowComponentFactory) {
+    public MealsAdapter(@NonNull OverviewView view,
+                        @NonNull RxMealsDatabaseModel databaseModel,
+                        @NonNull PhysicalQuantitiesModel quantityModel,
+                        @NonNull MealsDatabaseCommands commands,
+                        @NonNull MealsViewModel viewModel,
+                        @NonNull UndoView undoView,
+                        @NonNull MealRowComponentFactory mealRowComponentFactory) {
         this.view = view;
         this.commands = commands;
         this.databaseModel = databaseModel;

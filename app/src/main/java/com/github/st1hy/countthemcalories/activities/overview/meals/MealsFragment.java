@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.fragment;
+package com.github.st1hy.countthemcalories.activities.overview.meals;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,19 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.presenter.OverviewPresenter;
+import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.overview.fragment.OverviewFragmentModule;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentModule;
 
 import javax.inject.Inject;
 
-public class OverviewFragment extends BaseFragment {
+public class MealsFragment extends BaseFragment {
 
     private OverviewFragmentComponentFactory componentFactory;
 
     @Inject
-    OverviewPresenter presenter;
+    MealsPresenter presenter;
     @Inject
     RecyclerView recyclerView; //injects adapter into recycler
 

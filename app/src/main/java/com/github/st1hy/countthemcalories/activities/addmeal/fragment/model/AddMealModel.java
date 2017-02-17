@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.model.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;

@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.fragment.OverviewFragment;
+import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragment;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class OverviewActivity extends BaseActivity {
 
     @Inject
-    OverviewFragment content; //injects content fragment
+    MealsFragment content; //injects content fragment
     @Inject
     GraphFragment graphFragment; //injects fragment dependencies
     @Inject
