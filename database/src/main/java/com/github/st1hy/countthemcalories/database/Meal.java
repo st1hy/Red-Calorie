@@ -35,6 +35,7 @@ public class Meal {
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
     @NotNull
+    @Index
     DateTime creationDate;
 
     @ToMany(joinProperties = {

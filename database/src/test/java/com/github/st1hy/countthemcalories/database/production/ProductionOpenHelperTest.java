@@ -53,7 +53,7 @@ public class ProductionOpenHelperTest {
         openHelper.onUpgrade(db, from, to);
 
         verify(migrationHelper).onUpgrade(db, from, to);
-        verify(db, times(5)).execSQL(matches("DROP TABLE.*"));
-        verify(db, times(5)).execSQL(matches("CREATE TABLE.*"));
+        verify(db, times(6)).execSQL(matches("DROP TABLE.*"));
+        verify(db, times(6)).execSQL(matches("CREATE TABLE.*"));
     }
 }
