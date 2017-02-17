@@ -31,7 +31,7 @@ public final class CustomDialogViewEditTextController {
             }
             return false;
         });
-
+        text.setSelection(text.length());
         RxTextView.editorActions(text)
                 .filter(actionId -> actionId == EditorInfo.IME_ACTION_DONE)
                 .subscribe(actionId1 -> finishDialog(rxAlertDialog));

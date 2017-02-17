@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.settings.model;
 
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.settings.fragment.model.BodyMassUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
@@ -70,6 +71,25 @@ public abstract class UnitChangedEvent extends SettingsChangedEvent {
         @Override
         public SettingUnit getSetting() {
             return SettingUnit.VOLUME;
+        }
+    }
+
+    public static class BodyMass extends UnitChangedEvent {
+        private final BodyMassUnit unit;
+
+        public BodyMass(@NonNull BodyMassUnit unit) {
+            this.unit = unit;
+        }
+
+        @NonNull
+        public BodyMassUnit getUnit() {
+            return unit;
+        }
+
+        @NonNull
+        @Override
+        public SettingUnit getSetting() {
+            return SettingUnit.BODY_MASS;
         }
     }
 }

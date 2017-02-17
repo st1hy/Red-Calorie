@@ -2,4 +2,7 @@
 <resources>
     <string name="default_search_query" translatable="false">https://google.com/search?q=%1$s</string>
     <string name="tags_ingredient_counter" translatable="false">(%1$d)</string>
+
+    <string name="body_weight_unit_kg" translatable="false">kg</string>
+    <string name="body_weight_unit_pound" translatable="false">lb</string>
 </resources>

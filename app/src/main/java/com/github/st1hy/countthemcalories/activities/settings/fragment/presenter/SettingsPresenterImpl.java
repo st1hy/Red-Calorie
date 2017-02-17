@@ -95,6 +95,8 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                 return view.getMassHolder();
             case VOLUME:
                 return view.getVolumeHolder();
+            case BODY_MASS:
+                return view.getBodyMassHolder();
             default:
                 throw new UnsupportedOperationException();
         }

@@ -87,4 +87,8 @@
     <string name="add_weight_dialog_title">Enter today\'s weight</string>
     <string name="add_weight_dialog_hint">Enter weight</string>
     <string name="overview_fab_add_weight">Add today\'s weight</string>
+
+    <string name="settings_category_calorie_tracking_units">Meal calories tracking units</string>
+    <string name="settings_category_body_mass_tracking_unit">Body mass tracking units</string>
+    <string name="settings_unit_body_mass">Select preferred unit of body mass</string>
 </resources>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.model.BodyMassUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
@@ -23,10 +24,12 @@ public class SettingsModel {
     static final String PREFERRED_ENERGY_UNIT = "setting preferred energy unit";
     static final String PREFERRED_MASS_UNIT = "setting preferred mass unit";
     static final String PREFERRED_VOLUME_UNIT = "setting preferred volume unit";
+    static final String PREFERRED_BODY_MASS_UNIT = "setting preferred body mass unit";
 
     static final EnergyUnit defaultUnitOfEnergy = EnergyUnit.KCAL;
     static final MassUnit defaultUnitOfMass = MassUnit.G100;
     static final VolumeUnit defaultUnitOfVolume = VolumeUnit.ML100;
+    static final BodyMassUnit defaultBodyMassUnit = BodyMassUnit.KG;
 
     private final SharedPreferences preferences;
     private final Resources resources;
@@ -126,5 +129,20 @@ public class SettingsModel {
     @NonNull
     public SharedPreferences getPreferences() {
         return preferences;
+    }
+
+    @NonNull
+    public BodyMassUnit getBodyMassUnit() {
+        int id = preferences.getInt(PREFERRED_BODY_MASS_UNIT, -1);
+        BodyMassUnit unit = BodyMassUnit.fromOrdinal(id);
+        if (unit != null) {
+            return unit;
+        } else {
+            return defaultBodyMassUnit;
+        }
+    }
+
+    public void setBodyMassUnit(@NonNull BodyMassUnit unit) {
+        preferences.edit().putInt(PREFERRED_BODY_MASS_UNIT, unit.getOrdinal()).apply();
     }
 }

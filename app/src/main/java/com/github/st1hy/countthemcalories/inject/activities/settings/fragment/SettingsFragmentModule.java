@@ -62,4 +62,11 @@ public class SettingsFragmentModule {
         return new SelectUnitViewHolder(unitsViewHolder.getVolume());
     }
 
+    @Provides
+    @PerFragment
+    @Named("bodyMass")
+    public SelectUnitViewHolder providebodyMassHolder(UnitsViewHolder unitsViewHolder) {
+        return new SelectUnitViewHolder(unitsViewHolder.getBodyMass());
+    }
+
 }

@@ -77,4 +77,7 @@
     <string name="add_weight_dialog_title">Podaj dzisiejszą wagę</string>
     <string name="add_weight_dialog_hint">Podaj wagę</string>
     <string name="overview_fab_add_weight">Podaj dzisiejszą wagę</string>
+    <string name="settings_category_calorie_tracking_units">Jednoski kaloryczności posiłków</string>
+    <string name="settings_category_body_mass_tracking_unit">Jednostki wagi ciała</string>
+    <string name="settings_unit_body_mass">Wybierz preferowaną jednostkę wagi ciała</string>
 </resources>

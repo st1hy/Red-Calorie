@@ -12,4 +12,7 @@ public interface SettingsView {
 
     @NonNull
     SelectUnitViewHolder getVolumeHolder();
+
+    @NonNull
+    SelectUnitViewHolder getBodyMassHolder();
 }

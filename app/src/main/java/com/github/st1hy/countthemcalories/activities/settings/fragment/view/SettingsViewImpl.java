@@ -19,6 +19,9 @@ public class SettingsViewImpl implements SettingsView {
     @NonNull
     @Named("volume")
     private final SelectUnitViewHolder volumeHolder;
+    @Inject
+    @Named("bodyMass")
+    SelectUnitViewHolder bodyMassHolder;
 
     @Inject
     public SettingsViewImpl(@NonNull @Named("energy") SelectUnitViewHolder energyHolder,
@@ -42,5 +45,11 @@ public class SettingsViewImpl implements SettingsView {
     @NonNull
     public SelectUnitViewHolder getVolumeHolder() {
         return volumeHolder;
+    }
+
+    @NonNull
+    @Override
+    public SelectUnitViewHolder getBodyMassHolder() {
+        return bodyMassHolder;
     }
 }

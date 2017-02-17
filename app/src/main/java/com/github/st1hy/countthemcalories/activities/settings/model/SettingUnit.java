@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.model.BodyMassUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
@@ -57,7 +58,24 @@ public enum SettingUnit {
         public void setUnitTo(@NonNull SettingsModel model, int which) {
             model.setVolumeUnit(options()[which]);
         }
-    };
+    },
+    BODY_MASS(R.string.settings_unit_body_mass) {
+        @Override
+        public BodyMassUnit[] options() {
+            return BodyMassUnit.values();
+        }
+
+        @Override
+        public BodyMassUnit getUnitFrom(@NonNull SettingsModel model) {
+            return model.getBodyMassUnit();
+        }
+
+        @Override
+        public void setUnitTo(@NonNull SettingsModel model, int which) {
+            model.setBodyMassUnit(options()[which]);
+        }
+    }
+    ;
 
     private final int titleRes;
 

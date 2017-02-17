@@ -20,6 +20,8 @@ public class UnitsViewHolder {
     View mass;
     @BindView(R.id.settings_unit_volume)
     View volume;
+    @BindView(R.id.settings_unit_body_mass)
+    View bodyMass;
 
     @Inject
     public UnitsViewHolder(@NonNull View root) {
@@ -39,5 +41,9 @@ public class UnitsViewHolder {
     @NonNull
     public View getVolume() {
         return volume;
+    }
+
+    public View getBodyMass() {
+        return bodyMass;
     }
 }

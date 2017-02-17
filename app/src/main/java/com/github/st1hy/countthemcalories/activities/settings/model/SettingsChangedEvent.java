@@ -20,6 +20,8 @@ public abstract class SettingsChangedEvent {
                 return new UnitChangedEvent.Mass(model.getMassUnit());
             case SettingsModel.PREFERRED_VOLUME_UNIT:
                 return new UnitChangedEvent.Volume(model.getVolumeUnit());
+            case SettingsModel.PREFERRED_BODY_MASS_UNIT:
+                return new UnitChangedEvent.BodyMass(model.getBodyMassUnit());
             default:
                 return null;
         }
