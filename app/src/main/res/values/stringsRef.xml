@@ -17,4 +17,6 @@
     <string name="edit_ingredient_title" translatable="false">@string/ingredients_item_edit_ingredient</string>
     <string name="edit_meal_title" translatable="false">@string/overview_meal_edit_description</string>
 
+    <string name="overview_fav_add_meal" translatable="false">@string/add_meal_title</string>
+
 </resources>

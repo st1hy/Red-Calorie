@@ -32,4 +32,5 @@ public abstract class OverviewActivityBindings {
 
     @Binds
     public abstract GraphComponentFactory graphComponentFactory(OverviewActivityComponent component);
+
 }

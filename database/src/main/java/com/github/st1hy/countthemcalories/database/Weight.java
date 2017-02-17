@@ -22,7 +22,7 @@ public class Weight {
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
     @NotNull
-    @Index
+    @Index(unique = true)
     DateTime measurementDate;
 
     float weight;
@@ -48,8 +48,6 @@ public class Weight {
     public Weight() {
     }
 
-    
-
     public long getId() {
         return id;
     }
@@ -72,6 +70,15 @@ public class Weight {
 
     public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public String toString() {
+        return "Weight{" +
+                "weight=" + weight +
+                ", measurementDate=" + measurementDate +
+                ", id=" + id +
+                '}';
     }
 
     /**

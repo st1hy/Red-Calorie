@@ -74,4 +74,7 @@
     <string name="add_meal_time_desc">Czas posiłku:</string>
     <string name="no_categories_to_display">Brak kategorii</string>
     <string name="add_meal_no_ingredients">Brak składników</string>
+    <string name="add_weight_dialog_title">Podaj dzisiejszą wagę</string>
+    <string name="add_weight_dialog_hint">Podaj wagę</string>
+    <string name="overview_fab_add_weight">Podaj dzisiejszą wagę</string>
 </resources>

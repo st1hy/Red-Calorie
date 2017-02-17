@@ -30,7 +30,7 @@
             fab:fab_colorPressed="@color/expandingFabColorPressed"
             fab:fab_icon="@drawable/ic_add_24px"
             fab:fab_size="mini"
-            fab:fab_title="Add meal" />
+            fab:fab_title="@string/overview_fav_add_meal" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/overview_fab_add_weight"
@@ -40,7 +40,7 @@
             fab:fab_colorPressed="@color/expandingFabColorPressed"
             fab:fab_icon="@drawable/ic_weight"
             fab:fab_size="mini"
-            fab:fab_title="Add today's weight" />
+            fab:fab_title="@string/overview_fab_add_weight" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </merge>

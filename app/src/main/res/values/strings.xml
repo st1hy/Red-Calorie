@@ -84,4 +84,7 @@
     <string name="add_meal_time_desc">Meal time:</string>
     <string name="no_categories_to_display">No categories</string>
     <string name="add_meal_no_ingredients">No ingredients</string>
+    <string name="add_weight_dialog_title">Enter today\'s weight</string>
+    <string name="add_weight_dialog_hint">Enter weight</string>
+    <string name="overview_fab_add_weight">Add today\'s weight</string>
 </resources>

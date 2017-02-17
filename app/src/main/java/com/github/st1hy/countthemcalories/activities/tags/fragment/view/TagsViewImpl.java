@@ -1,15 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.view;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
@@ -19,7 +15,6 @@ import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.jakewharton.rxbinding.widget.RxTextView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.github.st1hy.countthemcalories.core.dialog.CustomDialogViewEditTextController.editTextValueOnOk;
 
 @PerFragment
 public class TagsViewImpl implements TagsView {
@@ -70,31 +65,7 @@ public class TagsViewImpl implements TagsView {
                 .positiveButton(android.R.string.ok)
                 .negativeButton(android.R.string.cancel)
                 .show();
-        final EditText text = (EditText) checkNotNull(rxAlertDialog.getCustomView())
-                .findViewById(R.id.tags_dialog_name);
-        text.setText(initialText);
-        text.setOnKeyListener((v, keyCode, event) -> {
-            if (isEnterClicked(event)) {
-                finishDialog(rxAlertDialog);
-            }
-            return false;
-        });
-
-        RxTextView.editorActions(text)
-                .filter(actionId -> actionId == EditorInfo.IME_ACTION_DONE)
-                .subscribe(actionId1 -> finishDialog(rxAlertDialog));
-        return rxAlertDialog.observePositiveClick()
-                .map(aVoid -> text.getText().toString());
-    }
-
-    private boolean finishDialog(@NonNull RxAlertDialog rxAlertDialog) {
-        return rxAlertDialog.getDialog()
-                .getButton(AlertDialog.BUTTON_POSITIVE)
-                .performClick();
-    }
-
-    private static boolean isEnterClicked(KeyEvent event) {
-        return event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
+        return editTextValueOnOk(rxAlertDialog, initialText, R.id.tags_dialog_name);
     }
 
     @Override

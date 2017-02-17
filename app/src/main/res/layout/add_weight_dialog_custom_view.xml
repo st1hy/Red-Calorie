@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="?dialogPreferredPadding"
+    android:paddingLeft="?dialogPreferredPadding"
+    android:paddingRight="?dialogPreferredPadding"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <EditText
+        android:id="@+id/add_weight_value"
+        android:orientation="vertical"
+        android:hint="@string/add_weight_dialog_hint"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content">
+        <requestFocus/>
+    </EditText>
+    <TextView
+        android:id="@+id/add_weight_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Body2"
+        tools:text="kg"
+        android:textIsSelectable="false" />
+</LinearLayout>

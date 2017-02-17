@@ -48,8 +48,6 @@ public class OverviewScreenImpl implements OverviewScreen {
     View touchOverlay;
     @BindView(R.id.overview_fab_menu)
     FloatingActionsMenu fabMenu;
-    @BindView(R.id.overview_fab_add_weight)
-    View addWeight;
     @BindView(R.id.overview_fab_add_meal)
     View addMeal;
     @BindView(R.id.overview_total_energy)
