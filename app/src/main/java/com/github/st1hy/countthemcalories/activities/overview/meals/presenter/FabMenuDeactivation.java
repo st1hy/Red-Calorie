@@ -18,8 +18,6 @@ public class FabMenuDeactivation implements BasicLifecycle {
     @Inject
     OverviewView view;
 
-    private boolean isFabMenuOpen;
-
     @Inject
     public FabMenuDeactivation() {
     }
@@ -27,10 +25,7 @@ public class FabMenuDeactivation implements BasicLifecycle {
     @Override
     public void onStart() {
         subscriptions.add(
-                view.fabMenuIsOpen().subscribe(isOpen -> isFabMenuOpen = isOpen)
-        );
-        subscriptions.add(
-                view.touchOverlay(event -> isFabMenuOpen && event.getAction() == MotionEvent.ACTION_DOWN)
+                view.touchOverlay(event -> view.isFabMenuOpen() && event.getAction() == MotionEvent.ACTION_DOWN)
                         .subscribe(ignoreEvent -> view.closeFloatingMenu())
         );
     }

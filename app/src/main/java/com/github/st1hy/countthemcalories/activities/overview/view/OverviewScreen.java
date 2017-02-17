@@ -31,9 +31,7 @@ public interface OverviewScreen {
     @CheckResult
     Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled);
 
-    @NonNull
-    @CheckResult
-    Observable<Boolean> fabMenuIsOpen();
-
     void closeFloatingMenu();
+
+    boolean isFabMenuOpen();
 }

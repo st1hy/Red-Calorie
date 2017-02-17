@@ -79,14 +79,13 @@ public class OverviewViewImpl implements OverviewView {
         return screen.touchOverlay(handled);
     }
 
-    @NonNull
-    @Override
-    public Observable<Boolean> fabMenuIsOpen() {
-        return screen.fabMenuIsOpen();
-    }
-
     @Override
     public void closeFloatingMenu() {
         screen.closeFloatingMenu();
+    }
+
+    @Override
+    public boolean isFabMenuOpen() {
+        return screen.isFabMenuOpen();
     }
 }

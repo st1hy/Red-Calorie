@@ -19,7 +19,6 @@ import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailPa
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
-import com.github.st1hy.countthemcalories.core.rx.RxFabMenu;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
@@ -110,15 +109,14 @@ public class OverviewScreenImpl implements OverviewScreen {
         return RxView.touches(touchOverlay, handled);
     }
 
-    @NonNull
-    @Override
-    public Observable<Boolean> fabMenuIsOpen() {
-        return RxFabMenu.menuIsOpen(fabMenu);
-    }
-
     @Override
     public void closeFloatingMenu() {
         fabMenu.collapse();
+    }
+
+    @Override
+    public boolean isFabMenuOpen() {
+        return fabMenu.isExpanded();
     }
 
     @NonNull
