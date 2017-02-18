@@ -49,6 +49,7 @@ public class TagItemHolder extends TagViewHolder {
     private final Tag tag = new Tag();
     private final PositionDelegate position = new PositionDelegate();
     private final ScrollingItemDelegate scrollingItemDelegate;
+    private boolean isEnabled;
 
     public TagItemHolder(@NonNull View itemView,
                          @NonNull TagsViewModel viewModel,
@@ -67,18 +68,18 @@ public class TagItemHolder extends TagViewHolder {
 
     @OnClick(R.id.tag_item_button)
     public void onClick() {
-        callback.onTagClicked(position.get(), this);
+        if (isEnabled) callback.onTagClicked(position.get(), this);
     }
 
 
     @OnClick(R.id.tags_item_delete)
     public void onDeleteClicked() {
-        callback.onDeleteClicked(position.get(), this);
+        if (isEnabled) callback.onDeleteClicked(position.get(), this);
     }
 
     @OnClick(R.id.tags_item_edit)
     public void onEditClicked() {
-        callback.onEditClicked(position.get(), this);
+        if (isEnabled) callback.onEditClicked(position.get(), this);
     }
 
     @NonNull
@@ -133,5 +134,9 @@ public class TagItemHolder extends TagViewHolder {
 
     public boolean isChecked() {
         return checkBox.isChecked();
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 }

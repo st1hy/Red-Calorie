@@ -139,6 +139,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         if (cursor != null) {
             cursor.moveToPosition(positionInCursor(position));
             Tag tag = holder.getReusableTag();
+            holder.setEnabled(true);
             databaseModel.performReadEntity(cursor, tag);
             holder.bind(position, tag);
             holder.setSelectable(fragmentModel.isInSelectMode());
@@ -223,6 +224,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onDeleteClicked(final int position, @NonNull TagItemHolder holder) {
         Tag tag = holder.getReusableTag();
+        holder.setEnabled(false);
         addSubscription(
                 databaseModel.getById(tag.getId())
                         .observeOn(AndroidSchedulers.mainThread())
