@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsPresenter;
+import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentModule;
 
@@ -17,10 +18,14 @@ import javax.inject.Inject;
 
 public class MealsFragment extends BaseFragment {
 
+    public static final String ARG_CURRENT_DATE = "current date";
+
     @Inject
     MealsPresenter presenter;
     @Inject
     RecyclerView recyclerView; //injects adapter into recycler
+    @Inject
+    MealsStateSaver saver;
 
     @Nullable
     @Override
@@ -35,7 +40,7 @@ public class MealsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         OverviewActivity activity = (OverviewActivity) getActivity();
         activity.getMealsFragmentComponentFactory()
-                .newOverviewFragmentComponent(new OverviewFragmentModule(this))
+                .newOverviewFragmentComponent(new OverviewFragmentModule(this, savedInstanceState))
                 .inject(this);
     }
 
@@ -49,5 +54,11 @@ public class MealsFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         presenter.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saver.onSaveState(outState);
     }
 }

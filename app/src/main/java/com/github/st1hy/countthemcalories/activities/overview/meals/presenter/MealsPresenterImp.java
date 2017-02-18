@@ -19,8 +19,6 @@ public class MealsPresenterImp implements MealsPresenter {
     private final MealsAdapter adapter;
     @NonNull
     private final RecyclerViewAdapterDelegate adapterDelegate;
-    @Inject
-    FabMenuDeactivation fabMenuDeactivation;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -40,7 +38,6 @@ public class MealsPresenterImp implements MealsPresenter {
         adapter.onStart();
         subscriptions.add(view.getAddNewMealObservable()
                 .subscribe(aVoid -> view.addNewMeal()));
-        fabMenuDeactivation.onStart();
     }
 
     @Override
@@ -48,7 +45,6 @@ public class MealsPresenterImp implements MealsPresenter {
         adapterDelegate.onStop();
         adapter.onStop();
         subscriptions.clear();
-        fabMenuDeactivation.onStop();
     }
 
 }

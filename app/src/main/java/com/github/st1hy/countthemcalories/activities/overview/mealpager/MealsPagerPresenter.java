@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 @PerActivity
 public class MealsPagerPresenter implements BasicLifecycle {
@@ -29,16 +28,15 @@ public class MealsPagerPresenter implements BasicLifecycle {
     @Override
     public void onStart() {
         subscriptions.add(
-                model.getRecentPeriod()
+                model.updates()
                         .doOnNext(adapter::updateModel)
                         .doOnNext(model -> view.setCurrentItem(model.getCount() - 1, false))
                         .subscribe()
         );
         subscriptions.add(
                 Observable.combineLatest(view.onPageSelected(),
-                        model.getRecentPeriod(),
+                        model.mostRecent(),
                         (page, period) -> {
-                            Timber.d("Selected %d %s", page, period.getDayDataAt(page).getDateTime());
                             view.setTitle(period.getDayDataAt(page));
                             return null;
                         })

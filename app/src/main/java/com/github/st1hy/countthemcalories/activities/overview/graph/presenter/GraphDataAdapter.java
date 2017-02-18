@@ -41,7 +41,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
 
     public void onStart() {
         subscriptions.add(
-            model.getRecentPeriod()
+            model.mostRecent()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::onNewGraphData)
         );

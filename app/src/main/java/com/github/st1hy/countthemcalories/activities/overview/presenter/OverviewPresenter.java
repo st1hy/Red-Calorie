@@ -31,7 +31,14 @@ public class OverviewPresenter {
     TimePeriodLoader timePeriodLoader;
 
     @Inject
+    FabMenuDeactivation fabMenuDeactivation;
+
+    @Inject
     public OverviewPresenter() {
+    }
+
+    public void onCreate() {
+        timePeriodLoader.onStart();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -43,7 +50,7 @@ public class OverviewPresenter {
         drawerView.registerToggle(drawerToggle);
         addWeightPresenter.onStart();
         pagerPresenter.onStart();
-        timePeriodLoader.onStart();
+        fabMenuDeactivation.onStart();
     }
 
     public void onStop() {
@@ -51,6 +58,10 @@ public class OverviewPresenter {
         drawerView.unregisterDrawerToggle(drawerToggle);
         addWeightPresenter.onStop();
         pagerPresenter.onStop();
+        fabMenuDeactivation.onStop();
+    }
+
+    public void onDestroy() {
         timePeriodLoader.onStop();
     }
 }

@@ -1,22 +1,22 @@
-package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.presenter;
 
 import android.view.MotionEvent;
 
-import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
-@PerFragment
+@PerActivity
 public class FabMenuDeactivation implements BasicLifecycle {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    OverviewView view;
+    OverviewScreen view;
 
     @Inject
     public FabMenuDeactivation() {

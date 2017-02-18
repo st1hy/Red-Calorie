@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.MealsViewModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.commands.MealsDatabaseCommands;
@@ -79,6 +80,8 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
 
     @Nullable
     private MealItemHolder disabledHolder;
+    @Inject
+    CurrentDayModel currentDayModel;
 
     @Inject
     public MealsAdapter(@NonNull OverviewView view,
@@ -99,7 +102,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
 
     @Override
     public void onStart() {
-        loadTodayMeals();
+        loadMeals();
         subscriptions.add(
                 interactionSubject.filter(ofType(MealInteraction.Type.OPEN))
                         .doOnNext(disableViewHolder())
@@ -226,10 +229,10 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         view.editMeal(meal);
     }
 
-    private void loadTodayMeals() {
-        DateTime now = DateTime.now();
-        DateTime from = now.withTime(0, 0, 0, 0);
-        DateTime to = now.withTime(23, 59, 59, 999);
+    private void loadMeals() {
+        DateTime currentDay = currentDayModel.getCurrentDay();
+        DateTime from = currentDay.withTimeAtStartOfDay();
+        DateTime to = currentDay.plusDays(1).withTimeAtStartOfDay();
         subscriptions.add(databaseModel.getAllFilteredSortedDate(from, to)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnUpdatedDataSet()));

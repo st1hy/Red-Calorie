@@ -27,6 +27,7 @@ public class OverviewActivity extends BaseActivity {
         getAppComponent().newOverviewActivityComponent(new OverviewActivityModule(this))
                 .inject(this);
         setTitle("");
+        presenter.onCreate();
     }
 
     @Override
@@ -50,6 +51,12 @@ public class OverviewActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         presenter.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @NonNull
