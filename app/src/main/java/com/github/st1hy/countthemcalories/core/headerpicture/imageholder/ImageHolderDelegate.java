@@ -49,7 +49,6 @@ public class ImageHolderDelegate {
     private final Observable<LoadedSource> loadedSourceObservable = loadedSourceSubject.asObservable();
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-
     @DrawableRes
     private int placeholderResId = R.drawable.ic_fork_and_knife_wide;
 

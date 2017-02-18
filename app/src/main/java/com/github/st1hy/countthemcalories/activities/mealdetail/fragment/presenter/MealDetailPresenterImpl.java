@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
@@ -28,7 +29,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     public MealDetailPresenterImpl(@NonNull MealDetailView view,
                                    @NonNull Meal meal,
                                    @NonNull PhysicalQuantitiesModel quantitiesModel,
-                                   @NonNull ImageHolderDelegate imageHolderDelegate) {
+                                   @NonNull @Named("mealImageHolder") ImageHolderDelegate imageHolderDelegate) {
         this.view = view;
         this.meal = meal;
         this.quantitiesModel = quantitiesModel;
@@ -65,7 +66,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
                 .subscribe(view::setEnergy);
     }
 
-    void bindImage(@NonNull Meal meal) {
+    private void bindImage(@NonNull Meal meal) {
         imageHolderDelegate.displayImage(meal.getImageUri());
     }
 

@@ -18,6 +18,7 @@
     <color name="shadow_end">#00000000</color>
 
     <color name="dark_accent">#021327</color>
-    <color name="meal_icon_fill">#575869</color>
+    <color name="meal_icon_fill">#311e20</color>
+    <color name="meal_icon_fill_positive">#1b0d0e</color>
 
 </resources>

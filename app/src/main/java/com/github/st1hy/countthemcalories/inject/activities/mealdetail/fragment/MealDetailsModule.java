@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
@@ -78,5 +79,11 @@ public class MealDetailsModule {
         return recyclerView;
     }
 
+    @Provides
+    @Named("mealImageHolder")
+    public static ImageHolderDelegate imageHolderDelegate(ImageHolderDelegate imageHolderDelegate) {
+        imageHolderDelegate.setImagePlaceholder(R.drawable.ic_fork_and_knife_positive);
+        return imageHolderDelegate;
+    }
 
 }
