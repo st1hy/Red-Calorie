@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/ingredients_item_name"
-            style="@style/Base.TextAppearance.AppCompat.Body2"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"

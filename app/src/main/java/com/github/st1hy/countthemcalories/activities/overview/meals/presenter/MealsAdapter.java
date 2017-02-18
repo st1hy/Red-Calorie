@@ -55,7 +55,10 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
     private static final int mealItemLayoutBottom = R.layout.list_item_bottom;
+    private static final int mealItemLayoutTop = R.layout.list_item_top;
+    private static final int TOP_PADDING = 1;
     private static final int BOTTOM_PADDING = 1;
+    private static final int PADDING = 2;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -152,12 +155,14 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     @Override
     public int getItemCount() {
         int listSize = list.size();
-        return listSize > 0 ? listSize + BOTTOM_PADDING : 0;
+        return listSize > 0 ? listSize + PADDING : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position < list.size()) {
+        if (position < TOP_PADDING) {
+            return mealItemLayoutTop;
+        } else if (position < list.size() + TOP_PADDING) {
             return mealItemLayout;
         } else {
             return mealItemLayoutBottom;
@@ -181,7 +186,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     public void onBindViewHolder(AbstractMealItemHolder itemHolder, int position) {
         if (itemHolder instanceof MealItemHolder) {
             MealItemHolder holder = (MealItemHolder) itemHolder;
-            final Meal meal = list.get(position);
+            final Meal meal = list.get(positionOnList(position));
             holder.setName(meal.getName());
             holder.setMeal(meal);
             holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
@@ -238,7 +243,8 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                 .subscribe(new OnUpdatedDataSet()));
     }
 
-    private void onBindIngredients(@NonNull final MealItemHolder holder, @NonNull List<Ingredient> ingredients) {
+    private void onBindIngredients(@NonNull final MealItemHolder holder,
+                                   @NonNull List<Ingredient> ingredients) {
         Observable<Ingredient> ingredientObservable = Observable.from(ingredients);
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
@@ -271,7 +277,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         return null;
     }
 
-    private void deleteMeal(@NonNull Meal meal, int position) {
+    private void deleteMeal(@NonNull Meal meal, int positionOnList) {
         subscriptions.add(commands.delete(meal)
                 .doOnNext(deleteResponse ->
                         subscriptions.add(deleteResponse.undoAvailability()
@@ -286,17 +292,25 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                                             }
                                         }))
                                 .subscribe(meal1 -> {
-                                    list.add(position, meal1);
+                                    list.add(positionOnList, meal1);
                                     onNewDataSet(list);
-                                    notifyItemInserted(position);
+                                    if (list.size() > 1) {
+                                        notifyItemInserted(positionOnAdapter(positionOnList));
+                                    } else {
+                                        notifyDataSetChanged();
+                                    }
                                 })
                         ))
                 .map(Functions.intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> {
-                    list.remove(position);
+                    list.remove(positionOnList);
                     onNewDataSet(list);
-                    notifyItemRemoved(position);
+                    if (list.size() > 0) {
+                        notifyItemRemoved(positionOnAdapter(positionOnList));
+                    } else {
+                        notifyDataSetChanged();
+                    }
                 }));
     }
 
@@ -321,7 +335,6 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         };
     }
 
-
     private class OnUpdatedDataSet extends SimpleSubscriber<List<Meal>> {
 
         @Override
@@ -329,7 +342,6 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
             onNewDataSet(meals);
             notifyDataSetChanged();
         }
-
     }
 
     @NonNull
@@ -348,5 +360,13 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                 disabledHolder = null;
             }
         };
+    }
+
+    public static int positionOnList(int positionOnAdapter) {
+        return positionOnAdapter - TOP_PADDING;
+    }
+
+    public static int positionOnAdapter(int positionOnList) {
+        return positionOnList + TOP_PADDING;
     }
 }

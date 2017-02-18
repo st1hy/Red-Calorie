@@ -48,8 +48,10 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     private static final int item_layout = R.layout.tags_item_scrolling;
     private static final int space_bottom = R.layout.list_item_bottom;
+    private static final int space_top = R.layout.list_item_top;
+    private static final int TOP_ITEM_PADDING = 1;
     private static final int BOTTOM_ITEM_PADDING = 1;
-    private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING;
+    private static final int ADDITIONAL_ITEMS = BOTTOM_ITEM_PADDING + TOP_ITEM_PADDING;
 
     @NonNull
     private final TagsView view;
@@ -104,7 +106,9 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public int getItemViewType(int position) {
-        if (position < getDaoItemCount()) {
+        if (position < TOP_ITEM_PADDING){
+            return space_top;
+        } else if (position < getDaoItemCount() + TOP_ITEM_PADDING) {
             return item_layout;
         } else {
             return space_bottom;
@@ -133,7 +137,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private void onBindItemHolder(TagItemHolder holder, int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
-            cursor.moveToPosition(position);
+            cursor.moveToPosition(positionInCursor(position));
             Tag tag = holder.getReusableTag();
             databaseModel.performReadEntity(cursor, tag);
             holder.bind(position, tag);
@@ -172,7 +176,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @Override
-    public void onEditClicked(final int position, @NonNull TagItemHolder holder) {
+    public void onEditClicked(final int positionInAdapter, @NonNull TagItemHolder holder) {
         Tag tag = holder.getReusableTag();
         addSubscription(
                 view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getName())
@@ -182,7 +186,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
                         })
                         .map(cursor -> new InsertResult(cursor, databaseModel.findInCursor(cursor, tag)))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(onEditFinished(position))
+                        .subscribe(onEditFinished(positionInAdapter))
         );
     }
 
@@ -194,8 +198,15 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
                 onCursorUpdate(lastQuery, result.getCursor());
                 int newPosition = result.getNewItemPositionInCursor();
                 if (newPosition != -1) {
-                    notifyItemRemovedRx(position);
-                    notifyItemInsertedRx(newPosition);
+                    newPosition = positionInAdapter(newPosition);
+                    notifyListenersItemRemove(position);
+                    if (newPosition != position) notifyItemRemoved(position);
+                    notifyListenersItemInserted(newPosition);
+                    if (newPosition != position) {
+                        notifyItemInserted(newPosition);
+                    } else {
+                        notifyItemChanged(position);
+                    }
                 } else {
                     notifyDataSetChanged();
                 }
@@ -236,11 +247,17 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     }
 
     @NonNull
-    private Action1<Cursor> onTagRemoved(final int position) {
+    private Action1<Cursor> onTagRemoved(final int positionInAdapter) {
         return cursor -> {
+            int previousCursorSize = getDaoItemCount();
             onCursorUpdate(lastQuery, cursor);
-            if (position != -1) {
-                notifyItemRemovedRx(position);
+            if (positionInAdapter != -1) {
+                notifyListenersItemRemove(positionInAdapter);
+                if (previousCursorSize > 1) {
+                    notifyItemRemoved(positionInAdapter);
+                } else {
+                    notifyDataSetChanged();
+                }
             } else {
                 notifyDataSetChanged();
             }
@@ -283,10 +300,17 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private Action1<InsertResult> onTagAdded() {
         return result -> {
             int newItemPosition = result.getNewItemPositionInCursor();
+            int previousCursorSize = getDaoItemCount();
             onCursorUpdate(lastQuery, result.getCursor());
             if (newItemPosition != -1) {
-                notifyItemInsertedRx(newItemPosition);
-                view.scrollToPosition(newItemPosition);
+                newItemPosition = positionInAdapter(newItemPosition);
+                notifyListenersItemInserted(newItemPosition);
+                if (previousCursorSize > 0) {
+                    notifyItemInserted(newItemPosition);
+                    view.scrollToPosition(newItemPosition);
+                } else {
+                    notifyDataSetChanged();
+                }
             } else {
                 notifyDataSetChanged();
             }
@@ -309,8 +333,11 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     public String getSectionText(int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
+            position = positionInCursor(position);
             if (position >= getDaoItemCount()) {
                 position = getDaoItemCount() - 1;
+            } else if (position < 0) {
+                position = 0;
             }
             cursor.moveToPosition(position);
             String string = cursor.getString(cursor.getColumnIndexOrThrow(TagDao.Properties.Name.columnName));
@@ -324,6 +351,13 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         Tag reusableTag = tagItemHolder.getReusableTag();
         boolean isChecked = tagItemHolder.isChecked();
         fragmentModel.setSelected(reusableTag, isChecked);
+    }
 
+    private static int positionInCursor(int positionInAdapter) {
+        return positionInAdapter - TOP_ITEM_PADDING;
+    }
+
+    private static int positionInAdapter(int positionInCursor) {
+        return positionInCursor + TOP_ITEM_PADDING;
     }
 }

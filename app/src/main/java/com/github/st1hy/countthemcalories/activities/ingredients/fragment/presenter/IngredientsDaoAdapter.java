@@ -54,7 +54,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     private static final int ingredient_item_layout = R.layout.ingredients_item_scrolling;
     @LayoutRes
     private static final int space_layout = R.layout.list_item_bottom;
+    private static final int space_layout_top = R.layout.list_item_top;
+    private static final int SPACE_TOP = 1;
     private static final int SPACE_BOTTOM = 1;
+    private static final int SPACE = 2;
 
     @NonNull
     private final IngredientsView view;
@@ -102,7 +105,9 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
 
     @Override
     public int getItemViewType(int position) {
-        if (position < getDaoItemCount()) {
+        if (position < SPACE_TOP) {
+            return space_layout_top;
+        } else if (position < getDaoItemCount() + SPACE_BOTTOM) {
             return ingredient_item_layout;
         } else {
             return space_layout;
@@ -112,7 +117,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     @Override
     public int getItemCount() {
         int itemCount = super.getItemCount();
-        return itemCount == 0 ? 0 : itemCount + SPACE_BOTTOM;
+        return itemCount == 0 ? 0 : itemCount + SPACE;
     }
 
     @Override
@@ -131,7 +136,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
 
     @Override
     public void onBindViewHolder(AbstractIngredientsViewHolder holder, int position) {
-        if (holder instanceof  IngredientViewHolder) {
+        if (holder instanceof IngredientViewHolder) {
             onBindViewHolder((IngredientViewHolder) holder, position);
         }
     }
@@ -150,7 +155,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
 
     @Override
     public void onIngredientClicked(@NonNull final IngredientTemplate ingredientTemplate,
-                                    final int position) {
+                                    final int positionInAdapter) {
         if (model.isInSelectMode()) {
             view.onIngredientSelected(ingredientTemplate);
         } else {
@@ -163,10 +168,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                                 view.addToNewMeal(ingredientTemplate);
                                 break;
                             case EDIT:
-                                onEditClicked(ingredientTemplate, position);
+                                onEditClicked(ingredientTemplate, positionInAdapter);
                                 break;
                             case REMOVE:
-                                onDeleteClicked(ingredientTemplate, position);
+                                onDeleteClicked(ingredientTemplate, positionInAdapter);
                                 break;
                         }
                     });
@@ -174,7 +179,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     }
 
     @Override
-    public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
+    public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate,
+                                final int positionInAdapter) {
         databaseModel.getById(ingredientTemplate.getId())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(template -> {
@@ -197,9 +203,16 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                                 }))
                         .subscribe(result -> {
                             int newItemPosition = result.getNewItemPositionInCursor();
+                            int previousCursorSize = getDaoItemCount();
                             onCursorUpdate(result.getCursor(), recentSearchResult.get());
                             if (newItemPosition != -1) {
-                                notifyItemInsertedRx(newItemPosition);
+                                newItemPosition = positionInAdapter(newItemPosition);
+                                notifyListenersItemInserted(newItemPosition);
+                                if (previousCursorSize > 0) {
+                                    notifyItemInserted(newItemPosition);
+                                } else {
+                                    notifyDataSetChanged();
+                                }
                                 view.scrollToPosition(newItemPosition);
                             } else {
                                 notifyDataSetChanged();
@@ -209,8 +222,18 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                 .map(Functions.intoResponse())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cursor -> {
+                    int previousCursorSize = getDaoItemCount();
                     onCursorUpdate(cursor, recentSearchResult.get());
-                    notifyItemRemovedRx(position);
+                    if (cursor.getCount() > 0) {
+                        notifyListenersItemRemove(positionInAdapter);
+                        if (previousCursorSize > 1) {
+                            notifyItemRemoved(positionInAdapter);
+                        } else {
+                            notifyDataSetChanged();
+                        }
+                    } else {
+                        notifyDataSetChanged();
+                    }
                 });
     }
 
@@ -273,7 +296,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                             .subscribeOn(Schedulers.computation())
                             .filter(IngredientsDaoAdapter::isSuccessful)
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(view::scrollToPosition));
+                            .subscribe(pos -> view.scrollToPosition(positionInAdapter(pos)))
+            );
         }
     }
 
@@ -284,7 +308,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     private void onBindViewHolder(IngredientViewHolder holder, int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
-            cursor.moveToPosition(position);
+            cursor.moveToPosition(positionInCursor(position));
             IngredientTemplate ingredient = holder.getReusableIngredient();
             databaseModel.performReadEntity(cursor, ingredient);
             holder.setPosition(position);
@@ -302,14 +326,17 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
 
     @Override
     public String getSectionText(int position) {
+        position = positionInCursor(position);
         if (position >= getDaoItemCount()) {
             position = getDaoItemCount() - 1;
+        } else if (position < 0) {
+            position = 0;
         }
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
             int index = cursor.getColumnIndexOrThrow(IngredientTemplateDao.Properties.Name.columnName);
-            return cursor.getString(index).substring(0,1);
+            return cursor.getString(index).substring(0, 1);
         } else {
             return "";
         }
@@ -335,4 +362,11 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         }
     }
 
+    private static int positionInCursor(int positionInAdapter) {
+        return positionInAdapter - SPACE_TOP;
+    }
+
+    private static int positionInAdapter(int positionInCursor) {
+        return positionInCursor + SPACE_TOP;
+    }
 }
