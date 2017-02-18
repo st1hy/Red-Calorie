@@ -138,8 +138,10 @@ public class PhysicalQuantitiesModel {
 
     @NonNull
     public String formatAsEnergy(float value) {
+        EnergyUnit energyUnit = settingsModel.getEnergyUnit();
+        value /= energyUnit.getBase().floatValue();
         String valueString = String.format(Locale.getDefault(), "%.00f", value);
-        return formatValueUnit(valueString, getUnitName(settingsModel.getEnergyUnit()));
+        return formatValueUnit(valueString, getUnitName(energyUnit));
     }
 
     /**

@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.core.rx.AbstractRxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
@@ -48,8 +47,6 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
         return CursorQuery.internalCreate(dao(), sql.toString(), new Object[2]);
     });
 
-    @Inject
-    PhysicalQuantitiesModel quantityModel;
     private final PublishSubject<TimePeriod> updates = PublishSubject.create();
     private final BehaviorSubject<TimePeriod> recent = BehaviorSubject.create();
 
@@ -87,7 +84,7 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
             query.setParameter(1, end.getMillis());
             Cursor cursor = query.query();
             try {
-                return new TimePeriod.Builder(cursor, quantityModel, start, end).build();
+                return new TimePeriod.Builder(cursor, start, end).build();
             } finally {
                 cursor.close();
             }

@@ -4,13 +4,10 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
-import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -105,7 +102,6 @@ public class TimePeriod {
 
     public static class Builder {
         private final Cursor cursor;
-        private final PhysicalQuantitiesModel quantitiesModel;
         private final DateTime start;
         private final int daysCount;
 
@@ -116,11 +112,9 @@ public class TimePeriod {
         private int notZeroDays = 0;
 
         public Builder(@NonNull Cursor cursor,
-                       @NonNull PhysicalQuantitiesModel quantitiesModel,
                        @NonNull DateTime start,
                        @NonNull DateTime end) {
             this.cursor = cursor;
-            this.quantitiesModel = quantitiesModel;
             this.start = start;
             this.daysCount = countDays(start, end);
             this.data = new SparseArray<>(daysCount);
@@ -186,15 +180,11 @@ public class TimePeriod {
             AmountUnitType amountUnitType = AmountUnitTypePropertyConverter.INSTANCE
                     .convertToEntityProperty(cursor.getInt(POSITION_AMOUNT_TYPE));
             if (energyDensityValue == null) energyDensityValue = BigDecimal.ZERO;
-
             EnergyDensity databaseEnergyDensity = EnergyDensity.fromDatabaseValue(amountUnitType, energyDensityValue);
-            EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);
-
             BigDecimal currentAmount = BigDecimalPropertyConverter.INSTANCE
                     .convertToEntityProperty(cursor.getString(POSITION_AMOUNT));
             if (currentAmount == null) currentAmount = BigDecimal.ZERO;
-            AmountUnit amountUnit = EnergyDensityUtils.getDefaultAmountUnit(amountUnitType);
-            return quantitiesModel.getEnergyAmountFrom(currentAmount, amountUnit, energyDensity).floatValue();
+            return databaseEnergyDensity.getValue().floatValue() * currentAmount.floatValue();
         }
     }
 
