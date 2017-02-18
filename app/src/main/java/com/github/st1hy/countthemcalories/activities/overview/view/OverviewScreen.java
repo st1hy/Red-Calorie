@@ -25,8 +25,6 @@ public interface OverviewScreen {
 
     void editMeal(@NonNull Meal meal);
 
-    void setTotalEnergy(@NonNull String energy);
-
     @NonNull
     @CheckResult
     Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled);

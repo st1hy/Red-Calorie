@@ -20,17 +20,18 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <TextView
+                android:id="@+id/overview_toolbar_date"
                 style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/overview_toolbar_title" />
+                android:text="@string/overview_toolbar_title_today" />
 
             <android.support.v4.widget.Space
                 android:layout_width="8dp"
                 android:layout_height="match_parent" />
 
             <TextView
-                android:id="@+id/overview_total_energy"
+                android:id="@+id/overview_toolbar_total_energy"
                 style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

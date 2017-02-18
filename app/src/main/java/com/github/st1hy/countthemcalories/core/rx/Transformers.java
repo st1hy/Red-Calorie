@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.core.rx;
 import android.support.annotation.NonNull;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
 
 public final class Transformers {
@@ -16,16 +16,16 @@ public final class Transformers {
      * subject. Source observable still needs active subscription for this to happen.
      */
     @NonNull
-    public static <T> Observable.Transformer<T, T> channel(@NonNull PublishSubject<T> target) {
+    public static <T> Observable.Transformer<T, T> channel(@NonNull Subject<T, T> target) {
         return new ChannelTransformer<>(target);
     }
 
 
     private static class ChannelTransformer<T> implements Observable.Transformer<T, T> {
         @NonNull
-        private final PublishSubject<T> target;
+        private final Subject<T, T> target;
 
-        private ChannelTransformer(@NonNull PublishSubject<T> target) {
+        private ChannelTransformer(@NonNull Subject<T, T> target) {
             this.target = target;
         }
 

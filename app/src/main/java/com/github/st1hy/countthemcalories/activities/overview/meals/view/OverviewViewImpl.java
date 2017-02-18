@@ -68,11 +68,6 @@ public class OverviewViewImpl implements OverviewView {
         screen.editMeal(meal);
     }
 
-    @Override
-    public void setTotalEnergy(@NonNull String energy) {
-        screen.setTotalEnergy(energy);
-    }
-
     @NonNull
     @Override
     public Observable<MotionEvent> touchOverlay(@NonNull Func1<? super MotionEvent, Boolean> handled) {

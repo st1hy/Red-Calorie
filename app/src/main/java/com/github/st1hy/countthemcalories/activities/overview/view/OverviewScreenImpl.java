@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.st1hy.countthemcalories.R;
@@ -49,8 +48,6 @@ public class OverviewScreenImpl implements OverviewScreen {
     FloatingActionsMenu fabMenu;
     @BindView(R.id.overview_fab_add_meal)
     View addMeal;
-    @BindView(R.id.overview_total_energy)
-    TextView totalEnergy;
 
     @Inject
     public OverviewScreenImpl(@NonNull Activity activity,
@@ -96,11 +93,6 @@ public class OverviewScreenImpl implements OverviewScreen {
         Intent intent = new Intent(activity, EditMealActivity.class);
         intent.putExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
         activity.startActivity(intent);
-    }
-
-    @Override
-    public void setTotalEnergy(@NonNull String energy) {
-        totalEnergy.setText(energy);
     }
 
     @NonNull

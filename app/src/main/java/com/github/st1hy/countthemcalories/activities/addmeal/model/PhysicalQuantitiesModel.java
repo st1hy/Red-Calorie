@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.model;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.text.format.DateFormat;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
@@ -17,9 +19,9 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +36,9 @@ public class PhysicalQuantitiesModel {
     private final Context context;
     private Func1<Ingredient, BigDecimal> ingredientToEnergy;
     private Func1<BigDecimal, String> energyAsString;
+
+    @Inject
+    Utils utils;
 
     @Inject
     public PhysicalQuantitiesModel(@NonNull final SettingsModel settingsModel,
@@ -84,7 +89,12 @@ public class PhysicalQuantitiesModel {
      */
     @NonNull
     public String format(@NonNull BigDecimal amount, @NonNull Unit unit) {
-        return resources.getString(R.string.format_value_simple, amount.toPlainString(), getUnitName(unit));
+        return formatValueUnit(amount.toPlainString(), getUnitName(unit));
+    }
+
+    @NonNull
+    private String formatValueUnit(@NonNull String value, @NonNull String unit) {
+        return resources.getString(R.string.format_value_simple, value, unit);
     }
 
     @NonNull
@@ -124,6 +134,12 @@ public class PhysicalQuantitiesModel {
                                     @NonNull EnergyDensity energyDensity) {
         BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
         return format(energyAmount, energyDensity.getEnergyUnit());
+    }
+
+    @NonNull
+    public String formatAsEnergy(float value) {
+        String valueString = String.format(Locale.getDefault(), "%.00f", value);
+        return formatValueUnit(valueString, getUnitName(settingsModel.getEnergyUnit()));
     }
 
     /**
@@ -209,14 +225,26 @@ public class PhysicalQuantitiesModel {
     @NonNull
     public String formatTime(@NonNull DateTime date) {
         if (DateFormat.is24HourFormat(context)) {
-            return DateTimeFormat.forPattern("HH:mm").print(date);
+            return date.toString("HH:mm");
         } else {
-            return DateTimeFormat.forPattern("hh:mm aa").print(date);
+            return date.toString("HH:mm aa");
         }
     }
 
     @NonNull
     public String formatDate(@NonNull DateTime dateTime) {
-        return DateTimeFormat.forPattern("dd.MM").print(dateTime);
+        return dateTime.toString(getBestDateDatePattern("MM/dd"));
+    }
+
+    private String getBestDateDatePattern(String pattern) {
+        if (utils.hasApi18()) {
+            pattern = getBestDateDatePatternApi18(pattern);
+        }
+        return pattern;
+    }
+
+    @TargetApi(18)
+    private String getBestDateDatePatternApi18(String pattern) {
+        return DateFormat.getBestDateTimePattern(Locale.getDefault(), pattern);
     }
 }

@@ -2,11 +2,11 @@ package com.github.st1hy.countthemcalories.activities.overview.graph.model;
 
 import org.junit.Test;
 
-import static com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphTimePeriod.median;
+import static com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod.median;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class GraphTimePeriodTest {
+public class TimePeriodTest {
 
     @Test
     public void testMedian() throws Exception {

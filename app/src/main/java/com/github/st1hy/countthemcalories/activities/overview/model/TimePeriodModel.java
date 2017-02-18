@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.graph.model;
+package com.github.st1hy.countthemcalories.activities.overview.model;
 
 import android.database.Cursor;
 import android.support.annotation.CheckResult;
@@ -10,7 +10,7 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.MealDao;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.greenrobot.greendao.query.CursorQuery;
 import org.joda.time.DateTime;
@@ -21,9 +21,11 @@ import javax.inject.Provider;
 import dagger.Lazy;
 import dagger.internal.SingleCheck;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 
-@PerFragment
-public class GraphDataLoader extends AbstractRxDatabaseModel {
+@PerActivity
+public class TimePeriodModel extends AbstractRxDatabaseModel {
 
     private final Provider<CursorQuery> queryProvider = SingleCheck.provider(() -> {
         StringBuilder sql = new StringBuilder(512);
@@ -47,23 +49,38 @@ public class GraphDataLoader extends AbstractRxDatabaseModel {
 
     @Inject
     PhysicalQuantitiesModel quantityModel;
+    private final PublishSubject<TimePeriod> subject = PublishSubject.create();
 
     @Inject
-    public GraphDataLoader(@NonNull Lazy<DaoSession> session) {
+    public TimePeriodModel(@NonNull Lazy<DaoSession> session) {
         super(session);
+    }
+
+    @NonNull
+    @CheckResult
+    public Observable<TimePeriod> getRecentPeriod() {
+        return subject.asObservable();
+    }
+
+    public void refresh(@NonNull final DateTime start, @NonNull final DateTime end) {
+        loadData(start, end)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(subject::onNext)
+                .subscribe();
     }
 
     @SuppressWarnings("TryFinallyCanBeTryWithResources") //Min Api 19, current min 16
     @NonNull
     @CheckResult
-    public Observable<GraphTimePeriod> loadData(@NonNull final DateTime start, @NonNull final DateTime end) {
+    private Observable<TimePeriod> loadData(@NonNull final DateTime start,
+                                            @NonNull final DateTime end) {
         return fromDatabaseTask(() -> {
             CursorQuery query = queryProvider.get().forCurrentThread();
             query.setParameter(0, start.getMillis());
             query.setParameter(1, end.getMillis());
             Cursor cursor = query.query();
             try {
-                return new GraphTimePeriod.Builder(cursor, quantityModel, start, end).build();
+                return new TimePeriod.Builder(cursor, quantityModel, start, end).build();
             } finally {
                 cursor.close();
             }

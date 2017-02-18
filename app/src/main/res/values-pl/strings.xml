@@ -46,7 +46,7 @@
     <string name="overview_meal_photo_description">Zdjęcie posiłku</string>
     <string name="overview_meal_remove_description">Usuń ten posiłek</string>
     <string name="overview_meal_removed_undo_message">Posiłek został usunięty</string>
-    <string name="overview_toolbar_title">Dzisiaj:</string>
+    <string name="overview_toolbar_title_today">Dzisiaj:</string>
     <string name="search_hint">Szukaj</string>
     <string name="settings_current_unit">Bierząca jednostka:</string>
     <string name="settings_select_unit_dialog_title">Wybierz jednostkę</string>

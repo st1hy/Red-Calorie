@@ -21,7 +21,6 @@ import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterW
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -300,25 +299,11 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
 
     private void onNewDataSet(@NonNull List<Meal> meals) {
         this.list = meals;
-        showTotal();
         setEmptyListVisibility();
     }
 
     private void setEmptyListVisibility() {
         view.setEmptyListVisibility(list.size() == 0 ? Visibility.VISIBLE : Visibility.GONE);
-    }
-
-    private void showTotal() {
-        subscriptions.add(Observable.from(list)
-                .subscribeOn(Schedulers.computation())
-                .flatMap(meal -> Observable.from(meal.getIngredients()))
-                .map(quantityModel.mapToEnergy())
-                .map(quantityModel.sumAll())
-                .lastOrDefault(BigDecimal.ZERO)
-                .map(quantityModel.setScale(0))
-                .map(quantityModel.energyAsString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(view::setTotalEnergy));
     }
 
     @NonNull

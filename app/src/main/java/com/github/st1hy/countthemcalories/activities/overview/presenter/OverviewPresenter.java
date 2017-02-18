@@ -27,6 +27,8 @@ public class OverviewPresenter {
     AddWeightPresenter addWeightPresenter;
     @Inject
     MealsPagerPresenter pagerPresenter;
+    @Inject
+    TimePeriodLoader timePeriodLoader;
 
     @Inject
     public OverviewPresenter() {
@@ -41,6 +43,7 @@ public class OverviewPresenter {
         drawerView.registerToggle(drawerToggle);
         addWeightPresenter.onStart();
         pagerPresenter.onStart();
+        timePeriodLoader.onStart();
     }
 
     public void onStop() {
@@ -48,5 +51,6 @@ public class OverviewPresenter {
         drawerView.unregisterDrawerToggle(drawerToggle);
         addWeightPresenter.onStop();
         pagerPresenter.onStop();
+        timePeriodLoader.onStop();
     }
 }

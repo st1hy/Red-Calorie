@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.graph.model;
+package com.github.st1hy.countthemcalories.activities.overview.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class GraphTimePeriod {
+public class TimePeriod {
 
     private static final int POSITION_TIME = 0;
     private static final int POSITION_AMOUNT = 1;
@@ -31,7 +31,7 @@ public class GraphTimePeriod {
     private final SparseArray<DayData> data;
     private final float min, max, average, median;
 
-    private GraphTimePeriod(@NonNull Builder builder) {
+    private TimePeriod(@NonNull Builder builder) {
         this.daysCount = builder.daysCount;
         this.data = builder.data;
         this.min = builder.min;
@@ -65,6 +65,44 @@ public class GraphTimePeriod {
         return checkNotNull(data.get(position));
     }
 
+    @Override
+    public String toString() {
+        return "TimePeriod{" +
+                "daysCount=" + daysCount +
+                ", min=" + min +
+                ", max=" + max +
+                ", average=" + average +
+                ", median=" + median +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimePeriod that = (TimePeriod) o;
+
+        if (daysCount != that.daysCount) return false;
+        if (Float.compare(that.min, min) != 0) return false;
+        if (Float.compare(that.max, max) != 0) return false;
+        if (Float.compare(that.average, average) != 0) return false;
+        if (Float.compare(that.median, median) != 0) return false;
+        return data != null ? data.equals(that.data) : that.data == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = daysCount;
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (average != +0.0f ? Float.floatToIntBits(average) : 0);
+        result = 31 * result + (median != +0.0f ? Float.floatToIntBits(median) : 0);
+        return result;
+    }
+
     public static class Builder {
         private final Cursor cursor;
         private final PhysicalQuantitiesModel quantitiesModel;
@@ -90,12 +128,12 @@ public class GraphTimePeriod {
         }
 
         @NonNull
-        public GraphTimePeriod build() {
+        public TimePeriod build() {
             if (!loaded) {
                 loadAll();
                 loaded = true;
             }
-            return new GraphTimePeriod(this);
+            return new TimePeriod(this);
         }
 
         private void loadAll() {

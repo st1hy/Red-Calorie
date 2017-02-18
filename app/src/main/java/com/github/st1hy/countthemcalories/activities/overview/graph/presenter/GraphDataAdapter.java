@@ -9,13 +9,11 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.DayData;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphDataLoader;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphTimePeriod;
+import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
+import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
+import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-
-import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -31,21 +29,19 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     @Inject
     GraphColumnComponentFactory columnFactory;
     @Inject
-    GraphDataLoader data;
+    TimePeriodModel model;
     @Inject
     PhysicalQuantitiesModel quantityModel;
 
-    private GraphTimePeriod timePeriod;
+    private TimePeriod timePeriod;
 
     @Inject
     public GraphDataAdapter() {
     }
 
     public void onStart() {
-        DateTime end = DateTime.now().plusDays(1);
-        DateTime start = end.minusDays(30).withTimeAtStartOfDay();
         subscriptions.add(
-            data.loadData(start, end)
+            model.getRecentPeriod()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::onNewGraphData)
         );
@@ -72,7 +68,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         }
     }
 
-    private void onNewGraphData(@NonNull GraphTimePeriod period) {
+    private void onNewGraphData(@NonNull TimePeriod period) {
         this.timePeriod = period;
         notifyDataSetChanged();
     }
