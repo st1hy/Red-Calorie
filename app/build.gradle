@@ -117,7 +117,7 @@ dependencies {
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    devtoolsDebugCompile 'com.android.support:multidex:1.0.1'
+    devtoolsCompile 'com.android.support:multidex:1.0.1'
 
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
     devtoolsDebugCompile "com.github.brianPlummer:tinydancer:$tinyDancerVersion"
