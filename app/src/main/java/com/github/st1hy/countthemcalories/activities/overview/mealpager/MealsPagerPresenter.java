@@ -44,6 +44,7 @@ public class MealsPagerPresenter implements BasicLifecycle {
         );
         subscriptions.add(
                 pagerModel.selectedDay()
+                        .doOnNext(pagerModel::setLatestDay)
                         .subscribe(view::setTitle)
         );
 

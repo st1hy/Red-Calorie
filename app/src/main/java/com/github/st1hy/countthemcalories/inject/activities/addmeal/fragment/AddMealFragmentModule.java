@@ -19,6 +19,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.NewMealDate;
 import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
 
 import org.joda.time.DateTime;
@@ -159,6 +160,7 @@ public class AddMealFragmentModule {
 
     @Provides
     @Nullable
+    @NewMealDate
     public static DateTime newMealDate(@Named("arguments") Bundle arguments) {
         return (DateTime) arguments.getSerializable(EXTRA_NEW_MEAL_DATE);
     }

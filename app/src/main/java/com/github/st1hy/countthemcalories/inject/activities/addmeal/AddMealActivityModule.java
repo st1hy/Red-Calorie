@@ -64,8 +64,8 @@ public class AddMealActivityModule {
                 intent.getParcelableExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL));
         arguments.putParcelable(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL,
                 intent.getParcelableExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL));
-        arguments.putParcelable(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE,
-                intent.getParcelableExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE));
+        arguments.putSerializable(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE,
+                intent.getSerializableExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE));
         return arguments;
     }
 

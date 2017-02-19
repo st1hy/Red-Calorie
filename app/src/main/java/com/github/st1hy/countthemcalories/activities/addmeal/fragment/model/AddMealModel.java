@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.NewMealDate;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 
@@ -37,6 +38,7 @@ public class AddMealModel implements PictureModel {
     private final DateTimeUtils dateTimeUtils;
     @Inject
     @Nullable
+    @NewMealDate
     DateTime mealDateDay;
 
     private final Meal meal;
@@ -82,7 +84,7 @@ public class AddMealModel implements PictureModel {
     @NonNull
     public Observable<Meal> saveToDatabase() {
         if (meal.getCreationDate() == null) {
-            if (mealDateDay != null) {
+            if (meal.getCreationDate() == null) {
                 meal.setCreationDate(getDisplayTime());
             }
         }
