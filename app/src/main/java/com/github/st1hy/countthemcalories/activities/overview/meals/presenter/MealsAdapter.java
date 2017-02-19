@@ -256,7 +256,8 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         decimalObservable.map(quantityModel.sumAll())
                 .lastOrDefault(BigDecimal.ZERO)
                 .map(quantityModel.setScale(0))
-                .map(quantityModel.energyAsString())
+                .map(BigDecimal::toPlainString)
+                .doOnNext(any -> holder.setTotalEnergyUnit(quantityModel.getEnergyUnitName()))
                 .subscribe(holder::setTotalEnergy);
     }
 

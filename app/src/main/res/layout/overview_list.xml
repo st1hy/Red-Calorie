@@ -5,8 +5,7 @@
     style="@style/ActivityContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.overview.OverviewActivity"
-    tools:showIn="@layout/overview_app_bar">
+    tools:context=".activities.overview.OverviewActivity">
 
     <FrameLayout
         android:id="@+id/overview_empty"

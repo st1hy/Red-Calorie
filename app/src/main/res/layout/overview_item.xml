@@ -82,7 +82,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:gravity="end"
                 android:orientation="vertical">
@@ -104,7 +104,14 @@
                     android:textColor="?colorAccent"
                     android:textIsSelectable="false"
                     android:textSize="16sp"
-                    tools:text="1750 kcal" />
+                    tools:text="1750" />
+                <TextView
+                    android:id="@+id/overview_item_energy_unit"
+                    style="@style/Base.TextAppearance.AppCompat.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    tools:text="kcal" />
             </LinearLayout>
 
         </LinearLayout>

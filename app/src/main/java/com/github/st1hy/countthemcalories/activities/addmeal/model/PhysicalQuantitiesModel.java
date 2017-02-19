@@ -102,6 +102,12 @@ public class PhysicalQuantitiesModel {
         return settingsModel.getUnitName(unit);
     }
 
+    @NonNull
+    public String getEnergyUnitName() {
+        return settingsModel.getUnitName(settingsModel.getEnergyUnit());
+    }
+
+
     /**
      * Calculates energy from amount and energy density
      *

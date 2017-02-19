@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorAppBackground"
         android:textIsSelectable="false"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         tools:text="02.12" />

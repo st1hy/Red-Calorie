@@ -43,6 +43,8 @@ public class MealItemHolder extends AbstractMealItemHolder {
     TextView name;
     @BindView(R.id.overview_item_energy)
     TextView totalEnergy;
+    @BindView(R.id.overview_item_energy_unit)
+    TextView totalEnergyUnit;
     @BindView(R.id.overview_item_ingredients)
     TextView ingredients;
     @BindView(R.id.overview_item_date)
@@ -93,6 +95,10 @@ public class MealItemHolder extends AbstractMealItemHolder {
 
     public void setTotalEnergy(@NonNull String totalEnergy) {
         this.totalEnergy.setText(totalEnergy);
+    }
+
+    public void setTotalEnergyUnit(@NonNull String unit) {
+        this.totalEnergyUnit.setText(unit);
     }
 
     public void setIngredients(@NonNull String ingredients) {
