@@ -137,7 +137,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
     }
 
     public void setEnabled(boolean enabled) {
-        content.setEnabled(enabled);
+        openButton.setEnabled(enabled);
         editButton.setEnabled(enabled);
         deleteButton.setEnabled(enabled);
     }
