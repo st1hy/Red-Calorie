@@ -1,5 +1,8 @@
 package com.github.st1hy.countthemcalories.application;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
+
 import com.codemonkeylabs.fpslibrary.TinyDancer;
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
@@ -25,4 +28,12 @@ public class DevToolsDebugApplication extends DebugApplication {
                 .show(this);
         Timber.d("Finished devtools setup");
     }
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
 }

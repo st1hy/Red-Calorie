@@ -9,8 +9,8 @@ android {
         applicationId "com.github.st1hy.countthemcalories"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "1.4.2"
+        versionCode 25
+        versionName "1.5.0-alpha"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -29,7 +29,9 @@ android {
 
     productFlavors {
         //Enable runtime development utilities such as stetho, leakcanary or tinydancer
-        devtools {}
+        devtools {
+            multiDexEnabled true
+        }
         production {}
     }
 
@@ -115,6 +117,8 @@ dependencies {
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    devtoolsDebugCompile 'com.android.support:multidex:1.0.1'
+
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
     devtoolsDebugCompile "com.github.brianPlummer:tinydancer:$tinyDancerVersion"
 
