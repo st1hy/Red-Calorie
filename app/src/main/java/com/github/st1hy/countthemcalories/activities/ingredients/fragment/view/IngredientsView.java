@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 
 import rx.Observable;
@@ -19,7 +20,7 @@ public interface IngredientsView extends UndoView, IngredientsScreen {
      */
     @NonNull
     @CheckResult
-    Observable<Void> showUsedIngredientRemoveConfirmationDialog();
+    Observable<DialogEvent> showUsedIngredientRemoveConfirmationDialog();
 
     void scrollToPosition(int position);
 

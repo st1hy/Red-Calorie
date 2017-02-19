@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -54,14 +55,14 @@ public class IngredientsViewController extends IngredientsViewDelegate {
 
     @NonNull
     @Override
-    public Observable<Void> showUsedIngredientRemoveConfirmationDialog() {
+    public Observable<DialogEvent> showUsedIngredientRemoveConfirmationDialog() {
         return RxAlertDialog.Builder.with(context)
                 .title(R.string.ingredients_remove_ingredient_dialog_title)
                 .message(R.string.ingredients_remove_ingredient_dialog_message)
                 .positiveButton(android.R.string.yes)
                 .negativeButton(no)
                 .show()
-                .observePositiveClick();
+                .basicEvents();
     }
 
     @Override

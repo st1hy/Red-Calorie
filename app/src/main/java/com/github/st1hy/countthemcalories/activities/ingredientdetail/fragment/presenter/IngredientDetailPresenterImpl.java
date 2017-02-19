@@ -90,8 +90,8 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
         imageHolderDelegate.setImagePlaceholder(
                 ingredientTemplate.getAmountType() == AmountUnitType.VOLUME
-                        ? R.drawable.ic_fizzy_drink
-                        : R.drawable.ic_fork_and_knife_wide);
+                        ? R.drawable.ic_fizzy_drink_positive
+                        : R.drawable.ic_fork_and_knife_positive);
         imageHolderDelegate.displayImage(ingredientTemplate.getImageUri());
     }
 

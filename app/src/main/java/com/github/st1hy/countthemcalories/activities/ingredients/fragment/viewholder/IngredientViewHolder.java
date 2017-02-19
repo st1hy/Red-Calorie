@@ -53,6 +53,7 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     View content;
 
     private final PositionDelegate position = new PositionDelegate();
+    private boolean isEnabled = true;
 
     @Inject
     ImageHolderDelegate imageHolderDelegate;
@@ -91,17 +92,17 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
     @OnClick(R.id.ingredients_item_button)
     public void onContentClicked() {
-        callback.onIngredientClicked(reusableIngredient, position.get());
+        if (isEnabled) callback.onIngredientClicked(this);
     }
 
     @OnClick(R.id.ingredients_item_edit)
     public void onEditClicked() {
-        callback.onEditClicked(reusableIngredient, position.get());
+        if (isEnabled) callback.onEditClicked(this);
     }
 
     @OnClick(R.id.ingredients_item_delete)
     public void onDeleteClicked() {
-        callback.onDeleteClicked(reusableIngredient, position.get());
+        if (isEnabled) callback.onDeleteClicked(this);
     }
 
     public void fillParent(@NonNull final ViewGroup parent) {
@@ -120,6 +121,10 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
         imageHolderDelegate.onDetached();
     }
 
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
     public void setImageUri(@NonNull Uri uri) {
         imageHolderDelegate.displayImage(uri);
     }
@@ -132,12 +137,16 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
         this.position.set(position);
     }
 
+    public int getPositionInAdapter() {
+        return position.get();
+    }
+
     public interface Callback {
-        void onIngredientClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+        void onIngredientClicked(@NonNull IngredientViewHolder viewHolder);
 
-        void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+        void onDeleteClicked(@NonNull IngredientViewHolder viewHolder);
 
-        void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, int position);
+        void onEditClicked(@NonNull IngredientViewHolder viewHolder);
 
         @NonNull
         Observable<RecyclerEvent> getEvents();

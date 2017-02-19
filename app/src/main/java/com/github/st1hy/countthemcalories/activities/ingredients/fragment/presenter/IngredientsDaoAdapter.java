@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Schedulers;
@@ -154,8 +155,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     }
 
     @Override
-    public void onIngredientClicked(@NonNull final IngredientTemplate ingredientTemplate,
-                                    final int positionInAdapter) {
+    public void onIngredientClicked(@NonNull final IngredientViewHolder viewHolder) {
+        final IngredientTemplate ingredientTemplate = viewHolder.getReusableIngredient();
         if (model.isInSelectMode()) {
             view.onIngredientSelected(ingredientTemplate);
         } else {
@@ -168,10 +169,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                                 view.addToNewMeal(ingredientTemplate);
                                 break;
                             case EDIT:
-                                onEditClicked(ingredientTemplate, positionInAdapter);
+                                onEditClicked(viewHolder);
                                 break;
                             case REMOVE:
-                                onDeleteClicked(ingredientTemplate, positionInAdapter);
+                                onDeleteClicked(viewHolder);
                                 break;
                         }
                     });
@@ -179,15 +180,23 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     }
 
     @Override
-    public void onDeleteClicked(@NonNull IngredientTemplate ingredientTemplate,
-                                final int positionInAdapter) {
-        databaseModel.getById(ingredientTemplate.getId())
+    public void onDeleteClicked(@NonNull IngredientViewHolder viewHolder) {
+        viewHolder.setEnabled(false);
+        final int positionInAdapter = viewHolder.getPositionInAdapter();
+        long id = viewHolder.getReusableIngredient().getId();
+        databaseModel.getById(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(template -> {
                     if (template.getChildIngredients().isEmpty())
                         return Observable.just(template);
                     else
                         return view.showUsedIngredientRemoveConfirmationDialog()
+                                .doOnNext(event -> {
+                                    if (event == DialogEvent.DISMISS) {
+                                        viewHolder.setEnabled(true);
+                                    }
+                                })
+                                .filter(event -> event == DialogEvent.POSITIVE)
                                 .map(Functions.into(template));
                 })
                 .flatMap(commands::delete)
@@ -238,12 +247,14 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     }
 
     @Override
-    public void onEditClicked(@NonNull IngredientTemplate ingredientTemplate, final int position) {
+    public void onEditClicked(@NonNull IngredientViewHolder viewHolder) {
+        long id = viewHolder.getReusableIngredient().getId();
+        int positionInAdapter = viewHolder.getPositionInAdapter();
         //Ingredient template here is not attached to database and is missing tags
-        databaseModel.getByIdRecursive(ingredientTemplate.getId())
+        databaseModel.getByIdRecursive(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ingredientTemplate1 -> {
-                    view.editIngredientTemplate(position, ingredientTemplate1);
+                    view.editIngredientTemplate(positionInAdapter, ingredientTemplate1);
                 });
     }
 
@@ -310,6 +321,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         if (cursor != null) {
             cursor.moveToPosition(positionInCursor(position));
             IngredientTemplate ingredient = holder.getReusableIngredient();
+            holder.setEnabled(true);
             databaseModel.performReadEntity(cursor, ingredient);
             holder.setPosition(position);
             holder.setName(ingredient.getName());

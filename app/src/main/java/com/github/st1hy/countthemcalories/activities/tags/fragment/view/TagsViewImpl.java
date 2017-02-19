@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.core.baseview.Click;
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -76,14 +77,14 @@ public class TagsViewImpl implements TagsView {
 
     @Override
     @NonNull
-    public Observable<Void> showRemoveTagDialog() {
+    public Observable<DialogEvent> showRemoveTagDialog() {
         return RxAlertDialog.Builder.with(context)
                 .title(R.string.tags_remove_dialog_title)
                 .message(R.string.tags_remove_information)
                 .positiveButton(android.R.string.yes)
                 .negativeButton(android.R.string.no)
                 .show()
-                .observePositiveClick();
+                .basicEvents();
     }
 
     @Override

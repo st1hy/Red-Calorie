@@ -24,6 +24,7 @@ import com.github.st1hy.countthemcalories.core.command.InsertResult;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoAction;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
@@ -223,18 +224,25 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public void onDeleteClicked(final int position, @NonNull TagItemHolder holder) {
-        Tag tag = holder.getReusableTag();
+        long tagId = holder.getReusableTag().getId();
         holder.setEnabled(false);
         addSubscription(
-                databaseModel.getById(tag.getId())
+                databaseModel.getById(tagId)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap(tag1 -> {
-                            if (tag1.getIngredientTypes().isEmpty())
-                                return Observable.just(null);
+                        .flatMap(tag -> {
+                            if (tag.getIngredientTypes().isEmpty())
+                                return Observable.just(tag);
                             else
-                                return view.showRemoveTagDialog();
+                                return view.showRemoveTagDialog()
+                                        .doOnNext(event -> {
+                                            if (event == DialogEvent.DISMISS) {
+                                                holder.setEnabled(true);
+                                            }
+                                        })
+                                        .filter(event -> event == DialogEvent.POSITIVE)
+                                        .map(Functions.into(tag));
                         })
-                        .flatMap(aVoid -> commands.delete(tag))
+                        .flatMap(commands::delete)
                         .doOnNext(deleteResponse ->
                                 addSubscription(deleteResponse.undoAvailability()
                                         .compose(new UndoTransformer<>(deleteResponse,

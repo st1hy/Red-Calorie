@@ -39,8 +39,7 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
 
     @Override
     public CommandResponse<Cursor, InsertResult> call() throws Exception {
-        Tag dao = databaseModel.performGetById(tag.getId());
-        Pair<Tag, List<JointIngredientTag>> tagListPair = databaseModel.rawRemove(dao);
+        Pair<Tag, List<JointIngredientTag>> tagListPair = databaseModel.rawRemove(tag);
         Cursor cursor = databaseModel.refresh().call();
         return new DeleteResponse(cursor, tagListPair.first, tagListPair.second);
     }

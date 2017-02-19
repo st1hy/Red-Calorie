@@ -6,12 +6,15 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.CheckResult;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -31,6 +34,10 @@ public class RxAlertDialog {
                     if (negativeClickedDelegate != null)
                         negativeClickedDelegate.onClick(dialog, which);
                     break;
+                case DialogInterface.BUTTON_NEUTRAL:
+                    if (neutralClickedDelegate != null)
+                        neutralClickedDelegate.onClick(dialog, which);
+                    break;
                 default:
                     if (itemClickedDelegate != null)
                         itemClickedDelegate.onClick(dialog, which);
@@ -40,6 +47,7 @@ public class RxAlertDialog {
     private OnClickListener itemClickedDelegate;
     private OnClickListener positiveClickedDelegate;
     private OnClickListener negativeClickedDelegate;
+    private OnClickListener neutralClickedDelegate;
     private final OnCancelListener onCancel = new OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
@@ -48,6 +56,24 @@ public class RxAlertDialog {
     };
     private OnCancelListener onCancelDelegate;
     private View customView;
+    private final DialogInterface.OnDismissListener onDismissListener = new DialogInterface.OnDismissListener() {
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            if (onDismissListenerDelegate != null) onDismissListenerDelegate.onDismiss(dialog);
+        }
+    };
+    private DialogInterface.OnDismissListener onDismissListenerDelegate;
+
+    @NonNull
+    @CheckResult
+    public Observable<DialogEvent> basicEvents() {
+        return observePositiveClick()
+                .map(Functions.into(DialogEvent.POSITIVE))
+                .mergeWith(observeNeutralClick().map(Functions.into(DialogEvent.NEUTRAL)))
+                .mergeWith(observeNegativeClick().map(Functions.into(DialogEvent.NEGATIVE)))
+                .mergeWith(observeCanceled().map(Functions.into(DialogEvent.CANCEL)))
+                .mergeWith(observeDismiss().map(Functions.into(DialogEvent.DISMISS)));
+    }
 
     @Nullable
     public View getCustomView() {
@@ -58,6 +84,7 @@ public class RxAlertDialog {
     }
 
     @NonNull
+    @CheckResult
     public Observable<Integer> observeItemClick() {
         return Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
@@ -79,6 +106,7 @@ public class RxAlertDialog {
 
     @SuppressWarnings("unused")
     @NonNull
+    @CheckResult
     public Observable<Void> observeNegativeClick() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -99,6 +127,7 @@ public class RxAlertDialog {
     }
 
     @NonNull
+    @CheckResult
     public Observable<Void> observePositiveClick() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -118,8 +147,30 @@ public class RxAlertDialog {
         });
     }
 
+    @NonNull
+    @CheckResult
+    public Observable<Void> observeNeutralClick() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                neutralClickedDelegate = (dialog1, which) -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(null);
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        neutralClickedDelegate = null;
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
     @SuppressWarnings("unused")
     @NonNull
+    @CheckResult
     public Observable<Void> observeCanceled() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -132,6 +183,27 @@ public class RxAlertDialog {
                     @Override
                     protected void onUnsubscribe() {
                         onCancelDelegate = null;
+                    }
+                });
+            }
+        });
+    }
+
+
+    @NonNull
+    @CheckResult
+    public Observable<Void> observeDismiss() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                onDismissListenerDelegate = dialog -> {
+                    if (!subscriber.isUnsubscribed())
+                        subscriber.onNext(null);
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        onDismissListenerDelegate = null;
                     }
                 });
             }
@@ -155,6 +227,8 @@ public class RxAlertDialog {
         int positiveButtonName = -1;
         @StringRes
         int negativeButtonName = -1;
+        @StringRes
+        int neutralButtonName = -1;
 
         public static RxAlertDialog.Builder with(@NonNull Context context) {
             return new Builder(context);
@@ -200,8 +274,15 @@ public class RxAlertDialog {
             return this;
         }
 
+        @NonNull
         public RxAlertDialog.Builder negativeButton(@StringRes int name) {
             this.negativeButtonName = name;
+            return this;
+        }
+
+        @NonNull
+        public RxAlertDialog.Builder neutralButton(@StringRes int name) {
+            this.neutralButtonName = name;
             return this;
         }
 
@@ -230,8 +311,13 @@ public class RxAlertDialog {
             if (negativeButtonName != -1) {
                 builder.setNegativeButton(negativeButtonName, rxAlertDialog.clickListener);
             }
+            if (neutralButtonName != -1) {
+                builder.setNeutralButton(neutralButtonName, rxAlertDialog.clickListener);
+            }
             builder.setOnCancelListener(rxAlertDialog.onCancel);
-            rxAlertDialog.dialog = builder.show();
+            rxAlertDialog.dialog = builder.create();
+            rxAlertDialog.dialog.setOnDismissListener(rxAlertDialog.onDismissListener);
+            rxAlertDialog.dialog.show();
             return rxAlertDialog;
         }
 
