@@ -46,19 +46,6 @@ public class OverviewViewImpl implements OverviewView {
     @Override
     @NonNull
     @CheckResult
-    public Observable<Void> getAddNewMealObservable() {
-        return screen.getAddNewMealObservable();
-    }
-
-    @Override
-    public void addNewMeal() {
-        screen.addNewMeal();
-    }
-
-
-    @Override
-    @NonNull
-    @CheckResult
     public Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails() {
         return screen.openMealDetails();
     }

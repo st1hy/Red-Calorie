@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -32,7 +33,6 @@ import rx.functions.Func1;
 import static android.app.Activity.RESULT_OK;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_REQUEST_ID_LONG;
-import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_ADD_INGREDIENT;
 import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.REQUEST_EDIT;
 
@@ -88,7 +88,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @Override
     public void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate) {
         Intent result = new Intent();
-        result.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
+        result.putExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
         activity.setResult(RESULT_OK, result);
         activity.finish();
     }
@@ -96,7 +96,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @Override
     public void addToNewMeal(@NonNull IngredientTemplate ingredientTemplate) {
         Intent intent = new Intent(activity, AddMealActivity.class);
-        intent.putExtra(EXTRA_INGREDIENT_TYPE_PARCEL, Parcels.wrap(ingredientTemplate));
+        intent.putExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
         activity.startActivity(intent);
     }
 

@@ -24,7 +24,10 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -75,13 +78,13 @@ public class AddMealScreenImpl implements AddMealScreen {
     }
 
     @Override
-    public void onMealSaved() {
+    public void onMealSaved(@NonNull Meal meal) {
         activity.setResult(RESULT_OK);
         Intent intent = new Intent(activity, OverviewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(OverviewActivityModule.EXTRA_JUMP_TO_DATE, meal.getCreationDate());
         activity.startActivity(intent);
     }
-
 
     @NonNull
     @Override
@@ -99,7 +102,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                     public IngredientTemplate call(ActivityResult activityResult) {
                         Intent data = activityResult.getData();
                         if (data == null) return null;
-                        return Parcels.unwrap(data.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
+                        return Parcels.unwrap(data.getParcelableExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL));
                     }
                 }).filter(Functions.NOT_NULL)
                 .map(ingredientTemplate -> new Ingredient(ingredientTemplate, BigDecimal.ZERO));

@@ -13,6 +13,8 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragmen
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsStateSaver;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.MealListDate;
 
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
@@ -68,6 +70,7 @@ public class OverviewFragmentModule {
     }
 
     @Provides
+    @MealListDate
     public DateTime currentDate(@Nullable @Named("arguments") Bundle arguments) {
         DateTime dateTime = null;
         if (arguments != null) {
@@ -80,8 +83,9 @@ public class OverviewFragmentModule {
     }
 
     @Provides
+    @PerFragment
     public static CurrentDayModel currentDayModel(@Nullable @Named("savedState") Bundle savedState,
-                                                  DateTime currentDate) {
+                                                  @MealListDate DateTime currentDate) {
         if (savedState != null ) {
             return Parcels.unwrap(savedState.getParcelable(MealsStateSaver.CURRENT_DAY_STATE));
         } else {

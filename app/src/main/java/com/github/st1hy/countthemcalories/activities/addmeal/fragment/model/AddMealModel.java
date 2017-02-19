@@ -3,13 +3,14 @@ package com.github.st1hy.countthemcalories.activities.addmeal.fragment.model;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
+import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
@@ -34,6 +35,9 @@ public class AddMealModel implements PictureModel {
     private final PhysicalQuantitiesModel quantitiesModel;
     @NonNull
     private final DateTimeUtils dateTimeUtils;
+    @Inject
+    @Nullable
+    DateTime mealDateDay;
 
     private final Meal meal;
 
@@ -76,9 +80,11 @@ public class AddMealModel implements PictureModel {
     }
 
     @NonNull
-    public Observable<Void> saveToDatabase() {
+    public Observable<Meal> saveToDatabase() {
         if (meal.getCreationDate() == null) {
-            meal.setCreationDate(DateTime.now());
+            if (mealDateDay != null) {
+                meal.setCreationDate(getDisplayTime());
+            }
         }
         if (Strings.isNullOrEmpty(meal.getName())) {
             meal.setName(defaultMealName.getBestGuessMealNameAt(meal.getCreationDate()));
@@ -116,7 +122,12 @@ public class AddMealModel implements PictureModel {
     public DateTime getDisplayTime() {
         DateTime creationDate = meal.getCreationDate();
         if (creationDate == null) {
-            creationDate = DateTime.now();
+            DateTime now = DateTime.now();
+            if (mealDateDay == null) {
+                creationDate = now;
+            } else {
+                creationDate = mealDateDay.withTime(now.toLocalTime());
+            }
         }
         return creationDate;
     }

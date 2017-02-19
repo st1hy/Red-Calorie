@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.Meal;
 
 import rx.Observable;
 
@@ -41,8 +42,8 @@ public abstract class AddMealScreenDelegate implements AddMealScreen {
     }
 
     @Override
-    public void onMealSaved() {
-        getDelegate().onMealSaved();
+    public void onMealSaved(@NonNull Meal meal) {
+        getDelegate().onMealSaved(meal);
     }
 
     @Override

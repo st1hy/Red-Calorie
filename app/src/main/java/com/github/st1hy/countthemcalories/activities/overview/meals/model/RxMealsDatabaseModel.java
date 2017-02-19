@@ -50,16 +50,8 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     }
 
     @NonNull
-    public Observable<Void> insertOrUpdate(@NonNull Meal meal, Collection<Ingredient> ingredients) {
-        return fromDatabaseTask(insertOrUpdateCall(meal, ingredients));
-    }
-
-    @NonNull
-    private Callable<Void> insertOrUpdateCall(final Meal meal, final Collection<Ingredient> ingredients) {
-        return () -> {
-            performInsertOrUpdate(meal, ingredients);
-            return null;
-        };
+    public Observable<Meal> insertOrUpdate(@NonNull Meal meal, Collection<Ingredient> ingredients) {
+        return fromDatabaseTask(() -> performInsertOrUpdate(meal, ingredients));
     }
 
     @NonNull
@@ -79,8 +71,8 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
             ingredient.setPartOfMeal(meal);
             ingredientDao.insertOrReplace(ingredient);
         }
-        meal.resetIngredients();
-        meal.getIngredients();
+        result.resetIngredients();
+        result.getIngredients();
         return result;
     }
 

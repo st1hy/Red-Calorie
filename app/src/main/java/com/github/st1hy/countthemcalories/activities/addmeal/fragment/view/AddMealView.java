@@ -12,8 +12,6 @@ import rx.Observable;
 
 public interface AddMealView extends AddMealScreen {
 
-    void onMealSaved();
-
     void setName(@NonNull String name);
 
     @NonNull

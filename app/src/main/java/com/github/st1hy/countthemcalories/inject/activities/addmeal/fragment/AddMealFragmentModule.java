@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
 
+import org.joda.time.DateTime;
 import org.parceler.Parcels;
 
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ public class AddMealFragmentModule {
 
     public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
     public static final String EXTRA_INGREDIENT_PARCEL = "edit ingredient parcel";
+    public static final String EXTRA_NEW_MEAL_DATE = "new meal date parcel";
 
     private final AddMealFragment fragment;
     @Nullable
@@ -155,5 +157,10 @@ public class AddMealFragmentModule {
         return recyclerView;
     }
 
+    @Provides
+    @Nullable
+    public static DateTime newMealDate(@Named("arguments") Bundle arguments) {
+        return (DateTime) arguments.getSerializable(EXTRA_NEW_MEAL_DATE);
+    }
 
 }

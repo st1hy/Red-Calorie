@@ -100,6 +100,16 @@ public class TimePeriod {
         return result;
     }
 
+    public int findDayPosition(@NonNull DateTime dateTime) {
+        for (int i = data.size() - 1; i >= 0; i--) {
+            DayData dayData = data.get(i);
+            if (dayData.isDay(dateTime)) {
+                return i;
+            }
+        }
+        return getCount() - 1;
+    }
+
     public static class Builder {
         private final Cursor cursor;
         private final DateTime start;

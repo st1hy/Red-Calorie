@@ -2,9 +2,12 @@ package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.AddMealController;
+import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -14,20 +17,19 @@ import rx.subscriptions.CompositeSubscription;
 public class MealsPresenterImp implements MealsPresenter {
 
     @NonNull
-    private final OverviewView view;
-    @NonNull
     private final MealsAdapter adapter;
     @NonNull
     private final RecyclerViewAdapterDelegate adapterDelegate;
+    @Inject
+    AddMealController addMealController;
+    @Inject
+    CurrentDayModel currentDayModel;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-
     @Inject
-    public MealsPresenterImp(@NonNull OverviewView view,
-                             @NonNull MealsAdapter adapter,
+    public MealsPresenterImp(@NonNull MealsAdapter adapter,
                              @NonNull RecyclerViewAdapterDelegate adapterDelegate) {
-        this.view = view;
         this.adapter = adapter;
         this.adapterDelegate = adapterDelegate;
     }
@@ -36,8 +38,11 @@ public class MealsPresenterImp implements MealsPresenter {
     public void onStart() {
         adapterDelegate.onStart();
         adapter.onStart();
-        subscriptions.add(view.getAddNewMealObservable()
-                .subscribe(aVoid -> view.addNewMeal()));
+        DateTime currentDay = currentDayModel.getCurrentDay();
+        subscriptions.add(
+                addMealController.getAddNewMealObservable(currentDay)
+                        .subscribe(aVoid -> addMealController.addNewMeal(currentDay))
+        );
     }
 
     @Override

@@ -12,9 +12,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
-import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenImpl;
-import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 
@@ -66,7 +63,9 @@ public class AddMealActivityModule {
         arguments.putParcelable(AddMealFragmentModule.EXTRA_MEAL_PARCEL,
                 intent.getParcelableExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL));
         arguments.putParcelable(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL,
-                intent.getParcelableExtra(IngredientsActivity.EXTRA_INGREDIENT_TYPE_PARCEL));
+                intent.getParcelableExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL));
+        arguments.putParcelable(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE,
+                intent.getParcelableExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE));
         return arguments;
     }
 

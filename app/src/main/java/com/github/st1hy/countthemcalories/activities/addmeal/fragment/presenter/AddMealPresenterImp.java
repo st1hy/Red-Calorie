@@ -68,7 +68,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
                         .map(Functions.INTO_VOID)
                         .filter(aVoid -> validateMeal())
                         .flatMap(aVoid1 -> model.saveToDatabase())
-                        .subscribe(v -> view.onMealSaved())
+                        .subscribe(view::onMealSaved)
         );
         setupTime();
     }

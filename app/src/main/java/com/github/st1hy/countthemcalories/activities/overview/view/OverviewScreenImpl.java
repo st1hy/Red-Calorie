@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
@@ -46,8 +45,6 @@ public class OverviewScreenImpl implements OverviewScreen {
     View touchOverlay;
     @BindView(R.id.overview_fab_menu)
     FloatingActionsMenu fabMenu;
-    @BindView(R.id.overview_fab_add_meal)
-    View addMeal;
 
     @Inject
     public OverviewScreenImpl(@NonNull Activity activity,
@@ -55,18 +52,6 @@ public class OverviewScreenImpl implements OverviewScreen {
         this.activity = activity;
         this.activityLauncher = activityLauncher;
         ButterKnife.bind(this, activity);
-    }
-
-    @NonNull
-    @Override
-    public Observable<Void> getAddNewMealObservable() {
-        return RxView.clicks(addMeal);
-    }
-
-    @Override
-    public void addNewMeal() {
-        Intent intent = new Intent(activity, AddMealActivity.class);
-        activity.startActivity(intent);
     }
 
     @NonNull

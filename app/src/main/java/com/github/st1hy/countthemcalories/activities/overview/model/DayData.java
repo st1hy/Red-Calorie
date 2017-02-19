@@ -32,11 +32,15 @@ public class DayData {
     }
 
     public boolean isToday() {
-        DateTime now = DateTime.now();
-        DateTime today = now.withTimeAtStartOfDay();
-        DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
-        return dateTime.isEqual(today) || dateTime.isAfter(today) && dateTime.isBefore(tomorrow);
+        return isDay(DateTime.now());
     }
+
+    public boolean isDay(DateTime atDay) {
+        DateTime dayStart = atDay.withTimeAtStartOfDay();
+        DateTime nextDayStart = atDay.plusDays(1).withTimeAtStartOfDay();
+        return dateTime.isEqual(dayStart) || dateTime.isAfter(dayStart) && dateTime.isBefore(nextDayStart);
+    }
+
 
     @Override
     public boolean equals(Object o) {

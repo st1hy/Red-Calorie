@@ -29,7 +29,6 @@ public class AddMealActivity extends BaseActivity {
     @Inject
     PublishSubject<AddMealMenuAction> menuActionPublishSubject;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

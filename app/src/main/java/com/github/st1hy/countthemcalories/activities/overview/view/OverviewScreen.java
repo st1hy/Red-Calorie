@@ -15,12 +15,6 @@ public interface OverviewScreen {
 
     @NonNull
     @CheckResult
-    Observable<Void> getAddNewMealObservable();
-
-    void addNewMeal();
-
-    @NonNull
-    @CheckResult
     Observable.Transformer<MealDetailParams, MealDetailAction> openMealDetails();
 
     void editMeal(@NonNull Meal meal);
