@@ -3,6 +3,8 @@ package com.github.st1hy.countthemcalories.activities.overview.addweight;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
+import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.database.Weight;
@@ -26,6 +28,8 @@ public class AddWeightPresenter implements BasicLifecycle {
     RxDbWeightModel model;
     @Inject
     SettingsModel settingsModel;
+    @Inject
+    PagerModel pagerModel;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -37,7 +41,7 @@ public class AddWeightPresenter implements BasicLifecycle {
     public void onStart() {
         subscriptions.add(
                 view.addWeightButton()
-                        .flatMap(any -> model.findOneByDate(today()))
+                        .flatMap(any -> model.findOneByDate(currentDate()))
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(this::convertToCurrentUnit)
                         .flatMap(weight -> view.openAddWeightDialog(weight))
@@ -66,7 +70,7 @@ public class AddWeightPresenter implements BasicLifecycle {
     @NonNull
     private Weight intoWeight(float weightValue) {
         float value = settingsModel.getBodyMassUnit().getBase().floatValue() * weightValue;
-        DateTime time = today();
+        DateTime time = currentDate();
         Weight weight = new Weight();
         weight.setMeasurementDate(time);
         weight.setWeight(value);
@@ -74,7 +78,9 @@ public class AddWeightPresenter implements BasicLifecycle {
     }
 
     @NonNull
-    private static DateTime today() {
-        return DateTime.now().withTimeAtStartOfDay();
+    private DateTime currentDate() {
+        DayData selectedDay = pagerModel.getSelectedDay();
+        DateTime dateTime = selectedDay != null ? selectedDay.getDateTime() : DateTime.now();
+        return dateTime.withTimeAtStartOfDay();
     }
 }

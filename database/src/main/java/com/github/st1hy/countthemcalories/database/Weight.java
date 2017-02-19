@@ -18,7 +18,7 @@ public class Weight {
 
     @Id(autoincrement = true)
     @Index(unique =  true)
-    long id;
+    Long id;
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
     @NotNull
@@ -37,8 +37,8 @@ public class Weight {
 
 
 
-    @Generated(hash = 990326266)
-    public Weight(long id, @NotNull DateTime measurementDate, float weight) {
+    @Generated(hash = 1782361459)
+    public Weight(Long id, @NotNull DateTime measurementDate, float weight) {
         this.id = id;
         this.measurementDate = measurementDate;
         this.weight = weight;
@@ -48,7 +48,7 @@ public class Weight {
     public Weight() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -115,6 +115,10 @@ public class Weight {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /** called by internal mechanisms, do not call yourself. */
