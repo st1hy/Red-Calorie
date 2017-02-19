@@ -133,6 +133,13 @@ public class PhysicalQuantitiesModel {
     public String formatEnergyCount(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
                                     @NonNull EnergyDensity energyDensity) {
         BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
+        return energyAmount.toPlainString();
+    }
+
+
+    @NonNull
+    public String formatEnergyCountAndUnit(BigDecimal amount, AmountUnit amountUnit, EnergyDensity energyDensity) {
+        BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
         return format(energyAmount, energyDensity.getEnergyUnit());
     }
 

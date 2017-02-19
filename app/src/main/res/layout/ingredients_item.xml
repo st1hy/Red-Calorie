@@ -24,8 +24,8 @@
         <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/list_item_image_half_size"
             app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="@dimen/list_item_image_half_size"
             app:cardElevation="0dp">
 
             <android.support.v7.widget.AppCompatImageView
@@ -39,15 +39,15 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v4.widget.Space
-            android:layout_width="16dp"
+            android:layout_width="10dp"
             android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/ingredients_item_name"
             style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textIsSelectable="false"
             android:textSize="16sp"
             tools:text="Example ingredient name" />
@@ -59,19 +59,22 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="end">
+            android:gravity="end"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/ingredients_item_energy_density"
+                style="@style/TextAppearance.AppCompat.Body2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textIsSelectable="false"
-                style="@style/TextAppearance.AppCompat.Body2"
-                android:textSize="16sp"
                 android:textColor="@color/colorAccent"
+                android:textIsSelectable="false"
+                android:textSize="16sp"
                 tools:text="400" />
+
             <TextView
                 android:id="@+id/ingredients_item_energy_density_unit"
+                style="@style/Base.TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"

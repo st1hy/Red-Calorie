@@ -157,6 +157,7 @@ public class IngredientsListPresenter extends RecyclerAdapterWrapper<IngredientI
         BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
         holder.setAmount(quantityModel.format(displayedAmount, amountUnit));
         holder.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
+        holder.setCalorieUnit(quantityModel.getUnitName(energyDensity.getEnergyUnit()));
         holder.setImagePlaceholder(type.getAmountType() == AmountUnitType.VOLUME ?
                 R.drawable.ic_fizzy_drink : R.drawable.ic_fork_and_knife_wide);
         holder.setImageUri(type.getImageUri());

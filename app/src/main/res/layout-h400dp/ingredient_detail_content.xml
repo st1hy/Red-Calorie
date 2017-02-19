@@ -11,11 +11,11 @@
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/add_meal_ingredient_image"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/add_meal_ingredient_photo_description"
         android:scaleType="fitCenter"
         android:transitionName="ingredient-shared-view-image"
-        app:srcCompat="@drawable/ic_fork_and_knife_wide" />
+        app:srcCompat="@drawable/ic_fork_and_knife_positive" />
 
 
     <LinearLayout
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="?colorAccent"
                 android:textIsSelectable="false"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:transitionName="ingredient-shared-view-calories"
                 tools:targetApi="lollipop"
                 tools:text="160 kcal" />

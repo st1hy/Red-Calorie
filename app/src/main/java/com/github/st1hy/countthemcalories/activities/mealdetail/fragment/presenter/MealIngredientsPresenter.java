@@ -72,7 +72,7 @@ public class MealIngredientsPresenter extends RecyclerAdapterWrapper<IngredientV
         EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);
         AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
         BigDecimal amount = quantitiesModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
-        holder.setEnergy(quantitiesModel.formatEnergyCount(amount, amountUnit, energyDensity));
+        holder.setEnergy(quantitiesModel.formatEnergyCountAndUnit(amount, amountUnit, energyDensity));
 
         BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
         holder.setAmount(quantitiesModel.format(displayedAmount, amountUnit));

@@ -12,11 +12,11 @@
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/meal_detail_image"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/overview_meal_photo_description"
         android:scaleType="fitCenter"
         android:transitionName="overview-shared-view-image"
-        app:srcCompat="@drawable/ic_fork_and_knife_wide"
+        app:srcCompat="@drawable/ic_fork_and_knife_positive"
         tools:targetApi="lollipop"/>
 
     <Space

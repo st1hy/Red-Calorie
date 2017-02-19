@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -21,6 +22,7 @@ import org.parceler.Parcels;
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -33,9 +35,11 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     private final Ingredient ingredient;
     private final PhysicalQuantitiesModel quantityModel;
     private final long ingredientID;
+    @Inject
+    @Named("activityContext")
+    Context context;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
-
 
     @Inject
     public IngredientDetailPresenterImpl(@NonNull IngredientDetailModel model,
@@ -65,7 +69,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         if (amount.compareTo(BigDecimal.ZERO) > 0) {
             view.setAmount(amount.toPlainString());
         }
-        view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
+        setupEnergyCount(amount, energyDensity, amountUnit);
         view.setUnitName(quantityModel.getUnitName(amountUnit));
 
         subscribe(
@@ -119,7 +123,11 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         final EnergyDensity energyDensity = getEnergyDensity();
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
         ingredient.setAmount(quantityModel.convertAmountToDatabase(amount, amountUnit));
-        view.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
+        setupEnergyCount(amount, energyDensity, amountUnit);
+    }
+
+    private void setupEnergyCount(BigDecimal amount, EnergyDensity energyDensity, AmountUnit amountUnit) {
+        view.setCalorieCount(quantityModel.formatEnergyCountAndUnit(amount, amountUnit, energyDensity));
     }
 
     @NonNull

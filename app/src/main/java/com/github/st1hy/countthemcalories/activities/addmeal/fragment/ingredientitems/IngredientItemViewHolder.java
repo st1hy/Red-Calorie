@@ -39,6 +39,8 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     TextView amount;
     @BindView(R.id.add_meal_ingredient_calorie_count)
     TextView calorieCount;
+    @BindView(R.id.add_meal_ingredient_calorie_unit)
+    TextView calorieUnit;
     @BindView(R.id.add_meal_ingredient_compact)
     ViewGroup compatView;
 
@@ -73,6 +75,10 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         this.calorieCount.setText(calorieCount);
     }
 
+    public void setCalorieUnit(@NonNull String unit) {
+        this.calorieUnit.setText(unit);
+    }
+
     public void setEnergyDensity(@NonNull String energyDensity) {
         this.energyDensity.setText(energyDensity);
     }
@@ -90,21 +96,6 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     public Observable<IngredientItemViewHolder> clicks() {
         return RxView.clicks(compatView)
                 .map(Functions.into(this));
-    }
-
-    @NonNull
-    public TextView getName() {
-        return name;
-    }
-
-    @NonNull
-    public TextView getCalories() {
-        return calorieCount;
-    }
-
-    @NonNull
-    public TextView getDensity() {
-        return energyDensity;
     }
 
     public void setImageUri(@NonNull Uri uri) {
