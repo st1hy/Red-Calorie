@@ -79,7 +79,7 @@ public class PagerModel {
     @NonNull
     @CheckResult
     public Observable<TimePeriod> timePeriodChanges() {
-        return timePeriodDatesPublishSubject.asObservable();
+        return timePeriodChangesSubject.asObservable();
     }
 
     @NonNull
