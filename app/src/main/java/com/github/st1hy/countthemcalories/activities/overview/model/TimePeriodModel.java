@@ -21,7 +21,6 @@ import dagger.Lazy;
 import dagger.internal.SingleCheck;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 @PerActivity
@@ -47,8 +46,8 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
         return CursorQuery.internalCreate(dao(), sql.toString(), new Object[2]);
     });
 
+    private DateTime start, end;
     private final PublishSubject<TimePeriod> updates = PublishSubject.create();
-    private final BehaviorSubject<TimePeriod> recent = BehaviorSubject.create();
 
     @Inject
     public TimePeriodModel(@NonNull Lazy<DaoSession> session) {
@@ -57,20 +56,22 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
 
     @NonNull
     @CheckResult
-    public Observable<TimePeriod> mostRecent() {
-        return recent.asObservable();
-    }
-
     public Observable<TimePeriod> updates() {
         return updates.asObservable();
     }
 
+    public void refresh() {
+        if (start != null && end != null) {
+            refresh(start, end);
+        }
+    }
+
     public void refresh(@NonNull final DateTime start, @NonNull final DateTime end) {
+        this.start = start;
+        this.end = end;
         loadData(start, end)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(recent::onNext)
-                .doOnNext(updates::onNext)
-                .subscribe();
+                .subscribe(updates::onNext);
     }
 
     @SuppressWarnings("TryFinallyCanBeTryWithResources") //Min Api 19, current min 16

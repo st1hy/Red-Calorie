@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.model.comman
 import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
+import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
@@ -85,6 +86,8 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     private MealItemHolder disabledHolder;
     @Inject
     CurrentDayModel currentDayModel;
+    @Inject
+    TimePeriodModel timePeriodModel;
 
     @Inject
     public MealsAdapter(@NonNull OverviewView view,
@@ -190,7 +193,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
             holder.setName(meal.getName());
             holder.setMeal(meal);
             holder.setDate(quantityModel.formatTime(meal.getCreationDate()));
-            onBindIngredients(holder, meal.getIngredients());
+            onBindIngredients(holder, meal);
             onBindImage(meal, holder);
             holder.setEnabled(true);
         }
@@ -244,7 +247,8 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder,
-                                   @NonNull List<Ingredient> ingredients) {
+                                   @NonNull Meal meal) {
+        List<Ingredient> ingredients = meal.getIngredients();
         Observable<Ingredient> ingredientObservable = Observable.from(ingredients);
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
@@ -259,6 +263,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                 .map(BigDecimal::toPlainString)
                 .doOnNext(any -> holder.setTotalEnergyUnit(quantityModel.getEnergyUnitName()))
                 .subscribe(holder::setTotalEnergy);
+        //TODO
     }
 
     private void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
@@ -295,6 +300,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                                 .subscribe(meal1 -> {
                                     list.add(positionOnList, meal1);
                                     onNewDataSet(list);
+                                    timePeriodModel.refresh();
                                     if (list.size() > 1) {
                                         notifyItemInserted(positionOnAdapter(positionOnList));
                                     } else {
@@ -307,6 +313,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                 .subscribe(aVoid -> {
                     list.remove(positionOnList);
                     onNewDataSet(list);
+                    timePeriodModel.refresh();
                     if (list.size() > 0) {
                         notifyItemRemoved(positionOnAdapter(positionOnList));
                     } else {
@@ -325,7 +332,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     }
 
     @NonNull
-    private Func1<? super String, StringBuilder> joinStrings() {
+    private static Func1<? super String, StringBuilder> joinStrings() {
         return new Func1<String, StringBuilder>() {
             StringBuilder builder = new StringBuilder(64);
 

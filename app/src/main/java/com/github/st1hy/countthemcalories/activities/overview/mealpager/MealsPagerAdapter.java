@@ -40,11 +40,16 @@ public class MealsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return model != null ? model.getCount() : 1;
+        return model != null ? model.getDaysCount() : 1;
     }
 
-    public void updateModel(TimePeriod model) {
+    public void updatePages(TimePeriod model) {
         this.model = model;
         notifyDataSetChanged();
+    }
+
+    @Nullable
+    public TimePeriod getModel() {
+        return model;
     }
 }

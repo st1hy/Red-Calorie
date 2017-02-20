@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.inject.activities.overview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,8 @@ import com.github.st1hy.countthemcalories.activities.overview.graph.GraphFragmen
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.NewMealDate;
+import com.github.st1hy.countthemcalories.inject.quantifier.bundle.ActivitySavedState;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
 
@@ -26,9 +28,12 @@ import dagger.Provides;
 public class OverviewActivityModule {
     public static final String EXTRA_JUMP_TO_DATE = "extra jump to date";
     private OverviewActivity activity;
+    @Nullable
+    private final Bundle savedInstanceState;
 
-    public OverviewActivityModule(OverviewActivity activity) {
+    public OverviewActivityModule(OverviewActivity activity, @Nullable Bundle savedInstanceState) {
         this.activity = activity;
+        this.savedInstanceState = savedInstanceState;
     }
 
     @Provides
@@ -52,6 +57,13 @@ public class OverviewActivityModule {
     @Named("undoViewRoot")
     public static View rootUndoView(Activity activity) {
         return activity.findViewById(R.id.overview_root);
+    }
+
+    @Provides
+    @ActivitySavedState
+    @Nullable
+    public Bundle savedState() {
+        return savedInstanceState;
     }
 
     @Provides

@@ -13,7 +13,7 @@ import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.core.time.DateTimeUtils;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.NewMealDate;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 

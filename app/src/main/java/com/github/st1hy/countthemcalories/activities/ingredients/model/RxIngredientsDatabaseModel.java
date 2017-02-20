@@ -231,7 +231,6 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
             // and select only those having exactly as much rows as our tags, this works because
             // each row in group have unique tag from our list
             // Added here instead of in builder, because greenDao reorders WHERE clauses.
-            // FIXME May break at update.
             tagsJoin.where(new WhereCondition.StringCondition("1 GROUP BY T.\"_id\" HAVING COUNT(T.\"_id\")=" + tags.size()));
             builder.distinct();
         }

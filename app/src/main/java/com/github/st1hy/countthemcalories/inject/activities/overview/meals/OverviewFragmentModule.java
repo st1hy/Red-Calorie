@@ -14,7 +14,7 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.model.Curren
 import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsStateSaver;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.MealListDate;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealListDate;
 
 import org.joda.time.DateTime;
 import org.parceler.Parcels;

@@ -12,7 +12,7 @@ import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.joda.time.DateTime;
 
-import java.util.Locale;
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -54,9 +54,11 @@ public class AddWeightPresenter implements BasicLifecycle {
     @NonNull
     private String convertToCurrentUnit(@Nullable Weight weight) {
         if (weight != null) {
-            float base = settingsModel.getBodyMassUnit().getBase().floatValue();
-            float value = weight.getWeight() / base;
-            return String.format(Locale.UK, "%.2f", value);
+            BigDecimal base = settingsModel.getBodyMassUnit().getBase();
+            return BigDecimal.valueOf(weight.getWeight())
+                    .divide(base, 2, BigDecimal.ROUND_HALF_UP)
+                    .stripTrailingZeros()
+                    .toPlainString();
         } else {
             return "";
         }

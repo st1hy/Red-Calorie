@@ -46,7 +46,9 @@ public class MealPagerView {
     }
 
     public void setCurrentItem(int dayPositionInModel, boolean smoothScroll) {
-        viewPager.setCurrentItem(dayPositionInModel, smoothScroll);
+        if (viewPager.getCurrentItem() != dayPositionInModel) {
+            viewPager.setCurrentItem(dayPositionInModel, smoothScroll);
+        }
     }
 
     @NonNull

@@ -2,21 +2,23 @@ package com.github.st1hy.countthemcalories.activities.overview.model;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
+@Parcel(Parcel.Serialization.BEAN)
 public class TimePeriod {
 
     private static final int POSITION_TIME = 0;
@@ -25,12 +27,22 @@ public class TimePeriod {
     private static final int POSITION_AMOUNT_TYPE = 3;
 
     private final int daysCount;
-    private final SparseArray<DayData> data;
+    private final List<DayData> data;
     private final float min, max, average, median;
+
+    @ParcelConstructor
+    TimePeriod(int daysCount, List<DayData> data, float min, float max, float average, float median) {
+        this.daysCount = daysCount;
+        this.data = ImmutableList.<DayData>builder().addAll(data).build();
+        this.min = min;
+        this.max = max;
+        this.average = average;
+        this.median = median;
+    }
 
     private TimePeriod(@NonNull Builder builder) {
         this.daysCount = builder.daysCount;
-        this.data = builder.data;
+        this.data = builder.data.build();
         this.min = builder.min;
         this.max = builder.max;
         this.average = builder.average;
@@ -53,13 +65,18 @@ public class TimePeriod {
         return median;
     }
 
-    public int getCount() {
+    public int getDaysCount() {
         return daysCount;
     }
 
     @NonNull
+    public List<DayData> getData() {
+        return data;
+    }
+
+    @NonNull
     public DayData getDayDataAt(int position) {
-        return checkNotNull(data.get(position));
+        return data.get(position);
     }
 
     @Override
@@ -107,7 +124,7 @@ public class TimePeriod {
                 return i;
             }
         }
-        return getCount() - 1;
+        return getDaysCount() - 1;
     }
 
     public static class Builder {
@@ -115,7 +132,7 @@ public class TimePeriod {
         private final DateTime start;
         private final int daysCount;
 
-        private final SparseArray<DayData> data;
+        private final ImmutableList.Builder<DayData> data;
         private boolean loaded = false;
         private float min = Float.MAX_VALUE, max = Float.MIN_VALUE, average = 0f, median = 0f;
         private final float[] medianData;
@@ -127,7 +144,7 @@ public class TimePeriod {
             this.cursor = cursor;
             this.start = start;
             this.daysCount = countDays(start, end);
-            this.data = new SparseArray<>(daysCount);
+            this.data = ImmutableList.builder();
             this.medianData = new float[daysCount];
         }
 
@@ -160,7 +177,7 @@ public class TimePeriod {
                 }
                 DayData dayData = new DayData(start, amount, hasAnyData);
                 updateStatistics(dayData, i);
-                data.put(i, dayData);
+                data.add(dayData);
             }
             computeAverageAndMedian();
         }

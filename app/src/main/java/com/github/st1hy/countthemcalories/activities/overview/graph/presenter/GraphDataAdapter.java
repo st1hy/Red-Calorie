@@ -9,15 +9,15 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
@@ -29,7 +29,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     @Inject
     GraphColumnComponentFactory columnFactory;
     @Inject
-    TimePeriodModel model;
+    PagerModel model;
     @Inject
     PhysicalQuantitiesModel quantityModel;
 
@@ -41,9 +41,12 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
 
     public void onStart() {
         subscriptions.add(
-            model.mostRecent()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::onNewGraphData)
+                Observable.just(model.getTimePeriod())
+                        .filter(model -> model != null && timePeriod == null)
+                        .mergeWith(
+                                model.timePeriodChanges()
+                        )
+                        .subscribe(this::onNewGraphData)
         );
     }
 
@@ -75,6 +78,6 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
 
     @Override
     public int getItemCount() {
-        return timePeriod != null ? timePeriod.getCount() : 0;
+        return timePeriod != null ? timePeriod.getDaysCount() : 0;
     }
 }

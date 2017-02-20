@@ -27,18 +27,12 @@ public class OverviewPresenter {
     AddWeightPresenter addWeightPresenter;
     @Inject
     MealsPagerPresenter pagerPresenter;
-    @Inject
-    TimePeriodLoader timePeriodLoader;
 
     @Inject
     FabMenuDeactivation fabMenuDeactivation;
 
     @Inject
     public OverviewPresenter() {
-    }
-
-    public void onCreate() {
-        timePeriodLoader.onStart();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -59,9 +53,5 @@ public class OverviewPresenter {
         addWeightPresenter.onStop();
         pagerPresenter.onStop();
         fabMenuDeactivation.onStop();
-    }
-
-    public void onDestroy() {
-        timePeriodLoader.onStop();
     }
 }

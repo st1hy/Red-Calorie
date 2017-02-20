@@ -2,15 +2,17 @@ package com.github.st1hy.countthemcalories.activities.overview.mealpager;
 
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
+import com.github.st1hy.countthemcalories.activities.overview.presenter.TimePeriodLoader;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.quantifier.datetime.NewMealDate;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 @PerActivity
@@ -21,12 +23,14 @@ public class MealsPagerPresenter implements BasicLifecycle {
     @Inject
     PagerModel pagerModel;
     @Inject
-    TimePeriodModel model;
+    TimePeriodModel periodUpdates;
     @Inject
-    MealsPagerAdapter adapter;
+    MealsPagerAdapter pagerAdapter;
+    @Inject
+    TimePeriodLoader timePeriodLoader;
     @Inject
     @NewMealDate
-    Provider<DateTime> jumpToDate;
+    transient Provider<DateTime> jumpToDate;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -37,30 +41,61 @@ public class MealsPagerPresenter implements BasicLifecycle {
     @Override
     public void onStart() {
         subscriptions.add(
-                model.updates()
-                        .doOnNext(adapter::updateModel)
-                        .map(this::intoPage)
-                        .subscribe(page -> view.setCurrentItem(page, false))
+                periodUpdates.updates()
+                        .subscribe(pagerModel::updateModel)
         );
         subscriptions.add(
-                pagerModel.selectedDay()
+                view.onPageSelected().subscribe(pagerModel::setSelectedPage)
+        );
+        subscriptions.add(
+                pagerModel.getSelectedPageChanges().subscribe(page -> view.setCurrentItem(page, false))
+        );
+        subscriptions.add(
+                Observable.just(pagerModel.getTimePeriod())
+                        .filter(model -> model != null && pagerAdapter.getModel() == null)
+                        .mergeWith(
+                                pagerModel.timePeriodDatesChanges()
+                        )
+                        .distinctUntilChanged()
+                        .subscribe(pagerAdapter::updatePages)
+        );
+        subscriptions.add(
+                Observable.combineLatest(
+                        Observable.just(pagerModel.getSelectedPage())
+                                .filter(page -> page > 0)
+                                .mergeWith(
+                                        pagerModel.getSelectedPageChanges()
+                                ),
+                        pagerModel.timePeriodMostRecent(),
+                        (page, period) -> period.getDayDataAt(page))
                         .doOnNext(pagerModel::setLatestDay)
                         .subscribe(view::setTitle)
         );
-
+        subscriptions.add(
+                pagerModel.timePeriodMostRecent()
+                        .map(this::defaultPage)
+                        .subscribe(pagerModel::setSelectedPage)
+        );
+        timePeriodLoader.onStart();
     }
 
-    private int intoPage(TimePeriod model) {
+    private int defaultPage(TimePeriod model) {
         DateTime dateTime = jumpToDate.get();
         if (dateTime != null) {
             return model.findDayPosition(dateTime);
         } else {
-            return model.getCount() - 1;
+            int selectedPage = pagerModel.getSelectedPage();
+            if (selectedPage > 0) {
+                return selectedPage;
+            } else {
+                return model.getDaysCount() - 1;
+            }
         }
     }
 
     @Override
     public void onStop() {
+        timePeriodLoader.onStop();
         subscriptions.clear();
     }
 

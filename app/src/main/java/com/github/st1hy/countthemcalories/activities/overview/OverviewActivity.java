@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
+import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
@@ -19,15 +20,16 @@ public class OverviewActivity extends BaseActivity {
     OverviewPresenter presenter;
     @Inject
     OverviewFragmentComponentFactory mealsFragmentComponentFactory;
+    @Inject
+    OverviewStateSaver saver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overview_activity);
-        getAppComponent().newOverviewActivityComponent(new OverviewActivityModule(this))
+        getAppComponent().newOverviewActivityComponent(new OverviewActivityModule(this, savedInstanceState))
                 .inject(this);
         setTitle("");
-        presenter.onCreate();
     }
 
     @Override
@@ -54,9 +56,9 @@ public class OverviewActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saver.onSaveState(outState);
     }
 
     @NonNull

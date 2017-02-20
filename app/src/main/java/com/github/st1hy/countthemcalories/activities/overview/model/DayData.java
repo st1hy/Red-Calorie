@@ -3,7 +3,10 @@ package com.github.st1hy.countthemcalories.activities.overview.model;
 import android.support.annotation.NonNull;
 
 import org.joda.time.DateTime;
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
+@Parcel(Parcel.Serialization.BEAN)
 public class DayData {
 
     @NonNull
@@ -11,7 +14,7 @@ public class DayData {
     private final float value;
     private boolean hasAnyData;
 
-
+    @ParcelConstructor
     public DayData(@NonNull DateTime dateTime, float value, boolean hasAnyData) {
         this.dateTime = dateTime;
         this.value = value;
@@ -27,7 +30,7 @@ public class DayData {
         return value;
     }
 
-    public boolean hasAnyData() {
+    public boolean getHasAnyData() {
         return hasAnyData;
     }
 
