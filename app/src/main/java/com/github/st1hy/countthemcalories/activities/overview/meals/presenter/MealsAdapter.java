@@ -238,12 +238,16 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     }
 
     private void loadMeals() {
-        DateTime currentDay = currentDayModel.getCurrentDay();
-        DateTime from = currentDay.withTimeAtStartOfDay();
-        DateTime to = currentDay.plusDays(1).withTimeAtStartOfDay();
-        subscriptions.add(databaseModel.getAllFilteredSortedDate(from, to)
+        subscriptions.add(
+                currentDayModel.getCurrentDay()
+                .switchMap(date -> {
+                    DateTime from = date.withTimeAtStartOfDay();
+                    DateTime to = date.plusDays(1).withTimeAtStartOfDay();
+                    return databaseModel.getAllFilteredSortedDate(from, to);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnUpdatedDataSet()));
+                .subscribe(new OnUpdatedDataSet())
+        );
     }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder,

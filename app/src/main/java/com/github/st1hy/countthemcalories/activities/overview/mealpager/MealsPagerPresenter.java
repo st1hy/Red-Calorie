@@ -51,11 +51,7 @@ public class MealsPagerPresenter implements BasicLifecycle {
                 pagerModel.getSelectedPageChanges().subscribe(page -> view.setCurrentItem(page, false))
         );
         subscriptions.add(
-                Observable.just(pagerModel.getTimePeriod())
-                        .filter(model -> model != null && pagerAdapter.getModel() == null)
-                        .mergeWith(
-                                pagerModel.timePeriodDatesChanges()
-                        )
+                pagerModel.timePeriodMostRecent()
                         .distinctUntilChanged()
                         .subscribe(pagerAdapter::updatePages)
         );

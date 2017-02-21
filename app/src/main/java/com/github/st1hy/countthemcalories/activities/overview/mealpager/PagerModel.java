@@ -8,10 +8,9 @@ import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 
+import org.joda.time.DateTime;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
-
-import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -26,7 +25,6 @@ public class PagerModel {
     private int selectedPage = -1;
 
     private final transient PublishSubject<TimePeriod> timePeriodChangesSubject = PublishSubject.create();
-    private final transient PublishSubject<TimePeriod> timePeriodDatesPublishSubject = PublishSubject.create();
     private final transient PublishSubject<Integer> selectedPageChanges = PublishSubject.create();
 
     @ParcelConstructor
@@ -65,13 +63,9 @@ public class PagerModel {
 
     public boolean updateModel(TimePeriod timePeriod) {
         boolean anyChange = !timePeriod.equals(this.timePeriod);
-        boolean datesChanged = datesChanged(this.timePeriod, timePeriod);
         if (anyChange) {
             setTimePeriod(timePeriod);
             timePeriodChangesSubject.onNext(timePeriod);
-        }
-        if (datesChanged) {
-            timePeriodDatesPublishSubject.onNext(timePeriod);
         }
         return anyChange;
     }
@@ -89,29 +83,14 @@ public class PagerModel {
                 .mergeWith(timePeriodChangesSubject);
     }
 
-    @NonNull
-    @CheckResult
-    public Observable<TimePeriod> timePeriodDatesChanges() {
-        return timePeriodChangesSubject.asObservable();
-    }
-
     public Observable<Integer> getSelectedPageChanges() {
         return selectedPageChanges.asObservable();
     }
 
-    private static boolean datesChanged(TimePeriod first, TimePeriod second) {
-        if (first == null || second == null) return true;
-        List<DayData> days1 = first.getData();
-        List<DayData> days2 = second.getData();
-        if (days1.size() != days2.size()) return true;
-        int size = days1.size();
-        for (int i = 0; i < size; i++) {
-            DayData day1 = days1.get(i);
-            DayData day2 = days2.get(i);
-            if (!day1.isDay(day2.getDateTime())) {
-                return true;
-            }
-        }
-        return false;
+    @NonNull
+    @CheckResult
+    public Observable<DateTime> dateAtPosition(int currentPosition) {
+        return timePeriodMostRecent().map(timePeriod -> timePeriod.getDayDataAt(currentPosition))
+                .map(DayData::getDateTime);
     }
 }

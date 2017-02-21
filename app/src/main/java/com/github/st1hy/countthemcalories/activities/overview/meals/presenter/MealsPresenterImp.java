@@ -7,8 +7,6 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.model.Curren
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import org.joda.time.DateTime;
-
 import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
@@ -38,10 +36,13 @@ public class MealsPresenterImp implements MealsPresenter {
     public void onStart() {
         adapterDelegate.onStart();
         adapter.onStart();
-        DateTime currentDay = currentDayModel.getCurrentDay();
         subscriptions.add(
-                addMealController.getAddNewMealObservable(currentDay)
-                        .subscribe(aVoid -> addMealController.addNewMeal(currentDay))
+                currentDayModel.getCurrentDay()
+                        .switchMap(
+                                date -> addMealController.getAddNewMealObservable(date)
+                                        .map(any -> date)
+                        )
+                        .subscribe(date -> addMealController.addNewMeal(date))
         );
     }
 

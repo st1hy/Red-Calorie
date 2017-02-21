@@ -11,7 +11,6 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragmen
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewStateSaver;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityComponent;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.ActivitySavedState;
 
 import org.parceler.Parcels;
@@ -37,8 +36,7 @@ public abstract class MealsPagerModule {
     }
 
     @Provides
-    public static MealsFragment newMealsFragment(
-            OverviewFragmentComponentFactory componentFactory) {
+    public static MealsFragment newMealsFragment() {
         return new MealsFragment();
     }
 

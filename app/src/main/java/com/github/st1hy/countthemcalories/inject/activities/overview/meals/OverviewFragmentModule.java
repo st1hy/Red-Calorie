@@ -10,21 +10,15 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
-import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
-import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsStateSaver;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
-import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealListDate;
-
-import org.joda.time.DateTime;
-import org.parceler.Parcels;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealPagerPosition;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 
-import static com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment.ARG_CURRENT_DATE;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment.ARG_CURRENT_PAGE;
 
 @Module(includes = OverviewFragmentBindings.class)
 public class OverviewFragmentModule {
@@ -70,27 +64,11 @@ public class OverviewFragmentModule {
     }
 
     @Provides
-    @MealListDate
-    public DateTime currentDate(@Nullable @Named("arguments") Bundle arguments) {
-        DateTime dateTime = null;
+    @MealPagerPosition
+    public int currentDate(@Nullable @Named("arguments") Bundle arguments) {
         if (arguments != null) {
-            dateTime = (DateTime) arguments.getSerializable(ARG_CURRENT_DATE);
+            return arguments.getInt(ARG_CURRENT_PAGE, -1);
         }
-        if (dateTime == null) {
-            dateTime = DateTime.now();
-        }
-        return dateTime;
+        return -1;
     }
-
-    @Provides
-    @PerFragment
-    public static CurrentDayModel currentDayModel(@Nullable @Named("savedState") Bundle savedState,
-                                                  @MealListDate DateTime currentDate) {
-        if (savedState != null ) {
-            return Parcels.unwrap(savedState.getParcelable(MealsStateSaver.CURRENT_DAY_STATE));
-        } else {
-            return new CurrentDayModel(currentDate);
-        }
-    }
-
 }

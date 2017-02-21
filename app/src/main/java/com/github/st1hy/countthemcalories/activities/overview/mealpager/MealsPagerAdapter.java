@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
-import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
@@ -31,8 +30,7 @@ public class MealsPagerAdapter extends FragmentStatePagerAdapter {
         MealsFragment mealsFragment = pagerComponent.getMealsFragment();
         if (model != null) {
             Bundle arguments = new Bundle();
-            DayData day = model.getDayDataAt(position);
-            arguments.putSerializable(MealsFragment.ARG_CURRENT_DATE, day.getDateTime());
+            arguments.putInt(MealsFragment.ARG_CURRENT_PAGE, position);
             mealsFragment.setArguments(arguments);
         }
         return mealsFragment;
@@ -40,7 +38,7 @@ public class MealsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return model != null ? model.getDaysCount() : 1;
+        return model != null ? model.getDaysCount() : 0;
     }
 
     public void updatePages(TimePeriod model) {
