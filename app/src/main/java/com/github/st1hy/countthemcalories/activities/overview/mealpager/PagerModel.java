@@ -91,6 +91,7 @@ public class PagerModel {
     @CheckResult
     public Observable<DateTime> dateAtPosition(int currentPosition) {
         return timePeriodMostRecent().map(timePeriod -> timePeriod.getDayDataAt(currentPosition))
-                .map(DayData::getDateTime);
+                .map(DayData::getDateTime)
+                .distinctUntilChanged();
     }
 }

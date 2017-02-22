@@ -9,7 +9,6 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
@@ -48,8 +47,7 @@ public class AddMealController {
     @CheckResult
     public Observable<Void> getAddNewMealObservable(@NonNull DateTime atDay) {
         return addMealClicks.get()
-                .filter(any -> selectedDayMatches(atDay))
-                .map(Functions.INTO_VOID);
+                .filter(any -> selectedDayMatches(atDay));
     }
 
     private boolean selectedDayMatches(@NonNull DateTime atDay) {
