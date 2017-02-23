@@ -10,7 +10,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <com.github.st1hy.countthemcalories.core.graph.GraphColumn
+    <com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn
         android:id="@+id/graph_item_column"
         android:layout_width="match_parent"
         android:layout_height="0dp"

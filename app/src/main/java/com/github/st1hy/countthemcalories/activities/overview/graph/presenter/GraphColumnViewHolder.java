@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.graph.GraphColumn;
+import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,6 +32,6 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setValue(float value) {
-        column.setProgress(value);
+        column.getModel().setProgress(value);
     }
 }

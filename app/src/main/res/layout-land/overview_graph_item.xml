@@ -24,7 +24,7 @@
         android:layout_width="8dp"
         android:layout_height="match_parent" />
 
-    <com.github.st1hy.countthemcalories.core.graph.GraphColumn
+    <com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn
         android:id="@+id/graph_item_column"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
