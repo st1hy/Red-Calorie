@@ -91,17 +91,12 @@ public class AddIngredientModelHelper {
 
 
     /**
-     * @return observable ingredient that was added or updated in database OR {@link IngredientTypeCreateException}
+     * @return observable ingredient that was added or updated in database OR {@link IngredientTypeCreateError}
      * if not data is in incorrect state to be saved
      */
     @NonNull
     public Observable<IngredientTemplate> saveIntoDatabase() {
-        List<IngredientTypeCreateException.ErrorType> errorList = canCreateIngredient();
-        if (errorList.isEmpty()) {
-            return insertOrUpdateIntoDatabase();
-        } else {
-            return Observable.error(new IngredientTypeCreateException(errorList));
-        }
+        return insertOrUpdateIntoDatabase();
     }
 
     @NonNull
@@ -134,17 +129,17 @@ public class AddIngredientModelHelper {
     }
 
     @NonNull
-    private List<IngredientTypeCreateException.ErrorType> canCreateIngredient() {
+    public List<IngredientTypeCreateError> canCreateIngredient() {
         return canCreateIngredient(model.getName(), model.getEnergyValue());
     }
 
     @NonNull
-    public List<IngredientTypeCreateException.ErrorType> canCreateIngredient(@NonNull String name, @NonNull String value) {
-        List<IngredientTypeCreateException.ErrorType> errors = new ArrayList<>(4);
-        if (isEmpty(name)) errors.add(IngredientTypeCreateException.ErrorType.NO_NAME);
-        if (isEmpty(value)) errors.add(IngredientTypeCreateException.ErrorType.NO_VALUE);
+    public List<IngredientTypeCreateError> canCreateIngredient(@NonNull String name, @NonNull String value) {
+        List<IngredientTypeCreateError> errors = new ArrayList<>(4);
+        if (isEmpty(name)) errors.add(IngredientTypeCreateError.NO_NAME);
+        if (isEmpty(value)) errors.add(IngredientTypeCreateError.NO_VALUE);
         else if (!isValueGreaterThanZero(value))
-            errors.add(IngredientTypeCreateException.ErrorType.ZERO_VALUE);
+            errors.add(IngredientTypeCreateError.ZERO_VALUE);
         return errors;
     }
 

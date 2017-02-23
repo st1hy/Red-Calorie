@@ -5,22 +5,20 @@ import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModelHelper;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateException.ErrorType;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +28,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func2;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 @PerFragment
 public class AddIngredientPresenterImp implements AddIngredientPresenter {
@@ -94,23 +91,12 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
         subscribe(
                 menuActionObservable.filter(Filters.equalTo(AddIngredientMenuAction.SAVE))
-                        .map(Functions.INTO_VOID)
-                        .flatMap(aVoid -> modelHelper.saveIntoDatabase())
+                        .map(any -> modelHelper.canCreateIngredient())
+                        .doOnNext(this::onCreateIngredientResult)
+                        .filter(List::isEmpty)
+                        .flatMap(any -> modelHelper.saveIntoDatabase())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .retry((attempt, error) -> {
-                            if (error instanceof IngredientTypeCreateException) {
-                                List<ErrorType> errors = ((IngredientTypeCreateException) error).getErrors();
-                                onCreateIngredientResult(errors);
-                                return true;
-                            } else {
-                                Timber.e(error, "Error adding new ingredient type to database");
-                                return attempt < 128;
-                            }
-                        })
-                        .subscribe(template -> {
-                            onCreateIngredientResult(Collections.emptyList());
-                            view.onIngredientTemplateCreated(template);
-                        })
+                        .subscribe(view::onIngredientTemplateCreated)
         );
         subscribe(
                 view.getSearchObservable()
@@ -146,37 +132,35 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
         subscriptions.clear();
     }
 
-    private void onCreateIngredientResult(@NonNull List<ErrorType> errors) {
+    private void onCreateIngredientResult(@NonNull List<IngredientTypeCreateError> errors) {
         showErrorMessage(errors);
         if (!errors.isEmpty()) {
             requestFocusToField(errors.get(0));
         }
     }
 
-    private void showErrorMessage(@NonNull List<ErrorType> errors) {
-        for (ErrorType errorType : ErrorType.values()) {
-            showErrorMessageIfExist(errors, errorType);
+    private void showErrorMessage(@NonNull List<IngredientTypeCreateError> errors) {
+        List<InputType> inputTypesWithErrors = new ArrayList<>(0);
+        for (IngredientTypeCreateError errorType : IngredientTypeCreateError.values()) {
+            InputType inputType = errorType.getInputType();
+            if (inputTypesWithErrors.contains(inputType)) continue;
+            Optional<Integer> errorMessage = searchListFor(errors, errorType);
+            if (errorMessage.isPresent()) {
+                view.showError(inputType, errorMessage.get());
+                inputTypesWithErrors.add(inputType);
+            } else {
+                view.hideError(inputType);
+            }
         }
     }
 
-    private void showErrorMessageIfExist(@NonNull List<ErrorType> errors,
-                                         @NonNull ErrorType lookFor) {
-        Optional<Integer> errorMessage = searchListFor(errors, lookFor);
-        InputType inputType = lookFor.getInputType();
-        if (errorMessage.isPresent()) {
-            view.showError(inputType, errorMessage.get());
-        } else {
-            view.hideError(inputType);
-        }
-    }
-
-    private void requestFocusToField(@NonNull ErrorType firstError) {
+    private void requestFocusToField(@NonNull IngredientTypeCreateError firstError) {
         view.requestFocusTo(firstError.getInputType());
     }
 
     @NonNull
-    private static Optional<Integer> searchListFor(@NonNull List<ErrorType> errors,
-                                                   @NonNull ErrorType error) {
+    private static Optional<Integer> searchListFor(@NonNull List<IngredientTypeCreateError> errors,
+                                                   @NonNull IngredientTypeCreateError error) {
         return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
     }
 

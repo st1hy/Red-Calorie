@@ -97,7 +97,8 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     @Override
     public void showError(@NonNull InputType type, @StringRes int errorResId) {
         EditText input = getInputOfType(type);
-        input.setError(resources.getString(errorResId));
+        String errorString = resources.getString(errorResId);
+        input.setError(errorString);
     }
 
     @Override
