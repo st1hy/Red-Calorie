@@ -74,6 +74,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
                         return databaseModel.getAllFiltered(searchResult.getQuery(), searchResult.getTokens());
                     else return Observable.just(null);
                 })
+                .doOnNext(SearchSuggestionsAdapter::assertCursorNotClosed)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::changeCursor)
         );
@@ -103,6 +104,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     }
 
     private void changeCursor(@Nullable Cursor cursor) {
+        assertCursorNotClosed(cursor);
         getParent().changeCursor(cursor);
     }
 
@@ -118,4 +120,8 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
         return cursor.getString(cursor.getColumnIndexOrThrow(COLUMN));
     }
 
+    private static void assertCursorNotClosed(@Nullable Cursor cursor) {
+        if (cursor != null && cursor.isClosed())
+            throw new IllegalStateException("Cannot change to closed cursor");
+    }
 }
