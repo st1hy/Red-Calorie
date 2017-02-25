@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
-import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
+import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphGlobalViewModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
@@ -17,37 +17,31 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
 public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHolder> {
 
     private static final int LAYOUT = R.layout.overview_graph_item;
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     GraphColumnComponentFactory columnFactory;
     @Inject
-    PagerModel model;
-    @Inject
     PhysicalQuantitiesModel quantityModel;
+    @Inject
+    GraphGlobalViewModel graphGlobalViewModel;
 
-    private TimePeriod timePeriod;
+    TimePeriod timePeriod;
+
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private boolean refreshGlobalMargin;
 
     @Inject
     public GraphDataAdapter() {
     }
 
     public void onStart() {
-        subscriptions.add(
-                Observable.just(model.getTimePeriod())
-                        .filter(model -> model != null && timePeriod == null)
-                        .mergeWith(
-                                model.timePeriodChanges()
-                        )
-                        .subscribe(this::onNewGraphData)
-        );
+
     }
 
     public void onStop() {
@@ -68,11 +62,20 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
             float value = day.getValue() / (2f * timePeriod.getMedian());
             if (value > 1f) value = 1f;
             holder.setValue(value);
+            if (refreshGlobalMargin) {
+                refreshGlobalMargin = false;
+                subscriptions.add(
+                        holder.columnMargins()
+                                .first()
+                                .subscribe(view -> graphGlobalViewModel.setMainAxisMargins(view.getLeft(), view.getBottom()))
+                );
+            }
         }
     }
 
-    private void onNewGraphData(@NonNull TimePeriod period) {
+    void onNewGraphData(@NonNull TimePeriod period) {
         this.timePeriod = period;
+        refreshGlobalMargin = true;
         notifyDataSetChanged();
     }
 

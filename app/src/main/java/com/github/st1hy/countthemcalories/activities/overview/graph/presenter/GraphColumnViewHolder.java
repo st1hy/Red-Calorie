@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,12 +8,15 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn;
+import com.jakewharton.rxbinding.internal.Functions;
+import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
 
@@ -33,5 +37,12 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
 
     public void setValue(float value) {
         column.getModel().setProgress(value);
+    }
+
+    @NonNull
+    @CheckResult
+    public Observable<View> columnMargins() {
+        return RxView.preDraws(column, Functions.FUNC0_ALWAYS_TRUE)
+                .map(com.github.st1hy.countthemcalories.core.rx.Functions.into(column));
     }
 }
