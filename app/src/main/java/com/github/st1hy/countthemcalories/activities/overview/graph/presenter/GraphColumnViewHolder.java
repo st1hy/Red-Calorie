@@ -45,4 +45,8 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
         return RxView.preDraws(column, Functions.FUNC0_ALWAYS_TRUE)
                 .map(com.github.st1hy.countthemcalories.core.rx.Functions.into(column));
     }
+
+    public void setWeight(float normalizedWeight) {
+        column.getModel().setPoint(normalizedWeight);
+    }
 }

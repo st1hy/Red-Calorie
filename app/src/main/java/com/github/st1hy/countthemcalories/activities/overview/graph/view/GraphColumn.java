@@ -42,6 +42,7 @@ public class GraphColumn extends View {
                     0f, 0.5f, 0.5f, 1f,
                     0.5f, 1f, 1f, 0.5f
             });
+            model.setPoint(0.75f);
         }
     }
 
@@ -67,6 +68,10 @@ public class GraphColumn extends View {
         if (model.showLine()) {
             model.setLineVector(width, height);
             canvas.drawLines(model.lineVector, model.linePaint);
+        }
+        if (model.showPoint()) {
+            model.setPointSize(width, height);
+            canvas.drawRect(model.pointSizeBounds, model.pointColor);
         }
         model.setLegendBounds(width, height);
         canvas.drawLines(model.legendVector, model.legendLinePaint);

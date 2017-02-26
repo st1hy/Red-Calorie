@@ -24,35 +24,42 @@ public class GraphColumnModel {
     private static final float[] EMPTY_POINTS = new float[0];
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({FLAG_NONE, FLAG_COLUMN, FLAG_LINE, FLAG_ALL})
+    @IntDef({FLAG_NONE, FLAG_COLUMN, FLAG_LINE, FLAG_POINTS, FLAG_ALL})
     public @interface VisibilityFlags {
+
     }
 
     public static final int FLAG_NONE = 0;
     public static final int FLAG_COLUMN = 1;
-    public static final int FLAG_LINE = 2;
-    public static final int FLAG_ALL = 3;
 
+    public static final int FLAG_LINE = 2;
+    public static final int FLAG_POINTS = 4;
+    public static final int FLAG_ALL = 7;
     final Paint columnColor;
     final RectF columnSize;
+
     float[] legendVector = EMPTY_POINTS;
     float[] lineVector = EMPTY_POINTS;
     final Paint linePaint;
     final Paint legendLinePaint;
-
+    final Paint pointColor;
+    final RectF pointSizeBounds;
     private boolean columnSizeDirty;
     private boolean lineVectorDirty;
 
+    private boolean pointSizeDirty;
     private boolean legendDirty;
     private float[] linePoints = EMPTY_POINTS;
+
     private float progress;
+    private float pointProgress;
+    private final float pointSize;
     private final float legendLineWidthHalf;
     private final float legendSeparatorSize;
-
     private final Orientation orientation;
     private int flags;
-    private final PublishSubject<Void> invalidate = PublishSubject.create();
 
+    private final PublishSubject<Void> invalidate = PublishSubject.create();
     GraphColumnModel(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphColumn, defStyleAttr, R.style.GraphColumn_Default);
         int gc_orientation = a.getInt(R.styleable.GraphColumn_gc_orientation, Orientation.RIGHT_TO_LEFT.gc_orientation);
@@ -64,6 +71,8 @@ public class GraphColumnModel {
         int gc_legend_line_color = a.getColor(R.styleable.GraphColumn_gc_legend_line_color, Color.BLACK);
         float gc_legend_line_width = a.getDimensionPixelSize(R.styleable.GraphColumn_gc_legend_line_width, 1);
         legendSeparatorSize = a.getDimension(R.styleable.GraphColumn_gc_legend_separator_size, 10f);
+        int gc_point_color = a.getColor(R.styleable.GraphColumn_gc_line_color, Color.BLACK);
+        pointSize = a.getDimension(R.styleable.GraphColumn_gc_point_size, 10f);
         a.recycle();
         columnColor = new Paint();
         columnColor.setColor(color);
@@ -81,8 +90,10 @@ public class GraphColumnModel {
         legendLinePaint.setColor(gc_legend_line_color);
         legendVector = new float[8];
         legendLineWidthHalf = gc_legend_line_width / 2f;
+        pointColor = new Paint();
+        pointColor.setColor(gc_point_color);
+        pointSizeBounds = new RectF();
     }
-
     public void setFlags(@GraphColumnModel.VisibilityFlags int flags) {
         if (this.flags != flags) {
             this.flags = flags;
@@ -99,6 +110,7 @@ public class GraphColumnModel {
         columnSizeDirty = true;
         lineVectorDirty = true;
         legendDirty = true;
+        pointSizeDirty = true;
     }
 
     public void setProgress(float progress) {
@@ -117,6 +129,12 @@ public class GraphColumnModel {
     public void setLineColor(@ColorInt int color) {
         linePaint.setColor(color);
         if (showLine()) invalidate();
+    }
+
+    public void setPoint(float point) {
+        this.pointProgress = point;
+        pointSizeDirty = true;
+        if (showPoint()) invalidate();
     }
 
     /**
@@ -145,6 +163,7 @@ public class GraphColumnModel {
         return invalidate;
     }
 
+
     void setColumnSizeBounds(float width, float height) {
         if (!columnSizeDirty) return;
         switch (orientation) {
@@ -162,6 +181,40 @@ public class GraphColumnModel {
                 break;
         }
         columnSizeDirty = false;
+    }
+
+    public void setPointSize(float width, float height) {
+        if (!pointSizeDirty) return;
+        float pointSizeHalf = pointSize / 2;
+        float left, right, top, bottom;
+        switch (orientation) {
+            case RIGHT_TO_LEFT:
+            case LEFT_TO_RIGHT:
+                float curWidth = pointProgress * width;
+                if (orientation == Orientation.RIGHT_TO_LEFT)
+                    curWidth = width - curWidth;
+                float halfHeight = height / 2;
+                left = curWidth - pointSizeHalf;
+                right = curWidth + pointSizeHalf;
+                top = halfHeight + pointSizeHalf;
+                bottom = halfHeight - pointSizeHalf;
+                break;
+            case TOP_TO_BOTTOM:
+            case BOTTOM_TO_TOP:
+                float curHeight = pointProgress * height;
+                if (orientation == Orientation.BOTTOM_TO_TOP)
+                    curHeight = height - curHeight;
+                float halfWidth = width / 2;
+                left = halfWidth - pointSizeHalf;
+                right = halfWidth + pointSizeHalf;
+                top = curHeight + pointSizeHalf;
+                bottom = curHeight - pointSizeHalf;
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        pointSizeBounds.set(left, top, right, bottom);
+        pointSizeDirty = false;
     }
 
     void setLineVector(float width, float height) {
@@ -196,7 +249,8 @@ public class GraphColumnModel {
         lineVectorDirty = false;
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable") //readability
+    @SuppressWarnings("UnnecessaryLocalVariable")
+        //readability
     void setLegendBounds(float width, float height) {
         if (!legendDirty) return;
         float min = legendLineWidthHalf;
@@ -263,5 +317,9 @@ public class GraphColumnModel {
 
     boolean showLine() {
         return (flags & FLAG_LINE) > 0;
+    }
+
+    boolean showPoint() {
+        return (flags & FLAG_POINTS) > 0;
     }
 }

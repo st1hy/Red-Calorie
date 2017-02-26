@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
+import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.database.Weight;
@@ -30,6 +31,8 @@ public class AddWeightPresenter implements BasicLifecycle {
     SettingsModel settingsModel;
     @Inject
     PagerModel pagerModel;
+    @Inject
+    TimePeriodModel timePeriodModel;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -47,7 +50,7 @@ public class AddWeightPresenter implements BasicLifecycle {
                         .flatMap(weight -> view.openAddWeightDialog(weight))
                         .map(this::intoWeight)
                         .flatMap(weight -> model.insertOrUpdate(weight))
-                        .subscribe()
+                        .subscribe(any -> timePeriodModel.refresh())
         );
     }
 

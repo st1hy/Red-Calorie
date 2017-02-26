@@ -14,7 +14,8 @@
             <flag name="none" value="0"/>
             <flag name="column" value="1"/>
             <flag name="line" value="2"/>
-            <flag name="all" value="3"/>
+            <flag name="point" value="4"/>
+            <flag name="all" value="7"/>
         </attr>
         <attr name="gc_line_width" format="dimension"/>
         <attr name="gc_line_color" format="color"/>
@@ -23,5 +24,7 @@
         <attr name="gc_legend_separator_size" format="dimension"/>
         <attr name="gc_legend_min_legend_line_space" format="dimension"/>
         <attr name="gc_legend_line_overlay_color" format="color"/>
+        <attr name="gc_point_size" format="dimension"/>
+        <attr name="gc_point_color" format="color"/>
     </declare-styleable>
 </resources>

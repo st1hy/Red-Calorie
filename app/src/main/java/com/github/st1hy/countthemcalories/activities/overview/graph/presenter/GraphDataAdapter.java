@@ -61,6 +61,8 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
             holder.setName(quantityModel.formatDate(day.getDateTime()));
             float value = timePeriod.normalizeDayValue(day);
             holder.setValue(value);
+            float normalizedWeight = timePeriod.normalizeWeightValue(day);
+            holder.setWeight(normalizedWeight);
             refreshGlobalMargin(holder);
         }
     }

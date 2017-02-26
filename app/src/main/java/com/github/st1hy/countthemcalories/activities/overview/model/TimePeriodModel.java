@@ -9,10 +9,15 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.MealDao;
+import com.github.st1hy.countthemcalories.database.Weight;
+import com.github.st1hy.countthemcalories.database.WeightDao;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.greenrobot.greendao.query.CursorQuery;
+import org.greenrobot.greendao.query.Query;
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -45,6 +50,13 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
         sql.append("order by M.").append(MealDao.Properties.CreationDate.columnName).append(" asc;");
         return CursorQuery.internalCreate(dao(), sql.toString(), new Object[2]);
     });
+
+    private final Provider<Query<Weight>> weightQueryProvider = SingleCheck.provider(() -> session()
+            .getWeightDao()
+            .queryBuilder()
+            .where(WeightDao.Properties.MeasurementDate.between(null, null))
+            .orderAsc(WeightDao.Properties.MeasurementDate)
+            .build());
 
     private DateTime start, end;
     private final PublishSubject<TimePeriod> updates = PublishSubject.create();
@@ -84,8 +96,12 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
             query.setParameter(0, start.getMillis());
             query.setParameter(1, end.getMillis());
             Cursor cursor = query.query();
+            Query<Weight> weightQuery = weightQueryProvider.get().forCurrentThread();
+            weightQuery.setParameter(0, start.getMillis() - 1);
+            weightQuery.setParameter(1, end.getMillis() + 1);
+            List<Weight> list = weightQuery.listLazy();
             try {
-                return new TimePeriod.Builder(cursor, start, end).build();
+                return new TimePeriod.Builder(cursor, start, end, list).build();
             } finally {
                 cursor.close();
             }

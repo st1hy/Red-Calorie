@@ -12,12 +12,14 @@ public class DayData {
     @NonNull
     private final DateTime dateTime;
     private final float value;
+    private final float weight;
     private boolean hasAnyData;
 
     @ParcelConstructor
-    public DayData(@NonNull DateTime dateTime, float value, boolean hasAnyData) {
+    public DayData(@NonNull DateTime dateTime, float value, float weight, boolean hasAnyData) {
         this.dateTime = dateTime;
         this.value = value;
+        this.weight = weight;
         this.hasAnyData = hasAnyData;
     }
 
@@ -28,6 +30,10 @@ public class DayData {
 
     public float getValue() {
         return value;
+    }
+
+    public float getWeight() {
+        return weight;
     }
 
     public boolean getHasAnyData() {
@@ -44,7 +50,6 @@ public class DayData {
         return dateTime.isEqual(dayStart) || dateTime.isAfter(dayStart) && dateTime.isBefore(nextDayStart);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,15 +58,16 @@ public class DayData {
         DayData dayData = (DayData) o;
 
         if (Float.compare(dayData.value, value) != 0) return false;
+        if (Float.compare(dayData.weight, weight) != 0) return false;
         if (hasAnyData != dayData.hasAnyData) return false;
         return dateTime.equals(dayData.dateTime);
-
     }
 
     @Override
     public int hashCode() {
         int result = dateTime.hashCode();
         result = 31 * result + (value != +0.0f ? Float.floatToIntBits(value) : 0);
+        result = 31 * result + (weight != +0.0f ? Float.floatToIntBits(weight) : 0);
         result = 31 * result + (hasAnyData ? 1 : 0);
         return result;
     }
