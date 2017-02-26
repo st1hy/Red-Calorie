@@ -59,17 +59,9 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         if (timePeriod != null) {
             DayData day = timePeriod.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
-            float value = day.getValue() / (2f * timePeriod.getMedian());
-            if (value > 1f) value = 1f;
+            float value = timePeriod.normalizeDayValue(day);
             holder.setValue(value);
-            if (refreshGlobalMargin) {
-                refreshGlobalMargin = false;
-                subscriptions.add(
-                        holder.columnMargins()
-                                .first()
-                                .subscribe(view -> graphGlobalViewModel.setMainAxisMargins(view.getLeft(), view.getBottom()))
-                );
-            }
+            refreshGlobalMargin(holder);
         }
     }
 
@@ -82,5 +74,16 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     @Override
     public int getItemCount() {
         return timePeriod != null ? timePeriod.getDaysCount() : 0;
+    }
+
+    private void refreshGlobalMargin(GraphColumnViewHolder holder) {
+        if (refreshGlobalMargin) {
+            refreshGlobalMargin = false;
+            subscriptions.add(
+                    holder.columnMargins()
+                            .first()
+                            .subscribe(view -> graphGlobalViewModel.setMainAxisMargins(view.getLeft(), view.getBottom()))
+            );
+        }
     }
 }

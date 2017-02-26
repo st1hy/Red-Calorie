@@ -54,7 +54,9 @@
         <item name="gc_line_color">@color/gcLineColor</item>
         <item name="gc_legend_line_width">1dip</item>
         <item name="gc_legend_line_color">@color/gcLegendForegroundColor</item>
+        <item name="gc_legend_line_overlay_color">@color/gcLegendBackgroundColor</item>
         <item name="gc_legend_separator_size">10dp</item>
+        <item name="gc_legend_min_legend_line_space">40dp</item>
     </style>
     <style name="GraphColumn.Default">
     </style>

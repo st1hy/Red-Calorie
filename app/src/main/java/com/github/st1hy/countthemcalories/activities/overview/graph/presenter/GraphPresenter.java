@@ -52,6 +52,7 @@ public class GraphPresenter implements BasicLifecycle {
                         .mergeWith(
                                 model.timePeriodChanges()
                         )
+                        .doOnNext(timePeriod -> foregroundLegend.getModel().updateData(timePeriod))
                         .subscribe(graphDataAdapter::onNewGraphData)
         );
         subscriptions.add(

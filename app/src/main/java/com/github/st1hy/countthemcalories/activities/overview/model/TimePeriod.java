@@ -30,6 +30,8 @@ public class TimePeriod {
     private final List<DayData> data;
     private final float min, max, average, median;
 
+    private final transient AutoScaleLines autoScaleLines = new AutoScaleLines(this);
+
     @ParcelConstructor
     TimePeriod(int daysCount, List<DayData> data, float min, float max, float average, float median) {
         this.daysCount = daysCount;
@@ -79,6 +81,11 @@ public class TimePeriod {
         return data.get(position);
     }
 
+    @NonNull
+    public AutoScaleLines getAutoScaleLines() {
+        return autoScaleLines;
+    }
+
     @Override
     public String toString() {
         return "TimePeriod{" +
@@ -88,6 +95,22 @@ public class TimePeriod {
                 ", average=" + average +
                 ", median=" + median +
                 '}';
+    }
+
+    public float normalizeDayValue(@NonNull DayData day) {
+        float value =  day.getValue() / maxDisplayValue();
+        if (value > 1f) value = 1f;
+        return value;
+    }
+
+    public float normalizeDayValue(float value) {
+        value /= maxDisplayValue();
+        if (value > 1f) value = 1f;
+        return value;
+    }
+
+    public float maxDisplayValue() {
+        return 2f * median;
     }
 
     @Override

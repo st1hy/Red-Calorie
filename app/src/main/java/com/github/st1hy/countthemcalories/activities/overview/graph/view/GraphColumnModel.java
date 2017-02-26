@@ -58,7 +58,7 @@ public class GraphColumnModel {
         int gc_orientation = a.getInt(R.styleable.GraphColumn_gc_orientation, Orientation.RIGHT_TO_LEFT.gc_orientation);
         int color = a.getColor(R.styleable.GraphColumn_gc_color, Color.GREEN);
         float gc_progress = a.getFloat(R.styleable.GraphColumn_gc_progress, 0.5f);
-        int gc_mode = a.getInteger(R.styleable.GraphColumn_gc_mode, 3);
+        int gc_mode = a.getInteger(R.styleable.GraphColumn_gc_mode, FLAG_ALL);
         float gc_lineWidth = a.getDimension(R.styleable.GraphColumn_gc_line_width, 1f);
         int gc_lineColor = a.getColor(R.styleable.GraphColumn_gc_line_color, Color.BLACK);
         int gc_legend_line_color = a.getColor(R.styleable.GraphColumn_gc_legend_line_color, Color.BLACK);

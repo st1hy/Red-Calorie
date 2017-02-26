@@ -7,9 +7,13 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import rx.subscriptions.CompositeSubscription;
+
 public class GraphLegend extends View {
 
     GraphLegendModel model;
+
+    private CompositeSubscription subscriptions = new CompositeSubscription();
 
     public GraphLegend(Context context) {
         super(context);
@@ -36,6 +40,22 @@ public class GraphLegend extends View {
         model = new GraphLegendModel(context, attrs, defStyleAttr);
     }
 
+    public GraphLegendModel getModel() {
+        return model;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        subscriptions.add(model.invalidated().subscribe(any -> invalidate()));
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        subscriptions.clear();
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -47,7 +67,7 @@ public class GraphLegend extends View {
         super.onDraw(canvas);
         float width = canvas.getWidth();
         float height = canvas.getHeight();
-        model.setEditData(width, height);
+        model.updateLegendVector(width, height);
         canvas.drawLines(model.lineVector, model.linePaint);
     }
 }

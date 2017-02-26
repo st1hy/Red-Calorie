@@ -21,5 +21,7 @@
         <attr name="gc_legend_line_width" format="dimension"/>
         <attr name="gc_legend_line_color" format="color"/>
         <attr name="gc_legend_separator_size" format="dimension"/>
+        <attr name="gc_legend_min_legend_line_space" format="dimension"/>
+        <attr name="gc_legend_line_overlay_color" format="color"/>
     </declare-styleable>
 </resources>
