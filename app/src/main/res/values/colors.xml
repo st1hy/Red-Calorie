@@ -11,7 +11,7 @@
     <color name="gcDefaultColor">@color/colorPrimary</color>
     <color name="gcLineColor">@color/colorAppBackground</color>
     <color name="gcLegendForegroundColor">@color/colorAppBackground</color>
-    <color name="gcLegendBackgroundColor">#20F8F8F8</color>
+    <color name="gcLegendBackgroundColor">#40FFFFFF</color>
     <color name="gcPointColor">@color/colorAppBackground</color>
 
     <color name="expandingFabColor">@color/colorAccent</color>

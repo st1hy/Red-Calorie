@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.overview.graph.inject.colum
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
+import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
@@ -25,6 +26,8 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     GraphColumnComponentFactory columnFactory;
     @Inject
     PhysicalQuantitiesModel quantityModel;
+    @Inject
+    SettingsModel settingsModel;
 
     TimePeriod timePeriod;
 
@@ -44,10 +47,14 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         if (timePeriod != null) {
             DayData day = timePeriod.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
-            holder.setValue(day.getValue(), 2f * timePeriod.getMedian());
+            holder.setValue(convertEnergy(day.getValue()), convertEnergy(2f * timePeriod.getMedian()));
             float normalizedWeight = getNormalizedWeight(day);
             holder.setWeight(normalizedWeight);
         }
+    }
+
+    private float convertEnergy(float energy) {
+        return energy / settingsModel.getEnergyUnit().getBase().floatValue();
     }
 
     void onNewGraphData(@NonNull TimePeriod period) {

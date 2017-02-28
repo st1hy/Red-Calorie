@@ -22,6 +22,7 @@ import rx.subjects.PublishSubject;
 public class GraphColumnModel {
 
     private static final float[] EMPTY_POINTS = new float[0];
+    private static int[] numberTable = new int[]{1, 2, 5, 10};
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({FLAG_NONE, FLAG_COLUMN, FLAG_LINE, FLAG_POINTS, FLAG_ALL})
@@ -407,12 +408,32 @@ public class GraphColumnModel {
 
 
     public float[] sensibleScale(float totalViewSize) {
-        int size = (int) Math.floor(totalViewSize / minLineSpaces);
-        float delta = minLineSpaces / totalViewSize;
+        float valueResolution = totalViewSize / maxValue;
+        float idealDelta = (minLineSpaces / valueResolution);
+        float delta = computeDelta(idealDelta);
+        int size = (int) Math.floor(maxValue / delta);
         float[] values = new float[size];
         for (int i = 0; i < size; i++) {
-            values[i] = (i + 1) * delta * maxValue;
+            values[i] = (i + 1) * delta;
         }
         return values;
+    }
+
+    public static float computeDelta(float value) {
+        int power = (int) (Math.floor(Math.log10(value)));
+        double vector = Math.pow(10, power);
+        int firstNumber = (int) Math.round(value / vector);
+        firstNumber = closestLarger(firstNumber);
+        return (float) (firstNumber * vector);
+    }
+
+    private static int closestLarger(int number) {
+        int closestNumber = 10;
+        for (int i : numberTable) {
+            if (i > number) {
+                return i;
+            }
+        }
+        return closestNumber;
     }
 }
