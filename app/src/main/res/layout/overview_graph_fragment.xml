@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimaryDark">
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/graph_recycler"
+        style="@style/GraphRecycler.Default"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/GraphRecycler.Default"
         tools:listitem="@layout/overview_graph_item"
         tools:showIn="@layout/overview_graph_fragment">
 
     </android.support.v7.widget.RecyclerView>
-
-    <com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphLegend
-        android:id="@+id/graph_front_legend"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
 </FrameLayout>

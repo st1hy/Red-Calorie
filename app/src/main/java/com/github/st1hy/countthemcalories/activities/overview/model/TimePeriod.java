@@ -33,8 +33,6 @@ public class TimePeriod {
     private final float min, max, average, median;
     private final float minWeight, maxWeight;
 
-    private final transient AutoScaleLines autoScaleLines = new AutoScaleLines(this);
-
     @ParcelConstructor
     TimePeriod(int daysCount, List<DayData> data, float min, float max, float average,
                float median, float minWeight, float maxWeight) {
@@ -97,11 +95,6 @@ public class TimePeriod {
         return data.get(position);
     }
 
-    @NonNull
-    public AutoScaleLines getAutoScaleLines() {
-        return autoScaleLines;
-    }
-
     @Override
     public String toString() {
         return "TimePeriod{" +
@@ -111,39 +104,6 @@ public class TimePeriod {
                 ", average=" + average +
                 ", median=" + median +
                 '}';
-    }
-
-    public float normalizeDayValue(@NonNull DayData day) {
-        float value =  day.getValue() / maxDisplayValue();
-        if (value > 1f) value = 1f;
-        return value;
-    }
-
-    public float normalizeDayValue(float value) {
-        value /= maxDisplayValue();
-        if (value > 1f) value = 1f;
-        return value;
-    }
-
-    public float maxDisplayValue() {
-        return 2f * median;
-    }
-
-    public float normalizeWeightValue(DayData day) {
-        float weight = day.getWeight() - minDisplayWeightValue();
-        return weight / displayWeightRange();
-    }
-
-    public float maxDisplayWeightValue() {
-        return maxWeight * 1.05f;
-    }
-
-    public float minDisplayWeightValue() {
-        return minWeight * 0.95f;
-    }
-
-    public float displayWeightRange() {
-        return maxDisplayWeightValue() - minDisplayWeightValue();
     }
 
     public int findDayPosition(@NonNull DateTime dateTime) {
@@ -170,9 +130,7 @@ public class TimePeriod {
         if (Float.compare(that.median, median) != 0) return false;
         if (Float.compare(that.minWeight, minWeight) != 0) return false;
         if (Float.compare(that.maxWeight, maxWeight) != 0) return false;
-        if (data != null ? !data.equals(that.data) : that.data != null) return false;
-        return autoScaleLines != null ? autoScaleLines.equals(that.autoScaleLines) : that.autoScaleLines == null;
-
+        return data != null ? data.equals(that.data) : that.data == null;
     }
 
     @Override
@@ -185,7 +143,6 @@ public class TimePeriod {
         result = 31 * result + (median != +0.0f ? Float.floatToIntBits(median) : 0);
         result = 31 * result + (minWeight != +0.0f ? Float.floatToIntBits(minWeight) : 0);
         result = 31 * result + (maxWeight != +0.0f ? Float.floatToIntBits(maxWeight) : 0);
-        result = 31 * result + (autoScaleLines != null ? autoScaleLines.hashCode() : 0);
         return result;
     }
 

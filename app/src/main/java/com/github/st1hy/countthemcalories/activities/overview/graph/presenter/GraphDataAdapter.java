@@ -9,15 +9,12 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
-import com.github.st1hy.countthemcalories.activities.overview.graph.model.GraphGlobalViewModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
-
-import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
 public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHolder> {
@@ -28,25 +25,13 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     GraphColumnComponentFactory columnFactory;
     @Inject
     PhysicalQuantitiesModel quantityModel;
-    @Inject
-    GraphGlobalViewModel graphGlobalViewModel;
 
     TimePeriod timePeriod;
-
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
-    private boolean refreshGlobalMargin;
 
     @Inject
     public GraphDataAdapter() {
     }
 
-    public void onStart() {
-
-    }
-
-    public void onStop() {
-        subscriptions.clear();
-    }
 
     @Override
     public GraphColumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,17 +44,14 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         if (timePeriod != null) {
             DayData day = timePeriod.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
-            float value = timePeriod.normalizeDayValue(day);
-            holder.setValue(value);
-            float normalizedWeight = timePeriod.normalizeWeightValue(day);
+            holder.setValue(day.getValue(), 2f * timePeriod.getMedian());
+            float normalizedWeight = getNormalizedWeight(day);
             holder.setWeight(normalizedWeight);
-            refreshGlobalMargin(holder);
         }
     }
 
     void onNewGraphData(@NonNull TimePeriod period) {
         this.timePeriod = period;
-        refreshGlobalMargin = true;
         notifyDataSetChanged();
     }
 
@@ -78,14 +60,17 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         return timePeriod != null ? timePeriod.getDaysCount() : 0;
     }
 
-    private void refreshGlobalMargin(GraphColumnViewHolder holder) {
-        if (refreshGlobalMargin) {
-            refreshGlobalMargin = false;
-            subscriptions.add(
-                    holder.columnMargins()
-                            .first()
-                            .subscribe(view -> graphGlobalViewModel.setMainAxisMargins(view.getLeft(), view.getBottom()))
-            );
+    private float getNormalizedWeight(DayData day) {
+        float minDisplayWeight = timePeriod.getMinWeight() * 0.98f;
+        float maxDisplayWeight = timePeriod.getMaxWeight() * 1.01f;
+        float weightDistance = maxDisplayWeight - minDisplayWeight;
+        float normalizedWeight;
+        if (weightDistance > 0f) {
+            normalizedWeight = (day.getWeight() - minDisplayWeight) / weightDistance;
+        } else {
+            normalizedWeight = 0.5f;
         }
+        return normalizedWeight;
     }
+
 }

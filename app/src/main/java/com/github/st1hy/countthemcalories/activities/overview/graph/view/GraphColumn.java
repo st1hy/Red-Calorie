@@ -74,7 +74,9 @@ public class GraphColumn extends View {
             canvas.drawRect(model.pointSizeBounds, model.pointColor);
         }
         model.setLegendBounds(width, height);
-        canvas.drawLines(model.legendVector, model.legendLinePaint);
+        canvas.drawLines(model.legendVector, model.columnLegendLinePaint);
+        canvas.drawLines(model.rowLegendVector, model.rowLegendLinePaint);
+
     }
 
     @Override
