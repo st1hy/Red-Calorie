@@ -22,6 +22,7 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.graph_item_column)
     GraphColumn column;
     private final GraphColumnModel model;
+    private float[] points = new float[8];
 
     @Inject
     public GraphColumnViewHolder(@NonNull @Named("columnRootView") View itemView) {
@@ -59,5 +60,13 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
                 flags -= flag;
         }
         model.setFlags(flags);
+    }
+
+    public float[] getMutable2SegmentLine() {
+        return points;
+    }
+
+    public void setLine(float[] points) {
+        model.setLinePoints(points);
     }
 }

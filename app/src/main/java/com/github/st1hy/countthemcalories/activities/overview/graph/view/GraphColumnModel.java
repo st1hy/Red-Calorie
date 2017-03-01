@@ -24,7 +24,7 @@ import rx.subjects.PublishSubject;
 
 public class GraphColumnModel {
 
-    private static final float[] EMPTY_POINTS = new float[0];
+    public static final float[] EMPTY_POINTS = new float[0];
     private static int[] numberTable = new int[]{1, 2, 5, 10};
 
     @Retention(RetentionPolicy.SOURCE)
@@ -198,7 +198,11 @@ public class GraphColumnModel {
         }
         linePoints = points;
         if (lineVector == null || lineVector.length != linePoints.length) {
-            lineVector = new float[linePoints.length];
+            if (linePoints.length > 0) {
+                lineVector = new float[linePoints.length];
+            } else {
+                lineVector = EMPTY_POINTS;
+            }
         }
         lineVectorDirty = true;
         if (showLine()) invalidate();

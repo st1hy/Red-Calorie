@@ -9,11 +9,15 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
+import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,6 +53,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
             holder.setName(quantityModel.formatDate(day.getDateTime()));
             setCalories(holder, day);
             setWeight(holder, day);
+            setLine(holder, position);
         }
     }
 
@@ -70,8 +75,8 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     }
 
     private void setWeight(GraphColumnViewHolder holder, DayData day) {
-        float min = convertMass(timePeriod.getMinWeight()) * 0.98f;
-        float max = convertMass(timePeriod.getMaxWeight()) * 1.01f;
+        float min = convertMass(minDisplayWeight(timePeriod.getMinWeight()));
+        float max = convertMass(maxDisplayWeight(timePeriod.getMaxWeight()));
         float weight = convertMass(day.getWeight());
         float weightDistance = max - min;
         if (weightDistance > 0f && weight >= min && weight <= max) {
@@ -91,4 +96,51 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         return mass / settingsModel.getBodyMassUnit().getBase().floatValue();
     }
 
+    private void setLine(GraphColumnViewHolder holder, int position) {
+        List<DayData> days = timePeriod.getData();
+        float previous = position > 1 ? normalizeWeight(days.get(position - 1)) : -1f;
+        float current = normalizeWeight(days.get(position));
+        float next =  position < days.size() - 1 ? normalizeWeight(days.get(position + 1)) : -1f;
+        if (current > 0 && (previous > 0 || next > 0)) {
+            float[] segmentLine = holder.getMutable2SegmentLine();
+            if (previous > 0) {
+                segmentLine[0] = 0;
+                segmentLine[1] = (previous + current) / 2;
+                segmentLine[2] = 0.5f;
+                segmentLine[3] = current;
+            } else {
+                Arrays.fill(segmentLine, 0, 4, 0f);
+            }
+            if (next > 0) {
+                segmentLine[4] = 0.5f;
+                segmentLine[5] = current;
+                segmentLine[6] = 1f;
+                segmentLine[7] = (current + next) / 2;
+            } else {
+                Arrays.fill(segmentLine, 4, 8, 0f);
+            }
+            holder.setLine(segmentLine);
+        } else {
+            holder.setLine(GraphColumnModel.EMPTY_POINTS);
+        }
+    }
+
+    private float normalizeWeight(DayData day) {
+        float value = day.getValue();
+        if (value > 0) {
+            float min = minDisplayWeight(timePeriod.getMinWeight());
+            float max = maxDisplayWeight(timePeriod.getMaxWeight());
+            float range = max - min;
+            if (range > 0) return (day.getWeight() - min) / range;
+        }
+        return -1f;
+    }
+
+    private float minDisplayWeight(float value) {
+        return value * 0.98f;
+    }
+
+    private float maxDisplayWeight(float value) {
+        return value * 1.01f;
+    }
 }
