@@ -60,8 +60,9 @@
         <item name="gc_point_size">5dp</item>
         <item name="gc_point_color">@color/gcPointColor</item>
         <item name="gc_legend_text_size">12sp</item>
-        <item name="gc_legend_text_point_color">@color/gcLegendForegroundColor</item>
-        <item name="gc_legend_text_value_color">@color/gcLegendForegroundColor</item>
+        <item name="gc_legend_text_point_color">@color/gcLegendTextColorWeight</item>
+        <item name="gc_legend_text_value_color">@color/gcLegendTextColorCalorie</item>
+        <item name="gc_legend_text_padding">4dp</item>
     </style>
     <style name="GraphColumn.Default">
     </style>

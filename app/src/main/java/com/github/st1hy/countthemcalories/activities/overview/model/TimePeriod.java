@@ -28,15 +28,13 @@ public class TimePeriod {
     private static final int POSITION_ENERGY_DENSITY = 2;
     private static final int POSITION_AMOUNT_TYPE = 3;
 
-    private final int daysCount;
     private final List<DayData> data;
     private final float min, max, average, median;
     private final float minWeight, maxWeight;
 
     @ParcelConstructor
-    TimePeriod(int daysCount, List<DayData> data, float min, float max, float average,
+    TimePeriod(List<DayData> data, float min, float max, float average,
                float median, float minWeight, float maxWeight) {
-        this.daysCount = daysCount;
         this.data = ImmutableList.<DayData>builder().addAll(data).build();
         this.min = min;
         this.max = max;
@@ -47,7 +45,6 @@ public class TimePeriod {
     }
 
     private TimePeriod(@NonNull Builder builder) {
-        this.daysCount = builder.daysCount;
         this.data = builder.data.build();
         this.min = builder.min;
         this.max = builder.max;
@@ -82,7 +79,7 @@ public class TimePeriod {
     }
 
     public int getDaysCount() {
-        return daysCount;
+        return data.size();
     }
 
     @NonNull
@@ -98,7 +95,7 @@ public class TimePeriod {
     @Override
     public String toString() {
         return "TimePeriod{" +
-                "daysCount=" + daysCount +
+                "daysCount=" + data.size() +
                 ", min=" + min +
                 ", max=" + max +
                 ", average=" + average +
@@ -123,7 +120,6 @@ public class TimePeriod {
 
         TimePeriod that = (TimePeriod) o;
 
-        if (daysCount != that.daysCount) return false;
         if (Float.compare(that.min, min) != 0) return false;
         if (Float.compare(that.max, max) != 0) return false;
         if (Float.compare(that.average, average) != 0) return false;
@@ -131,12 +127,12 @@ public class TimePeriod {
         if (Float.compare(that.minWeight, minWeight) != 0) return false;
         if (Float.compare(that.maxWeight, maxWeight) != 0) return false;
         return data != null ? data.equals(that.data) : that.data == null;
+
     }
 
     @Override
     public int hashCode() {
-        int result = daysCount;
-        result = 31 * result + (data != null ? data.hashCode() : 0);
+        int result = data != null ? data.hashCode() : 0;
         result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
         result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
         result = 31 * result + (average != +0.0f ? Float.floatToIntBits(average) : 0);
@@ -156,8 +152,8 @@ public class TimePeriod {
         private boolean loaded = false;
         private float min = Float.MAX_VALUE, max = Float.MIN_VALUE, average = 0f, median = 0f;
         private float minWeight = Float.MAX_VALUE, maxWeight = Float.MIN_VALUE;
-        private final float[] medianData;
-        private int notZeroDays = 0;
+        private final float[] medianCaloriesData;
+        private int notZeroCalorieDays = 0;
 
         public Builder(@NonNull Cursor cursor,
                        @NonNull DateTime start,
@@ -167,7 +163,7 @@ public class TimePeriod {
             this.start = start;
             this.daysCount = countDays(start, end);
             this.data = ImmutableList.builder();
-            this.medianData = new float[daysCount];
+            this.medianCaloriesData = new float[daysCount];
             this.weightList = weight;
         }
 
@@ -238,8 +234,8 @@ public class TimePeriod {
             if (value > max) max = value;
             if (value > 0) {
                 average += value;
-                medianData[notZeroDays] = value;
-                notZeroDays++;
+                medianCaloriesData[notZeroCalorieDays] = value;
+                notZeroCalorieDays++;
             }
             if (weightValue > 0f) {
                 if (weightValue < minWeight) minWeight = weightValue;
@@ -248,10 +244,10 @@ public class TimePeriod {
         }
 
         private void computeAverageAndMedian() {
-            if (notZeroDays > 0) {
-                average /= notZeroDays;
-                Arrays.sort(medianData, 0, notZeroDays);
-                median = median(medianData, 0, notZeroDays);
+            if (notZeroCalorieDays > 0) {
+                average /= notZeroCalorieDays;
+                Arrays.sort(medianCaloriesData, 0, notZeroCalorieDays);
+                median = median(medianCaloriesData, 0, notZeroCalorieDays);
             }
         }
 

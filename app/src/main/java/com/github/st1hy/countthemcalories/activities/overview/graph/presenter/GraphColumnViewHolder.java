@@ -38,7 +38,26 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
         model.setValue(value, maxValue);
     }
 
-    public void setWeight(float normalizedWeight) {
-        model.setPoint(normalizedWeight);
+    public void setWeight(float value, float min, float max) {
+        model.setPoint(value, min, max);
+    }
+
+    public void setWeightVisibility(boolean isVisible) {
+        setFlat(isVisible, GraphColumnModel.FLAG_POINTS);
+    }
+
+    public void setValueVisibility(boolean isVisible) {
+        setFlat(isVisible, GraphColumnModel.FLAG_COLUMN);
+    }
+
+    private void setFlat(boolean isEnabled, @GraphColumnModel.VisibilityFlags int flag) {
+        @GraphColumnModel.VisibilityFlags int flags = model.getFlags();
+        if (isEnabled) {
+            flags |= flag;
+        } else {
+            if ((flags & flag) > 0)
+                flags -= flag;
+        }
+        model.setFlags(flags);
     }
 }

@@ -25,7 +25,7 @@ public class GraphPresenter implements BasicLifecycle {
     public void onStart() {
         subscriptions.add(
                 Observable.just(model.getTimePeriod())
-                        .filter(model -> model != null && graphDataAdapter.timePeriod == null)
+                        .filter(model -> model != null)
                         .mergeWith(
                                 model.timePeriodChanges()
                         )

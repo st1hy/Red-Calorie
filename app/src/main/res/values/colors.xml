@@ -13,6 +13,8 @@
     <color name="gcLegendForegroundColor">@color/colorAppBackground</color>
     <color name="gcLegendBackgroundColor">#40FFFFFF</color>
     <color name="gcPointColor">@color/colorAppBackground</color>
+    <color name="gcLegendTextColorCalorie">#e1bee7</color>
+    <color name="gcLegendTextColorWeight">#e1bee7</color>
 
     <color name="expandingFabColor">@color/colorAccent</color>
     <color name="expandingFabColorPressed">#3563b7</color>

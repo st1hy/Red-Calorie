@@ -29,5 +29,6 @@
         <attr name="gc_legend_text_size" format="dimension"/>
         <attr name="gc_legend_text_value_color" format="color"/>
         <attr name="gc_legend_text_point_color" format="color"/>
+        <attr name="gc_legend_text_padding" format="dimension"/>
     </declare-styleable>
 </resources>

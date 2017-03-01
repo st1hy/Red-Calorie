@@ -47,14 +47,9 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         if (timePeriod != null) {
             DayData day = timePeriod.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
-            holder.setValue(convertEnergy(day.getValue()), convertEnergy(2f * timePeriod.getMedian()));
-            float normalizedWeight = getNormalizedWeight(day);
-            holder.setWeight(normalizedWeight);
+            setCalories(holder, day);
+            setWeight(holder, day);
         }
-    }
-
-    private float convertEnergy(float energy) {
-        return energy / settingsModel.getEnergyUnit().getBase().floatValue();
     }
 
     void onNewGraphData(@NonNull TimePeriod period) {
@@ -67,17 +62,33 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         return timePeriod != null ? timePeriod.getDaysCount() : 0;
     }
 
-    private float getNormalizedWeight(DayData day) {
-        float minDisplayWeight = timePeriod.getMinWeight() * 0.98f;
-        float maxDisplayWeight = timePeriod.getMaxWeight() * 1.01f;
-        float weightDistance = maxDisplayWeight - minDisplayWeight;
-        float normalizedWeight;
-        if (weightDistance > 0f) {
-            normalizedWeight = (day.getWeight() - minDisplayWeight) / weightDistance;
+    private void setCalories(GraphColumnViewHolder holder, DayData day) {
+        float value = convertEnergy(day.getValue());
+        float max = convertEnergy(2f * timePeriod.getMedian());
+        holder.setValue(value, max);
+        holder.setValueVisibility(value > 0);
+    }
+
+    private void setWeight(GraphColumnViewHolder holder, DayData day) {
+        float min = convertMass(timePeriod.getMinWeight()) * 0.98f;
+        float max = convertMass(timePeriod.getMaxWeight()) * 1.01f;
+        float weight = convertMass(day.getWeight());
+        float weightDistance = max - min;
+        if (weightDistance > 0f && weight >= min && weight <= max) {
+            holder.setWeight(weight, min, max);
+            holder.setWeightVisibility(true);
         } else {
-            normalizedWeight = 0.5f;
+            holder.setWeight(0f, 0f, 1f);
+            holder.setWeightVisibility(false);
         }
-        return normalizedWeight;
+    }
+
+    private float convertEnergy(float energy) {
+        return energy / settingsModel.getEnergyUnit().getBase().floatValue();
+    }
+
+    private float convertMass(float mass) {
+        return mass / settingsModel.getBodyMassUnit().getBase().floatValue();
     }
 
 }

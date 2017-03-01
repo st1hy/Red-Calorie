@@ -4,17 +4,20 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 
 import com.github.st1hy.countthemcalories.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -56,16 +59,25 @@ public class GraphColumnModel {
 
     private float value;
     private float maxValue;
-    private float pointProgress;
+    private float pointValue;
+    private float pointMinValue, pointMaxValue;
     private final float pointSize;
     private final float legendLineWidthHalf;
     private final float legendSeparatorSize;
     private final Orientation orientation;
     private int flags;
+    private float textPadding;
 
     private final float minLineSpaces;
 
     private final PublishSubject<Void> invalidate = PublishSubject.create();
+
+    final PointF textValuePosition = new PointF();
+    String textValue = "";
+    final TextPaint textValuePaint;
+    final PointF pointValuePosition = new PointF();
+    String textPointValue = "";
+    final TextPaint pointValuePaint;
 
     GraphColumnModel(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphColumn, defStyleAttr, R.style.GraphColumn_Default);
@@ -80,10 +92,12 @@ public class GraphColumnModel {
         int gc_row_legend_line_color = a.getColor(R.styleable.GraphColumn_gc_legend_line_overlay_color, Color.BLACK);
         int gc_value_legend_text_color = a.getColor(R.styleable.GraphColumn_gc_legend_text_value_color, Color.BLACK);
         int gc_point_legend_text_color = a.getColor(R.styleable.GraphColumn_gc_legend_text_point_color, Color.BLACK);
+        float gc_legend_text_size = a.getDimension(R.styleable.GraphColumn_gc_legend_text_size, 24f);
         legendSeparatorSize = a.getDimension(R.styleable.GraphColumn_gc_legend_separator_size, 10f);
         int gc_point_color = a.getColor(R.styleable.GraphColumn_gc_line_color, Color.BLACK);
         pointSize = a.getDimension(R.styleable.GraphColumn_gc_point_size, 10f);
         minLineSpaces = a.getDimension(R.styleable.GraphColumn_gc_legend_min_legend_line_space, 100);
+        textPadding = a.getDimension(R.styleable.GraphColumn_gc_legend_text_padding, 8f);
         a.recycle();
         columnColor = new Paint();
         columnColor.setColor(color);
@@ -108,6 +122,14 @@ public class GraphColumnModel {
         rowLegendLinePaint.setStyle(Paint.Style.STROKE);
         rowLegendLinePaint.setStrokeWidth(gc_legend_line_width);
         rowLegendLinePaint.setColor(gc_row_legend_line_color);
+        textValuePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.HINTING_ON);
+        textValuePaint.setColor(gc_value_legend_text_color);
+        textValuePaint.setTextAlign(Paint.Align.CENTER);
+        textValuePaint.setTextSize(gc_legend_text_size);
+        pointValuePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.HINTING_ON);
+        pointValuePaint.setColor(gc_point_legend_text_color);
+        pointValuePaint.setTextAlign(Paint.Align.CENTER);
+        pointValuePaint.setTextSize(gc_legend_text_size);
     }
 
     public void setFlags(@GraphColumnModel.VisibilityFlags int flags) {
@@ -135,9 +157,11 @@ public class GraphColumnModel {
         if (value < 0f) value = 0f;
         else if (value > maxValue) value = maxValue;
         this.value = value;
-        this.maxValue = maxValue;
         columnSizeDirty = true;
-        rowsLegendDirty = true;
+        if (this.maxValue != maxValue) {
+            this.maxValue = maxValue;
+            rowsLegendDirty = true;
+        }
         if (showColumn()) invalidate();
     }
 
@@ -151,10 +175,17 @@ public class GraphColumnModel {
         if (showLine()) invalidate();
     }
 
-    public void setPoint(float point) {
-        this.pointProgress = point;
-        pointSizeDirty = true;
-        if (showPoint()) invalidate();
+    public void setPoint(float point, float min, float max) {
+        if (point  >= min && point <= max && max - min > 0) {
+            this.pointValue = point;
+            this.pointMinValue = min;
+            this.pointMaxValue = max;
+            pointSizeDirty = true;
+            if (showPoint()) invalidate();
+        } else {
+            throw new IllegalArgumentException(String.format(Locale.UK,
+                    "Illegal p arguments value: %f, min: %f, max: %f", point, min, max));
+        }
     }
 
     /**
@@ -187,18 +218,25 @@ public class GraphColumnModel {
     void setColumnSizeBounds(float width, float height) {
         if (!columnSizeDirty) return;
         float progress = value / maxValue;
+        textValue = String.format(Locale.getDefault(), "%d", Math.round(value));
+        float textSizeHalf = (textValuePaint.descent() - textValuePaint.ascent()) / 2;
+        float textWidthHalf = textValuePaint.measureText(textValue) / 2;
         switch (orientation) {
             case RIGHT_TO_LEFT:
                 columnSize.set((1f - progress) * width, 0, width, height);
+                textValuePosition.set(textWidthHalf + textPadding, (height - textValuePaint.ascent()) / 2);
                 break;
             case LEFT_TO_RIGHT:
                 columnSize.set(0f, 0f, progress * width, height);
+                textValuePosition.set(width - textWidthHalf - textPadding, (height - textValuePaint.ascent()) / 2 );
                 break;
             case TOP_TO_BOTTOM:
                 columnSize.set(0f, 0f, width, progress * height);
+                textValuePosition.set(width / 2, height - textSizeHalf - textPadding);
                 break;
             case BOTTOM_TO_TOP:
                 columnSize.set(0f, (1f - progress) * height, width, height);
+                textValuePosition.set(width / 2, textSizeHalf + textPadding);
                 break;
         }
         columnSizeDirty = false;
@@ -208,10 +246,18 @@ public class GraphColumnModel {
         if (!pointSizeDirty) return;
         float pointSizeHalf = pointSize / 2;
         float left, right, top, bottom;
+        float progress = (pointValue - pointMinValue) / (pointMaxValue - pointMinValue);
+        if (pointValue % 1 == 0) {
+            textPointValue = String.format(Locale.getDefault(), "%d", Math.round(pointValue));
+        } else {
+            textPointValue = String.format(Locale.getDefault(), "%.1f", pointValue);
+        }
+        float textSizeHalf = (pointValuePaint.descent() - pointValuePaint.ascent()) / 2;
+        float textWidthHalf = pointValuePaint.measureText(textPointValue) / 2;
         switch (orientation) {
             case RIGHT_TO_LEFT:
             case LEFT_TO_RIGHT:
-                float curWidth = pointProgress * width;
+                float curWidth = progress * width;
                 if (orientation == Orientation.RIGHT_TO_LEFT)
                     curWidth = width - curWidth;
                 float halfHeight = height / 2;
@@ -222,7 +268,7 @@ public class GraphColumnModel {
                 break;
             case TOP_TO_BOTTOM:
             case BOTTOM_TO_TOP:
-                float curHeight = pointProgress * height;
+                float curHeight = progress * height;
                 if (orientation == Orientation.BOTTOM_TO_TOP)
                     curHeight = height - curHeight;
                 float halfWidth = width / 2;
@@ -233,6 +279,20 @@ public class GraphColumnModel {
                 break;
             default:
                 throw new UnsupportedOperationException();
+        }
+        switch (orientation) {
+            case RIGHT_TO_LEFT:
+                pointValuePosition.set(width - textWidthHalf - textPadding, (height - pointValuePaint.ascent()) / 2 );
+                break;
+            case LEFT_TO_RIGHT:
+                pointValuePosition.set(textWidthHalf + textPadding, (height - pointValuePaint.ascent()) / 2);
+                break;
+            case TOP_TO_BOTTOM:
+                pointValuePosition.set(width / 2, textSizeHalf + textPadding);
+                break;
+            case BOTTOM_TO_TOP:
+                pointValuePosition.set(width / 2, height - textSizeHalf - textPadding);
+                break;
         }
         pointSizeBounds.set(left, top, right, bottom);
         pointSizeDirty = false;

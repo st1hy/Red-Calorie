@@ -42,7 +42,7 @@ public class GraphColumn extends View {
                     0f, 0.5f, 0.5f, 1f,
                     0.5f, 1f, 1f, 0.5f
             });
-            model.setPoint(0.75f);
+            model.setPoint(0.75f, 0f, 1f);
         }
     }
 
@@ -64,6 +64,8 @@ public class GraphColumn extends View {
         if (model.showColumn()) {
             model.setColumnSizeBounds(width, height);
             canvas.drawRect(model.columnSize, model.columnColor);
+            canvas.drawText(model.textValue, model.textValuePosition.x, model.textValuePosition.y,
+                    model.textValuePaint);
         }
         if (model.showLine()) {
             model.setLineVector(width, height);
@@ -72,6 +74,8 @@ public class GraphColumn extends View {
         if (model.showPoint()) {
             model.setPointSize(width, height);
             canvas.drawRect(model.pointSizeBounds, model.pointColor);
+            canvas.drawText(model.textPointValue, model.pointValuePosition.x, model.pointValuePosition.y,
+                    model.pointValuePaint);
         }
         model.setLegendBounds(width, height);
         canvas.drawLines(model.legendVector, model.columnLegendLinePaint);
