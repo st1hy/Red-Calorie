@@ -8,7 +8,8 @@
     <color name="checkboxUnselected">#E0E0E0</color>
     <color name="checkboxSelected">@color/colorAccent</color>
 
-    <color name="gcDefaultColor">@color/colorPrimary</color>
+    <color name="gcDefaultColor">#d40317</color>
+    <color name="gcDefaultColorSelected">#f95151</color>
     <color name="gcLineColor">@color/colorAppBackground</color>
     <color name="gcLegendForegroundColor">@color/colorAppBackground</color>
     <color name="gcLegendBackgroundColor">#40FFFFFF</color>

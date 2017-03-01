@@ -48,6 +48,7 @@
     <style name="GraphColumn">
         <item name="gc_orientation">bottom_to_top</item>
         <item name="gc_color">@color/gcDefaultColor</item>
+        <item name="gc_color_selected">@color/gcDefaultColorSelected</item>
         <item name="gc_progress">0.5</item>
         <item name="gc_mode">all</item>
         <item name="gc_line_width">2dip</item>

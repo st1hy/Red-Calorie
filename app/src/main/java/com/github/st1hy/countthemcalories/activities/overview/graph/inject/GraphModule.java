@@ -14,6 +14,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subjects.PublishSubject;
 
 @Module(includes = GraphBinding.class)
 public class GraphModule {
@@ -43,5 +44,12 @@ public class GraphModule {
     @PerFragment
     public static RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
         return RecyclerViewAdapterDelegate.newAdapter(wrapper);
+    }
+
+    @Provides
+    @PerFragment
+    @Named("graphItemClicked")
+    public static PublishSubject<Integer> graphItemClicked() {
+        return PublishSubject.create();
     }
 }

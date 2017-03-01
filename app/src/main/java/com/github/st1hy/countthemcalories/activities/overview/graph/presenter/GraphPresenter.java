@@ -1,5 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -17,6 +19,8 @@ public class GraphPresenter implements BasicLifecycle {
     GraphDataAdapter graphDataAdapter;
     @Inject
     PagerModel model;
+    @Inject
+    RecyclerView recyclerView;
 
     @Inject
     public GraphPresenter() {
@@ -30,6 +34,18 @@ public class GraphPresenter implements BasicLifecycle {
                                 model.timePeriodChanges()
                         )
                         .subscribe(graphDataAdapter::onNewGraphData)
+        );
+        subscriptions.add(
+                Observable.just(model.getSelectedPage())
+                        .filter(page -> page >= 0)
+                        .mergeWith(model.getSelectedPageChanges())
+                        .distinctUntilChanged()
+                        .doOnNext(recyclerView::scrollToPosition)
+                        .subscribe(graphDataAdapter::setSelectedPosition)
+        );
+        subscriptions.add(
+                graphDataAdapter.graphColumnClicked()
+                        .subscribe(model::setSelectedPage)
         );
     }
 

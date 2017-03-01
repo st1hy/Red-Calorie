@@ -4,11 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/overview_app_bar">
 
-    <View
-        android:id="@+id/overview_touch_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/overview_fab_menu"
         android:layout_width="wrap_content"
@@ -43,4 +38,9 @@
             fab:fab_title="@string/overview_fab_add_weight" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <View
+        android:id="@+id/overview_touch_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </merge>

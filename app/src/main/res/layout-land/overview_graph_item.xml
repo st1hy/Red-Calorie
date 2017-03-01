@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graph_item_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:minHeight="40dp"
+    android:minHeight="50dp"
     android:orientation="horizontal"
+    android:clickable="true"
+    style="@style/Widget.AppCompat.Button.Borderless"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 

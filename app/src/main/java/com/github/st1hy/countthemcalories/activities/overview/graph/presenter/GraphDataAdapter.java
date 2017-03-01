@@ -20,6 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 @PerFragment
 public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHolder> {
@@ -32,13 +37,25 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     PhysicalQuantitiesModel quantityModel;
     @Inject
     SettingsModel settingsModel;
+    @Inject
+    @Named("graphItemClicked")
+    PublishSubject<Integer> positionClicked;
 
     TimePeriod timePeriod;
+
+    private final BehaviorSubject<Integer> selectedPosition = BehaviorSubject.create();
 
     @Inject
     public GraphDataAdapter() {
     }
 
+    public void setSelectedPosition(int position) {
+        selectedPosition.onNext(position);
+    }
+
+    public Observable<Integer> graphColumnClicked() {
+        return positionClicked;
+    }
 
     @Override
     public GraphColumnViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,12 +71,25 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
             setCalories(holder, day);
             setWeight(holder, day);
             setLine(holder, position);
+            holder.setPos(position);
         }
     }
 
     void onNewGraphData(@NonNull TimePeriod period) {
         this.timePeriod = period;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(GraphColumnViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onViewAttached(selectedPosition);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(GraphColumnViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.onViewDetached();
     }
 
     @Override
@@ -143,4 +173,5 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     private float maxDisplayWeight(float value) {
         return value * 1.01f;
     }
+
 }

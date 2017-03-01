@@ -43,6 +43,7 @@ public class GraphColumn extends View {
                     0.5f, 1f, 1f, 0.5f
             });
             model.setPoint(0.75f, 0f, 1f);
+            model.setValue(1f,2f);
         }
     }
 
