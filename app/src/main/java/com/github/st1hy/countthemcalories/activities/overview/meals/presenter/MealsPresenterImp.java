@@ -42,6 +42,7 @@ public class MealsPresenterImp implements MealsPresenter {
                                 date -> addMealController.getAddNewMealObservable(date)
                                         .map(any -> date)
                         )
+                        .doOnNext(any -> addMealController.closeFloatingMenu())
                         .subscribe(date -> addMealController.addNewMeal(date))
         );
     }

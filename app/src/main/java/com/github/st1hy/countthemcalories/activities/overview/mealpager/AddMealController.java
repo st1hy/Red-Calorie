@@ -9,6 +9,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
@@ -32,6 +33,8 @@ public class AddMealController {
     View addMeal;
     @Inject
     PagerModel pagerModel;
+    @Inject
+    OverviewScreen screen;
 
     private final Provider<Observable<Void>> addMealClicks = DoubleCheck.provider(
             () -> RxView.clicks(addMeal).share()
@@ -59,5 +62,9 @@ public class AddMealController {
         Intent intent = new Intent(activity, AddMealActivity.class);
         intent.putExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE, atDay);
         activity.startActivity(intent);
+    }
+
+    public void closeFloatingMenu() {
+        screen.closeFloatingMenu();
     }
 }
