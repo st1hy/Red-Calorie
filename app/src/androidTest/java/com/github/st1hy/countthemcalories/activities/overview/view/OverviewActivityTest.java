@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.view;
 
 import android.content.ComponentName;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -9,6 +10,7 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
@@ -30,6 +32,7 @@ import com.github.st1hy.countthemcalories.database.MealDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
+import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -145,8 +148,8 @@ public class OverviewActivityTest {
 
     @Test
     public void testCanAddNewMeal() {
-        onView(ViewMatchers.withId(R.id.overview_fab_add_meal)).check(matches(isDisplayed()))
-                .perform(click());
+        onView(withId(R.id.fab_expand_menu_button)).perform(click());
+        onView(withId(R.id.overview_fab_add_meal)).perform(click());
         intended(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)));
         onView(withId(R.id.add_meal_content)).check(matches(isDisplayed()));
         onView(withId(R.id.add_meal_name)).perform(typeTextIntoFocusedView("Meal 3"));
@@ -186,11 +189,17 @@ public class OverviewActivityTest {
                 .check(matches(menuItemIsChecked(R.id.nav_overview)))
                 .perform(navigateTo(R.id.nav_overview));
         assertNoUnverifiedIntents();
-        onView(withId(R.id.overview_recycler_view))
+        onView(mainScreen())
                 .check(matches(isDisplayed()))
                 .perform(loopMainThreadForAtLeast(200)); //Drawer may be closing
         onView(withId(R.id.drawer_layout)).check(matches(isClosed()));
     }
+
+    @NonNull
+    public static Matcher<View> mainScreen() {
+        return allOf(withId(R.id.overview_recycler_view), isDisplayed());
+    }
+
 
     @Test
     public void testNavigateToIngredients() {
@@ -253,7 +262,7 @@ public class OverviewActivityTest {
 
     @Test
     public void testEditWithScroll() throws Exception {
-        onView(allOf(withId(R.id.overview_item_content), withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(mealButtonWithName(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()))
                 .perform(swipeLeft());
 
@@ -271,7 +280,7 @@ public class OverviewActivityTest {
         onView(withId(R.id.add_meal_name))
                 .perform(typeTextIntoFocusedView("Meal edited"));
         onView(withText(R.string.add_meal_save_action)).perform(click());
-        onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
+        onView(mainScreen()).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
     }
 
@@ -292,7 +301,7 @@ public class OverviewActivityTest {
         onView(withText("Ingredient 1")).check(doesNotExist());
 
         onView(withText(R.string.add_meal_save_action)).perform(click());
-        onView(withId(R.id.overview_recycler_view)).check(matches(isDisplayed()));
+        onView(mainScreen()).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
         onView(withText("20:43")).check(matches(isDisplayed()));
         onView(withText(containsString("Ingredient 1"))).check(doesNotExist());
@@ -300,22 +309,25 @@ public class OverviewActivityTest {
 
     @Test
     public void testDeleteSwipe() throws Exception {
-        onView(allOf(withId(R.id.overview_item_content),
-                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(mealButtonWithName(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()))
                 .perform(swipeRight());
         onView(allOf(withId(R.id.overview_item_delete), isDisplayed())).perform(click());
-        onView(allOf(withId(R.id.overview_item_content),
-                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(mealButtonWithName(exampleMeals[0].getName()))
                 .check(doesNotExist());
+    }
+
+    @NonNull
+    public static Matcher<View> mealButtonWithName(String name) {
+        return allOf(withId(R.id.overview_item_content),
+                withChild(withChild(withChild(withChild(withText(name))))));
     }
 
     @Test
     public void testDeleteUndo() throws Exception {
         testDeleteSwipe();
         onView(withText(R.string.undo)).perform(click());
-        onView(allOf(withId(R.id.overview_item_content),
-                withChild(withChild(withChild(withText(exampleMeals[0].getName()))))))
+        onView(mealButtonWithName(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()));
     }
 }
