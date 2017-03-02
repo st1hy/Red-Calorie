@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
 
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,8 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
             setWeight(holder, day);
             setLine(holder, position);
             holder.setPos(position);
+            holder.setColor(defaultColorRes(position));
+            holder.setBackground(defaultBackgroundRes(position));
         }
     }
 
@@ -156,12 +159,12 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     }
 
     private float normalizeWeight(DayData day) {
-        float value = day.getValue();
+        float value = day.getWeight();
         if (value > 0) {
             float min = minDisplayWeight(timePeriod.getMinWeight());
             float max = maxDisplayWeight(timePeriod.getMaxWeight());
             float range = max - min;
-            if (range > 0) return (day.getWeight() - min) / range;
+            if (range > 0) return (value - min) / range;
         }
         return -1f;
     }
@@ -172,6 +175,17 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
 
     private float maxDisplayWeight(float value) {
         return value * 1.01f;
+    }
+
+
+    @ColorRes
+    private int defaultColorRes(int position) {
+        return position % 2 == 0 ? R.color.gcDefaultColor : R.color.gcDefaultColorAlternative;
+    }
+
+    @ColorRes
+    private int defaultBackgroundRes(int position) {
+        return position % 2 == 0 ? R.color.gcDefaultBackground : R.color.gcDefaultBackgroundAlternative;
     }
 
 }

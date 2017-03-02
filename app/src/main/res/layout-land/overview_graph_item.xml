@@ -9,10 +9,10 @@
     android:orientation="horizontal"
     android:clickable="true"
     style="@style/Widget.AppCompat.Button.Borderless"
-    android:paddingTop="0dp"
-    android:paddingBottom="0dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:padding="0dp">
+    <android.support.v4.widget.Space
+        android:layout_width="8dp"
+        android:layout_height="0dp" />
 
     <TextView
         android:id="@+id/graph_item_name"

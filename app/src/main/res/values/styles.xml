@@ -49,6 +49,7 @@
         <item name="gc_orientation">bottom_to_top</item>
         <item name="gc_color">@color/gcDefaultColor</item>
         <item name="gc_color_selected">@color/gcDefaultColorSelected</item>
+        <item name="gc_background">@color/gcDefaultBackground</item>
         <item name="gc_progress">0.5</item>
         <item name="gc_mode">all</item>
         <item name="gc_line_width">2dip</item>
@@ -64,6 +65,7 @@
         <item name="gc_legend_text_point_color">@color/gcLegendTextColorWeight</item>
         <item name="gc_legend_text_value_color">@color/gcLegendTextColorCalorie</item>
         <item name="gc_legend_text_padding">4dp</item>
+        <item name="gc_selection_line_width">4dip</item>
     </style>
     <style name="GraphColumn.Default">
     </style>

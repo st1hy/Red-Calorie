@@ -78,6 +78,13 @@ public class GraphColumnModel {
     final PointF pointValuePosition = new PointF();
     String textPointValue = "";
     final TextPaint pointValuePaint;
+    int backgroundColor;
+
+    final Paint selectedPaint;
+    final float[] selectionLine = new float[4];
+    private final float selectionLineWidth;
+    private boolean selectionDirty;
+    boolean isSelected;
 
     GraphColumnModel(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphColumn, defStyleAttr, R.style.GraphColumn_Default);
@@ -98,6 +105,9 @@ public class GraphColumnModel {
         pointSize = a.getDimension(R.styleable.GraphColumn_gc_point_size, 10f);
         minLineSpaces = a.getDimension(R.styleable.GraphColumn_gc_legend_min_legend_line_space, 100);
         textPadding = a.getDimension(R.styleable.GraphColumn_gc_legend_text_padding, 8f);
+        backgroundColor = a.getColor(R.styleable.GraphColumn_gc_background, Color.WHITE);
+        int gc_color_selected = a.getColor(R.styleable.GraphColumn_gc_color_selected, Color.RED);
+        selectionLineWidth = a.getDimension(R.styleable.GraphColumn_gc_selection_line_width, 8f);
         a.recycle();
         columnColor = new Paint();
         columnColor.setColor(color);
@@ -130,6 +140,9 @@ public class GraphColumnModel {
         pointValuePaint.setColor(gc_point_legend_text_color);
         pointValuePaint.setTextAlign(Paint.Align.CENTER);
         pointValuePaint.setTextSize(gc_legend_text_size);
+        selectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        selectedPaint.setStrokeWidth(selectionLineWidth);
+        selectedPaint.setColor(gc_color_selected);
     }
 
     public void setFlags(@GraphColumnModel.VisibilityFlags int flags) {
@@ -150,6 +163,12 @@ public class GraphColumnModel {
         columnLegendDirty = true;
         rowsLegendDirty = true;
         pointSizeDirty = true;
+        selectionDirty = true;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+        invalidate();
     }
 
     public void setValue(float value, float maxValue) {
@@ -168,6 +187,11 @@ public class GraphColumnModel {
     public void setColumnColor(@ColorInt int color) {
         columnColor.setColor(color);
         if (showColumn()) invalidate();
+    }
+
+    public void setBackgroundColor(@ColorInt int color) {
+        this.backgroundColor = color;
+        invalidate();
     }
 
     public void setLineColor(@ColorInt int color) {
@@ -240,7 +264,7 @@ public class GraphColumnModel {
                 break;
             case BOTTOM_TO_TOP:
                 columnSize.set(0f, (1f - progress) * height, width, height);
-                textValuePosition.set(width / 2, textSizeHalf + textPadding);
+                textValuePosition.set(width / 2, textSizeHalf + textPadding + textPadding);
                 break;
         }
         columnSizeDirty = false;
@@ -499,5 +523,37 @@ public class GraphColumnModel {
             }
         }
         return closestNumber;
+    }
+
+    void setSelection(float width, float height) {
+        if (!selectionDirty) return;
+        float lineHalfWidth = selectionLineWidth / 2 + legendLineWidthHalf;
+        switch (orientation) {
+            case RIGHT_TO_LEFT:
+                selectionLine[0] = width - lineHalfWidth;
+                selectionLine[1] = 0;
+                selectionLine[2] = width - lineHalfWidth;
+                selectionLine[3] = height;
+                break;
+            case LEFT_TO_RIGHT:
+                selectionLine[0] = lineHalfWidth;
+                selectionLine[1] = 0;
+                selectionLine[2] = lineHalfWidth;
+                selectionLine[3] = height;
+                break;
+            case TOP_TO_BOTTOM:
+                selectionLine[0] = 0;
+                selectionLine[1] = lineHalfWidth;
+                selectionLine[2] = width;
+                selectionLine[3] = lineHalfWidth;
+                break;
+            case BOTTOM_TO_TOP:
+                selectionLine[0] = 0;
+                selectionLine[1] = height - lineHalfWidth;
+                selectionLine[2] = width;
+                selectionLine[3] = height - lineHalfWidth;
+                break;
+        }
+        selectionDirty = false;
     }
 }

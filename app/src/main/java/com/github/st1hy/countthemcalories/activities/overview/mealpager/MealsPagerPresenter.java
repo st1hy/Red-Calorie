@@ -48,7 +48,7 @@ public class MealsPagerPresenter implements BasicLifecycle {
                 view.onPageSelected().subscribe(pagerModel::setSelectedPage)
         );
         subscriptions.add(
-                pagerModel.getSelectedPageChanges().subscribe(page -> view.setCurrentItem(page, false))
+                pagerModel.getSelectedPageChanges().subscribe(page -> view.setCurrentItem(page, true))
         );
         subscriptions.add(
                 pagerModel.timePeriodMostRecent()

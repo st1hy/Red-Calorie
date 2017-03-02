@@ -9,6 +9,7 @@
             <enum name="bottom_to_top" value="4"/>
         </attr>
         <attr name="gc_color" format="color"/>
+        <attr name="gc_background" format="color"/>
         <attr name="gc_color_selected" format="color"/>
         <attr name="gc_progress" format="float"/>
         <attr name="gc_mode">
@@ -19,6 +20,7 @@
             <flag name="all" value="7"/>
         </attr>
         <attr name="gc_line_width" format="dimension"/>
+        <attr name="gc_selection_line_width" format="dimension"/>
         <attr name="gc_line_color" format="color"/>
         <attr name="gc_legend_line_width" format="dimension"/>
         <attr name="gc_legend_line_color" format="color"/>

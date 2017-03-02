@@ -62,6 +62,7 @@ public class GraphColumn extends View {
         super.onDraw(canvas);
         float width = getWidth();
         float height = getHeight();
+        canvas.drawColor(model.backgroundColor);
         if (model.showColumn()) {
             model.setColumnSizeBounds(width, height);
             canvas.drawRect(model.columnSize, model.columnColor);
@@ -78,10 +79,13 @@ public class GraphColumn extends View {
             canvas.drawText(model.textPointValue, model.pointValuePosition.x, model.pointValuePosition.y,
                     model.pointValuePaint);
         }
+        if (model.isSelected) {
+            model.setSelection(width, height);
+            canvas.drawLines(model.selectionLine, model.selectedPaint);
+        }
         model.setLegendBounds(width, height);
         canvas.drawLines(model.legendVector, model.columnLegendLinePaint);
         canvas.drawLines(model.rowLegendVector, model.rowLegendLinePaint);
-
     }
 
     @Override

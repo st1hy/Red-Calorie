@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -65,14 +65,14 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setWeightVisibility(boolean isVisible) {
-        setFlat(isVisible, GraphColumnModel.FLAG_POINTS);
+        setFlag(isVisible, GraphColumnModel.FLAG_POINTS);
     }
 
     public void setValueVisibility(boolean isVisible) {
-        setFlat(isVisible, GraphColumnModel.FLAG_COLUMN);
+        setFlag(isVisible, GraphColumnModel.FLAG_COLUMN);
     }
 
-    private void setFlat(boolean isEnabled, @GraphColumnModel.VisibilityFlags int flag) {
+    private void setFlag(boolean isEnabled, @GraphColumnModel.VisibilityFlags int flag) {
         @GraphColumnModel.VisibilityFlags int flags = model.getFlags();
         if (isEnabled) {
             flags |= flag;
@@ -91,31 +91,32 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
         model.setLinePoints(points);
     }
 
-    public int getPos() {
-        return position;
-    }
-
     public void setPos(int position) {
         this.position = position;
     }
 
-    public void setColor(@ColorInt int color) {
+    public void setColor(@ColorRes int colorRes) {
+        int color = ContextCompat.getColor(context, colorRes);
         model.setColumnColor(color);
+    }
+
+    public void setBackground(@ColorRes int colorRes) {
+        int color = ContextCompat.getColor(context, colorRes);
+        model.setBackgroundColor(color);
     }
 
     public void onViewAttached(Observable<Integer> positionObservable) {
         subscriptions.add(
-                positionObservable
-                        .map(selectedPosition ->
-                                getPos() == selectedPosition
-                                        ? R.color.gcDefaultColorSelected
-                                        : R.color.gcDefaultColor)
-                        .map(colorRes -> ContextCompat.getColor(context, colorRes))
-                        .subscribe(this::setColor)
+                positionObservable.subscribe(this::onPositionSelected)
         );
     }
 
     public void onViewDetached() {
         subscriptions.clear();
+    }
+
+    private void onPositionSelected(int selectedPosition) {
+        boolean isSelected = position == selectedPosition;
+        model.setSelected(isSelected);
     }
 }

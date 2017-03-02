@@ -9,13 +9,16 @@
     <color name="checkboxSelected">@color/colorAccent</color>
 
     <color name="gcDefaultColor">#d40317</color>
-    <color name="gcDefaultColorSelected">#f95151</color>
+    <color name="gcDefaultColorAlternative">#e71125</color>
+    <color name="gcDefaultColorSelected">@color/colorAppBackground</color>
     <color name="gcLineColor">@color/colorAppBackground</color>
     <color name="gcLegendForegroundColor">@color/colorAppBackground</color>
     <color name="gcLegendBackgroundColor">#40FFFFFF</color>
     <color name="gcPointColor">@color/colorAppBackground</color>
     <color name="gcLegendTextColorCalorie">#fafafa</color>
     <color name="gcLegendTextColorWeight">#fafafa</color>
+    <color name="gcDefaultBackground">@color/colorPrimaryDark</color>
+    <color name="gcDefaultBackgroundAlternative">#76000b</color>
 
     <color name="expandingFabColor">@color/colorAccent</color>
     <color name="expandingFabColorPressed">#3563b7</color>

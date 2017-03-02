@@ -9,10 +9,7 @@
     android:gravity="center"
     android:minWidth="60dp"
     android:orientation="vertical"
-    android:paddingRight="0dp"
-    android:paddingLeft="0dp"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:padding="0dp">
 
     <com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn
         android:id="@+id/graph_item_column"
@@ -35,4 +32,8 @@
         android:textIsSelectable="false"
         android:textSize="12sp"
         tools:text="02.12" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="8dp" />
 </LinearLayout>
