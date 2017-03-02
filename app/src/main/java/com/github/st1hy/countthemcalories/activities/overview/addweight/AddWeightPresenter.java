@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
+import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.database.Weight;
@@ -26,6 +27,8 @@ public class AddWeightPresenter implements BasicLifecycle {
     @Inject
     AddWeightView view;
     @Inject
+    OverviewScreen screen;
+    @Inject
     RxDbWeightModel model;
     @Inject
     SettingsModel settingsModel;
@@ -44,6 +47,7 @@ public class AddWeightPresenter implements BasicLifecycle {
     public void onStart() {
         subscriptions.add(
                 view.addWeightButton()
+                        .doOnNext(any -> screen.closeFloatingMenu())
                         .flatMap(any -> model.findOneByDate(currentDate()))
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(this::convertToCurrentUnit)

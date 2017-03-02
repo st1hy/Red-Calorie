@@ -87,4 +87,19 @@ public class SettingsActivityTest {
         onView(withText("ml"))
                 .check(matches(isDisplayed()));
     }
+
+    @Test
+    public void testWeightSettings() throws Exception {
+        onView(withText("kg")).check(matches(isDisplayed()));
+        onView(ViewMatchers.withText(R.string.settings_unit_body_mass))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText(R.string.settings_select_unit_dialog_title))
+                .check(matches(isDisplayed()));
+        onView(withText("lb"))
+                .check(matches(isDisplayed()))
+                .perform(click());
+        onView(withText("lb"))
+                .check(matches(isDisplayed()));
+    }
 }

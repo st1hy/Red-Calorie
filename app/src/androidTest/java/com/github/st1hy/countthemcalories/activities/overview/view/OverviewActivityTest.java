@@ -129,6 +129,7 @@ public class OverviewActivityTest {
         MealDao mealDao = session.getMealDao();
         ingredientDao.deleteAll();
         mealDao.deleteAll();
+        session.getWeightDao().deleteAll();
 
         mealDao.insertInTx(exampleMeals);
         ingredientDao.insertInTx(exampleIngredients);
@@ -329,5 +330,20 @@ public class OverviewActivityTest {
         onView(withText(R.string.undo)).perform(click());
         onView(mealButtonWithName(exampleMeals[0].getName()))
                 .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testAddWeight() throws Exception {
+        onView(withId(R.id.fab_expand_menu_button)).perform(click());
+        onView(withId(R.id.overview_fab_add_weight)).perform(click());
+        onView(withHint(R.string.add_weight_dialog_hint))
+                .perform(typeTextIntoFocusedView("93"));
+        onView(withText(android.R.string.ok)).perform(click());
+        onView(withId(R.id.fab_expand_menu_button))
+                .perform(click());
+        onView(withId(R.id.overview_fab_add_weight)).perform(click());
+        onView(withHint(R.string.add_weight_dialog_hint))
+                .check(matches(withText("93")));
+
     }
 }
