@@ -71,4 +71,14 @@ public class DayData {
         result = 31 * result + (hasAnyData ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "DayData{" +
+                "dateTime=" + dateTime +
+                ", value=" + value +
+                ", weight=" + weight +
+                ", hasAnyData=" + hasAnyData +
+                '}';
+    }
 }

@@ -41,7 +41,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
     @Named("graphItemClicked")
     PublishSubject<Integer> positionClicked;
 
-    TimePeriod timePeriod;
+    private TimePeriod timePeriod;
 
     private final BehaviorSubject<Integer> selectedPosition = BehaviorSubject.create();
 
@@ -130,7 +130,7 @@ public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHold
         List<DayData> days = timePeriod.getData();
         float previous = position > 1 ? normalizeWeight(days.get(position - 1)) : -1f;
         float current = normalizeWeight(days.get(position));
-        float next =  position < days.size() - 1 ? normalizeWeight(days.get(position + 1)) : -1f;
+        float next = position < days.size() - 1 ? normalizeWeight(days.get(position + 1)) : -1f;
         if (current > 0 && (previous > 0 || next > 0)) {
             float[] segmentLine = holder.getMutable2SegmentLine();
             if (previous > 0) {

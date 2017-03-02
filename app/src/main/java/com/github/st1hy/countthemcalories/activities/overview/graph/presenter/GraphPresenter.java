@@ -40,7 +40,7 @@ public class GraphPresenter implements BasicLifecycle {
                         .filter(page -> page >= 0)
                         .mergeWith(model.getSelectedPageChanges())
                         .distinctUntilChanged()
-                        .doOnNext(recyclerView::scrollToPosition)
+                        .doOnNext(recyclerView::smoothScrollToPosition)
                         .subscribe(graphDataAdapter::setSelectedPosition)
         );
         subscriptions.add(
