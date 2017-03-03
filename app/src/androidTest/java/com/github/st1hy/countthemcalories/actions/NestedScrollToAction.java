@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.actions;
 
+import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
@@ -21,6 +22,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtL
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static org.hamcrest.Matchers.allOf;
 
+@SuppressLint("LogNotTimber")
 public class NestedScrollToAction implements ViewAction {
     private static final String TAG = NestedScrollToAction.class.getSimpleName();
 

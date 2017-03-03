@@ -5,8 +5,10 @@
     package="com.github.st1hy.countthemcalories">
 
     <application
+        tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:name"
-        android:name=".application.DevToolsDebugApplication">
+        android:name=".application.DevToolsDebugApplication"
+        android:fullBackupContent="true">
     </application>
 
 </manifest>

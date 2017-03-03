@@ -3,7 +3,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
 
@@ -32,9 +31,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
-        //Retrolamda breaks lint
-        //checkReleaseBuilds false
-        abortOnError false
+        disable 'LogNotTimber'
     }
 }
 

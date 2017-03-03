@@ -17,13 +17,13 @@ public class RxSnackbar {
     }
 
     @NonNull
-    public static RxSnackbar make(@NonNull View root, @StringRes int titleRes, @Snackbar.Duration int duration) {
+    public static RxSnackbar make(@NonNull View root, @StringRes int titleRes, int duration) {
         return new RxSnackbar(Snackbar.make(root, titleRes, duration));
     }
 
     @NonNull
     public Observable<Void> action(@StringRes int actionResId) {
-        OnSubscribeClickListener onClickListener = new OnSubscribeClickListener();
+        ClickListenerEmitter onClickListener = new ClickListenerEmitter();
         snackbar.setAction(actionResId, onClickListener);
         return Observable.create(onClickListener);
     }
@@ -37,7 +37,7 @@ public class RxSnackbar {
         snackbar.show();
     }
 
-    private static class OnSubscribeClickListener implements Observable.OnSubscribe<Void>, View.OnClickListener {
+    private static class ClickListenerEmitter implements Observable.OnSubscribe<Void>, View.OnClickListener {
         private Subscriber<? super Void> subscriber;
 
         @Override
@@ -46,7 +46,7 @@ public class RxSnackbar {
             subscriber.add(new MainThreadSubscription() {
                 @Override
                 protected void onUnsubscribe() {
-                    OnSubscribeClickListener.this.subscriber = null;
+                    ClickListenerEmitter.this.subscriber = null;
                 }
             });
         }

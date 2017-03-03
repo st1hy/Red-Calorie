@@ -1,12 +1,13 @@
 package com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatDrawableManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -134,6 +135,7 @@ public class AddIngredientFragmentModule {
 
         RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(
                 R.id.add_ingredient_categories_recycler);
+        tagsRecycler.setNestedScrollingEnabled(true);
         tagsRecycler.setAdapter(adapter);
         tagsRecycler.setLayoutManager(layoutManager);
         tagsRecycler.addItemDecoration(horizontalDivider);
@@ -148,25 +150,32 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @Named("horizontalDivider")
-    public static RecyclerView.ItemDecoration horizontalDivider(@Named("activityContext") Context context) {
+    public static RecyclerView.ItemDecoration horizontalDivider(@Named("activityContext") Context context,
+                                                                @Named("divider") Drawable divider) {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL);
-        itemDecoration.setDrawable(AppCompatDrawableManager.get()
-                .getDrawable(context, R.drawable.invisible_divider));
+        itemDecoration.setDrawable(divider);
         return itemDecoration;
     }
 
     @Provides
     @Named("verticalDivider")
-    public static RecyclerView.ItemDecoration verticalDivider(@Named("activityContext") Context context) {
+    public static RecyclerView.ItemDecoration verticalDivider(@Named("activityContext") Context context,
+                                                              @Named("divider") Drawable divider) {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-        itemDecoration.setDrawable(AppCompatDrawableManager.get()
-                .getDrawable(context, R.drawable.invisible_divider));
+        itemDecoration.setDrawable(divider);
         return itemDecoration;
     }
 
     @Provides
     public static Observable<AddIngredientMenuAction> menuActionObservable(PublishSubject<AddIngredientMenuAction> subject) {
         return subject.asObservable();
+    }
+
+    @Provides
+    @Named("divider")
+    @PerFragment
+    public static Drawable invisibleDivider(@Named("activityContext") Context context) {
+        return ContextCompat.getDrawable(context, R.drawable.invisible_divider);
     }
 
 }

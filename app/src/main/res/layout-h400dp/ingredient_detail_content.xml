@@ -15,6 +15,7 @@
         android:contentDescription="@string/add_meal_ingredient_photo_description"
         android:scaleType="fitCenter"
         android:transitionName="ingredient-shared-view-image"
+        tools:targetApi="lollipop"
         app:srcCompat="@drawable/ic_fork_and_knife_positive" />
 
 
@@ -39,8 +40,6 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/ingredient_detail_title_size"
-                android:transitionName="ingredient-shared-view-name"
-                tools:targetApi="lollipop"
                 tools:text="Example ingredient name" />
 
             <Space
@@ -52,8 +51,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="false"
-                android:transitionName="ingredient-shared-view-density"
-                tools:targetApi="lollipop"
                 tools:text="400 kcal / 100 g" />
 
             <Space
@@ -68,8 +65,6 @@
                 android:textColor="?colorAccent"
                 android:textIsSelectable="false"
                 android:textSize="16sp"
-                android:transitionName="ingredient-shared-view-calories"
-                tools:targetApi="lollipop"
                 tools:text="160 kcal" />
         </LinearLayout>
 

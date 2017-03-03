@@ -50,8 +50,6 @@
             android:layout_height="wrap_content"
             android:textIsSelectable="false"
             android:textSize="16sp"
-            android:transitionName="meal-shared-view-name"
-            tools:targetApi="lollipop"
             tools:text="Example ingredient name" />
 
         <TextView
@@ -61,8 +59,6 @@
             android:layout_height="wrap_content"
             android:textIsSelectable="false"
             android:textSize="12sp"
-            android:transitionName="ingredient-shared-view-density"
-            tools:targetApi="lollipop"
             tools:text="400 kcal / 100 g" />
 
         <TextView
@@ -72,8 +68,6 @@
             android:layout_height="wrap_content"
             android:textIsSelectable="false"
             android:textSize="12sp"
-            android:transitionName="ingredient-shared-view-calories"
-            tools:targetApi="lollipop"
             tools:text="40 g" />
     </LinearLayout>
 

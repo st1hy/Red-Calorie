@@ -33,7 +33,6 @@ public final class UndoViewImpl implements UndoView {
     @Override
     @NonNull
     public Observable<UndoAction> showUndoMessage(@StringRes int undoMessageResId) {
-        @SuppressWarnings("WrongConstant")
         RxSnackbar rxSnackbar = RxSnackbar.make(rootView, undoMessageResId, Snackbar.LENGTH_LONG);
         Observable<Void> observable = rxSnackbar.action(R.string.undo);
         undo = rxSnackbar.getSnackbar();

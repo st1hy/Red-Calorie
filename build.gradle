@@ -4,13 +4,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath "me.tatarka:gradle-retrolambda:3.4.0"
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath "me.tatarka:gradle-retrolambda:3.6.0"
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 
-    // Exclude the version that the android plugin depends on.
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 ext {
@@ -20,23 +18,22 @@ ext {
     compileSdkVersion = 24
     buildToolsVersion = '25.0.2'
 
-    supportLibraryVersion = '25.1.1'
+    supportLibraryVersion = '25.2.0'
 
-    daggerVersion = '2.8'
-    butterknifeVersion = '8.4.0'
+    daggerVersion = '2.9'
+    butterknifeVersion = '8.5.1'
 
-    rxJavaVersion = '1.2.4'
+    rxJavaVersion = '1.2.7'
     rxAndroidVersion = '1.2.1'
-    timberVersion = '4.4.0'
-    greenDaoVersion = '3.2.0'
+    timberVersion = '4.5.1'
 
     jUnitVersion = '4.12'
-    mockitoVersion = '2.4.1'
+    mockitoVersion = '2.7.13'
     parcelerVersion = '1.1.6'
 
     //App
     guavaVersion = '20.0'
-    rxBindingsVersion = '1.0.0'
+    rxBindingsVersion = '1.0.1'
     supportTestRunnerVersion = '0.5'
     espressoVersion = '2.2.2'
     glideVersion = '3.7.0'
@@ -47,7 +44,8 @@ ext {
     uiAutomatorVersion = '2.1.2'
 
     //Database
-    jodaTimeVersion = '2.9.5.1'
+    greenDaoVersion = '3.2.0'
+    jodaTimeVersion = '2.9.7'
 }
 
 allprojects {

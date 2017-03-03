@@ -97,7 +97,6 @@
             android:id="@+id/add_ingredient_categories_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
             tools:listitem="@layout/add_ingredient_tag" />
 
         <TextView
