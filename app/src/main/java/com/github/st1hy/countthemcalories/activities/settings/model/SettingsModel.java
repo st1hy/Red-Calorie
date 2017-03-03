@@ -94,6 +94,7 @@ public class SettingsModel {
         editor.putInt(PREFERRED_ENERGY_UNIT, defaultUnitOfEnergy.getId());
         editor.putInt(PREFERRED_MASS_UNIT, defaultUnitOfMass.getId());
         editor.putInt(PREFERRED_VOLUME_UNIT, defaultUnitOfVolume.getId());
+        editor.putInt(PREFERRED_BODY_MASS_UNIT, defaultBodyMassUnit.getOrdinal());
         editor.apply();
     }
 

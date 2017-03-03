@@ -25,7 +25,7 @@ public class PagerModel {
     private int selectedPage = -1;
 
     private final transient PublishSubject<TimePeriod> timePeriodChangesSubject = PublishSubject.create();
-    private final transient PublishSubject<Integer> selectedPageChanges = PublishSubject.create();
+    private final transient PublishSubject<SelectionEvent> selectedPageChanges = PublishSubject.create();
 
     @ParcelConstructor
     public PagerModel() {
@@ -45,10 +45,14 @@ public class PagerModel {
     }
 
     public void setSelectedPage(int selectedPage) {
+        setSelectedPage(selectedPage, false);
+    }
+
+    public void setSelectedPage(int selectedPage, boolean scrollTo) {
         boolean pageChanges = selectedPage != this.selectedPage;
         this.selectedPage = selectedPage;
         if (pageChanges) {
-            selectedPageChanges.onNext(selectedPage);
+            selectedPageChanges.onNext(SelectionEvent.of(selectedPage, scrollTo));
         }
     }
 
@@ -83,7 +87,15 @@ public class PagerModel {
                 .mergeWith(timePeriodChangesSubject);
     }
 
+    @NonNull
+    @CheckResult
     public Observable<Integer> getSelectedPageChanges() {
+        return selectedPageChanges.map(SelectionEvent::getPage);
+    }
+
+    @NonNull
+    @CheckResult
+    public Observable<SelectionEvent> getSelectionEventChanges() {
         return selectedPageChanges.asObservable();
     }
 
@@ -94,4 +106,5 @@ public class PagerModel {
                 .map(DayData::getDateTime)
                 .distinctUntilChanged();
     }
+
 }

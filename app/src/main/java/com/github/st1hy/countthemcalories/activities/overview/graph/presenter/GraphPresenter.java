@@ -45,7 +45,7 @@ public class GraphPresenter implements BasicLifecycle {
         );
         subscriptions.add(
                 graphDataAdapter.graphColumnClicked()
-                        .subscribe(model::setSelectedPage)
+                        .subscribe(page -> model.setSelectedPage(page, true))
         );
     }
 
