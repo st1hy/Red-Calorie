@@ -1,13 +1,12 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
 
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.CompoundButtonCompat;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ public class TagItemHolder extends TagViewHolder {
     @BindView(R.id.tags_item_count)
     TextView counter;
     @BindView(R.id.tags_item_checkbox)
-    CheckBox checkBox;
+    AppCompatCheckBox checkBox;
 
     @BindView(R.id.tags_item_scrollview)
     HorizontalScrollView scrollView;
@@ -125,11 +124,7 @@ public class TagItemHolder extends TagViewHolder {
     }
 
     public void setCheckedTint(@ColorInt int color) {
-        Drawable buttonDrawable = CompoundButtonCompat.getButtonDrawable(checkBox);
-        if (buttonDrawable != null) {
-            DrawableCompat.setTint(buttonDrawable, color);
-            checkBox.setButtonDrawable(buttonDrawable);
-        }
+        CompoundButtonCompat.setButtonTintList(checkBox, ColorStateList.valueOf(color));
     }
 
     public boolean isChecked() {

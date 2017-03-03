@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
 import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
@@ -24,6 +25,12 @@ public class CaloriesCounterApplication extends DatabaseApplication {
             }
         }
         return component;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     public static CaloriesCounterApplication get(@NonNull Context context) {

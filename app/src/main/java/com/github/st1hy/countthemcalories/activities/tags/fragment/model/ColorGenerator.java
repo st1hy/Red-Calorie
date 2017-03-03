@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.model;
 
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 
 import java.util.Random;
 
@@ -23,6 +24,7 @@ public class ColorGenerator {
     /**
      * @return pseudo random color value the same for specified id
      */
+    @ColorInt
     public int getColorFor(long id) {
         long seed = ColorGenerator.seed + id;
         random.setSeed(seed);
