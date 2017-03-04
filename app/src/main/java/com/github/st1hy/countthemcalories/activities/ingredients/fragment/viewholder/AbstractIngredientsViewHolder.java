@@ -8,7 +8,7 @@ import javax.inject.Named;
 
 public abstract class AbstractIngredientsViewHolder extends RecyclerView.ViewHolder {
 
-    AbstractIngredientsViewHolder(@NonNull @Named("ingredientRootView")View itemView) {
+    AbstractIngredientsViewHolder(@NonNull @Named("ingredientRootView") View itemView) {
         super(itemView);
     }
 

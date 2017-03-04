@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
@@ -10,29 +11,12 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
 import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
-import com.github.st1hy.countthemcalories.activities.overview.meals.model.MealsViewModel;
-import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.overview.meals.model.commands.MealsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
-import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailParams;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
-import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
-import com.github.st1hy.countthemcalories.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponent;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowModule;
-
-import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -41,123 +25,73 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
-import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
-
-import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.ofType;
 
 @PerFragment
-public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
-        implements BasicLifecycle {
+public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
 
     private static final int mealItemLayout = R.layout.overview_item_scrolling;
     private static final int mealItemLayoutBottom = R.layout.list_item_bottom;
     private static final int mealItemLayoutTop = R.layout.list_item_top;
     private static final int TOP_PADDING = 1;
-    private static final int BOTTOM_PADDING = 1;
     private static final int PADDING = 2;
-
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
-
-    @NonNull
-    private final RxMealsDatabaseModel databaseModel;
-    @NonNull
-    private final PhysicalQuantitiesModel quantityModel;
-    @NonNull
-    private final OverviewView view;
-    @NonNull
-    private final MealsDatabaseCommands commands;
-    @NonNull
-    private final MealsViewModel viewModel;
-    @NonNull
-    private final UndoView undoView;
-    @NonNull
-    private final MealRowComponentFactory mealRowComponentFactory;
 
     private List<Meal> list = Collections.emptyList();
 
-    private final PublishSubject<MealInteraction> interactionSubject = PublishSubject.create();
+    @Inject
+    PublishSubject<MealInteraction> interactionSubject;
+    @Inject
+    PhysicalQuantitiesModel quantityModel;
+    @Inject
+    MealRowComponentFactory mealRowComponentFactory;
+
+    @Inject
+    MealsAdapter() {
+    }
+
+    void onNewDataSet(@NonNull List<Meal> meals) {
+        this.list = meals;
+    }
+
+    int getMealsCount() {
+        return list.size();
+    }
+
+    void addMealAtPosition(@NonNull Meal meal, int positionOnList) {
+        list.add(positionOnList, meal);
+        if (getMealsCount() > 1) {
+            notifyItemInserted(positionOnAdapter(positionOnList));
+        } else {
+            notifyDataSetChanged();
+        }
+    }
+
+    void removeMealAtPosition(int positionOnList) {
+        list.remove(positionOnList);
+        if (getMealsCount() > 0) {
+            notifyItemRemoved(positionOnAdapter(positionOnList));
+        } else {
+            notifyDataSetChanged();
+        }
+    }
 
     @Nullable
-    private MealItemHolder disabledHolder;
-    @Inject
-    CurrentDayModel currentDayModel;
-    @Inject
-    TimePeriodModel timePeriodModel;
-
-    @Inject
-    public MealsAdapter(@NonNull OverviewView view,
-                        @NonNull RxMealsDatabaseModel databaseModel,
-                        @NonNull PhysicalQuantitiesModel quantityModel,
-                        @NonNull MealsDatabaseCommands commands,
-                        @NonNull MealsViewModel viewModel,
-                        @NonNull UndoView undoView,
-                        @NonNull MealRowComponentFactory mealRowComponentFactory) {
-        this.view = view;
-        this.commands = commands;
-        this.databaseModel = databaseModel;
-        this.quantityModel = quantityModel;
-        this.viewModel = viewModel;
-        this.undoView = undoView;
-        this.mealRowComponentFactory = mealRowComponentFactory;
-    }
-
-    @Override
-    public void onStart() {
-        loadMeals();
-        subscriptions.add(
-                interactionSubject.filter(ofType(MealInteraction.Type.OPEN))
-                        .doOnNext(disableViewHolder())
-                        .map(interaction -> {
-                            MealItemHolder holder = interaction.getHolder();
-                            return new MealDetailParams(holder.getMeal(), holder.getImage());
-                        })
-                        .compose(view.openMealDetails())
-                        .doOnNext(enableViewHolder())
-                        .subscribe(mealDetailAction -> {
-                            long mealId = mealDetailAction.getId();
-                            switch (mealDetailAction.getType()) {
-                                case DELETE:
-                                    deleteMealWithId(mealId);
-                                    break;
-                                case EDIT:
-                                    editMealWithId(mealId);
-                                    break;
-                                case CANCELED:
-                                    break;
-                            }
-                        })
-        );
-        subscriptions.add(
-                interactionSubject.filter(ofType(MealInteraction.Type.EDIT))
-                        .doOnNext(disableViewHolder())
-                        .subscribe(interaction -> {
-                            MealItemHolder holder = interaction.getHolder();
-                            openEditScreen(holder.getMeal());
-                        })
-        );
-        subscriptions.add(
-                interactionSubject.filter(ofType(MealInteraction.Type.DELETE))
-                        .doOnNext(disableViewHolder())
-                        .subscribe(interaction -> {
-                            long id = interaction.getHolder().getMeal().getId();
-                            deleteMealWithId(id);
-                        })
-        );
-    }
-
-    @Override
-    public void onStop() {
-        subscriptions.clear();
+    Pair<Integer, Meal> getMealPositionWithId(long mealId) {
+        List<Meal> meals = this.list;
+        for (int i = 0; i < meals.size(); i++) {
+            Meal meal = meals.get(i);
+            Long id = meal.getId();
+            if (id != null && id == mealId) {
+                return Pair.create(i, meal);
+            }
+        }
+        return null;
     }
 
     @Override
     public int getItemCount() {
-        int listSize = list.size();
+        int listSize = getMealsCount();
         return listSize > 0 ? listSize + PADDING : 0;
     }
 
@@ -165,7 +99,7 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
     public int getItemViewType(int position) {
         if (position < TOP_PADDING) {
             return mealItemLayoutTop;
-        } else if (position < list.size() + TOP_PADDING) {
+        } else if (position < getMealsCount() + TOP_PADDING) {
             return mealItemLayout;
         } else {
             return mealItemLayoutBottom;
@@ -215,40 +149,6 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         }
     }
 
-    private void editMealWithId(long mealId) {
-        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
-        if (mealPair != null) {
-            openEditScreen(mealPair.second);
-        } else {
-            Timber.w("Meal with id: %s no longer exist", mealId);
-        }
-    }
-
-    private void deleteMealWithId(long mealId) {
-        Pair<Integer, Meal> mealPair = getMealPositionWithId(mealId);
-        if (mealPair != null) {
-            deleteMeal(mealPair.second, mealPair.first);
-        } else {
-            Timber.w("Meal with id: %s no longer exist", mealId);
-        }
-    }
-
-    private void openEditScreen(@NonNull Meal meal) {
-        view.editMeal(meal);
-    }
-
-    private void loadMeals() {
-        subscriptions.add(
-                currentDayModel.getCurrentDay()
-                .switchMap(date -> {
-                    DateTime from = date.withTimeAtStartOfDay();
-                    DateTime to = date.plusDays(1).withTimeAtStartOfDay();
-                    return databaseModel.getAllFilteredSortedDate(from, to);
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnUpdatedDataSet())
-        );
-    }
 
     private void onBindIngredients(@NonNull final MealItemHolder holder,
                                    @NonNull Meal meal) {
@@ -267,72 +167,10 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
                 .map(BigDecimal::toPlainString)
                 .doOnNext(any -> holder.setTotalEnergyUnit(quantityModel.getEnergyUnitName()))
                 .subscribe(holder::setTotalEnergy);
-        //TODO
     }
 
     private void onBindImage(@NonNull Meal meal, @NonNull MealItemHolder holder) {
         holder.setImageUri(meal.getImageUri());
-    }
-
-    @Nullable
-    private Pair<Integer, Meal> getMealPositionWithId(long mealId) {
-        List<Meal> meals = this.list;
-        for (int i = 0; i < meals.size(); i++) {
-            Meal meal = meals.get(i);
-            Long id = meal.getId();
-            if (id != null && id == mealId) {
-                return Pair.create(i, meal);
-            }
-        }
-        return null;
-    }
-
-    private void deleteMeal(@NonNull Meal meal, int positionOnList) {
-        subscriptions.add(commands.delete(meal)
-                .doOnNext(deleteResponse ->
-                        subscriptions.add(deleteResponse.undoAvailability()
-                                .compose(new UndoTransformer<>(deleteResponse,
-                                        isAvailable -> {
-                                            if (isAvailable)
-                                                return undoView.showUndoMessage(
-                                                        viewModel.getUndoRemoveMealMessage());
-                                            else {
-                                                undoView.hideUndoMessage();
-                                                return Observable.empty();
-                                            }
-                                        }))
-                                .subscribe(meal1 -> {
-                                    list.add(positionOnList, meal1);
-                                    onNewDataSet(list);
-                                    timePeriodModel.refresh();
-                                    if (list.size() > 1) {
-                                        notifyItemInserted(positionOnAdapter(positionOnList));
-                                    } else {
-                                        notifyDataSetChanged();
-                                    }
-                                })
-                        ))
-                .map(Functions.intoResponse())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {
-                    list.remove(positionOnList);
-                    onNewDataSet(list);
-                    timePeriodModel.refresh();
-                    if (list.size() > 0) {
-                        notifyItemRemoved(positionOnAdapter(positionOnList));
-                    } else {
-                        notifyDataSetChanged();
-                    }
-                }));
-    }
-
-    private void onNewDataSet(@NonNull List<Meal> meals) {
-        this.list = meals;
-        setEmptyListVisibility();
-    }
-
-    private void setEmptyListVisibility() {
-        view.setEmptyListVisibility(list.size() == 0 ? Visibility.VISIBLE : Visibility.GONE);
     }
 
     @NonNull
@@ -347,38 +185,12 @@ public class MealsAdapter extends RecyclerAdapterWrapper<AbstractMealItemHolder>
         };
     }
 
-    private class OnUpdatedDataSet extends SimpleSubscriber<List<Meal>> {
 
-        @Override
-        public void onNext(List<Meal> meals) {
-            onNewDataSet(meals);
-            notifyDataSetChanged();
-        }
-    }
-
-    @NonNull
-    private Action1<MealInteraction> disableViewHolder() {
-        return interaction -> {
-            disabledHolder = interaction.getHolder();
-            disabledHolder.setEnabled(false);
-        };
-    }
-
-    @NonNull
-    private Action1<MealDetailAction> enableViewHolder() {
-        return mealDetailAction -> {
-            if (disabledHolder != null) {
-                disabledHolder.setEnabled(true);
-                disabledHolder = null;
-            }
-        };
-    }
-
-    public static int positionOnList(int positionOnAdapter) {
+    private static int positionOnList(int positionOnAdapter) {
         return positionOnAdapter - TOP_PADDING;
     }
 
-    public static int positionOnAdapter(int positionOnList) {
+    private static int positionOnAdapter(int positionOnList) {
         return positionOnList + TOP_PADDING;
     }
 }

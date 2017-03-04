@@ -19,8 +19,8 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
+import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
@@ -144,8 +144,8 @@ public class AddMealFragmentModule {
 
     @Provides
     public static RecyclerView recyclerView(@Named("fragmentRootView") View rootView,
-                                     RecyclerViewAdapterDelegate adapter,
-                                     @Named("activityContext") Context context) {
+                                            RecyclerViewAdapterDelegate adapter,
+                                            @Named("activityContext") Context context) {
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(
                 R.id.add_meal_ingredients_list);

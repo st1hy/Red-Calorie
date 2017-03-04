@@ -19,7 +19,8 @@ public class DefaultNameEn implements DefaultNameSelector {
         DateTime h2 = time.withTime(2, 0, 0, 0);
         if (time.isBefore(h2)) {
             return R.string.add_meal_name_dinner;
-        } if (time.isBefore(time.withTime(10, 0, 0, 0))) {
+        }
+        if (time.isBefore(time.withTime(10, 0, 0, 0))) {
             return R.string.add_meal_name_breakfast;
         } else if (time.isBefore(time.withTime(15, 0, 0, 0))) {
             return R.string.add_meal_name_lunch;

@@ -70,8 +70,8 @@ public class MealDetailsModule {
     @Provides
     @PerFragment
     public static RecyclerView recyclerView(@Named("activityContext") Context context,
-                                     View rootView,
-                                     RecyclerViewAdapterDelegate adapter) {
+                                            View rootView,
+                                            RecyclerViewAdapterDelegate adapter) {
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
         recyclerView.setAdapter(adapter);

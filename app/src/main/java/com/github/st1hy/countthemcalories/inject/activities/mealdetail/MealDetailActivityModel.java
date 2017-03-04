@@ -26,8 +26,8 @@ public class MealDetailActivityModel {
 
     @Provides
     public static MealDetailFragment provideDetailFragment(Bundle arguments,
-                                                    FragmentManager fragmentManager,
-                                                    MealDetailActivityComponent component) {
+                                                           FragmentManager fragmentManager,
+                                                           MealDetailActivityComponent component) {
 
         MealDetailFragment fragment = (MealDetailFragment) fragmentManager.findFragmentByTag(FRAGMENT_TAG);
         if (fragment == null) {

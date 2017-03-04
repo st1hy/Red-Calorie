@@ -40,9 +40,9 @@ public class IngredientListModule {
 
     @Provides
     @Named("ingredientImageHolder")
-    public static ImageHolderDelegate imageHolderDelegate(@Named("appContext")Context context,
-                                                   PermissionsHelper permissionsHelper,
-                                                   @Named("ingredientImage") Provider<ImageView> imageView) {
+    public static ImageHolderDelegate imageHolderDelegate(@Named("appContext") Context context,
+                                                          PermissionsHelper permissionsHelper,
+                                                          @Named("ingredientImage") Provider<ImageView> imageView) {
         return new ImageHolderDelegate(context, permissionsHelper, imageView);
     }
 

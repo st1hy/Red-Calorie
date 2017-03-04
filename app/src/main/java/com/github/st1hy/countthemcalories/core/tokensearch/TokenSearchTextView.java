@@ -190,6 +190,7 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
 
     public interface DropDownDialogChangeListener {
         void onDialogShown();
+
         void onDialogDismissed();
     }
 }

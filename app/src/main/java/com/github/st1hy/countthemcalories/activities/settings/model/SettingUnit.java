@@ -74,8 +74,7 @@ public enum SettingUnit {
         public void setUnitTo(@NonNull SettingsModel model, int which) {
             model.setBodyMassUnit(options()[which]);
         }
-    }
-    ;
+    };
 
     private final int titleRes;
 

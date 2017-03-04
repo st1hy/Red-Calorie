@@ -25,8 +25,7 @@ public enum BodyMassUnit implements AmountUnit {
         public AmountUnit getBaseUnit() {
             return KG;
         }
-    }
-    ;
+    };
     private final int ordinal;
     private final BigDecimal base;
     @StringRes

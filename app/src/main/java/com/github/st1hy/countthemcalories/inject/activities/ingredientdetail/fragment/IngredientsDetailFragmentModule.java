@@ -67,7 +67,7 @@ public class IngredientsDetailFragmentModule {
     @Provides
     @PerFragment
     public static Ingredient provideIngredient(@Nullable @Named("savedState") Bundle savedState,
-                                        @Named("arguments") Bundle arguments) {
+                                               @Named("arguments") Bundle arguments) {
         if (savedState != null) {
             return Parcels.unwrap(savedState.getParcelable(SAVED_INGREDIENT_MODEL));
         } else {

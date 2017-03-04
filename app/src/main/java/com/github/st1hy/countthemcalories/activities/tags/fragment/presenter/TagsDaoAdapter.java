@@ -107,7 +107,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
 
     @Override
     public int getItemViewType(int position) {
-        if (position < TOP_ITEM_PADDING){
+        if (position < TOP_ITEM_PADDING) {
             return space_top;
         } else if (position < getDaoItemCount() + TOP_ITEM_PADDING) {
             return item_layout;

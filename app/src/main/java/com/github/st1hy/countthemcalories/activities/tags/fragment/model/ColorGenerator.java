@@ -29,6 +29,6 @@ public class ColorGenerator {
         long seed = ColorGenerator.seed + id;
         random.setSeed(seed);
         float hue = random.nextInt(360); //0..360
-        return Color.HSVToColor(alpha, new float[] {hue, saturation, value});
+        return Color.HSVToColor(alpha, new float[]{hue, saturation, value});
     }
 }

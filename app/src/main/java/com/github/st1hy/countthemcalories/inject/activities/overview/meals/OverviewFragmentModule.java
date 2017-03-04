@@ -10,13 +10,15 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealPagerPosition;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subjects.PublishSubject;
 
 import static com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment.ARG_CURRENT_PAGE;
 
@@ -41,7 +43,7 @@ public class OverviewFragmentModule {
 
     @Provides
     public static RecyclerView recyclerView(@Named("fragmentRoot") View view,
-                                            RecyclerViewAdapterDelegate adapter,
+                                            RecyclerView.Adapter adapter,
                                             @Named("activityContext") Context context) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.overview_recycler_view);
         recyclerView.setAdapter(adapter);
@@ -70,5 +72,11 @@ public class OverviewFragmentModule {
             return arguments.getInt(ARG_CURRENT_PAGE, -1);
         }
         return -1;
+    }
+
+    @Provides
+    @PerFragment
+    public PublishSubject<MealInteraction> interactionSubject() {
+        return PublishSubject.create();
     }
 }

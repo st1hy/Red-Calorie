@@ -21,7 +21,7 @@ public abstract class AddMealFragmentBindings {
 
     @Binds
     public abstract AddMealPresenter providePresenter(AddMealPresenterImp presenter);
-    
+
     @Binds
     public abstract AddMealView provideView(AddMealViewController addMealViewController);
 

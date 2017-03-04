@@ -4,8 +4,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddI
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
 import com.github.st1hy.countthemcalories.inject.core.RecyclerViewAdapterDelegateModule;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
 
 import dagger.Subcomponent;
 

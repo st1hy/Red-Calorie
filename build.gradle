@@ -8,14 +8,13 @@ buildscript {
         classpath "me.tatarka:gradle-retrolambda:3.6.0"
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
-
 }
 
 ext {
     //Shared
     minSdkVersion = 16
-    targetSdkVersion = 24
-    compileSdkVersion = 24
+    targetSdkVersion = 25
+    compileSdkVersion = 25
     buildToolsVersion = '25.0.2'
 
     supportLibraryVersion = '25.2.0'

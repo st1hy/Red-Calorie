@@ -16,7 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class CustomDialogViewEditTextController {
 
-    private CustomDialogViewEditTextController() {}
+    private CustomDialogViewEditTextController() {
+    }
 
     public static Observable<String> editTextValueOnOk(@NonNull RxAlertDialog rxAlertDialog,
                                                        @NonNull String initialText,

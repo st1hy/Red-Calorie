@@ -18,7 +18,8 @@ public class DefaultNamePl implements DefaultNameSelector {
     public int matchDate(@NonNull DateTime time) {
         if (time.isBefore(time.withTime(2, 0, 0, 0))) {
             return R.string.add_meal_name_supper;
-        } if (time.isBefore(time.withTime(11, 0, 0, 0))) {
+        }
+        if (time.isBefore(time.withTime(11, 0, 0, 0))) {
             return R.string.add_meal_name_breakfast;
         } else if (time.isBefore(time.withTime(17, 0, 0, 0))) {
             return R.string.add_meal_name_dinner;

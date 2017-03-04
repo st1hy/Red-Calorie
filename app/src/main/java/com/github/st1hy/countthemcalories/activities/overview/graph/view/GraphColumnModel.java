@@ -200,7 +200,7 @@ public class GraphColumnModel {
     }
 
     public void setPoint(float point, float min, float max) {
-        if (point  >= min && point <= max && max - min > 0) {
+        if (point >= min && point <= max && max - min > 0) {
             this.pointValue = point;
             this.pointMinValue = min;
             this.pointMaxValue = max;
@@ -256,7 +256,7 @@ public class GraphColumnModel {
                 break;
             case LEFT_TO_RIGHT:
                 columnSize.set(0f, 0f, progress * width, height);
-                textValuePosition.set(width - textWidthHalf - textPadding, (height - textValuePaint.ascent()) / 2 );
+                textValuePosition.set(width - textWidthHalf - textPadding, (height - textValuePaint.ascent()) / 2);
                 break;
             case TOP_TO_BOTTOM:
                 columnSize.set(0f, 0f, width, progress * height);
@@ -310,7 +310,7 @@ public class GraphColumnModel {
         }
         switch (orientation) {
             case RIGHT_TO_LEFT:
-                pointValuePosition.set(width - textWidthHalf - textPadding, (height - pointValuePaint.ascent()) / 2 );
+                pointValuePosition.set(width - textWidthHalf - textPadding, (height - pointValuePaint.ascent()) / 2);
                 break;
             case LEFT_TO_RIGHT:
                 pointValuePosition.set(textWidthHalf + textPadding, (height - pointValuePaint.ascent()) / 2);
@@ -441,8 +441,8 @@ public class GraphColumnModel {
                     }
                     rowLegendVector[x] = curWidth;
                     rowLegendVector[y] = 0f;
-                    rowLegendVector[x+2] = curWidth;
-                    rowLegendVector[y+2] = height;
+                    rowLegendVector[x + 2] = curWidth;
+                    rowLegendVector[y + 2] = height;
                     break;
                 case TOP_TO_BOTTOM:
                 case BOTTOM_TO_TOP:
@@ -452,8 +452,8 @@ public class GraphColumnModel {
                     }
                     rowLegendVector[x] = 0f;
                     rowLegendVector[y] = curHeight;
-                    rowLegendVector[x+2] = width;
-                    rowLegendVector[y+2] = curHeight;
+                    rowLegendVector[x + 2] = width;
+                    rowLegendVector[y + 2] = curHeight;
                     break;
             }
         }

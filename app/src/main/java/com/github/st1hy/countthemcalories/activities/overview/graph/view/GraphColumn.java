@@ -38,12 +38,12 @@ public class GraphColumn extends View {
     private void initialize(Context context, AttributeSet attrs, int defStyleAttr) {
         model = new GraphColumnModel(context, attrs, defStyleAttr);
         if (isInEditMode()) {
-            model.setLinePoints(new float[] {
+            model.setLinePoints(new float[]{
                     0f, 0.5f, 0.5f, 1f,
                     0.5f, 1f, 1f, 0.5f
             });
             model.setPoint(0.75f, 0f, 1f);
-            model.setValue(1f,2f);
+            model.setValue(1f, 2f);
         }
     }
 

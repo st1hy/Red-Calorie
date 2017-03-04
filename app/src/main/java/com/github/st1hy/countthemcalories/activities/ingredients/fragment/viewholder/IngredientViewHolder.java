@@ -59,8 +59,8 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     ImageHolderDelegate imageHolderDelegate;
 
     @Inject
-    public IngredientViewHolder(@NonNull @Named("ingredientRootView")View itemView,
-                                         @NonNull Callback interaction) {
+    public IngredientViewHolder(@NonNull @Named("ingredientRootView") View itemView,
+                                @NonNull Callback interaction) {
         super(itemView);
         this.callback = interaction;
         ButterKnife.bind(this, itemView);

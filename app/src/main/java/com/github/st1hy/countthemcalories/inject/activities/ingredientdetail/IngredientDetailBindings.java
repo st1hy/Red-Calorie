@@ -22,5 +22,6 @@ public abstract class IngredientDetailBindings {
     public abstract Activity activity(AppCompatActivity activity);
 
     @Named("activityContext")
-    @Binds abstract Context activityContext(AppCompatActivity activity);
+    @Binds
+    abstract Context activityContext(AppCompatActivity activity);
 }

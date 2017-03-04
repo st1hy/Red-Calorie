@@ -4,7 +4,6 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragmen
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.RecyclerViewAdapterDelegateModule;
 
 import dagger.Subcomponent;
 
@@ -12,7 +11,6 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {
         OverviewFragmentModule.class,
         PermissionModule.class,
-        RecyclerViewAdapterDelegateModule.class
 })
 public interface OverviewFragmentComponent extends MealRowComponentFactory {
 

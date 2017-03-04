@@ -77,7 +77,7 @@ public class MealIngredientsListModel {
 
     @Nullable
     public Ingredient findIngredientByTypeId(Long id) {
-        for (Ingredient ingredient: ingredients) {
+        for (Ingredient ingredient : ingredients) {
             if (ingredient.getIngredientTypeOrNull().getId().equals(id))
                 return ingredient;
         }

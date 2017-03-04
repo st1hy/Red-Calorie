@@ -8,8 +8,6 @@ import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealPagerPosition;
 
 import org.joda.time.DateTime;
-import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
 
 import javax.inject.Inject;
 
