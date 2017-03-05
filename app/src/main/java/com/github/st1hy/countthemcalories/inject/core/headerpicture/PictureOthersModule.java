@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.core.headerpicture.PictureViewImpl;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.HeaderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 
 import javax.inject.Named;
 
@@ -28,7 +29,7 @@ public abstract class PictureOthersModule {
     @Provides
     @Nullable
     @Named("pictureTempUri")
-    public static Uri tempPictureUri(@Nullable @Named("savedState") Bundle savedState) {
+    public static Uri tempPictureUri(@Nullable @FragmentSavedState Bundle savedState) {
         if (savedState != null) {
             return savedState.getParcelable(PicturePicker.SAVE_TEMP_URI);
         } else {

@@ -18,6 +18,7 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
@@ -41,7 +42,7 @@ public class PicturePickerImpl implements PicturePicker {
     private final ActivityLauncher activityLauncher;
 
     @Inject
-    public PicturePickerImpl(@NonNull @Named("activityContext") Context context,
+    public PicturePickerImpl(@NonNull @ActivityContext Context context,
                              @NonNull ActivityLauncher activityLauncher,
                              @Nullable @Named("pictureTempUri") Uri uri) {
         this.context = context;

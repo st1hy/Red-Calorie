@@ -40,7 +40,7 @@ public class AddIngredientModelHelper {
     private final AddIngredientModel model;
 
     @Inject
-    public AddIngredientModelHelper(@NonNull SettingsModel settingsModel,
+    AddIngredientModelHelper(@NonNull SettingsModel settingsModel,
                                     @NonNull IngredientTagsModel tagsModel,
                                     @NonNull RxIngredientsDatabaseModel databaseModel,
                                     @NonNull Resources resources,

@@ -12,7 +12,6 @@ public class StartParams {
     @Nullable
     private final Bundle options;
 
-
     private StartParams(@NonNull Intent intent, int requestCode, @Nullable Bundle options) {
         this.intent = intent;
         this.requestCode = requestCode;

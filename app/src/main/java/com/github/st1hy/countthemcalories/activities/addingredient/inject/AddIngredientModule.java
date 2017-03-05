@@ -1,27 +1,26 @@
-package com.github.st1hy.countthemcalories.inject.activities.addingredient;
+package com.github.st1hy.countthemcalories.activities.addingredient.inject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
+import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenImpl;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
 
 import org.parceler.Parcels;
 
 import javax.inject.Named;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import rx.subjects.PublishSubject;
@@ -29,25 +28,16 @@ import rx.subjects.PublishSubject;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EXTRA_NAME;
 
-
-@Module(includes = AddIngredientBindings.class)
-public class AddIngredientModule {
-    private final AddIngredientActivity activity;
+@Module
+public abstract class AddIngredientModule {
     private static final String CONTENT_TAG = "add ingredient content";
 
-    public AddIngredientModule(@NonNull AddIngredientActivity activity) {
-        this.activity = activity;
-    }
+    @Binds
+    public abstract AddIngredientScreen addIngredientScreen(AddIngredientScreenImpl screen);
 
-    @Provides
-    public AppCompatActivity appCompatActivity() {
-        return activity;
-    }
-
-    @Provides
-    public Intent provideIntent(Activity activity) {
-        return activity.getIntent();
-    }
+    @Binds
+    public abstract AddIngredientFragmentComponentFactory fragmentComponentFactory(
+            AddIngredientComponent component);
 
     @Provides
     public static AddIngredientFragment provideContent(
@@ -90,11 +80,6 @@ public class AddIngredientModule {
             return AmountUnitType.MASS;
         }
         return AmountUnitType.MASS;
-    }
-
-    @Provides
-    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
-        return activity.getSupportFragmentManager();
     }
 
     @PerActivity

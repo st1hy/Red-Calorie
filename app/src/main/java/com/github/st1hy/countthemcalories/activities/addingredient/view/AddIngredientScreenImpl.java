@@ -42,8 +42,8 @@ public class AddIngredientScreenImpl implements AddIngredientScreen {
     FloatingActionButton addTagFab;
 
     @Inject
-    public AddIngredientScreenImpl(@NonNull Activity activity,
-                                   @NonNull ActivityLauncher activityLauncher) {
+    AddIngredientScreenImpl(@NonNull Activity activity,
+                            @NonNull ActivityLauncher activityLauncher) {
         this.activity = activity;
         this.activityLauncher = activityLauncher;
         ButterKnife.bind(this, activity);

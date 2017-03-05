@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.addingredient;
 
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientComponent;
+import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientComponent;
 
 import dagger.Module;
 import dagger.Provides;

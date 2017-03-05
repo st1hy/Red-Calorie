@@ -8,9 +8,9 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 
@@ -20,7 +20,7 @@ public class DialogViewController implements DialogView {
     private final Context context;
 
     @Inject
-    public DialogViewController(@Named("activityContext") Context context) {
+    public DialogViewController(@ActivityContext Context context) {
         this.context = context;
     }
 

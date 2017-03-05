@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientLifecycleController;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment.AddIngredientFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -28,8 +28,7 @@ public class AddIngredientFragment extends BaseFragment {
     @Inject
     RecyclerView tagsRecycler; //Injects tags adapter into recycler
 
-    public void setComponentFactory(
-            @NonNull AddIngredientFragmentComponentFactory componentFactory) {
+    public void setComponentFactory(@NonNull AddIngredientFragmentComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
 
@@ -44,8 +43,7 @@ public class AddIngredientFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newAddIngredientFragmentComponent(new AddIngredientFragmentModule(this,
-                savedInstanceState))
+        componentFactory.newAddIngredientFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
 import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import javax.inject.Named;
 
@@ -25,6 +26,10 @@ public abstract class IngredientActivityBindings {
     @Binds
     @Named("activityContext")
     public abstract Context context(Activity activity);
+
+    @Binds
+    @ActivityContext
+    public abstract Context activityContext(Activity activity);
 
     @Binds
     public abstract IngredientsFragmentComponentFactory childComponentFactory(

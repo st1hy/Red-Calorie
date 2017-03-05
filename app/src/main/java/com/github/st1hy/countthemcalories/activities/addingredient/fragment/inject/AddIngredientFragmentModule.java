@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.addingredient.fragment;
+package com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -14,17 +14,26 @@ import android.view.View;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.adapter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.EnergyConverter;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenter;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.presenter.AddIngredientPresenterImp;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
+import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
@@ -36,39 +45,34 @@ import java.util.ArrayList;
 
 import javax.inject.Named;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-@Module(includes = AddIngredientFragmentBindings.class)
-public class AddIngredientFragmentModule {
+@Module
+public abstract class AddIngredientFragmentModule {
 
-    private final AddIngredientFragment fragment;
-    private final Bundle savedState;
+    @Binds
+    public abstract AddIngredientView provideView(AddIngredientViewController controller);
 
-    public AddIngredientFragmentModule(AddIngredientFragment fragment, @Nullable Bundle savedState) {
-        this.fragment = fragment;
-        this.savedState = savedState;
-    }
+    @Binds
+    public abstract AddIngredientPresenter providePresenter(AddIngredientPresenterImp presenter);
 
-    @Provides
-    @Nullable
-    @Named("savedState")
-    public Bundle provideSavedStateBundle() {
-        return savedState;
-    }
+    @Binds
+    @PerFragment
+    public abstract SelectPicturePresenter picturePresenter(SelectPicturePresenterImp presenter);
+
+    @Binds
+    public abstract RecyclerView.Adapter recyclerAdapter(IngredientTagsAdapter tagsPresenter);
+
+    @Binds
+    public abstract PictureModel pictureModel(AddIngredientModel model);
 
     @Provides
     @PerFragment
-    public View rootView() {
-        return fragment.getView();
-    }
-
-
-    @Provides
-    @PerFragment
-    public static IngredientTagsModel provideIngredientTagModel(@Nullable @Named("savedState") Bundle savedState,
+    public static IngredientTagsModel provideIngredientTagModel(@Nullable @FragmentSavedState Bundle savedState,
                                                                 @Nullable IngredientTemplate template) {
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(IngredientTagsModel.SAVED_TAGS_MODEL);
@@ -88,7 +92,7 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public static AddIngredientModel provideIngredientModel(
-            @Nullable @Named("savedState") Bundle savedState,
+            @Nullable @FragmentSavedState Bundle savedState,
             @Nullable IngredientTemplate templateSource,
             @NonNull @Named("initialName") String name,
             @NonNull AmountUnitType amountUnitType,
@@ -127,8 +131,8 @@ public class AddIngredientFragmentModule {
     @Provides
     @PerFragment
     public static RecyclerView recyclerView(
-            View rootView,
-            RecyclerViewAdapterDelegate adapter,
+            @FragmentRootView View rootView,
+            RecyclerView.Adapter adapter,
             RecyclerView.LayoutManager layoutManager,
             @Named("horizontalDivider") RecyclerView.ItemDecoration horizontalDivider,
             @Named("verticalDivider") RecyclerView.ItemDecoration verticalDivider) {
@@ -144,13 +148,13 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public RecyclerView.LayoutManager layoutManager(@Named("activityContext") Context context) {
+    public static RecyclerView.LayoutManager layoutManager(@ActivityContext Context context) {
         return ChipsLayoutManager.newBuilder(context).build();
     }
 
     @Provides
     @Named("horizontalDivider")
-    public static RecyclerView.ItemDecoration horizontalDivider(@Named("activityContext") Context context,
+    public static RecyclerView.ItemDecoration horizontalDivider(@ActivityContext Context context,
                                                                 @Named("divider") Drawable divider) {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL);
         itemDecoration.setDrawable(divider);
@@ -159,7 +163,7 @@ public class AddIngredientFragmentModule {
 
     @Provides
     @Named("verticalDivider")
-    public static RecyclerView.ItemDecoration verticalDivider(@Named("activityContext") Context context,
+    public static RecyclerView.ItemDecoration verticalDivider(@ActivityContext Context context,
                                                               @Named("divider") Drawable divider) {
         DividerItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(divider);
@@ -167,14 +171,15 @@ public class AddIngredientFragmentModule {
     }
 
     @Provides
-    public static Observable<AddIngredientMenuAction> menuActionObservable(PublishSubject<AddIngredientMenuAction> subject) {
+    public static Observable<AddIngredientMenuAction> menuActionObservable(
+            PublishSubject<AddIngredientMenuAction> subject) {
         return subject.asObservable();
     }
 
     @Provides
     @Named("divider")
     @PerFragment
-    public static Drawable invisibleDivider(@Named("activityContext") Context context) {
+    public static Drawable invisibleDivider(@ActivityContext Context context) {
         return ContextCompat.getDrawable(context, R.drawable.invisible_divider);
     }
 

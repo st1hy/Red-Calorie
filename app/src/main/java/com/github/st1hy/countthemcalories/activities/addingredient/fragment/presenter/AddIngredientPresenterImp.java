@@ -2,17 +2,21 @@ package com.github.st1hy.countthemcalories.activities.addingredient.fragment.pre
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.RecyclerView;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientModelHelper;
+import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTagsModel;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.IngredientTypeCreateError;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.rx.Filters;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
@@ -32,34 +36,27 @@ import rx.subscriptions.CompositeSubscription;
 @PerFragment
 public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
-    @NonNull
-    private final AddIngredientView view;
-    @NonNull
-    private final AddIngredientModel model;
-    @NonNull
-    private final AddIngredientModelHelper modelHelper;
-    @NonNull
-    private final SelectPicturePresenter picturePresenter;
-    @NonNull
-    private final DialogView dialogView;
-    @NonNull
-    private final Observable<AddIngredientMenuAction> menuActionObservable;
+    @Inject
+    AddIngredientView view;
+    @Inject
+    AddIngredientModel model;
+    @Inject
+    AddIngredientModelHelper modelHelper;
+    @Inject
+    SelectPicturePresenter picturePresenter;
+    @Inject
+    DialogView dialogView;
+    @Inject
+    Observable<AddIngredientMenuAction> menuActionObservable;
+    @Inject
+    IngredientTagsModel tagsModel;
+    @Inject
+    RecyclerView.Adapter adapter;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public AddIngredientPresenterImp(@NonNull AddIngredientView view,
-                                     @NonNull AddIngredientModel model,
-                                     @NonNull AddIngredientModelHelper modelHelper,
-                                     @NonNull DialogView dialogView,
-                                     @NonNull SelectPicturePresenter picturePresenter,
-                                     @NonNull Observable<AddIngredientMenuAction> menuActionObservable) {
-        this.view = view;
-        this.model = model;
-        this.modelHelper = modelHelper;
-        this.picturePresenter = picturePresenter;
-        this.dialogView = dialogView;
-        this.menuActionObservable = menuActionObservable;
+    AddIngredientPresenterImp() {
     }
 
     @Override
@@ -124,6 +121,24 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                                 view.setSelectedUnitName(modelHelper.getEnergyDensityUnitName());
                             }
                         })
+        );
+        onAdapterStart();
+    }
+
+    private void onAdapterStart() {
+        subscriptions.add(
+                view.addTagObservable()
+                        .map(aVoid -> new Tags(tagsModel.copyTags()))
+                        .compose(view.selectTags())
+                        .subscribe(tags -> {
+                            tagsModel.replaceWith(tags);
+                            adapter.notifyDataSetChanged();
+                        })
+        );
+        subscriptions.add(
+                tagsModel.getTagsSizeObservable()
+                        .map(size -> Visibility.of(size == 0))
+                        .subscribe(view::setNoCategoriesVisibility)
         );
     }
 

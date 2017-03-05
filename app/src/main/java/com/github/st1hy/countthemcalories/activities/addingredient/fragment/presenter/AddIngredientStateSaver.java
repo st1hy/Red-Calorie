@@ -24,9 +24,9 @@ public class AddIngredientStateSaver implements WithState {
     private final PicturePicker picturePicker;
 
     @Inject
-    public AddIngredientStateSaver(@NonNull IngredientTagsModel tagsModel,
-                                   @NonNull AddIngredientModel ingredientModel,
-                                   @NonNull PicturePicker picturePicker) {
+    AddIngredientStateSaver(@NonNull IngredientTagsModel tagsModel,
+                            @NonNull AddIngredientModel ingredientModel,
+                            @NonNull PicturePicker picturePicker) {
         this.tagsModel = tagsModel;
         this.ingredientModel = ingredientModel;
         this.picturePicker = picturePicker;

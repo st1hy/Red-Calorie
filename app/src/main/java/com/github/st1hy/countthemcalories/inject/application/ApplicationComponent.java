@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.inject.application;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientActivityComponentFactory;
+import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIngredientActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.IngredientDetailActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityComponentFactory;

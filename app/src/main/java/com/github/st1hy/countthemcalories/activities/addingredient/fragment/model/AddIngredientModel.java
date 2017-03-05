@@ -112,6 +112,7 @@ public class AddIngredientModel implements PictureModel {
         return creationDate;
     }
 
+    @Nullable
     public Long getId() {
         return id;
     }

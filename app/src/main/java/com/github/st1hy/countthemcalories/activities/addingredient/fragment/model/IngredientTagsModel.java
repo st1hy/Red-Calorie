@@ -71,7 +71,6 @@ public class IngredientTagsModel {
         return Collections2.transform(tags, Tag::getId);
     }
 
-
     @NonNull
     @CheckResult
     public Observable<Integer> getTagsSizeObservable() {

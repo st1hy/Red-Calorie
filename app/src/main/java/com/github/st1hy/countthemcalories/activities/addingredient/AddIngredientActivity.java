@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
-import com.github.st1hy.countthemcalories.inject.activities.addingredient.AddIngredientModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.jakewharton.rxbinding.view.RxMenuItem;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class AddIngredientActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_ingredient_activity);
-        getAppComponent().newAddIngredientActivityComponent(new AddIngredientModule(this))
+        getAppComponent().newAddIngredientActivityComponent(new ActivityModule(this))
                 .inject(this);
     }
 

@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenDelegate;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -48,7 +49,7 @@ public class AddIngredientViewController extends AddIngredientScreenDelegate imp
     private final Map<InputType, EditText> inputMap;
 
     @Inject
-    public AddIngredientViewController(@NonNull View rootView,
+    public AddIngredientViewController(@NonNull @FragmentRootView View rootView,
                                        @NonNull Resources resources,
                                        @NonNull AddIngredientScreen screen) {
         this.resources = resources;

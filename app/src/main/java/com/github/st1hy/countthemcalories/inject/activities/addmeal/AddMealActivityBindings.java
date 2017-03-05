@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenImpl;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import javax.inject.Named;
 
@@ -21,6 +22,10 @@ public abstract class AddMealActivityBindings {
     @Binds
     @Named("activityContext")
     public abstract Context context(AppCompatActivity activity);
+
+    @Binds
+    @ActivityContext
+    public abstract Context activityContext(AppCompatActivity activity);
 
     @Binds
     public abstract AddMealScreen addMealScreen(AddMealScreenImpl screen);
