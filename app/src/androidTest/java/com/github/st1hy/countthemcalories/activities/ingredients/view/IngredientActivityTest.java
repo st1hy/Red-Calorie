@@ -22,7 +22,7 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.joda.time.DateTime;

@@ -5,8 +5,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
-import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
-import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
 import dagger.Subcomponent;
 
@@ -14,9 +12,7 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {
         ActivityModule.class,
         AddIngredientModule.class,
-        ToolbarNavigateBackModule.class,
         AddIngredientTestModule.class,
-        ActivityLauncherModule.class
 })
 public interface AddIngredientTestComponent extends AddIngredientComponent {
 

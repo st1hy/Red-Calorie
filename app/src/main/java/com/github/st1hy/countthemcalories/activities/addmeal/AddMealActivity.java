@@ -10,7 +10,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAct
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxMenuItem;
 
@@ -33,7 +33,7 @@ public class AddMealActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_meal_activity);
-        getAppComponent().newAddMealActivityComponent(new AddMealActivityModule(this))
+        getAppComponent().newAddMealActivityComponent(new ActivityModule(this))
                 .inject(this);
         setSupportActionBar(toolbar);
         Preconditions.checkNotNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);

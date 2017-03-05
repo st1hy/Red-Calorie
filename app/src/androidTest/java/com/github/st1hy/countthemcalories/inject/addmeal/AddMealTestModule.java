@@ -1,15 +1,13 @@
 package com.github.st1hy.countthemcalories.inject.addmeal;
 
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponent;
+import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class AddMealTestModule {
+public abstract class AddMealTestModule {
 
-    @Provides
-    public AddMealActivityComponent addMealTestComponent(AddMealTestComponent component) {
-        return component;
-    }
+    @Binds
+    public abstract AddMealActivityComponent addMealTestComponent(AddMealTestComponent component);
 }

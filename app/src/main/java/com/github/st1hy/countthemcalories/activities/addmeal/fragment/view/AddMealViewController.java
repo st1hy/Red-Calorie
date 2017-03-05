@@ -14,13 +14,14 @@ import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenD
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.core.time.RxTimePicker;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,9 +44,9 @@ public class AddMealViewController extends AddMealScreenDelegate implements AddM
     private final Context context;
 
     @Inject
-    public AddMealViewController(@NonNull @Named("fragmentRootView") View rootView,
+    public AddMealViewController(@NonNull @FragmentRootView View rootView,
                                  @NonNull AddMealScreen delegate,
-                                 @Named("activityContext") @NonNull Context context) {
+                                 @ActivityContext @NonNull Context context) {
         super(delegate);
         this.context = context;
         ButterKnife.bind(this, rootView);

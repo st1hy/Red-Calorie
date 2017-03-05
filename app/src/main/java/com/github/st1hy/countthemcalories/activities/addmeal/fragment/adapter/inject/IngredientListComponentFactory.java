@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject;
 
 public interface IngredientListComponentFactory {
 

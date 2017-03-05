@@ -15,6 +15,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
+import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
 import org.parceler.Parcels;
 
@@ -28,7 +30,10 @@ import rx.subjects.PublishSubject;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EXTRA_NAME;
 
-@Module
+@Module(includes = {
+        ToolbarNavigateBackModule.class,
+        ActivityLauncherModule.class,
+})
 public abstract class AddIngredientModule {
     private static final String CONTENT_TAG = "add ingredient content";
 

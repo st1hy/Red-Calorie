@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,7 +25,7 @@ public class IngredientListModule {
         this.rootView = rootView;
     }
 
-    @Named("ingredientListRow")
+    @IngredientRootView
     @Provides
     public View rootView() {
         return rootView;
@@ -34,7 +34,7 @@ public class IngredientListModule {
     @Provides
     @PerIngredientRow
     @Named("ingredientImage")
-    public static ImageView imageView(@Named("ingredientListRow") View rootView) {
+    public static ImageView imageView(@IngredientRootView View rootView) {
         return (ImageView) rootView.findViewById(R.id.add_meal_ingredient_image);
     }
 

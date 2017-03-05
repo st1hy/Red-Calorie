@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.addmeal;
 
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentComponent;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentComponent;
 
 import dagger.Module;
 import dagger.Provides;

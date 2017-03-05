@@ -31,6 +31,9 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.core.DialogModule;
+import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
@@ -51,7 +54,11 @@ import dagger.Provides;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-@Module
+@Module(includes = {
+        PermissionModule.class,
+        DialogModule.class,
+        PictureModule.class,
+})
 public abstract class AddIngredientFragmentModule {
 
     @Binds

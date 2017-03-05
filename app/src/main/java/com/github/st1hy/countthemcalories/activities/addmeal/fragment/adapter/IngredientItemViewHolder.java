@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.addmeal.fragment.ingredientitems;
+package com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter;
 
 import android.net.Uri;
 import android.support.annotation.CheckResult;
@@ -11,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.ingredientitems.PerIngredientRow;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.PerIngredientRow;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
@@ -44,8 +45,10 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.add_meal_ingredient_compact)
     ViewGroup compatView;
 
-    private Ingredient ingredient;
+    @Inject
+    PublishSubject<IngredientItemViewHolder> ingredientClicks;
 
+    private Ingredient ingredient;
     @NonNull
     private final ImageHolderDelegate imageHolderDelegate;
 
@@ -54,7 +57,7 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public IngredientItemViewHolder(@NonNull @Named("ingredientListRow") View itemView,
+    public IngredientItemViewHolder(@NonNull @IngredientRootView View itemView,
                                     @NonNull @Named("ingredientImageHolder") ImageHolderDelegate imageHolderDelegate,
                                     @NonNull @Named("ingredientImage") ImageView image) {
         super(itemView);
@@ -106,7 +109,7 @@ public class IngredientItemViewHolder extends RecyclerView.ViewHolder {
         imageHolderDelegate.setImagePlaceholder(placeholderResId);
     }
 
-    public void onAttached(PublishSubject<IngredientItemViewHolder> ingredientClicks) {
+    public void onAttached() {
         imageHolderDelegate.onAttached();
         subscriptions.add(
                 clicks().compose(channel(ingredientClicks))

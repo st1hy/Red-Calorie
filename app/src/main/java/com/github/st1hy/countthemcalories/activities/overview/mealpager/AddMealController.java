@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.joda.time.DateTime;

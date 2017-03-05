@@ -1,24 +1,22 @@
 package com.github.st1hy.countthemcalories.inject.addmeal;
 
+import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityComponent;
+import com.github.st1hy.countthemcalories.activities.addmeal.inject.AddMealActivityModule;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityComponent;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.AddMealActivityModule;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
-import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
-import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import dagger.Subcomponent;
 
 
 @PerActivity
 @Subcomponent(modules = {
+        ActivityModule.class,
         AddMealActivityModule.class,
-        ToolbarNavigateBackModule.class,
         AddMealTestModule.class,
-        ActivityLauncherModule.class
 })
 public interface AddMealTestComponent extends AddMealActivityComponent {
 
     @Override
-    AddMealTestFragmentComponent newAddMealFragmentComponent(AddMealFragmentModule addMealFragmentModule);
+    AddMealTestFragmentComponent newAddMealFragmentComponent(FragmentModule module);
 }

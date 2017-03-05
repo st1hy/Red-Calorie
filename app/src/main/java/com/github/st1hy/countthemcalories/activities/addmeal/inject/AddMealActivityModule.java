@@ -1,37 +1,35 @@
-package com.github.st1hy.countthemcalories.inject.activities.addmeal;
+package com.github.st1hy.countthemcalories.activities.addmeal.inject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreen;
+import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealScreenImpl;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.addmeal.fragment.AddMealFragmentModule;
+import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
+import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import rx.subjects.PublishSubject;
 
-@Module(includes = AddMealActivityBindings.class)
-public class AddMealActivityModule {
-    private final AddMealActivity activity;
+@Module(includes = {
+        ToolbarNavigateBackModule.class,
+        ActivityLauncherModule.class,
+})
+public abstract class AddMealActivityModule {
+
     private static final String ADD_MEAL_CONTENT = "add meal content";
 
-    public AddMealActivityModule(@NonNull AddMealActivity activity) {
-        this.activity = activity;
-    }
-
-    @Provides
-    public AppCompatActivity appCompatActivity() {
-        return activity;
-    }
+    @Binds
+    public abstract AddMealScreen addMealScreen(AddMealScreenImpl screen);
 
     @Provides
     public static AddMealFragment provideContent(FragmentManager fragmentManager,
@@ -53,11 +51,6 @@ public class AddMealActivityModule {
     }
 
     @Provides
-    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
-        return activity.getSupportFragmentManager();
-    }
-
-    @Provides
     public static Bundle provideArguments(Intent intent) {
         Bundle arguments = new Bundle();
         arguments.putParcelable(AddMealFragmentModule.EXTRA_MEAL_PARCEL,
@@ -67,11 +60,6 @@ public class AddMealActivityModule {
         arguments.putSerializable(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE,
                 intent.getSerializableExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE));
         return arguments;
-    }
-
-    @Provides
-    public static Intent provideIntent(Activity activity) {
-        return activity.getIntent();
     }
 
     @Provides

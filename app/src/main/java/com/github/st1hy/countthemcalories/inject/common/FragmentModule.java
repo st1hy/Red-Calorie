@@ -3,10 +3,11 @@ package com.github.st1hy.countthemcalories.inject.common;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentArguments;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
@@ -17,11 +18,11 @@ import dagger.Provides;
 public class FragmentModule {
 
     @NonNull
-    private final AddIngredientFragment fragment;
+    private final Fragment fragment;
     @Nullable
     private final Bundle savedState;
 
-    public FragmentModule(@NonNull AddIngredientFragment fragment, @Nullable Bundle savedState) {
+    public FragmentModule(@NonNull Fragment fragment, @Nullable Bundle savedState) {
         this.fragment = fragment;
         this.savedState = savedState;
     }
@@ -31,6 +32,12 @@ public class FragmentModule {
     @FragmentSavedState
     public Bundle provideSavedStateBundle() {
         return savedState;
+    }
+
+    @Provides
+    @FragmentArguments
+    public Bundle arguments() {
+        return fragment.getArguments();
     }
 
     @Provides
