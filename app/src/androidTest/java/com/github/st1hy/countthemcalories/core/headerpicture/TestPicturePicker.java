@@ -20,7 +20,7 @@ public class TestPicturePicker implements PicturePicker {
     private HeaderPicturePickerUtils utils;
 
     @Inject
-    public TestPicturePicker(@NonNull PicturePickerImpl picturePicker,
+    TestPicturePicker(@NonNull PicturePickerImpl picturePicker,
                              @NonNull HeaderPicturePickerUtils utils) {
         this.picturePicker = picturePicker;
         this.utils = utils;
@@ -33,22 +33,6 @@ public class TestPicturePicker implements PicturePicker {
                 .path(String.valueOf(resID))
                 .build();
     }
-
-//    @Override
-//    @NonNull
-//    @CheckResult
-//    public Observable.Transformer<ImageSource, Uri> pickImage() {
-//        return (source) -> {
-//            Observable<ImageSource> sharedSource = source.share();
-//            return sharedSource.filter(Filters.equalTo(ImageSource.CAMERA))
-//                    .map((s) -> resourceToUri(context, TEST_CAMERA_PICTURE))
-//                    .mergeWith(
-//                            sharedSource.filter((imageSource -> !imageSource.equals(ImageSource.CAMERA)))
-//                                    .compose(picturePicker.pickImage())
-//                    );
-//        };
-//    }
-
 
     @Override
     @NonNull
@@ -68,8 +52,7 @@ public class TestPicturePicker implements PicturePicker {
         picturePicker.onSaveState(outState);
     }
 
-
-    public void setTempImageUri(@Nullable Uri tempImageUri) {
+    void setTempImageUri(@Nullable Uri tempImageUri) {
         picturePicker.setTempImageUri(tempImageUri);
     }
 }
