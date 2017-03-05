@@ -65,7 +65,7 @@ public class MealsPresenterImp implements MealsPresenter {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public MealsPresenterImp() {
+    MealsPresenterImp() {
     }
 
     @Override
@@ -221,6 +221,5 @@ public class MealsPresenterImp implements MealsPresenter {
     private void setEmptyListVisibility() {
         view.setEmptyListVisibility(adapter.getMealsCount() == 0 ? Visibility.VISIBLE : Visibility.GONE);
     }
-
 
 }

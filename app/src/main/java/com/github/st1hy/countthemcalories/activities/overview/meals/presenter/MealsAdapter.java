@@ -185,7 +185,6 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         };
     }
 
-
     private static int positionOnList(int positionOnAdapter) {
         return positionOnAdapter - TOP_PADDING;
     }
