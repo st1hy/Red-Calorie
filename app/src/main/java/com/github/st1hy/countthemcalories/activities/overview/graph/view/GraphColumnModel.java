@@ -488,7 +488,7 @@ public class GraphColumnModel {
         }
         float[] autoScale = sensibleScale(totalViewSize);
         int newLineSize = autoScale.length * 4;
-        if (lineVector.length != newLineSize) {
+        if (rowLegendVector.length != newLineSize) {
             rowLegendVector = new float[newLineSize];
         }
         return autoScale;
