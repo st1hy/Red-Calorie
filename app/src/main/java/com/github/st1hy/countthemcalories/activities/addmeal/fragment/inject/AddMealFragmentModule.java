@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,23 +23,17 @@ import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
 import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
 import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
-import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentArguments;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
-import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
-import org.joda.time.DateTime;
 import org.parceler.Parcels;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,18 +43,13 @@ import dagger.Provides;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static org.parceler.Parcels.unwrap;
-
 @Module(includes = {
         PermissionModule.class,
         DialogModule.class,
-        DefaultMealNameModule.class
+        DefaultMealNameModule.class,
+        AddMealArgumentsModule.class
 })
 public abstract class AddMealFragmentModule {
-
-    public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
-    public static final String EXTRA_INGREDIENT_PARCEL = "edit ingredient parcel";
-    public static final String EXTRA_NEW_MEAL_DATE = "new meal date parcel";
 
     @Binds
     public abstract AddMealPresenter providePresenter(AddMealPresenterImp presenter);
@@ -107,42 +95,6 @@ public abstract class AddMealFragmentModule {
         }
     }
 
-    @Provides
-    @PerFragment
-    public static Meal provideMeal(@Nullable @FragmentSavedState Bundle savedState,
-                                   @FragmentArguments Bundle arguments) {
-        if (savedState != null) {
-            return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
-        } else {
-            Meal editedMeal = Parcels.unwrap(arguments.getParcelable(EXTRA_MEAL_PARCEL));
-            if (editedMeal != null) {
-                return editedMeal;
-            } else {
-                editedMeal = new Meal();
-                editedMeal.setName("");
-                editedMeal.setImageUri(Uri.EMPTY);
-                return editedMeal;
-            }
-        }
-    }
-
-    @Provides
-    @Nullable
-    public static IngredientTemplate provideExtraIngredientTemplate(@FragmentArguments Bundle arguments) {
-        IngredientTemplate ingredientTemplate = unwrap(arguments.getParcelable(EXTRA_INGREDIENT_PARCEL));
-        arguments.remove(EXTRA_INGREDIENT_PARCEL);
-        return ingredientTemplate;
-    }
-
-    @Provides
-    @Nullable
-    public static Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
-        if (extraTemplate != null) {
-            return new Ingredient(extraTemplate, BigDecimal.ZERO);
-        } else {
-            return null;
-        }
-    }
 
     @Provides
     public static Observable<AddMealMenuAction> menuActionObservable(
@@ -164,13 +116,6 @@ public abstract class AddMealFragmentModule {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(false);
         return recyclerView;
-    }
-
-    @Provides
-    @Nullable
-    @NewMealDate
-    public static DateTime newMealDate(@FragmentArguments Bundle arguments) {
-        return (DateTime) arguments.getSerializable(EXTRA_NEW_MEAL_DATE);
     }
 
     @Provides

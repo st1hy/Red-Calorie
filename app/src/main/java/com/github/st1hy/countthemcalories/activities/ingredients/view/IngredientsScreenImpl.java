@@ -18,7 +18,6 @@ import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -88,7 +87,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @Override
     public void onIngredientSelected(@NonNull IngredientTemplate ingredientTemplate) {
         Intent result = new Intent();
-        result.putExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
+        result.putExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
         activity.setResult(RESULT_OK, result);
         activity.finish();
     }
@@ -96,7 +95,7 @@ public class IngredientsScreenImpl implements IngredientsScreen {
     @Override
     public void addToNewMeal(@NonNull IngredientTemplate ingredientTemplate) {
         Intent intent = new Intent(activity, AddMealActivity.class);
-        intent.putExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
+        intent.putExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL, Parcels.wrap(ingredientTemplate));
         activity.startActivity(intent);
     }
 

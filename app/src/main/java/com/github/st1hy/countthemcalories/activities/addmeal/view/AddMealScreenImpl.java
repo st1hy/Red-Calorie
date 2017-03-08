@@ -12,6 +12,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.ShowIngredientsInfo;
@@ -26,7 +27,6 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -102,7 +102,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                     public IngredientTemplate call(ActivityResult activityResult) {
                         Intent data = activityResult.getData();
                         if (data == null) return null;
-                        return Parcels.unwrap(data.getParcelableExtra(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL));
+                        return Parcels.unwrap(data.getParcelableExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL));
                     }
                 }).filter(Functions.NOT_NULL)
                 .map(ingredientTemplate -> new Ingredient(ingredientTemplate, BigDecimal.ZERO));

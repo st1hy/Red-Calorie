@@ -10,32 +10,33 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.github.st1hy.countthemcalories.activities.addingredient.fragment.inject.AddIngredientArgumentsModule.provideUnitType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddIngredientModuleTest {
+public class AddIngredientArgumentsModuleTest {
 
     @Mock
     private Intent intent;
 
     @Test
     public void testDefaultUnitType() throws Exception {
-        assertThat(AddIngredientModule.provideUnitType(intent), equalTo(AmountUnitType.MASS));
+        assertThat(provideUnitType(intent), equalTo(AmountUnitType.MASS));
     }
 
 
     @Test
     public void testMealUnitType() throws Exception {
         when(intent.getAction()).thenReturn(AddIngredientType.MEAL.getAction());
-        assertThat(AddIngredientModule.provideUnitType(intent), equalTo(AmountUnitType.MASS));
+        assertThat(provideUnitType(intent), equalTo(AmountUnitType.MASS));
 
     }
 
     @Test
     public void testDrinkUnitType() throws Exception {
         when(intent.getAction()).thenReturn(AddIngredientType.DRINK.getAction());
-        assertThat(AddIngredientModule.provideUnitType(intent), equalTo(AmountUnitType.VOLUME));
+        assertThat(provideUnitType(intent), equalTo(AmountUnitType.VOLUME));
     }
 }

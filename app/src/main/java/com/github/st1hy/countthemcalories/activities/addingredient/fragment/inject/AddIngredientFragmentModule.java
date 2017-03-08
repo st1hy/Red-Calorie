@@ -56,6 +56,7 @@ import rx.subjects.PublishSubject;
 @Module(includes = {
         PermissionModule.class,
         DialogModule.class,
+        AddIngredientArgumentsModule.class
 })
 public abstract class AddIngredientFragmentModule {
 

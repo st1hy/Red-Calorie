@@ -11,7 +11,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.joda.time.DateTime;
@@ -60,7 +59,7 @@ public class AddMealController {
 
     public void addNewMeal(@NonNull DateTime atDay) {
         Intent intent = new Intent(activity, AddMealActivity.class);
-        intent.putExtra(AddMealFragmentModule.EXTRA_NEW_MEAL_DATE, atDay);
+        intent.putExtra(AddMealActivity.EXTRA_NEW_MEAL_DATE, atDay);
         activity.startActivity(intent);
     }
 

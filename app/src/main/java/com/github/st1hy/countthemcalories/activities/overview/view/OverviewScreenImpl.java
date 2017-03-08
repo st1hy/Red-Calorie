@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
@@ -19,7 +20,6 @@ import com.github.st1hy.countthemcalories.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -76,7 +76,7 @@ public class OverviewScreenImpl implements OverviewScreen {
     @Override
     public void editMeal(@NonNull Meal meal) {
         Intent intent = new Intent(activity, EditMealActivity.class);
-        intent.putExtra(AddMealFragmentModule.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
+        intent.putExtra(AddMealActivity.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
         activity.startActivity(intent);
     }
 

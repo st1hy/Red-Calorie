@@ -21,6 +21,10 @@ import rx.subjects.PublishSubject;
 
 public class AddMealActivity extends BaseActivity {
 
+    public static final String EXTRA_MEAL_PARCEL = "edit meal parcel";
+    public static final String EXTRA_INGREDIENT_PARCEL = "edit ingredient parcel";
+    public static final String EXTRA_NEW_MEAL_DATE = "new meal date parcel";
+
     @BindView(R.id.image_header_toolbar)
     @Inject
     Toolbar toolbar;

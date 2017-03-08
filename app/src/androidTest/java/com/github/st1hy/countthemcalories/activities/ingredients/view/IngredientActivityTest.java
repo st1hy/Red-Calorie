@@ -22,7 +22,6 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject.AddMealFragmentModule;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
 import org.joda.time.DateTime;
@@ -288,7 +287,7 @@ public class IngredientActivityTest {
         onView(withText(R.string.ingredients_item_add_to_new_meal))
                 .perform(click());
         intended(allOf(hasComponent(new ComponentName(getTargetContext(), AddMealActivity.class)),
-                hasExtraWithKey(equalTo(AddMealFragmentModule.EXTRA_INGREDIENT_PARCEL))
+                hasExtraWithKey(equalTo(AddMealActivity.EXTRA_INGREDIENT_PARCEL))
         ));
     }
 
