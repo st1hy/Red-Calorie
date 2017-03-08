@@ -115,7 +115,6 @@ dependencies {
     devtoolsCompile 'com.android.support:multidex:1.0.1'
 
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
-    devtoolsDebugCompile "com.github.brianPlummer:tinydancer:$tinyDancerVersion"
 
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"

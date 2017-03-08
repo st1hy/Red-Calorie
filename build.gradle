@@ -39,7 +39,6 @@ ext {
     leakCanaryVersion = '1.5'
     tokenAutoCompleteVersion = '2.0.8@aar'
     stethoVersion = '1.4.2'
-    tinyDancerVersion = '0.1.0'
     uiAutomatorVersion = '2.1.2'
 
     //Database
