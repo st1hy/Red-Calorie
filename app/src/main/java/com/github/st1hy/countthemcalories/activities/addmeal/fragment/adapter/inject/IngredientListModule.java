@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -40,7 +41,7 @@ public class IngredientListModule {
 
     @Provides
     @Named("ingredientImageHolder")
-    public static ImageHolderDelegate imageHolderDelegate(@Named("appContext") Context context,
+    public static ImageHolderDelegate imageHolderDelegate(@AppContext Context context,
                                                           PermissionsHelper permissionsHelper,
                                                           @Named("ingredientImage") Provider<ImageView> imageView) {
         return new ImageHolderDelegate(context, permissionsHelper, imageView);

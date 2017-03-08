@@ -17,6 +17,7 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.database.unit.Unit;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
 import org.joda.time.DateTime;
 
@@ -24,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import rx.functions.Func1;
@@ -42,7 +42,7 @@ public class PhysicalQuantitiesModel {
 
     @Inject
     public PhysicalQuantitiesModel(@NonNull final SettingsModel settingsModel,
-                                   @NonNull @Named("appContext") Context context) {
+                                   @NonNull @AppContext Context context) {
         this.settingsModel = settingsModel;
         this.context = context;
         this.resources = context.getResources();

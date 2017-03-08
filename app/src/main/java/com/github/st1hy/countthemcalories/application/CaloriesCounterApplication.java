@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
+import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationComponent;
-import com.github.st1hy.countthemcalories.inject.application.ApplicationModule;
-import com.github.st1hy.countthemcalories.inject.application.DaggerApplicationComponent;
+import com.github.st1hy.countthemcalories.inject.common.ApplicationModule;
 
 public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;

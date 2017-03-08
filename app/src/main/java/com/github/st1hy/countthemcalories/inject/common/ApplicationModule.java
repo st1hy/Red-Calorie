@@ -1,20 +1,14 @@
-package com.github.st1hy.countthemcalories.inject.application;
+package com.github.st1hy.countthemcalories.inject.common;
 
-import android.content.Context;
+import android.app.Application;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {
-        SettingsModule.class,
-        DatabaseModule.class
-})
+@Module(includes = ApplicationBindings.class)
 public class ApplicationModule {
     private final CaloriesCounterApplication application;
 
@@ -23,9 +17,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    @Named("appContext")
-    public Context provideContext() {
-        return application.getApplicationContext();
+    public Application provideContext() {
+        return application;
     }
 
 

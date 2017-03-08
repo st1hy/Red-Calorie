@@ -12,6 +12,7 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.I
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;
@@ -83,7 +84,7 @@ public class IngredientsDetailFragmentModule {
     }
 
     @Provides
-    public static InputMethodManager inputMethodManager(@Named("appContext") Context context) {
+    public static InputMethodManager inputMethodManager(@AppContext Context context) {
         return (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

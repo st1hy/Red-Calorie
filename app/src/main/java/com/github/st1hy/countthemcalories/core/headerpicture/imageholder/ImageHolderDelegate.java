@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader.ImageLoadingEvent;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,7 +37,7 @@ import static com.github.st1hy.countthemcalories.core.permissions.Permission.GRA
 public class ImageHolderDelegate {
 
     @Inject
-    @Named("appContext")
+    @AppContext
     Context appContext;
     @Inject
     PermissionsHelper permissionsHelper;
