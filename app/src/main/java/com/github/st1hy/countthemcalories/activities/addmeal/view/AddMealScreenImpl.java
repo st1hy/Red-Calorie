@@ -44,8 +44,8 @@ import rx.functions.Func1;
 
 import static android.app.Activity.RESULT_OK;
 import static com.github.st1hy.countthemcalories.activities.addmeal.model.EditIngredientResult.fromIngredientDetailResult;
-import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
-import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.EXTRA_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.EXTRA_INGREDIENT_ID_LONG;
 
 @PerActivity
 public class AddMealScreenImpl implements AddMealScreen {

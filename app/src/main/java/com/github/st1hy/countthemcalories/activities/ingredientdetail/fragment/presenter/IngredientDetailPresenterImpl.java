@@ -16,13 +16,13 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import org.parceler.Parcels;
 
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -36,7 +36,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     private final PhysicalQuantitiesModel quantityModel;
     private final long ingredientID;
     @Inject
-    @Named("activityContext")
+    @ActivityContext
     Context context;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();

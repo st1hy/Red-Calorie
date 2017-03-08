@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -47,7 +48,7 @@ public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate imp
     TextView unit;
 
     @Inject
-    public IngredientDetailViewImpl(@NonNull View rootView,
+    public IngredientDetailViewImpl(@NonNull @FragmentRootView View rootView,
                                     @NonNull IngredientDetailScreen screen,
                                     @NonNull InputMethodManager inputMethodManager) {
         super(screen);

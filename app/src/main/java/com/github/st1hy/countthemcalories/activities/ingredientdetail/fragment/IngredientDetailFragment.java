@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.inject.IngredientDetailFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientDetailFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -37,8 +37,7 @@ public class IngredientDetailFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newIngredientDetailFragmentComponent(
-                new IngredientsDetailFragmentModule(this, savedInstanceState))
+        componentFactory.newIngredientDetailFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

@@ -18,8 +18,8 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.RESULT_REMOVE;
-import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT;
-import static com.github.st1hy.countthemcalories.inject.activities.ingredientdetail.fragment.IngredientsDetailFragmentModule.EXTRA_INGREDIENT_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.EXTRA_INGREDIENT;
+import static com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity.EXTRA_INGREDIENT_ID_LONG;
 
 @PerActivity
 public class IngredientDetailScreenImpl implements IngredientDetailScreen {
