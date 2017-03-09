@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder;
 
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
@@ -17,7 +18,6 @@ import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +59,7 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     ImageHolderDelegate imageHolderDelegate;
 
     @Inject
-    public IngredientViewHolder(@NonNull @Named("ingredientRootView") View itemView,
+    public IngredientViewHolder(@NonNull @IngredientRootView View itemView,
                                 @NonNull Callback interaction) {
         super(itemView);
         this.callback = interaction;

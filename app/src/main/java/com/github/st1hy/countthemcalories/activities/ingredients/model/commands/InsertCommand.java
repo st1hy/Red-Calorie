@@ -18,7 +18,7 @@ import com.github.st1hy.countthemcalories.database.Meal;
 
 import rx.Observable;
 
-public class InsertCommand implements Command<InsertResult, Cursor> {
+class InsertCommand implements Command<InsertResult, Cursor> {
     @NonNull
     private final RxIngredientsDatabaseModel databaseModel;
     @NonNull
@@ -26,7 +26,7 @@ public class InsertCommand implements Command<InsertResult, Cursor> {
     @NonNull
     private final RemovalEffect whatsRemoved;
 
-    public InsertCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
+    InsertCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
                          @NonNull IngredientsDatabaseCommands commands,
                          @NonNull RemovalEffect whatsRemoved) {
         this.databaseModel = databaseModel;

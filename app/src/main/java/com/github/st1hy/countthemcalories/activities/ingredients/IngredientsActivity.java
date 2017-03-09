@@ -7,7 +7,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.Ingred
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.IngredientsActivityModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,7 +32,7 @@ public class IngredientsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredients_activity);
-        getAppComponent().newIngredientsActivityComponent(new IngredientsActivityModule(this))
+        getAppComponent().newIngredientsActivityComponent(new ActivityModule(this))
                 .inject(this);
     }
 

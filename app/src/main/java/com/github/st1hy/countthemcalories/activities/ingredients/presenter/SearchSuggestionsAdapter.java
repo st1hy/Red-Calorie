@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.google.common.base.Optional;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -49,7 +50,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public SearchSuggestionsAdapter(@NonNull @Named("activityContext") Context context,
+    public SearchSuggestionsAdapter(@NonNull @ActivityContext Context context,
                                     @NonNull RxTagsDatabaseModel databaseModel,
                                     @NonNull TokenSearchView view,
                                     @NonNull Observable<SearchResult> searchResultObservable,
@@ -109,7 +110,7 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
     }
 
     /**
-     * Some magic happens: while internally adapter uses cursor, from outside perspective this adapter
+     * While internally adapter uses cursor, from outside perspective this adapter
      * should be adapter of String, TokenSearchView assumes object it type of TokenSearchView
      * template parameter when creating chips
      */

@@ -68,7 +68,6 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         }
     }
 
-
     @NonNull
     private Callable<CursorQuery> filteredByCall(@NonNull final String partOfName, @NonNull final Collection<String> tags) {
         return () -> filteredByQuery(partOfName, tags);

@@ -1,10 +1,11 @@
-package com.github.st1hy.countthemcalories.inject.activities.ingredients.viewholder;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.inject;
 
 import android.view.View;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.PerIngredientRow;
 
 import javax.inject.Named;
@@ -37,7 +38,7 @@ public class IngredientViewHolderModule {
     }
 
     @Provides
-    @Named("ingredientRootView")
+    @IngredientRootView
     public View rootView() {
         return rootView;
     }

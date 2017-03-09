@@ -1,56 +1,54 @@
-package com.github.st1hy.countthemcalories.inject.activities.ingredients;
+package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
+import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
+import com.github.st1hy.countthemcalories.inject.core.UndoModule;
 import com.google.common.base.Optional;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
-import butterknife.ButterKnife;
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity.ACTION_SELECT_INGREDIENT;
+@Module(includes = {
+        UndoModule.class,
+        ActivityLauncherModule.class
+})
+public abstract class IngredientsActivityModule {
 
-@Module(includes = IngredientActivityBindings.class)
-public class IngredientsActivityModule {
+    private final static int DEBOUNCE_TIME_MS = 250;
 
-    public static int debounceTime = 250;
+    private static final String INGREDIENTS_CONTENT = "ingredients content";
 
-    private final IngredientsActivity activity;
-    public static final String INGREDIENTS_CONTENT = "ingredients content";
+    @Binds
+    public abstract IngredientsScreen provideView(IngredientsScreenImpl ingredientsScreen);
 
-    public IngredientsActivityModule(@NonNull IngredientsActivity activity) {
-        this.activity = activity;
-        ButterKnife.bind(this, activity);
-    }
-
-    @Provides
-    public AppCompatActivity appCompatActivity() {
-        return activity;
-    }
+    @Binds
+    public abstract IngredientsFragmentComponentFactory childComponentFactory(
+            IngredientsActivityComponent component);
 
     @Provides
     public static DrawerMenuItem currentItem() {
@@ -72,14 +70,11 @@ public class IngredientsActivityModule {
     @Provides
     public static IngredientsFragment provideContent(
             FragmentManager fragmentManager,
-            @Named("fragmentArguments") Bundle arguments,
             IngredientsFragmentComponentFactory componentFactory) {
 
         IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(INGREDIENTS_CONTENT);
         if (fragment == null) {
             fragment = new IngredientsFragment();
-            fragment.setArguments(arguments);
-
             fragmentManager.beginTransaction()
                     .add(R.id.ingredients_content_frame, fragment, INGREDIENTS_CONTENT)
                     .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
@@ -88,27 +83,6 @@ public class IngredientsActivityModule {
         fragment.setComponentFactory(componentFactory);
         return fragment;
     }
-
-    @Provides
-    public static FragmentManager provideFragmentManager(AppCompatActivity activity) {
-        return activity.getSupportFragmentManager();
-    }
-
-    @Provides
-    @Named("fragmentArguments")
-    public static Bundle provideArguments(Intent intent) {
-        Bundle arguments = new Bundle();
-        boolean selectMode = intent != null &&
-                ACTION_SELECT_INGREDIENT.equals(intent.getAction());
-        arguments.putBoolean(IngredientsFragment.ARG_SELECT_BOOL, selectMode);
-        return arguments;
-    }
-
-    @Provides
-    public static Intent provideIntent(Activity activity) {
-        return activity.getIntent();
-    }
-
 
     @Provides
     @PerActivity
@@ -142,19 +116,17 @@ public class IngredientsActivityModule {
     public static Observable<SearchResult> provideSearchResults(TokenSearchTextView tokenSearchTextView) {
         Observable<SearchResult> sequenceObservable = RxSearchable.create(tokenSearchTextView)
                 .subscribeOn(AndroidSchedulers.mainThread());
-        if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable
-                    .share()
-                    // During restart tags are re-added in onRestoreSavedState which leads to
-                    // 2 searches: immediate with wrong query and correct one after delay+250ms
-                    // if delay is smaller than 100ms this will remove wrong search and speed it up
-                    // to delay+100ms
-                    .debounce(100, TimeUnit.MILLISECONDS).limit(1)
-                    .concatWith(
-                            sequenceObservable
-                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
-                    );
-        }
+        sequenceObservable = sequenceObservable
+                .share()
+                // During restart tags are re-added in onRestoreSavedState which leads to
+                // 2 searches: immediate with wrong query and correct one after delay+250ms
+                // if delay is smaller than 100ms this will remove wrong search and speed it up
+                // to delay+100ms
+                .debounce(100, TimeUnit.MILLISECONDS).limit(1)
+                .concatWith(
+                        sequenceObservable
+                                .debounce(DEBOUNCE_TIME_MS, TimeUnit.MILLISECONDS)
+                );
         sequenceObservable = sequenceObservable
                 .distinctUntilChanged()
                 .replay(1)

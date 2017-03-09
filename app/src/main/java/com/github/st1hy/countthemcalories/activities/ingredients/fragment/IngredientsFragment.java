@@ -8,15 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.ingredients.fragment.IngredientsFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
 public class IngredientsFragment extends BaseFragment {
-    public static final String ARG_SELECT_BOOL = "selection mode";
 
     private IngredientsFragmentComponentFactory componentFactory;
 
@@ -39,7 +38,7 @@ public class IngredientsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newIngredientsFragmentComponent(new IngredientsFragmentModule(this))
+        componentFactory.newIngredientsFragmentComponent(new FragmentModule(this, null))
                 .inject(this);
         componentFactory = null;
     }

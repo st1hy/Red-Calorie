@@ -1,14 +1,14 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.viewholder;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import javax.inject.Named;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 
 public abstract class AbstractIngredientsViewHolder extends RecyclerView.ViewHolder {
 
-    AbstractIngredientsViewHolder(@NonNull @Named("ingredientRootView") View itemView) {
+    AbstractIngredientsViewHolder(@NonNull @IngredientRootView View itemView) {
         super(itemView);
     }
 

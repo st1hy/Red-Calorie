@@ -13,13 +13,13 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import rx.Observable;
 
-public class DeleteCommand implements Command<Cursor, InsertResult> {
+class DeleteCommand implements Command<Cursor, InsertResult> {
 
-    final RxIngredientsDatabaseModel databaseModel;
-    final IngredientsDatabaseCommands commands;
-    final IngredientTemplate ingredient;
+    private final RxIngredientsDatabaseModel databaseModel;
+    private final IngredientsDatabaseCommands commands;
+    private final IngredientTemplate ingredient;
 
-    public DeleteCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
+    DeleteCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
                          @NonNull IngredientsDatabaseCommands commands,
                          @NonNull IngredientTemplate ingredient) {
         this.databaseModel = databaseModel;
@@ -42,7 +42,7 @@ public class DeleteCommand implements Command<Cursor, InsertResult> {
     private class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
         RemovalEffect whatsRemoved;
 
-        public DeleteResponse(@NonNull Cursor cursor, @NonNull RemovalEffect whatsRemoved) {
+        DeleteResponse(@NonNull Cursor cursor, @NonNull RemovalEffect whatsRemoved) {
             super(cursor, true);
             this.whatsRemoved = whatsRemoved;
         }
