@@ -5,19 +5,16 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
-public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<T>
-        implements DaoRecyclerAdapter {
+public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<T> {
 
-    public static int debounceTime = 250;
-    final SearchableDatabase db;
+    private final static int DEBOUNCE_TIME_MS = 250;
+    private final SearchableDatabase db;
 
     protected String lastQuery = "";
 
@@ -25,48 +22,66 @@ public abstract class RxDaoSearchAdapter<T extends RecyclerView.ViewHolder> exte
         this.db = db;
     }
 
-    @Override
-    @CallSuper
-    public void onSearch(@NonNull Observable<CharSequence> observable) {
-        Observable<CharSequence> sequenceObservable = observable
-                .subscribeOn(AndroidSchedulers.mainThread());
-        if (debounceTime > 0) {
-            sequenceObservable = sequenceObservable.share();
+    @CheckResult
+    @NonNull
+    public final Observable.Transformer<CharSequence, QueryResult> searchDatabase() {
+        return charSequenceObservable -> {
+            Observable<CharSequence> sequenceObservable = charSequenceObservable
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .share();
             sequenceObservable = sequenceObservable
                     .limit(1)
                     .concatWith(
                             sequenceObservable
                                     .skip(1)
-                                    .debounce(debounceTime, TimeUnit.MILLISECONDS)
+                                    .debounce(DEBOUNCE_TIME_MS, TimeUnit.MILLISECONDS)
                     );
-        }
-        addSubscription(sequenceObservable
-                .doOnNext(text -> Timber.v("Search notification: queryText='%s'", text))
-                .map(CharSequence::toString)
-                .flatMap(query -> {
-                    Observable<Cursor> cursor11 = getAllWithFilter(query);
-                    return cursor11.map(cursor1 -> Pair.create(query, cursor1));
-                })
-                .doOnError(e -> Timber.e(e, "Search exploded"))
-                .retry(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    Timber.v("Db cursor query ended");
-                    lastQuery = result.first;
-                    onCursorUpdate(result.first, result.second);
-                    notifyDataSetChanged();
-                }));
+            return sequenceObservable
+                    .map(CharSequence::toString)
+                    .flatMap(query -> getAllWithFilter(query)
+                            .map(cursor -> QueryResult.of(query, cursor)))
+                    .retry(1)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(result -> {
+                        lastQuery = result.getQuery();
+                        onCursorUpdate(result);
+                        notifyDataSetChanged();
+                    });
+        };
     }
 
     @CallSuper
-    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
-        super.onCursorUpdate(cursor);
+    protected void onCursorUpdate(@NonNull QueryResult queryResult) {
+        super.onCursorUpdate(queryResult.getCursor());
     }
 
     @NonNull
     @CheckResult
-    protected Observable<Cursor> getAllWithFilter(@NonNull String filter) {
+    private Observable<Cursor> getAllWithFilter(@NonNull String filter) {
         return db.getAllFiltered(filter);
     }
 
+    public static class QueryResult {
+        private final Cursor cursor;
+        private final String query;
+
+        private QueryResult(@NonNull String query, @NonNull Cursor cursor) {
+            this.cursor = cursor;
+            this.query = query;
+        }
+
+        public static QueryResult of(@NonNull String query, @NonNull Cursor cursor) {
+            return new QueryResult(query, cursor);
+        }
+
+        @NonNull
+        public Cursor getCursor() {
+            return cursor;
+        }
+
+        @NonNull
+        public String getQuery() {
+            return query;
+        }
+    }
 }

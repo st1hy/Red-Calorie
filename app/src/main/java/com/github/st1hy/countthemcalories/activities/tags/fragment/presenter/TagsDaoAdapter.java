@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
 
 import android.database.Cursor;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
@@ -37,10 +38,12 @@ import com.l4digital.fastscroll.FastScroller;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 @PerFragment
@@ -69,6 +72,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Inject
     ColorGenerator colorGenerator;
 
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
     private final PublishSubject<TagViewHolder> stateChanges = PublishSubject.create();
 
     @Inject
@@ -87,11 +91,13 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         this.undoView = undoView;
     }
 
-    @Override
     public void onStart() {
-        super.onStart();
         onAddTagClicked(view.addTagClickedObservable());
-        onSearch(view.getQueryObservable());
+        addSubscription(
+                view.getQueryObservable()
+                        .compose(searchDatabase())
+                        .subscribe()
+        );
         addSubscription(
                 stateChanges
                         .filter(holder -> holder instanceof TagItemHolder)
@@ -103,6 +109,16 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
                 view.confirmClickedObservable()
                         .subscribe(click -> view.onTagsSelected(fragmentModel.getTags()))
         );
+    }
+
+    public void onStop() {
+        subscriptions.clear();
+        closeCursor(true);
+    }
+
+    @CallSuper
+    protected void addSubscription(@NonNull Subscription subscription) {
+        subscriptions.add(subscription);
     }
 
     @Override
@@ -274,9 +290,15 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         };
     }
 
+    private void onCursorUpdate(@NonNull String lastQuery, @NonNull Cursor cursor) {
+        onCursorUpdate(QueryResult.of(lastQuery, cursor));
+    }
+
     @Override
-    protected void onCursorUpdate(@NonNull String query, @NonNull Cursor cursor) {
-        super.onCursorUpdate(query, cursor);
+    protected void onCursorUpdate(@NonNull QueryResult result) {
+        super.onCursorUpdate(result);
+        String query = result.getQuery();
+        Cursor cursor = result.getCursor();
         view.setNoTagsMessage(query.trim().isEmpty() ? viewModel.getNoTagsMessage() :
                 viewModel.getSearchResultEmptyMessage());
         view.setNoTagsVisibility(Visibility.of(cursor.getCount() == 0));

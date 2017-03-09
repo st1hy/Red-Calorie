@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;

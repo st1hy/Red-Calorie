@@ -5,29 +5,15 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import rx.Subscription;
 import rx.subjects.PublishSubject;
 import rx.subjects.Subject;
-import rx.subscriptions.CompositeSubscription;
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    final CompositeSubscription subscriptions = new CompositeSubscription();
-    //Lazy
-    private Subject<RecyclerEvent, RecyclerEvent> changeEvents;
+    private final Subject<RecyclerEvent, RecyclerEvent> changeEvents = PublishSubject.<RecyclerEvent>create()
+            .toSerialized();
 
     private Cursor cursor;
-
-    @CallSuper
-    public void onStart() {
-
-    }
-
-    @CallSuper
-    public void onStop() {
-        subscriptions.clear();
-        closeCursor(true);
-    }
 
     @Override
     public int getItemCount() {
@@ -40,7 +26,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         CursorRecyclerViewAdapter.this.cursor = cursor;
     }
 
-    private void closeCursor(boolean notify) {
+    public void closeCursor(boolean notify) {
         Cursor cursor = this.cursor;
         this.cursor = null;
         if (cursor != null) {
@@ -58,16 +44,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         return cursor;
     }
 
-    @CallSuper
-    protected void addSubscription(@NonNull Subscription subscription) {
-        subscriptions.add(subscription);
-    }
 
     @NonNull
     protected Subject<RecyclerEvent, RecyclerEvent> getEventSubject() {
-        if (changeEvents == null) {
-            changeEvents = PublishSubject.<RecyclerEvent>create().toSerialized();
-        }
         return changeEvents;
     }
 

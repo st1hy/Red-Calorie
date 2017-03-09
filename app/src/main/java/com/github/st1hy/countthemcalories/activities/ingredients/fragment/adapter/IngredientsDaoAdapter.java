@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter;
+package com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter;
 
 import android.database.Cursor;
 import android.support.annotation.LayoutRes;
@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.inject.IngredientViewHolderComponent;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.inject.IngredientViewHolderModule;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.AbstractIngredientsViewHolder;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.AbstractIngredientsViewHolder;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
@@ -30,9 +33,6 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.inject.IngredientViewHolderComponent;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.inject.IngredientViewHolderModule;
 import com.l4digital.fastscroll.FastScroller;
 
 import java.util.LinkedList;
@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
@@ -78,6 +79,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     private final IngredientsFragmentComponent component;
 
     private final Queue<Long> addedItems = new LinkedList<>();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
     public IngredientsDaoAdapter(@NonNull IngredientsView view,
@@ -98,10 +100,27 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         this.component = component;
     }
 
-    @Override
     public void onStart() {
-        super.onStart();
-        addSubscription(searchIngredients(searchResultObservable));
+        addSubscription(searchResultObservable
+                .flatMap(search ->
+                        databaseModel.getAllFilteredBy(search.getQuery(), search.getTokens())
+                                .map(cursor -> QueryFinished.of(cursor, search))
+                )
+                .doOnError(e -> Timber.e(e, "Search exploded"))
+                .retry(128)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(queryFinished -> {
+                    SearchResult searchResult = queryFinished.getSearchingFor();
+                    recentSearchResult.set(searchResult);
+                    onCursorUpdate(queryFinished.getCursor(), searchResult);
+                    notifyDataSetChanged();
+                    onSearchFinished();
+                }));
+    }
+
+    public void onStop() {
+        subscriptions.clear();
+        closeCursor(true);
     }
 
     @Override
@@ -246,6 +265,10 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                 });
     }
 
+    private void addSubscription(@NonNull Subscription subscribe) {
+        subscriptions.add(subscribe);
+    }
+
     @Override
     public void onEditClicked(@NonNull IngredientViewHolder viewHolder) {
         long id = viewHolder.getReusableIngredient().getId();
@@ -264,34 +287,12 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         return getEventSubject();
     }
 
-    @NonNull
-    private Subscription searchIngredients(@NonNull Observable<SearchResult> sequenceObservable) {
-        return sequenceObservable
-                .flatMap(searchResult1 -> {
-                    Observable<Cursor> cursor1 = databaseModel.getAllFilteredBy(
-                            searchResult1.getQuery(), searchResult1.getTokens()
-                    );
-                    return cursor1.map(cursor -> new QueryFinished(cursor, searchResult1));
-                })
-                .doOnError(e -> Timber.e(e, "Search exploded"))
-                .retry(128)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(queryFinished -> {
-                    SearchResult searchResult = queryFinished.getSearchingFor();
-                    recentSearchResult.set(searchResult);
-                    onCursorUpdate(queryFinished.getCursor(), searchResult);
-                    notifyDataSetChanged();
-                    onSearchFinished();
-                });
-    }
-
     private void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
         onCursorUpdate(cursor);
         boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
         view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
         view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
-
 
     public void onIngredientAdded(long addedIngredientId) {
         addedItems.offer(addedIngredientId);
@@ -358,9 +359,12 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         final Cursor cursor;
         final SearchResult searchingFor;
 
-        QueryFinished(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+        private QueryFinished(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
             this.cursor = cursor;
             this.searchingFor = searchingFor;
+        }
+        public static QueryFinished of(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {
+            return new QueryFinished(cursor, searchingFor);
         }
 
         @NonNull

@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.fragment.prese
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.model.AddIngredientType;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.core.tokensearch.LastSearchResult;
