@@ -10,9 +10,14 @@ public class AddIngredientParams {
     @NonNull
     private final String extraName;
 
-    public AddIngredientParams(@NonNull AddIngredientType type, @NonNull String extraName) {
+    private AddIngredientParams(@NonNull AddIngredientType type, @NonNull String extraName) {
         this.type = type;
         this.extraName = extraName;
+    }
+
+    @NonNull
+    public static AddIngredientParams of(@NonNull AddIngredientType type, @NonNull String extraName) {
+        return new AddIngredientParams(type, extraName);
     }
 
     @NonNull

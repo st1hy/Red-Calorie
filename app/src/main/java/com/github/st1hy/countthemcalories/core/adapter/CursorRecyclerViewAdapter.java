@@ -24,7 +24,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     @CallSuper
     protected void onCursorUpdate(@NonNull Cursor cursor) {
         closeCursor(false);
-        CursorRecyclerViewAdapter.this.cursor = cursor;
+        this.cursor = cursor;
     }
 
     public void closeCursor(boolean notify) {

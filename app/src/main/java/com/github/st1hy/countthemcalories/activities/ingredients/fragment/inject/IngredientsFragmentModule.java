@@ -9,6 +9,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
@@ -41,6 +42,9 @@ public abstract class IngredientsFragmentModule {
 
     @Binds
     public abstract IngredientsPresenter ingredientsPresenter(IngredientsPresenterImpl presenter);
+
+    @Binds
+    public abstract IngredientViewHolder.Callback viewHolderCallback(IngredientsPresenterImpl presenter);
 
     @Provides
     public static RecyclerView ingredientsRecyclerView(@FragmentRootView View root,
@@ -75,4 +79,5 @@ public abstract class IngredientsFragmentModule {
     public static Observable<RecyclerEvent> recyclerEventObservable(PublishSubject<RecyclerEvent> events) {
         return events.asObservable();
     }
+
 }
