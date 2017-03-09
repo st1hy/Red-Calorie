@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import javax.inject.Inject;
 
+@PerFragment
 public class TagsViewModel {
 
     private final Resources resources;

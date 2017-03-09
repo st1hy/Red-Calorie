@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -22,7 +21,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 
 public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
@@ -52,11 +50,12 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     @BindView(R.id.ingredients_item_content)
     View content;
 
-    private final PositionDelegate position = new PositionDelegate();
     private boolean isEnabled = true;
 
     @Inject
     ImageHolderDelegate imageHolderDelegate;
+    @Inject
+    PositionDelegate position;
 
     @Inject
     public IngredientViewHolder(@NonNull @IngredientRootView View itemView,
@@ -111,7 +110,7 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
     public void onAttached() {
         scrollingItemDelegate.onAttached();
-        position.onAttached(callback.getEvents());
+        position.onAttached();
         imageHolderDelegate.onAttached();
     }
 
@@ -147,9 +146,6 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
         void onDeleteClicked(@NonNull IngredientViewHolder viewHolder);
 
         void onEditClicked(@NonNull IngredientViewHolder viewHolder);
-
-        @NonNull
-        Observable<RecyclerEvent> getEvents();
 
     }
 }

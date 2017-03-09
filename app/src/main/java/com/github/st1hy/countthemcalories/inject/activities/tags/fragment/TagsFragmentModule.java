@@ -14,6 +14,8 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsStateSaver;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.collect.Sets;
@@ -27,6 +29,8 @@ import javax.inject.Provider;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Module(includes = TagsFragmentBindings.class)
 public class TagsFragmentModule {
@@ -81,5 +85,22 @@ public class TagsFragmentModule {
         }
     }
 
+    @Provides
+    @PerFragment
+    public static PublishSubject<TagViewHolder> stateChanges() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @PerFragment
+    public static PublishSubject<RecyclerEvent> eventSubject() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @PerFragment
+    public static Observable<RecyclerEvent> recyclerEventObservable(PublishSubject<RecyclerEvent> events) {
+        return events.asObservable();
+    }
 
 }

@@ -13,6 +13,7 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presen
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsViewController;
+import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -26,6 +27,8 @@ import javax.inject.Named;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Module(includes = {
         PermissionModule.class,
@@ -59,5 +62,17 @@ public abstract class IngredientsFragmentModule {
     @PerFragment
     public static RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
         return RecyclerViewAdapterDelegate.newAdapter(wrapper);
+    }
+
+    @Provides
+    @PerFragment
+    public static PublishSubject<RecyclerEvent> eventSubject() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @PerFragment
+    public static Observable<RecyclerEvent> recyclerEventObservable(PublishSubject<RecyclerEvent> events) {
+        return events.asObservable();
     }
 }

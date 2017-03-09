@@ -12,17 +12,18 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagRootView;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class TagItemHolder extends TagViewHolder {
@@ -46,11 +47,16 @@ public class TagItemHolder extends TagViewHolder {
     private final TagsViewModel viewModel;
     private final OnTagInteraction callback;
     private final Tag tag = new Tag();
-    private final PositionDelegate position = new PositionDelegate();
     private final ScrollingItemDelegate scrollingItemDelegate;
     private boolean isEnabled;
 
-    public TagItemHolder(@NonNull View itemView,
+    @Inject
+    PublishSubject<TagViewHolder> stateChanges;
+    @Inject
+    PositionDelegate position;
+
+    @Inject
+    public TagItemHolder(@NonNull @TagRootView View itemView,
                          @NonNull TagsViewModel viewModel,
                          @NonNull OnTagInteraction callback) {
         super(itemView);
@@ -93,9 +99,8 @@ public class TagItemHolder extends TagViewHolder {
     }
 
     @Override
-    public void onAttached(@NonNull Observable<RecyclerEvent> events,
-                           @NonNull PublishSubject<TagViewHolder> stateChanges) {
-        position.onAttached(events);
+    public void onAttached() {
+        position.onAttached();
         scrollingItemDelegate.onAttached();
         scrollingItemDelegate.subscribe(
                 RxCompoundButton.checkedChanges(checkBox)

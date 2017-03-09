@@ -19,7 +19,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.I
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
@@ -279,12 +278,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
                 .subscribe(ingredientTemplate1 -> {
                     view.editIngredientTemplate(positionInAdapter, ingredientTemplate1);
                 });
-    }
-
-    @NonNull
-    @Override
-    public Observable<RecyclerEvent> getEvents() {
-        return getEventSubject();
     }
 
     private void onCursorUpdate(@NonNull Cursor cursor, @NonNull SearchResult searchingFor) {

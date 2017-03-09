@@ -5,13 +5,14 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
+import javax.inject.Inject;
+
 import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private final Subject<RecyclerEvent, RecyclerEvent> changeEvents = PublishSubject.<RecyclerEvent>create()
-            .toSerialized();
+    @Inject
+    PublishSubject<RecyclerEvent> changeEvents;
 
     private Cursor cursor;
 
@@ -44,17 +45,11 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         return cursor;
     }
 
-
-    @NonNull
-    protected Subject<RecyclerEvent, RecyclerEvent> getEventSubject() {
-        return changeEvents;
-    }
-
     protected void notifyListenersItemRemove(int position) {
-        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
+        changeEvents.onNext(RecyclerEvent.create(RecyclerEvent.Type.REMOVED, position));
     }
 
     protected void notifyListenersItemInserted(int position) {
-        getEventSubject().onNext(RecyclerEvent.create(RecyclerEvent.Type.ADDED, position));
+        changeEvents.onNext(RecyclerEvent.create(RecyclerEvent.Type.ADDED, position));
     }
 }

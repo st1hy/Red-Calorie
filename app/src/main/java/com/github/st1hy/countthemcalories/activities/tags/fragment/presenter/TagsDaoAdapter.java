@@ -17,8 +17,10 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.model.command
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemHolder;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagSpaceHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagComponent;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagComponentFactory;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagModule;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
@@ -71,9 +73,12 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private final UndoView undoView;
     @Inject
     ColorGenerator colorGenerator;
+    @Inject
+    TagComponentFactory tagComponentFactory;
+    @Inject
+    PublishSubject<TagViewHolder> stateChanges;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
-    private final PublishSubject<TagViewHolder> stateChanges = PublishSubject.create();
 
     @Inject
     public TagsDaoAdapter(@NonNull TagsView view,
@@ -135,12 +140,13 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        TagComponent tagComponent = tagComponentFactory.newTagComponent(new TagModule(view));
         if (viewType == item_layout) {
-            TagItemHolder holder = new TagItemHolder(view, viewModel, this);
-            holder.fillParent(parent);
-            return holder;
+            TagItemHolder itemHolder = tagComponent.tagItemHolder();
+            itemHolder.fillParent(parent);
+            return itemHolder;
         } else {
-            return new TagSpaceHolder(view);
+            return tagComponent.tagSpaceHolder();
         }
     }
 
@@ -172,7 +178,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     @Override
     public void onViewAttachedToWindow(TagViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        holder.onAttached(getEventSubject(), stateChanges);
+        holder.onAttached();
     }
 
     @Override
