@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.inject.activities.mealdetail.MealDetailActivityModel;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,7 @@ public class MealDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meal_detail_activity);
-        getAppComponent().newMealDetailActivityComponent(new MealDetailActivityModel(this))
+        getAppComponent().newMealDetailActivityComponent(new ActivityModule(this))
                 .inject(this);
     }
 }

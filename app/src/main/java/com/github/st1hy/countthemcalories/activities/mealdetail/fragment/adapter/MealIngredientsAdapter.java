@@ -1,58 +1,37 @@
-package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.IngredientViewHolder;
-import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.subscriptions.CompositeSubscription;
-
 @PerFragment
-public class MealIngredientsPresenter extends RecyclerAdapterWrapper<IngredientViewHolder>
-        implements BasicLifecycle {
+public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewHolder> {
 
-    @NonNull
-    private final Meal meal;
     @NonNull
     private final PhysicalQuantitiesModel quantitiesModel;
 
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
-    private List<Ingredient> ingredients = Collections.emptyList();
+    private final List<Ingredient> ingredients;
 
     @Inject
-    public MealIngredientsPresenter(@NonNull Meal meal,
-                                    @NonNull PhysicalQuantitiesModel quantitiesModel) {
-        this.meal = meal;
+    public MealIngredientsAdapter(@NonNull List<Ingredient> ingredients,
+                                  @NonNull PhysicalQuantitiesModel quantitiesModel) {
         this.quantitiesModel = quantitiesModel;
-    }
-
-    @Override
-    public void onStart() {
-        ingredients = meal.getIngredients();
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void onStop() {
-        subscriptions.clear();
+        this.ingredients = ingredients;
     }
 
     @Override

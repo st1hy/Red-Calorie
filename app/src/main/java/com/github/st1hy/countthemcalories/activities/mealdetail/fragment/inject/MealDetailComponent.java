@@ -1,17 +1,15 @@
-package com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment;
+package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject;
 
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.RecyclerViewAdapterDelegateModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import dagger.Subcomponent;
 
 @PerFragment
 @Subcomponent(modules = {
+        FragmentModule.class,
         MealDetailsModule.class,
-        PermissionModule.class,
-        RecyclerViewAdapterDelegateModule.class
 })
 public interface MealDetailComponent {
 

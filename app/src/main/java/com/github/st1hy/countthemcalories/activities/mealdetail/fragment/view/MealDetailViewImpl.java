@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
@@ -36,7 +37,7 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
     View removeButton;
 
     @Inject
-    public MealDetailViewImpl(@NonNull View rootView,
+    public MealDetailViewImpl(@NonNull @FragmentRootView View rootView,
                               @NonNull MealDetailScreen screen,
                               @NonNull RecyclerView recyclerView) {
         this.screen = screen;

@@ -9,21 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailsLifecycleController;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.inject.MealDetailComponentFactory;
+import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.mealdetail.fragment.MealDetailsModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
 public class MealDetailFragment extends BaseFragment {
 
-    public static final String ARG_MEAL_PARCEL = "meal detail parcel";
-
     private MealDetailComponentFactory componentFactory;
 
     @Inject
-    MealDetailsLifecycleController controller;
+    MealDetailPresenter presenter;
     @Inject
     RecyclerView recyclerView; //injects adapter
 
@@ -42,7 +40,7 @@ public class MealDetailFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newMealDetailComponent(new MealDetailsModule(this, savedInstanceState))
+        componentFactory.newMealDetailComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }
@@ -50,20 +48,13 @@ public class MealDetailFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        controller.onStart();
+        presenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        controller.onStop();
+        presenter.onStop();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        controller.onSaveState(outState);
-    }
-
 
 }
