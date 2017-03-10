@@ -51,13 +51,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     @Inject
     IngredientsView view;
 
-
     @Inject
     public IngredientsDaoAdapter() {
-    }
-
-    public int findPositionById(long itemId) {
-        return databaseModel.findInCursor(getCursor(), itemId);
     }
 
     public void onIngredientInserted(@NonNull InsertResult result) {

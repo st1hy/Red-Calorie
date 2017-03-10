@@ -4,13 +4,12 @@ import android.os.Bundle;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
-import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
+import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class IngredientsActivity extends BaseActivity {
 
@@ -23,8 +22,7 @@ public class IngredientsActivity extends BaseActivity {
     @Inject
     IngredientsFragment content;
     @Inject
-    @Named("suggestions")
-    SearchSuggestionsAdapter suggestionsAdapter;
+    IngredientsPresenter presenter;
     @Inject
     DrawerPresenter drawerPresenter;
 
@@ -40,15 +38,13 @@ public class IngredientsActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        suggestionsAdapter.onStart();
-        drawerPresenter.onStart();
+        presenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        suggestionsAdapter.onStop();
-        drawerPresenter.onStop();
+        presenter.onStop();
     }
 
     @Override

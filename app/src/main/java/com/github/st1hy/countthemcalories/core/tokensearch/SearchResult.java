@@ -7,8 +7,8 @@ import java.util.List;
 
 public class SearchResult {
     public static final SearchResult EMPTY = new SearchResult("", Collections.<String>emptyList());
-    final String query;
-    final List<String> tokens;
+    private final String query;
+    private final List<String> tokens;
 
     public SearchResult(@NonNull String query, @NonNull List<String> tokens) {
         this.query = query;

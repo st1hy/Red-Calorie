@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Filterable;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 
 import com.github.st1hy.countthemcalories.R;
 
@@ -89,6 +87,10 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
 
+    public void onFilterComplete(int count) {
+        searchView.onFilterComplete(count);
+    }
+
     protected void onExpandClicked() {
         expand(true);
     }
@@ -125,10 +127,6 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     @Override
     public List<String> getTokens() {
         return searchView.getTokens();
-    }
-
-    public <T extends ListAdapter & Filterable> void setSuggestionsAdapter(@Nullable T adapter) {
-        searchView.setAdapter(adapter);
     }
 
     @NonNull
@@ -192,15 +190,15 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         return searchView;
     }
 
-    public static class SavedState extends BaseSavedState {
+    private static class SavedState extends BaseSavedState {
         private boolean isExpanded;
 
-        public SavedState(Parcel source) {
+        SavedState(Parcel source) {
             super(source);
             isExpanded = source.readInt() > 0;
         }
 
-        public SavedState(Parcelable superState, TokenSearchView view) {
+        SavedState(Parcelable superState, TokenSearchView view) {
             super(superState);
             isExpanded = view.isExpanded;
         }

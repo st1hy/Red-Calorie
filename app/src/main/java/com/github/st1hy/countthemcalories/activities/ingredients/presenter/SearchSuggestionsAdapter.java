@@ -3,110 +3,38 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.CursorAdapter;
+import android.widget.Filter;
 import android.widget.SimpleCursorAdapter;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
-import com.github.st1hy.countthemcalories.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.core.adapter.ForwardingAdapter;
-import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
-import com.google.common.base.Optional;
-import com.jakewharton.rxbinding.view.RxView;
-
-import java.util.Collections;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 
 @PerActivity
-public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> implements BasicLifecycle {
+public class SearchSuggestionsAdapter extends SimpleCursorAdapter {
 
     private static final String COLUMN = TagDao.Properties.Name.columnName;
 
-    @NonNull
-    private final RxTagsDatabaseModel databaseModel;
-    @NonNull
-    private final TokenSearchView view;
-    @NonNull
-    private final Observable<SearchResult> searchResultObservable;
-    private Optional<String> filter;
-    @Inject
-    @Named("touchOverlay")
-    View touchOverlay;
-
-    private boolean isDropDownVisible;
-
-    private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private Filter filter;
 
     @Inject
-    public SearchSuggestionsAdapter(@NonNull @ActivityContext Context context,
-                                    @NonNull RxTagsDatabaseModel databaseModel,
-                                    @NonNull TokenSearchView view,
-                                    @NonNull Observable<SearchResult> searchResultObservable,
-                                    @NonNull Optional<String> filter) {
-        super(new SimpleCursorAdapter(context,
+    public SearchSuggestionsAdapter(@NonNull @ActivityContext Context context) {
+        super(context,
                 android.R.layout.simple_list_item_1,
                 null,
                 new String[]{COLUMN},
                 new int[]{android.R.id.text1},
-                0));
-        this.databaseModel = databaseModel;
-        this.view = view;
-        this.searchResultObservable = searchResultObservable;
-        this.filter = filter;
+                0);
     }
 
     @Override
-    public void onStart() {
-        subscriptions.add(searchResultObservable
-                .flatMap(searchResult -> {
-                    if (searchResult.getQuery().trim().length() > 0)
-                        return databaseModel.getAllFiltered(searchResult.getQuery(), searchResult.getTokens());
-                    else return Observable.just(null);
-                })
-                .doOnNext(SearchSuggestionsAdapter::assertCursorNotClosed)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::changeCursor)
-        );
-        subscriptions.add(
-                view.dropDownChange().subscribe(visible -> isDropDownVisible = visible)
-        );
-        subscriptions.add(
-                RxView.touches(touchOverlay,
-                        (event1) -> isDropDownVisible
-                                && event1.getAction() == MotionEvent.ACTION_DOWN
-                                || event1.getAction() == MotionEvent.ACTION_UP)
-                        .filter(event -> event.getAction() == MotionEvent.ACTION_UP)
-                        .subscribe(ignore -> view.dismissDropDown())
-        );
-        if (filter.isPresent()) {
-            view.setQuery("", Collections.singletonList(filter.get()));
-            view.expand(false);
-            filter = Optional.absent();
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new FakeFilter();
         }
-    }
-
-
-    @Override
-    public void onStop() {
-        subscriptions.clear();
-        changeCursor(null);
-    }
-
-    private void changeCursor(@Nullable Cursor cursor) {
-        assertCursorNotClosed(cursor);
-        getParent().changeCursor(cursor);
+        return filter;
     }
 
     /**
@@ -121,8 +49,14 @@ public class SearchSuggestionsAdapter extends ForwardingAdapter<CursorAdapter> i
         return cursor.getString(cursor.getColumnIndexOrThrow(COLUMN));
     }
 
-    private static void assertCursorNotClosed(@Nullable Cursor cursor) {
-        if (cursor != null && cursor.isClosed())
-            throw new IllegalStateException("Cannot change to closed cursor");
+    private static class FakeFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+        }
     }
 }

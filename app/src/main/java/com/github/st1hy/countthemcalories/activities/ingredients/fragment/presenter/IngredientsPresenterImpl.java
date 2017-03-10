@@ -89,12 +89,13 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
                 .retry(128)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(queryFinished -> {
+                    Cursor cursor = queryFinished.getCursor();
                     SearchResult searchResult = queryFinished.getSearchingFor();
                     recentSearchResult.set(searchResult);
-                    adapter.onCursorUpdate(queryFinished.getCursor());
-                    setNoIngredientVisibility(queryFinished.getCursor());
+                    adapter.onCursorUpdate(cursor);
+                    setNoIngredientVisibility(cursor);
                     adapter.notifyDataSetChanged();
-                    onSearchFinished();
+                    onSearchFinished(cursor);
                 }));
     }
 
@@ -109,12 +110,12 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
     }
 
 
-    private void onSearchFinished() {
+    private void onSearchFinished(final Cursor cursor) {
         final Long newItemId = addedItems.poll();
         if (newItemId != null) {
             subscribe(
                     Observable.fromCallable(
-                            () -> adapter.findPositionById(newItemId))
+                            () -> databaseModel.findInCursor(cursor, newItemId))
                             .subscribeOn(Schedulers.computation())
                             .filter(IngredientsPresenterImpl::isSuccessful)
                             .observeOn(AndroidSchedulers.mainThread())

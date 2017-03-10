@@ -117,6 +117,11 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
     }
 
     @Override
+    public void onFilterComplete(int count) {
+        if (count >= 0) super.onFilterComplete(count);
+    }
+
+    @Override
     protected View getViewForObject(String query) {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         ViewGroup parent = (ViewGroup) TokenSearchTextView.this.getParent();
