@@ -1,0 +1,21 @@
+android {
+    sourceSets {
+        main {
+            assets.srcDirs += "$projectDir/generate-database/build/generated/assets"
+        }
+    }
+}
+
+task generateDatabase {
+    doLast {
+        exec {
+            workingDir "$projectDir/generate-database/"
+            commandLine  "./create_database.sh"
+        }
+    }
+}
+
+afterEvaluate{
+    mergeDebugAssets.dependsOn generateDatabase
+    mergeReleaseAssets.dependsOn generateDatabase
+}

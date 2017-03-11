@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'me.tatarka.retrolambda'
+apply from: "generate-database/build.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -28,7 +29,7 @@ android {
 }
 
 greendao {
-    schemaVersion 1006
+    schemaVersion 1007
 }
 
 repositories {
@@ -47,6 +48,7 @@ dependencies {
     compile "org.parceler:parceler-api:$parcelerVersion"
     annotationProcessor "org.parceler:parceler:$parcelerVersion"
     compile "net.danlew:android.joda:$jodaTimeVersion"
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
