@@ -16,6 +16,5 @@ task generateDatabase {
 }
 
 afterEvaluate{
-    mergeDebugAssets.dependsOn generateDatabase
-    mergeReleaseAssets.dependsOn generateDatabase
+    preBuild.dependsOn generateDatabase
 }

@@ -9,4 +9,4 @@ rm -rf build/*
 mkdir -p $BUILD_ASSETS
 sqlite3 "build/$NAME" '.read sql.sql'
 cd build
-zip $ZIPNAME $NAME
+zip -q $ZIPNAME $NAME
