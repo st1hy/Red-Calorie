@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject;
 
 public interface TagComponentFactory {
 

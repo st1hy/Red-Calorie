@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder;
 
 import android.support.annotation.NonNull;
 

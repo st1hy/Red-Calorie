@@ -1,18 +1,16 @@
-package com.github.st1hy.countthemcalories.inject.activities.tags;
+package com.github.st1hy.countthemcalories.activities.tags.inject;
 
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.core.DrawerModule;
-import com.github.st1hy.countthemcalories.inject.core.UndoModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import dagger.Subcomponent;
 
 @PerActivity
 @Subcomponent(modules = {
+        ActivityModule.class,
         TagsActivityModule.class,
-        DrawerModule.class,
-        UndoModule.class
 })
 public interface TagsActivityComponent extends TagsFragmentComponentFactory {
 

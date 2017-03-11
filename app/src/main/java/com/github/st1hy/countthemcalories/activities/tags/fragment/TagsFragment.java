@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.TagsDaoAdapter;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.tags.fragment.TagsFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -43,7 +43,7 @@ public class TagsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newTagsFragmentComponent(new TagsFragmentModule(this, savedInstanceState))
+        componentFactory.newTagsFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

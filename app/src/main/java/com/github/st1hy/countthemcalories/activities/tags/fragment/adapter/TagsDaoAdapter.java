@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.presenter;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.adapter;
 
 import android.database.Cursor;
 import android.support.annotation.CallSuper;
@@ -15,12 +15,12 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFra
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagItemHolder;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.TagViewHolder;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagComponent;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagComponentFactory;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagModule;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.OnTagInteraction;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.TagItemHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.TagViewHolder;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagComponent;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagComponentFactory;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagModule;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;

@@ -1,9 +1,9 @@
-package com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder;
+package com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagRootView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagRootView;
 
 import javax.inject.Inject;
 
