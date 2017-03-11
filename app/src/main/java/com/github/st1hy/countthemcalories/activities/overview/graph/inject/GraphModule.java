@@ -6,8 +6,6 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.presenter.GraphDataAdapter;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
@@ -24,22 +22,13 @@ public abstract class GraphModule {
     @Binds
     public abstract GraphColumnComponentFactory columnFactory(GraphComponent component);
 
-    @Binds
-    public abstract RecyclerAdapterWrapper adapter(GraphDataAdapter adapter);
-
     @Provides
     @PerFragment
     public static RecyclerView recyclerView(@FragmentRootView View view,
-                                            RecyclerViewAdapterDelegate adapter) {
+                                            GraphDataAdapter adapter) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.graph_recycler);
         recyclerView.setAdapter(adapter);
         return recyclerView;
-    }
-
-    @Provides
-    @PerFragment
-    public static RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
-        return RecyclerViewAdapterDelegate.newAdapter(wrapper);
     }
 
     @Provides

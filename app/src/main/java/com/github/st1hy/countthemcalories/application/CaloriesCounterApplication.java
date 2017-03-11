@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.github.st1hy.countthemcalories.application.inject.ApplicationComponent;
 import com.github.st1hy.countthemcalories.application.inject.DaggerApplicationComponent;
 import com.github.st1hy.countthemcalories.database.application.DatabaseApplication;
-import com.github.st1hy.countthemcalories.inject.common.ApplicationModule;
+import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 
 public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;

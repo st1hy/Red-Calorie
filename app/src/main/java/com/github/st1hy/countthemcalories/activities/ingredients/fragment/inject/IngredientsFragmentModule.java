@@ -15,11 +15,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.presen
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsViewController;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
+import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.core.DialogModule;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
@@ -60,12 +58,6 @@ public abstract class IngredientsFragmentModule {
     @Named("isInSelectMode")
     public static boolean selectMode(Intent intent) {
         return intent != null && IngredientsActivity.ACTION_SELECT_INGREDIENT.equals(intent.getAction());
-    }
-
-    @Provides
-    @PerFragment
-    public static RecyclerViewAdapterDelegate recyclerViewAdapterDelegate(RecyclerAdapterWrapper wrapper) {
-        return RecyclerViewAdapterDelegate.newAdapter(wrapper);
     }
 
     @Provides

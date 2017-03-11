@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.command.undo.inject;
 
 import com.github.st1hy.countthemcalories.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.core.command.undo.UndoViewImpl;

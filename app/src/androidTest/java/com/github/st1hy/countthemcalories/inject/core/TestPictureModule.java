@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.inject.core;
 
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureOthersModule;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.PictureOthersModule;
 
 import dagger.Module;
 

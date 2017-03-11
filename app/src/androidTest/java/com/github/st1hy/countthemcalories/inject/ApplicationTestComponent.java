@@ -9,7 +9,7 @@ import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.inject.addingredient.AddIngredientTestComponent;
 import com.github.st1hy.countthemcalories.inject.addmeal.AddMealTestComponent;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
-import com.github.st1hy.countthemcalories.inject.common.ApplicationModule;
+import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 
 import javax.inject.Singleton;
 

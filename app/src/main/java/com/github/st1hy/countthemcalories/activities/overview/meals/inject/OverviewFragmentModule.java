@@ -17,10 +17,9 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.Me
 import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewView;
 import com.github.st1hy.countthemcalories.activities.overview.meals.view.OverviewViewImpl;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentArguments;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
-import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealPagerPosition;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
 import dagger.Binds;

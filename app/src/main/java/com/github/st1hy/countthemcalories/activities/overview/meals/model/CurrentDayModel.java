@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.quantifier.datetime.MealPagerPosition;
+import com.github.st1hy.countthemcalories.activities.overview.meals.inject.MealPagerPosition;
 
 import org.joda.time.DateTime;
 

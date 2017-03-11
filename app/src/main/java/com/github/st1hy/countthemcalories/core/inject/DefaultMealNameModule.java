@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.inject;
 
 import com.github.st1hy.countthemcalories.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.core.meals.DefaultMealNameImpl;

@@ -10,8 +10,8 @@ import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngre
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientScreenImpl;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
-import com.github.st1hy.countthemcalories.inject.core.ToolbarNavigateBackModule;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
+import com.github.st1hy.countthemcalories.core.inject.ToolbarNavigateBackModule;
 
 import dagger.Binds;
 import dagger.Module;

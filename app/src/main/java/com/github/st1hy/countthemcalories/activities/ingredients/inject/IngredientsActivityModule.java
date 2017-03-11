@@ -13,14 +13,15 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
+import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
+import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.core.ActivityLauncherModule;
-import com.github.st1hy.countthemcalories.inject.core.UndoModule;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
 import com.google.common.base.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -135,7 +136,7 @@ public abstract class IngredientsActivityModule {
     }
 
     @Provides
-    @Named("undoViewRoot")
+    @UndoRootView
     public static View undoRootView(Activity activity) {
         return activity.findViewById(R.id.ingredients_root);
     }

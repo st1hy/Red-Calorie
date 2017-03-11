@@ -25,9 +25,9 @@ import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresen
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.core.DefaultMealNameModule;
-import com.github.st1hy.countthemcalories.inject.core.DialogModule;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.core.inject.DefaultMealNameModule;
+import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;

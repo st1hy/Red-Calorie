@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core.headerpicture;
+package com.github.st1hy.countthemcalories.core.headerpicture.inject;
 
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePicker;
 import com.github.st1hy.countthemcalories.core.headerpicture.PicturePickerImpl;

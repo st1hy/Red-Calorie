@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.inject;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;

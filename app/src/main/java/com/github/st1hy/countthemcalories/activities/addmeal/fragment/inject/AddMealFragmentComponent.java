@@ -4,7 +4,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFra
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientListComponentFactory;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.PictureModule;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.PictureModule;
 
 import dagger.Subcomponent;
 

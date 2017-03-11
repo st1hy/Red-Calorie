@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
+import com.github.st1hy.countthemcalories.activities.overview.graph.presenter.GraphDataAdapter;
 import com.github.st1hy.countthemcalories.activities.overview.graph.presenter.GraphPresenter;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
@@ -26,7 +26,7 @@ public class GraphFragment extends BaseFragment {
     @Inject
     RecyclerView recyclerView; //injects adapter
     @Inject
-    RecyclerViewAdapterDelegate adapterDelegate;
+    GraphDataAdapter adapter;
 
     public void setComponentFactory(@NonNull GraphComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
@@ -49,14 +49,12 @@ public class GraphFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapterDelegate.onStart();
         presenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapterDelegate.onStop();
         presenter.onStop();
     }
 }

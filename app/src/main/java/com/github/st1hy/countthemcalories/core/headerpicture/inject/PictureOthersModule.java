@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core.headerpicture;
+package com.github.st1hy.countthemcalories.core.headerpicture.inject;
 
 import android.net.Uri;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.drawer;
 
 import android.app.Activity;
 import android.support.v7.app.ActionBarDrawerToggle;

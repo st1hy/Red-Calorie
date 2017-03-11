@@ -16,8 +16,8 @@ import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHo
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 import com.google.common.base.Preconditions;

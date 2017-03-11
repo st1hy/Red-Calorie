@@ -1,11 +1,7 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.activityresult;
 
 import android.support.v4.app.FragmentManager;
 
-import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncher;
-import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherImp;
-import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherSubject;
-import com.github.st1hy.countthemcalories.core.activityresult.IntentHandlerFragment;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import dagger.Binds;

@@ -1,9 +1,6 @@
-package com.github.st1hy.countthemcalories.inject.core;
+package com.github.st1hy.countthemcalories.core.permissions;
 
 import android.support.v4.app.FragmentManager;
-
-import com.github.st1hy.countthemcalories.core.permissions.PermissionFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionSubject;
 
 import dagger.Module;
 import dagger.Provides;

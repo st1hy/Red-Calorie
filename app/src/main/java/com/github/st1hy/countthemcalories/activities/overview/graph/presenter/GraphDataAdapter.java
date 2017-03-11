@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphCo
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerAdapterWrapper;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 @PerFragment
-public class GraphDataAdapter extends RecyclerAdapterWrapper<GraphColumnViewHolder> {
+public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder> {
 
     private static final int LAYOUT = R.layout.overview_graph_item;
 

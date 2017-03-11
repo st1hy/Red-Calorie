@@ -10,13 +10,12 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
+import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
+import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.core.DrawerModule;
-import com.github.st1hy.countthemcalories.inject.core.UndoModule;
-
-import javax.inject.Named;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
 
 import dagger.Binds;
 import dagger.Module;
@@ -55,7 +54,7 @@ public abstract class TagsActivityModule {
 
     @Provides
     @PerActivity
-    @Named("undoViewRoot")
+    @UndoRootView
     public static View undoRootView(Activity activity) {
         return activity.findViewById(R.id.tags_root);
     }
