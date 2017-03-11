@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
 import javax.inject.Inject;
 
@@ -24,7 +25,7 @@ public class UnitsViewHolder {
     View bodyMass;
 
     @Inject
-    public UnitsViewHolder(@NonNull View root) {
+    public UnitsViewHolder(@NonNull @FragmentRootView View root) {
         ButterKnife.bind(this, root);
     }
 

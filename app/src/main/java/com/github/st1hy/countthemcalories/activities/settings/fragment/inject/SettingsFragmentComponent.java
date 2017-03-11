@@ -1,14 +1,16 @@
-package com.github.st1hy.countthemcalories.inject.activities.settings.fragment;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.inject;
 
 
 import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 import com.github.st1hy.countthemcalories.inject.core.DialogModule;
 
 import dagger.Subcomponent;
 
 @PerFragment
 @Subcomponent(modules = {
+        FragmentModule.class,
         SettingsFragmentModule.class,
         DialogModule.class
 })

@@ -8,7 +8,7 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.inject.MealDetai
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponentFactory;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
-import com.github.st1hy.countthemcalories.inject.activities.settings.SettingsActivityComponentFactory;
+import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.activities.tags.TagsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.inject.common.ApplicationModule;
 

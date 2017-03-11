@@ -1,9 +1,5 @@
-package com.github.st1hy.countthemcalories.inject.activities.settings.fragment;
+package com.github.st1hy.countthemcalories.activities.settings.fragment.inject;
 
-import android.support.annotation.NonNull;
-import android.view.View;
-
-import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.view.SelectUnitViewHolder;
@@ -19,26 +15,18 @@ import dagger.Provides;
 
 @Module
 public class SettingsFragmentModule {
-    private final SettingsFragment fragment;
 
-    public SettingsFragmentModule(@NonNull SettingsFragment fragment) {
-        this.fragment = fragment;
-    }
 
     @Provides
-    public SettingsPresenter providePresenter(SettingsPresenterImpl presenter) {
+    public static SettingsPresenter providePresenter(SettingsPresenterImpl presenter) {
         return presenter;
     }
 
     @Provides
-    public SettingsView provideView(SettingsViewImpl view) {
+    public static SettingsView provideView(SettingsViewImpl view) {
         return view;
     }
 
-    @Provides
-    public View rootView() {
-        return fragment.getView();
-    }
 
     @Provides
     @PerFragment
@@ -51,21 +39,21 @@ public class SettingsFragmentModule {
     @Provides
     @PerFragment
     @Named("mass")
-    public SelectUnitViewHolder provideMassHolder(UnitsViewHolder unitsViewHolder) {
+    public static SelectUnitViewHolder provideMassHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getMass());
     }
 
     @Provides
     @PerFragment
     @Named("volume")
-    public SelectUnitViewHolder provideVolumeHolder(UnitsViewHolder unitsViewHolder) {
+    public static SelectUnitViewHolder provideVolumeHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getVolume());
     }
 
     @Provides
     @PerFragment
     @Named("bodyMass")
-    public SelectUnitViewHolder providebodyMassHolder(UnitsViewHolder unitsViewHolder) {
+    public static SelectUnitViewHolder providebodyMassHolder(UnitsViewHolder unitsViewHolder) {
         return new SelectUnitViewHolder(unitsViewHolder.getBodyMass());
     }
 

@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.settings.fragment.inject.SettingsFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.presenter.SettingsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.settings.fragment.SettingsFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ public class SettingsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newSettingsFragmentComponent(new SettingsFragmentModule(this))
+        componentFactory.newSettingsFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

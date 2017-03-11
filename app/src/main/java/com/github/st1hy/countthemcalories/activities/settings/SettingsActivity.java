@@ -6,7 +6,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
-import com.github.st1hy.countthemcalories.inject.activities.settings.SettingsActivityModule;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
 
@@ -21,7 +21,7 @@ public class SettingsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        getAppComponent().newSettingsActivityComponent(new SettingsActivityModule(this))
+        getAppComponent().newSettingsActivityComponent(new ActivityModule(this))
                 .inject(this);
     }
 
