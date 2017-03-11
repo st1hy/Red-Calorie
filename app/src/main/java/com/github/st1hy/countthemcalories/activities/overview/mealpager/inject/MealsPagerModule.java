@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.mealpager;
+package com.github.st1hy.countthemcalories.activities.overview.mealpager.inject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,10 +7,12 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponent;
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.MealsPagerAdapter;
+import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewStateSaver;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityComponent;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.ActivitySavedState;
 
 import org.parceler.Parcels;

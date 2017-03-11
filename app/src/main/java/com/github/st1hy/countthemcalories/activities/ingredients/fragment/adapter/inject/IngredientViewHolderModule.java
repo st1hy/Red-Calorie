@@ -6,8 +6,7 @@ import android.widget.ImageView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.PerIngredientRow;
-
-import javax.inject.Named;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,7 +22,7 @@ public class IngredientViewHolderModule {
 
     @Provides
     @PerIngredientRow
-    @Named("imageLoaderImageView")
+    @HeaderImageView
     public ImageView imageView() {
         return (ImageView) rootView.findViewById(R.id.ingredients_item_image);
     }

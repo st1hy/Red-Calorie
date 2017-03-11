@@ -20,14 +20,13 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
 import org.parceler.Parcels;
 
 import java.util.List;
-
-import javax.inject.Named;
 
 import dagger.Binds;
 import dagger.Module;
@@ -57,7 +56,7 @@ public abstract class MealDetailsModule {
 
     @Provides
     @PerFragment
-    @Named("imageLoaderImageView")
+    @HeaderImageView
     public static ImageView provideImageViewProvider(@FragmentRootView View rootView) {
         return (ImageView) rootView.findViewById(R.id.meal_detail_image);
     }

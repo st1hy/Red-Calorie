@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.graph.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.graph.view;
 
 import android.content.Context;
 import android.support.annotation.ColorRes;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn;
-import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnModel;
+import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnRootView;
+import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnModel.VisibilityFlags;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,7 +30,7 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.graph_item_column)
     GraphColumn column;
     @Inject
-    @Named("activityContext")
+    @ActivityContext
     Context context;
     @Inject
     @Named("graphItemClicked")
@@ -41,7 +42,7 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public GraphColumnViewHolder(@NonNull @Named("columnRootView") View itemView) {
+    public GraphColumnViewHolder(@NonNull @GraphColumnRootView View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         model = column.getModel();
@@ -72,8 +73,8 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
         setFlag(isVisible, GraphColumnModel.FLAG_COLUMN);
     }
 
-    private void setFlag(boolean isEnabled, @GraphColumnModel.VisibilityFlags int flag) {
-        @GraphColumnModel.VisibilityFlags int flags = model.getFlags();
+    private void setFlag(boolean isEnabled, @VisibilityFlags int flag) {
+        @VisibilityFlags int flags = model.getFlags();
         if (isEnabled) {
             flags |= flag;
         } else {

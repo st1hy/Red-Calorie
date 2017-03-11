@@ -11,7 +11,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.activities.overview.meals.presenter.MealsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class MealsFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         OverviewActivity activity = (OverviewActivity) getActivity();
         activity.getMealsFragmentComponentFactory()
-                .newOverviewFragmentComponent(new OverviewFragmentModule(this, savedInstanceState))
+                .newOverviewFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
     }
 

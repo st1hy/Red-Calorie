@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuant
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
 import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnModel;
+import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnViewHolder;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;

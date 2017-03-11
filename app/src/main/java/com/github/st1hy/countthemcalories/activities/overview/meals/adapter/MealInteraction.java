@@ -1,11 +1,14 @@
-package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder.MealItemHolder;
+
 import rx.functions.Func1;
 
 public class MealInteraction {
+
     @NonNull
     private final Type type;
     @NonNull

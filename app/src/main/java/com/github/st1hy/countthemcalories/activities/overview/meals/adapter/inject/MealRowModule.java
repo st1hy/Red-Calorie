@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-
-import javax.inject.Named;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,15 +29,15 @@ public class MealRowModule {
 
     @Provides
     @PerMealRow
-    @Named("mealItemRoot")
+    @MealItemRootView
     public View rootView() {
         return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
     }
 
     @Provides
     @PerMealRow
-    @Named("imageLoaderImageView")
-    public static ImageView image(@Named("mealItemRoot") View rootView) {
+    @HeaderImageView
+    public static ImageView image(@MealItemRootView View rootView) {
         return (ImageView) rootView.findViewById(R.id.overview_item_image);
     }
 

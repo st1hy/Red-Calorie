@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject;
 
 public interface MealRowComponentFactory {
 

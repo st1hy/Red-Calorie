@@ -12,9 +12,9 @@ import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScree
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
+import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +32,7 @@ public class OverviewViewImpl implements OverviewView {
 
     @Inject
     public OverviewViewImpl(@NonNull OverviewScreen screen,
-                            @NonNull @Named("fragmentRoot") View rootView) {
+                            @NonNull @FragmentRootView View rootView) {
         this.screen = screen;
         ButterKnife.bind(this, rootView);
     }

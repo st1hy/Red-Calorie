@@ -1,16 +1,16 @@
-package com.github.st1hy.countthemcalories.inject.activities.overview.meals;
+package com.github.st1hy.countthemcalories.activities.overview.meals.inject;
 
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.MealRowComponentFactory;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
-import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import dagger.Subcomponent;
 
 @PerFragment
 @Subcomponent(modules = {
+        FragmentModule.class,
         OverviewFragmentModule.class,
-        PermissionModule.class,
 })
 public interface OverviewFragmentComponent extends MealRowComponentFactory {
 

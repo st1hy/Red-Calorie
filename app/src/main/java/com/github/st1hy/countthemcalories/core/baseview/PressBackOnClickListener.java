@@ -12,7 +12,6 @@ public class PressBackOnClickListener implements View.OnClickListener {
     @NonNull
     private final Activity activity;
 
-
     @Inject
     public PressBackOnClickListener(@NonNull Activity activity) {
         this.activity = activity;

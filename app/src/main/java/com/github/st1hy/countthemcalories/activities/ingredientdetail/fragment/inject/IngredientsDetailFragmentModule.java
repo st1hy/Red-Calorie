@@ -17,13 +17,12 @@ import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.Without
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.core.PermissionModule;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;
-
-import javax.inject.Named;
 
 import dagger.Binds;
 import dagger.Module;
@@ -46,9 +45,10 @@ public abstract class IngredientsDetailFragmentModule {
 
     @Binds
     public abstract IngredientDetailView provideView(IngredientDetailViewImpl detailView);
+
     @Provides
     @PerFragment
-    @Named("imageLoaderImageView")
+    @HeaderImageView
     public static ImageView provideImageView(IngredientDetailView view) {
         return view.getImageView();
     }

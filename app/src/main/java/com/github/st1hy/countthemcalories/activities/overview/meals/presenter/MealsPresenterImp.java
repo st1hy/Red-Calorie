@@ -5,8 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.AddMealController;
-import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
-import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealsAdapter;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder.MealItemHolder;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.CurrentDayModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.MealsViewModel;
 import com.github.st1hy.countthemcalories.activities.overview.meals.model.RxMealsDatabaseModel;
@@ -33,7 +34,7 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.ofType;
+import static com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction.ofType;
 
 @PerFragment
 public class MealsPresenterImp implements MealsPresenter {

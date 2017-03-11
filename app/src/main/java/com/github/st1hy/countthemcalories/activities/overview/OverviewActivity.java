@@ -6,16 +6,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.meals.inject.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.OverviewFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
 
 public class OverviewActivity extends BaseActivity {
 
+    public static final String EXTRA_JUMP_TO_DATE = "extra jump to date";
     @Inject
     OverviewPresenter presenter;
     @Inject
@@ -27,7 +28,7 @@ public class OverviewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overview_activity);
-        getAppComponent().newOverviewActivityComponent(new OverviewActivityModule(this, savedInstanceState))
+        getAppComponent().newOverviewActivityComponent(new ActivityModule(this, savedInstanceState))
                 .inject(this);
         setTitle("");
     }

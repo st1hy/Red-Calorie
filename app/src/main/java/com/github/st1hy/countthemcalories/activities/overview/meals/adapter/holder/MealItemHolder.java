@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -9,25 +9,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.MealItemRootView;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.PerMealRow;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
 import com.github.st1hy.countthemcalories.database.Meal;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.PerMealRow;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.DELETE;
-import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.EDIT;
-import static com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction.Type.OPEN;
 
 @PerMealRow
 public class MealItemHolder extends AbstractMealItemHolder {
@@ -67,7 +64,7 @@ public class MealItemHolder extends AbstractMealItemHolder {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public MealItemHolder(@NonNull @Named("mealItemRoot") View itemView,
+    public MealItemHolder(@NonNull @MealItemRootView View itemView,
                           @NonNull ImageHolderDelegate imageHolderDelegate) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -121,9 +118,9 @@ public class MealItemHolder extends AbstractMealItemHolder {
         scrollingItemDelegate.onAttached();
         imageHolderDelegate.onAttached();
         subscriptions.add(
-                RxView.clicks(openButton).map(Functions.into(OPEN))
-                        .mergeWith(RxView.clicks(editButton).map(Functions.into(EDIT)))
-                        .mergeWith(RxView.clicks(deleteButton).map(Functions.into(DELETE)))
+                RxView.clicks(openButton).map(Functions.into(MealInteraction.Type.OPEN))
+                        .mergeWith(RxView.clicks(editButton).map(Functions.into(MealInteraction.Type.EDIT)))
+                        .mergeWith(RxView.clicks(deleteButton).map(Functions.into(MealInteraction.Type.DELETE)))
                         .map(type -> MealInteraction.of(type, this))
                         .compose(Transformers.channel(subject))
                         .subscribe()

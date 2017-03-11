@@ -2,8 +2,6 @@ package com.github.st1hy.countthemcalories.activities.overview.graph.inject.colu
 
 import android.view.View;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -16,7 +14,7 @@ public class GraphColumnModule {
         this.rootView = rootView;
     }
 
-    @Named("columnRootView")
+    @GraphColumnRootView
     @Provides
     public View rootView() {
         return rootView;

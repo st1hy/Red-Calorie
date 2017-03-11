@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.meals.mealitems;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

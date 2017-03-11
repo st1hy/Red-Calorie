@@ -27,7 +27,6 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.inject.activities.overview.OverviewActivityModule;
 import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
@@ -82,7 +81,7 @@ public class AddMealScreenImpl implements AddMealScreen {
         activity.setResult(RESULT_OK);
         Intent intent = new Intent(activity, OverviewActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(OverviewActivityModule.EXTRA_JUMP_TO_DATE, meal.getCreationDate());
+        intent.putExtra(OverviewActivity.EXTRA_JUMP_TO_DATE, meal.getCreationDate());
         activity.startActivity(intent);
     }
 

@@ -13,10 +13,10 @@ import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader.ImageLoadingEvent;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
+import com.github.st1hy.countthemcalories.inject.core.headerpicture.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import rx.Observable;
@@ -42,7 +42,7 @@ public class ImageHolderDelegate {
     @Inject
     PermissionsHelper permissionsHelper;
     @Inject
-    @Named("imageLoaderImageView")
+    @HeaderImageView
     Provider<ImageView> imageViewProvider;
 
     private final Subject<Uri, Uri> imageUriSubject = BehaviorSubject.create();

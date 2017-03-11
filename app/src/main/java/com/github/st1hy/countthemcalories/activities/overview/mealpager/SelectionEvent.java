@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.mealpager;
 
 public class SelectionEvent {
+
     private final int page;
     private final boolean requestScroll;
 
@@ -29,7 +30,6 @@ public class SelectionEvent {
         SelectionEvent that = (SelectionEvent) o;
 
         return page == that.page;
-
     }
 
     @Override

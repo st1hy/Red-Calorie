@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.mealpager;
+package com.github.st1hy.countthemcalories.activities.overview.mealpager.inject;
 
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 

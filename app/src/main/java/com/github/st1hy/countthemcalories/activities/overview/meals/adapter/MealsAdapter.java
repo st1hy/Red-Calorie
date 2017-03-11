@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.activities.overview.meals.presenter;
+package com.github.st1hy.countthemcalories.activities.overview.meals.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,15 +8,14 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.AbstractMealItemHolder;
-import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealInteraction;
-import com.github.st1hy.countthemcalories.activities.overview.meals.mealitems.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder.AbstractMealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.holder.MealItemHolder;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.MealRowComponent;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.MealRowComponentFactory;
+import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.inject.MealRowModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponent;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowComponentFactory;
-import com.github.st1hy.countthemcalories.inject.activities.overview.meals.mealitems.MealRowModule;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -50,15 +49,15 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
     MealsAdapter() {
     }
 
-    void onNewDataSet(@NonNull List<Meal> meals) {
+    public void onNewDataSet(@NonNull List<Meal> meals) {
         this.list = meals;
     }
 
-    int getMealsCount() {
+    public int getMealsCount() {
         return list.size();
     }
 
-    void addMealAtPosition(@NonNull Meal meal, int positionOnList) {
+    public void addMealAtPosition(@NonNull Meal meal, int positionOnList) {
         list.add(positionOnList, meal);
         if (getMealsCount() > 1) {
             notifyItemInserted(positionOnAdapter(positionOnList));
@@ -67,7 +66,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         }
     }
 
-    void removeMealAtPosition(int positionOnList) {
+    public void removeMealAtPosition(int positionOnList) {
         list.remove(positionOnList);
         if (getMealsCount() > 0) {
             notifyItemRemoved(positionOnAdapter(positionOnList));
@@ -77,7 +76,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
     }
 
     @Nullable
-    Pair<Integer, Meal> getMealPositionWithId(long mealId) {
+    public Pair<Integer, Meal> getMealPositionWithId(long mealId) {
         List<Meal> meals = this.list;
         for (int i = 0; i < meals.size(); i++) {
             Meal meal = meals.get(i);

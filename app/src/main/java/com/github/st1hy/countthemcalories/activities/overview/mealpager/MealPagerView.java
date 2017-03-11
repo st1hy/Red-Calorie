@@ -11,6 +11,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager;
 
 import org.joda.time.format.DateTimeFormat;
@@ -18,7 +19,6 @@ import org.joda.time.format.DateTimeFormat;
 import java.util.Locale;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +28,7 @@ import rx.Observable;
 public class MealPagerView {
 
     @Inject
-    @Named("activityContext")
+    @ActivityContext
     Context context;
     @Inject
     ViewPager viewPager;

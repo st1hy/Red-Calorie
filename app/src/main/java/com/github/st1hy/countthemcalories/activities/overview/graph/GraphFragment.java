@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphComponentFactory;
-import com.github.st1hy.countthemcalories.activities.overview.graph.inject.GraphModule;
 import com.github.st1hy.countthemcalories.activities.overview.graph.presenter.GraphPresenter;
 import com.github.st1hy.countthemcalories.core.adapter.delegate.RecyclerViewAdapterDelegate;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
+import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ public class GraphFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        componentFactory.newGraphComponent(new GraphModule(this))
+        componentFactory.newGraphComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
         componentFactory = null;
     }

@@ -10,6 +10,7 @@ import dagger.Provides;
 
 @Module(includes = ApplicationBindings.class)
 public class ApplicationModule {
+
     private final CaloriesCounterApplication application;
 
     public ApplicationModule(@NonNull CaloriesCounterApplication application) {
@@ -20,6 +21,5 @@ public class ApplicationModule {
     public Application provideContext() {
         return application;
     }
-
 
 }

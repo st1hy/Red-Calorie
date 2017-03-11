@@ -5,12 +5,9 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView
 import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsViewImpl;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.viewholder.inject.TagComponentFactory;
-import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 
 import dagger.Binds;
 import dagger.Module;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 @Module
 public abstract class TagsFragmentBindings {
