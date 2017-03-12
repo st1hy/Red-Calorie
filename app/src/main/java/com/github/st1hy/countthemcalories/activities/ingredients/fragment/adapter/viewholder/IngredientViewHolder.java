@@ -14,6 +14,7 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.in
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
+import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ import butterknife.OnClick;
 
 public class IngredientViewHolder extends AbstractIngredientsViewHolder {
 
-    private final IngredientTemplate reusableIngredient = new IngredientTemplate();
+    private final IngredientTemplate reusableIngredient;
 
     private final Callback callback;
     private final ScrollingItemDelegate scrollingItemDelegate;
@@ -69,13 +70,14 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
+        reusableIngredient = new IngredientTemplate();
+        reusableIngredient.setTranslations(new I18n());
     }
 
     @NonNull
     public IngredientTemplate getReusableIngredient() {
         return reusableIngredient;
     }
-
 
     public void setName(@NonNull String name) {
         this.name.setText(name);

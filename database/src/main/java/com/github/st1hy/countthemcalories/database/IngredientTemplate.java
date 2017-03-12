@@ -18,6 +18,7 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.Transient;
 import org.parceler.Parcel;
 
 import java.math.BigDecimal;
@@ -60,6 +61,9 @@ public class IngredientTemplate {
         @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
     List<JointIngredientTag> tags;
+
+    @Transient
+    I18n translations;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -105,6 +109,13 @@ public class IngredientTemplate {
 
     public void setName(@NotNull String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        if (translations != null && creationSource == CreationSource.GENERATED) {
+            return translations.getCurrent();
+        }
+        return name;
     }
 
     public Uri getImageUri() {
@@ -243,6 +254,13 @@ public class IngredientTemplate {
         this.creationSource = creationSource;
     }
 
+    public I18n getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(I18n translations) {
+        this.translations = translations;
+    }
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 403714479)

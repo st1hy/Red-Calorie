@@ -45,7 +45,7 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
     public void onBindViewHolder(IngredientViewHolder holder, int position) {
         Ingredient ingredient = ingredients.get(position);
         IngredientTemplate ingredientType = ingredient.getIngredientTypeOrNull();
-        holder.setName(ingredientType.getName());
+        holder.setName(ingredientType.getDisplayName());
 
         EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientType);
         EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);

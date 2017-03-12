@@ -71,7 +71,7 @@ public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemV
         final Ingredient ingredient = model.getItemAt(position);
         holder.setIngredient(ingredient);
         IngredientTemplate type = ingredient.getIngredientTypeOrNull();
-        holder.setName(type.getName());
+        holder.setName(type.getDisplayName());
         final EnergyDensity energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
         holder.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();

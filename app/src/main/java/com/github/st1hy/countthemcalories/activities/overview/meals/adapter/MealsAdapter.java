@@ -155,7 +155,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
         Observable<Ingredient> ingredientObservable = Observable.from(ingredients);
         Observable<BigDecimal> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
-        ingredientObservable.map(ingredient -> ingredient.getIngredientTypeOrNull().getName())
+        ingredientObservable.map(ingredient -> ingredient.getIngredientTypeOrNull().getDisplayName())
                 .map(joinStrings())
                 .lastOrDefault(new StringBuilder(0))
                 .map(stringBuilder -> stringBuilder.toString().trim())

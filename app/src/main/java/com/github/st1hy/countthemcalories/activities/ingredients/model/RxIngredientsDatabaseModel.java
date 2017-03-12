@@ -3,8 +3,11 @@ package com.github.st1hy.countthemcalories.activities.ingredients.model;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.I18nModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
+import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
@@ -14,19 +17,19 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.CursorQuery;
-import org.greenrobot.greendao.query.Join;
-import org.greenrobot.greendao.query.QueryBuilder;
-import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -39,8 +42,11 @@ import rx.Observable;
 @Singleton
 public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTemplate> {
 
+    private static final int I18N_OFFSET = 6;
     private final Lazy<IngredientTemplateDao> dao;
     private Collection<String> lastTagsFilter = Collections.emptyList();
+    @Inject
+    I18nModel i18nModel;
 
     @Inject
     public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
@@ -83,6 +89,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     @Override
     public void performReadEntity(@NonNull Cursor cursor, @NonNull IngredientTemplate output) {
         dao().readEntity(cursor, output, 0);
+        session().getI18nDao().readEntity(cursor, output.getTranslations(), I18N_OFFSET);
     }
 
     @NonNull
@@ -93,6 +100,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         template.resetTags();
         template.getTags();
         template.getChildIngredients();
+        loadTranslation(template);
         return template;
     }
 
@@ -185,20 +193,39 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     }
 
     @NonNull
+    protected Callable<CursorQuery> getQueryOf(@NonNull final String partOfName) {
+        return () -> {
+            cacheLastQuery(partOfName);
+            if (Strings.isNullOrEmpty(partOfName)) {
+                return allSortedByNameSingleton().forCurrentThread();
+            } else {
+                CursorQuery query = filteredSortedByNameQuery().forCurrentThread();
+                String search = "%" + partOfName + "%";
+                query.setParameter(0, search);
+                query.setParameter(1, search);
+                return query;
+            }
+        };
+    }
+
+    @NonNull
     @Override
     protected CursorQuery allSortedByName() {
-        return dao().queryBuilder()
-                .orderAsc(Properties.Name)
-                .buildCursor();
+        return CursorQuery.internalCreate(dao(), "SELECT I.*, N.* FROM INGREDIENTS_TEMPLATE I LEFT JOIN i18n N ON I.name = N.en ORDER BY I.name ASC;", new Object[0]);
     }
 
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        return dao().queryBuilder()
-                .where(Properties.Name.like(""))
-                .orderAsc(Properties.Name)
-                .buildCursor();
+        StringBuilder sql = new StringBuilder(150);
+        sql.append("SELECT I.*, N.* FROM INGREDIENTS_TEMPLATE I LEFT JOIN i18n N ON I.name = N.en");
+        sql.append(" WHERE (");
+        sql.append(" I.creation_source = 1 AND I.name LIKE ?");
+        sql.append(") OR (");
+        sql.append(" I.creation_source = 0 AND N.").append(I18n.selectColumnByLocale(Locale.getDefault())).append(" LIKE ?");
+        sql.append(" )");
+        sql.append(" ORDER BY I.name ASC;");
+        return CursorQuery.internalCreate(dao(), sql.toString(), new Object[] {"", ""});
     }
 
     @NonNull
@@ -212,29 +239,45 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         return ingredientTemplate.getId();
     }
 
-    @SuppressWarnings("unchecked")
     @NonNull
     private CursorQuery filteredByQuery(@NonNull final String partOfName,
                                         @NonNull final Collection<String> tags) {
         cacheLastQuery(partOfName, tags);
-        QueryBuilder<IngredientTemplate> builder = dao().queryBuilder();
+        String tagArgs = RxTagsDatabaseModel.commaSeparatedArgList(tags);
+        String i18nColumn = I18n.selectColumnByLocale(Locale.getDefault());
+        boolean hasName = !partOfName.isEmpty();
+        boolean hasTags = !tags.isEmpty();
+        List<String> arguments = new ArrayList<>(1 + tags.size());
+        String search = "%" + partOfName + "%";
 
-        if (!partOfName.isEmpty())
-            builder.where(IngredientTemplateDao.Properties.Name.like("%" + partOfName + "%"));
-        if (!tags.isEmpty()) {
-            Join jTags = builder.join(JointIngredientTag.class, JointIngredientTagDao.Properties.IngredientTypeId);
-            Join tagsJoin = builder.join(jTags, JointIngredientTagDao.Properties.TagId, Tag.class, TagDao.Properties.Id);
-            tagsJoin.where(TagDao.Properties.Name.in(tags));
-            // GreenDao don't support GROUP BY, so we hack.
-            // We want only ingredients that have all the tags not just any of them, so we group them
-            // and select only those having exactly as much rows as our tags, this works because
-            // each row in group have unique tag from our list
-            // Added here instead of in builder, because greenDao reorders WHERE clauses.
-            tagsJoin.where(new WhereCondition.StringCondition("1 GROUP BY T.\"_id\" HAVING COUNT(T.\"_id\")=" + tags.size()));
-            builder.distinct();
+        StringBuilder sql = new StringBuilder(300);
+        sql.append("SELECT DISTINCT I.*, N.* FROM INGREDIENTS_TEMPLATE I JOIN INGREDIENT_TAG_JOINTS J ON I._id = J.INGREDIENT_TYPE_ID JOIN TAGS T ON T._id = J.TAG_ID LEFT JOIN i18n N ON I.name = N.en LEFT JOIN i18n M ON T.name = M.en");
+        if (hasName || hasTags) {
+            sql.append(" WHERE ( ");
+            sql.append(" I.creation_source = 1");
+            if (hasName) {
+                sql.append(" AND I.name LIKE ?");
+                arguments.add(search);
+            }
+            if (hasTags) {
+                sql.append(" AND T.name IN (").append(tagArgs).append(")");
+                arguments.addAll(tags);
+            }
+            sql.append(") OR (");
+            sql.append(" I.creation_source = 0");
+            if (hasName) {
+                sql.append(" AND N.").append(i18nColumn).append(" LIKE ?");
+                arguments.add(search);
+            }
+            if (hasTags) {
+                sql.append(" AND M.").append(i18nColumn).append(" IN (").append(tagArgs).append(")");
+                arguments.addAll(tags);
+            }
+            sql.append(")");
         }
-        builder.orderAsc(IngredientTemplateDao.Properties.Name);
-        return builder.buildCursor();
+        sql.append(" GROUP BY I._id HAVING COUNT(I._id) = ").append(tags.size());
+        sql.append(" ORDER BY I.name ASC;");
+        return CursorQuery.internalCreate(dao(), sql.toString(), arguments.toArray());
     }
 
     @Override
@@ -262,5 +305,12 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
             }
             return ingredientTemplate;
         });
+    }
+
+    private void loadTranslation(@NonNull IngredientTemplate ingredient) {
+        String name = ingredient.getName();
+        if (ingredient.getCreationSource() == CreationSource.GENERATED) {
+            ingredient.setTranslations(i18nModel.findByName(name));
+        }
     }
 }

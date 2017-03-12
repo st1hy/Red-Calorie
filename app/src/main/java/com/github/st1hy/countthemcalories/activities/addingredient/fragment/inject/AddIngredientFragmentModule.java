@@ -115,7 +115,7 @@ public abstract class AddIngredientFragmentModule {
             CreationSource creationSource;
             if (templateSource != null) {
                 id = templateSource.getId();
-                name = templateSource.getName();
+                name = templateSource.getDisplayName();
                 amountUnitType = templateSource.getAmountType();
                 final BigDecimal energyDensityAmount = templateSource.getEnergyDensityAmount();
                 energyValue = energyConverter.fromDatabaseToCurrent(amountUnitType,

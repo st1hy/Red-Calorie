@@ -181,37 +181,38 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         cacheLastQuery(partOfName, excludedTags);
 
         String i18nColumn = "N." + I18n.selectColumnByLocale(Locale.getDefault());
-        String excluded = excludedTags(excludedTags);
+        String excluded = commaSeparatedArgList(excludedTags);
+        boolean hasTags = !excludedTags.isEmpty();
+        List<Object> arguments = new ArrayList<>(2 + (excludedTags.size() << 1));
+        String search = "%" + partOfName + "%";
 
         StringBuilder sql = new StringBuilder(400);
         sql.append("SELECT T.*, ( SELECT COUNT(I._id) FROM INGREDIENT_TAG_JOINTS I WHERE T._id = I.tag_id ), N.* FROM TAGS T LEFT JOIN i18n N ON T.NAME = N.en");
-        sql.append(" WHERE (").append(" T.creation_source = 1 AND T.name LIKE ?");
-        if (!excludedTags.isEmpty()) {
-            sql.append(" AND T.name NOT IN (").append(excluded).append(")");
-        }
-        sql.append(")");
-        sql.append(" OR (");
-        sql.append(" T.creation_source = 0 AND ").append(i18nColumn).append(" LIKE ?");
-        if (!excludedTags.isEmpty()) {
-            sql.append(" AND ").append(i18nColumn).append(" NOT IN (").append(excluded).append(")");
 
+        sql.append(" WHERE (");
+        sql.append(" T.creation_source = 1 AND T.name LIKE ?");
+        arguments.add(search);
+        if (hasTags) {
+            sql.append(" AND T.name NOT IN (").append(excluded).append(")");
+            arguments.addAll(excludedTags);
+        }
+        sql.append(") OR (");
+        sql.append(" T.creation_source = 0 AND ").append(i18nColumn).append(" LIKE ?");
+        arguments.add(search);
+        if (hasTags) {
+            sql.append(" AND ").append(i18nColumn).append(" NOT IN (").append(excluded).append(")");
+            arguments.addAll(excludedTags);
         }
         sql.append(")");
         sql.append(" ORDER BY T.name ASC;");
-        List<Object> list = new ArrayList<>(2 + (excludedTags.size() << 1));
-        String search = "%" + partOfName + "%";
-        list.add(search);
-        list.add(search);
-        list.addAll(excludedTags);
-        list.addAll(excludedTags);
-        return CursorQuery.internalCreate(dao(), sql.toString(), list.toArray());
+        return CursorQuery.internalCreate(dao(), sql.toString(), arguments.toArray());
     }
 
     @NonNull
-    private String excludedTags(@NonNull Collection<String> excludedTags) {
-        if (!excludedTags.isEmpty()) {
+    public static String commaSeparatedArgList(@NonNull Collection<?> collection) {
+        if (!collection.isEmpty()) {
             StringBuilder tagsListBuilder = new StringBuilder(50);
-            for (int i = 0, n = excludedTags.size(); i < n; i++) {
+            for (int i = 0, n = collection.size(); i < n; i++) {
                 tagsListBuilder.append("?");
                 if (i < n - 1) tagsListBuilder.append(",");
             }

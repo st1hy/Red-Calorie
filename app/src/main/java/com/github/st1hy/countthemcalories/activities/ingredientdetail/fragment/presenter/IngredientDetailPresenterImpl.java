@@ -60,7 +60,7 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     public void onStart() {
         imageHolderDelegate.onAttached();
         IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
-        view.setName(ingredientTemplate.getName());
+        view.setName(ingredientTemplate.getDisplayName());
         final EnergyDensity energyDensity = getEnergyDensity();
         view.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();

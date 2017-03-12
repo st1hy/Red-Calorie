@@ -150,7 +150,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
             holder.setEnabled(true);
             databaseModel.performReadEntity(cursor, ingredient);
             holder.setPosition(position);
-            holder.setName(ingredient.getName());
+            holder.setName(ingredient.getDisplayName());
             final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
             holder.setEnergyDensity(model.getReadableEnergyDensity(energyDensity));
             holder.setUnit(model.getUnit(energyDensity));
