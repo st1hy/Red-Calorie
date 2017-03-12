@@ -301,7 +301,8 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         return fromDatabaseTask(() -> {
             IngredientTemplate ingredientTemplate = performGetById(id);
             for (JointIngredientTag jointIngredientTag : ingredientTemplate.getTags()) {
-                jointIngredientTag.getTag();
+                Tag tag = jointIngredientTag.getTag();
+                loadTranslation(tag);
             }
             return ingredientTemplate;
         });
@@ -311,6 +312,13 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         String name = ingredient.getName();
         if (ingredient.getCreationSource() == CreationSource.GENERATED) {
             ingredient.setTranslations(i18nModel.findByName(name));
+        }
+    }
+
+    private void loadTranslation(@NonNull Tag tag) {
+        String name = tag.getName();
+        if (tag.getCreationSource() == CreationSource.GENERATED) {
+            tag.setTranslations(i18nModel.findByName(name));
         }
     }
 }

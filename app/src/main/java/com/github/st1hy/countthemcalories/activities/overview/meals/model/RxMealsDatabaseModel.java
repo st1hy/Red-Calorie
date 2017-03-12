@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.I18nModel;
 import com.github.st1hy.countthemcalories.core.rx.RxDatabaseModel;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -11,6 +12,7 @@ import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.CursorQuery;
@@ -33,6 +35,8 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     private final Lazy<MealDao> mealDaoLazy;
     private Query<Meal> filteredByDateSortedByDate;
+    @Inject
+    I18nModel i18nModel;
 
     @Inject
     public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
@@ -91,7 +95,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
             for (Meal meal : list) {
                 List<Ingredient> ingredients = meal.getIngredients();
                 for (Ingredient ingredient : ingredients) {
-                    ingredient.getIngredientType();
+                    loadTranslation(ingredient.getIngredientType());
                 }
             }
             return list;
@@ -103,7 +107,10 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     public Meal performGetById(long id) {
         Meal meal = dao().load(id);
         meal.resetIngredients();
-        meal.getIngredients();
+        List<Ingredient> ingredients = meal.getIngredients();
+        for (Ingredient ingredient : ingredients) {
+            loadTranslation(ingredient.getIngredientType());
+        }
         return meal;
     }
 
@@ -178,5 +185,12 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     @Override
     protected long getKey(@NonNull Meal meal) {
         return meal.getId();
+    }
+
+    private void loadTranslation(@NonNull IngredientTemplate ingredient) {
+        String name = ingredient.getName();
+        if (ingredient.getCreationSource() == CreationSource.GENERATED) {
+            ingredient.setTranslations(i18nModel.findByName(name));
+        }
     }
 }
