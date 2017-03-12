@@ -10,6 +10,7 @@ import com.github.st1hy.countthemcalories.activities.overview.meals.inject.Overv
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.OverviewStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 
 import javax.inject.Inject;
@@ -23,6 +24,8 @@ public class OverviewActivity extends BaseActivity {
     OverviewFragmentComponentFactory mealsFragmentComponentFactory;
     @Inject
     OverviewStateSaver saver;
+    @Inject
+    DrawerPresenter drawerPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,5 +68,10 @@ public class OverviewActivity extends BaseActivity {
     @NonNull
     public OverviewFragmentComponentFactory getMealsFragmentComponentFactory() {
         return mealsFragmentComponentFactory;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!drawerPresenter.onBackPressed()) super.onBackPressed();
     }
 }

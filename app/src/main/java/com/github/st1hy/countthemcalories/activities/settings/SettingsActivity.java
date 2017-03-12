@@ -36,4 +36,9 @@ public class SettingsActivity extends BaseActivity {
         super.onStop();
         drawerPresenter.onStop();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!drawerPresenter.onBackPressed()) super.onBackPressed();
+    }
 }
