@@ -23,23 +23,23 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
-import org.joda.time.DateTime;
 import org.parceler.Parcels;
 
 import java.math.BigDecimal;
@@ -112,7 +112,7 @@ public abstract class AddIngredientFragmentModule {
             Long id;
             String energyValue;
             Uri imageUri;
-            DateTime creationDate;
+            CreationSource creationSource;
             if (templateSource != null) {
                 id = templateSource.getId();
                 name = templateSource.getName();
@@ -122,15 +122,15 @@ public abstract class AddIngredientFragmentModule {
                         energyDensityAmount)
                         .toPlainString();
                 imageUri = templateSource.getImageUri();
-                creationDate = templateSource.getCreationDate();
+                creationSource = templateSource.getCreationSource();
             } else {
                 id = null;
                 energyValue = "";
                 imageUri = Uri.EMPTY;
-                creationDate = null;
+                creationSource = CreationSource.USER;
             }
             return new AddIngredientModel(name, amountUnitType, energyValue, imageUri,
-                    creationDate, id);
+                    creationSource, id);
         }
     }
 

@@ -1,6 +1,10 @@
 package com.github.st1hy.countthemcalories.database;
 
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
+import com.github.st1hy.countthemcalories.database.property.CreationSourcePropertyConverter;
+
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -25,10 +29,18 @@ public class Tag {
     @Index(unique = true)
     String name;
 
+    @Convert(converter = CreationSourcePropertyConverter.class, columnType = int.class)
+    @NotNull
+    @Index
+    CreationSource creationSource;
+
     @ToMany(joinProperties = {
         @JoinProperty(name = "id", referencedName = "tagId")
     })
     List<JointIngredientTag> ingredientTypes;
+
+    @Transient
+    I18n translations;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -45,12 +57,6 @@ public class Tag {
         this.id = id;
     }
 
-    @Generated(hash = 1124606458)
-    public Tag(Long id, @NotNull String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     @Generated(hash = 1605720318)
     public Tag() {
     }
@@ -62,6 +68,19 @@ public class Tag {
         this.daoSession = tag.daoSession;
         this.myDao = tag.myDao;
         this.ingredientCount = tag.ingredientCount;
+        this.translations = tag.translations;
+        this.creationSource = tag.creationSource;
+    }
+
+    public Tag(Long id, @NotNull String name) {
+        this(id, name, CreationSource.USER);
+    }
+
+    @Generated(hash = 1398420030)
+    public Tag(Long id, @NotNull String name, @NotNull CreationSource creationSource) {
+        this.id = id;
+        this.name = name;
+        this.creationSource = creationSource;
     }
 
     public Long getId() {
@@ -87,6 +106,21 @@ public class Tag {
 
     public void setName(@NotNull String name) {
         this.name = name;
+    }
+
+    public I18n getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(I18n translations) {
+        this.translations = translations;
+    }
+
+    public String getDisplayName() {
+        if (translations != null && creationSource == CreationSource.GENERATED) {
+            return translations.getCurrent();
+        }
+        return name;
     }
 
     @Override
@@ -179,6 +213,14 @@ public class Tag {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
+    }
+
+    public CreationSource getCreationSource() {
+        return this.creationSource;
+    }
+
+    public void setCreationSource(CreationSource creationSource) {
+        this.creationSource = creationSource;
     }
 
     /** called by internal mechanisms, do not call yourself. */

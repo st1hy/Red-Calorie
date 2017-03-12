@@ -21,6 +21,7 @@ import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 import com.google.common.collect.Lists;

@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.ColorGenerator;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.TagItemHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagComponent;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagComponentFactory;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagModule;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.ColorGenerator;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.commands.TagsDatabaseCommands;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.view.TagsView;
 import com.github.st1hy.countthemcalories.core.adapter.RxDaoSearchAdapter;
 import com.github.st1hy.countthemcalories.core.baseview.Click;
 import com.github.st1hy.countthemcalories.core.command.InsertResult;
@@ -33,6 +33,7 @@ import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.core.state.Visibility;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Strings;
 import com.l4digital.fastscroll.FastScroller;
@@ -195,7 +196,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
             holder.setChecked(isChecked);
             fragmentModel.setSelected(tag, isChecked);
         } else {
-            view.openIngredientsFilteredBy(tag.getName());
+            view.openIngredientsFilteredBy(tag.getDisplayName());
         }
     }
 
@@ -203,9 +204,10 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     public void onEditClicked(final int positionInAdapter, @NonNull TagItemHolder holder) {
         Tag tag = holder.getReusableTag();
         addSubscription(
-                view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getName())
+                view.newTagDialog(viewModel.getEditTagDialogTitle(), tag.getDisplayName())
                         .flatMap(newName -> {
                             tag.setName(newName);
+                            tag.setCreationSource(CreationSource.USER);
                             return databaseModel.updateRefresh(tag);
                         })
                         .map(cursor -> new InsertResult(cursor, databaseModel.findInCursor(cursor, tag)))

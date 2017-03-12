@@ -9,6 +9,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
@@ -18,8 +19,6 @@ import com.github.st1hy.countthemcalories.database.unit.MassUnit;
 import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.collect.Lists;
-
-import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -110,8 +109,7 @@ public class AddIngredientModelHelper {
         template.setId(model.getId());
         template.setName(model.getName());
         template.setImageUri(model.getImageUri());
-        if (template.getCreationDate() == null)
-            template.setCreationDate(DateTime.now());
+        template.setCreationSource(CreationSource.USER);
         template.setAmountType(model.getAmountType());
         template.setEnergyDensityAmount(getEnergyDensity().convertToDatabaseFormat().getValue());
         return template;

@@ -11,11 +11,11 @@ import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -78,7 +78,7 @@ public class DatabaseTest {
         for (int i = 0; i < SIZE; i++) {
             AmountUnitType type = i % 2 == 0 ? AmountUnitType.MASS : AmountUnitType.VOLUME;
             BigDecimal amount = new BigDecimal("" + i % 71 + "." + i % 97);
-            ingredients.add(new IngredientTemplate((long)i, "Ingredient "+ i, Uri.EMPTY, DateTime.now(), type, amount));
+            ingredients.add(new IngredientTemplate((long)i, "Ingredient "+ i, Uri.EMPTY, CreationSource.USER, type, amount));
         }
         return ingredients;
     }

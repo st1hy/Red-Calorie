@@ -4,7 +4,8 @@ import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
-import com.github.st1hy.countthemcalories.database.property.JodaTimePropertyConverter;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
+import com.github.st1hy.countthemcalories.database.property.CreationSourcePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.UriPropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
@@ -17,7 +18,6 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.joda.time.DateTime;
 import org.parceler.Parcel;
 
 import java.math.BigDecimal;
@@ -38,9 +38,10 @@ public class IngredientTemplate {
     @Convert(converter = UriPropertyConverter.class, columnType = String.class)
     Uri imageUri;
 
-    @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
+    @Convert(converter = CreationSourcePropertyConverter.class, columnType = int.class)
     @NotNull
-    DateTime creationDate;
+    @Index
+    CreationSource creationSource;
 
     @Convert(converter = AmountUnitTypePropertyConverter.class, columnType = int.class)
     @NotNull
@@ -72,20 +73,21 @@ public class IngredientTemplate {
         this.id = id;
     }
 
-    @Generated(hash = 1263166216)
+
+    @Generated(hash = 1849966788)
+    public IngredientTemplate() {
+    }
+
+    @Generated(hash = 1292344727)
     public IngredientTemplate(Long id, @NotNull String name, Uri imageUri,
-            @NotNull DateTime creationDate, @NotNull AmountUnitType amountType,
+            @NotNull CreationSource creationSource, @NotNull AmountUnitType amountType,
             @NotNull BigDecimal energyDensityAmount) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
-        this.creationDate = creationDate;
+        this.creationSource = creationSource;
         this.amountType = amountType;
         this.energyDensityAmount = energyDensityAmount;
-    }
-
-    @Generated(hash = 1849966788)
-    public IngredientTemplate() {
     }
 
     public Long getId() {
@@ -111,15 +113,6 @@ public class IngredientTemplate {
 
     public void setImageUri(Uri imageUri) {
         this.imageUri = imageUri;
-    }
-
-    @NotNull
-    public DateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(@NotNull DateTime creationDate) {
-        this.creationDate = creationDate;
     }
 
     public boolean hasReadTags() {
@@ -240,6 +233,16 @@ public class IngredientTemplate {
         }
         myDao.update(this);
     }
+
+    public CreationSource getCreationSource() {
+        return this.creationSource;
+    }
+
+
+    public void setCreationSource(CreationSource creationSource) {
+        this.creationSource = creationSource;
+    }
+
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 403714479)

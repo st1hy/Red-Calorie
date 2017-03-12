@@ -20,11 +20,11 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,11 +69,11 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class IngredientActivityTest {
     public static final IngredientTemplate[] exampleIngredients = new IngredientTemplate[]{
-            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, DateTime.now(), AmountUnitType.MASS,
+            new IngredientTemplate(1L, "Ingredient 1", Uri.EMPTY, CreationSource.USER, AmountUnitType.MASS,
                     getOrZero("20.5")), // kJ / g in database
-            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+            new IngredientTemplate(2L, "Ingredient 22", Uri.EMPTY, CreationSource.USER, AmountUnitType.VOLUME,
                     getOrZero("6.04")), // kJ / ml in database
-            new IngredientTemplate(3L, "Ingredient 23", Uri.EMPTY, DateTime.now(), AmountUnitType.VOLUME,
+            new IngredientTemplate(3L, "Ingredient 23", Uri.EMPTY, CreationSource.USER, AmountUnitType.VOLUME,
                     getOrZero("7.04")), // kJ / ml in database
     };
     public static final JointIngredientTag[] exampleJoins = new JointIngredientTag[]{

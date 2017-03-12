@@ -156,7 +156,7 @@ public abstract class RxDatabaseModel<T> extends AbstractRxDatabaseModel impleme
     }
 
     @NonNull
-    private CursorQuery allSortedByNameSingleton() {
+    protected CursorQuery allSortedByNameSingleton() {
         if (allSortedByNameQuery == null) {
             allSortedByNameQuery = allSortedByName();
         }
@@ -164,7 +164,7 @@ public abstract class RxDatabaseModel<T> extends AbstractRxDatabaseModel impleme
     }
 
     @NonNull
-    private CursorQuery filteredSortedByNameQuerySingleton() {
+    protected CursorQuery filteredSortedByNameQuerySingleton() {
         if (filteredSortedByNameQuery == null) {
             filteredSortedByNameQuery = filteredSortedByNameQuery();
         }

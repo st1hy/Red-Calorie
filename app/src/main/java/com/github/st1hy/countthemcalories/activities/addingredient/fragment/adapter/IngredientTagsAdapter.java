@@ -60,7 +60,7 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
 
     private void onBindTag(@NonNull ItemTagViewHolder viewHolder, int position) {
         Tag tag = model.getTagAt(position);
-        viewHolder.setCategoryName(tag.getName());
+        viewHolder.setCategoryName(tag.getDisplayName());
         viewHolder.setTag(tag);
     }
 

@@ -7,9 +7,9 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
+import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
-import org.joda.time.DateTime;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
@@ -29,20 +29,20 @@ public class AddIngredientModel implements PictureModel {
     @NonNull
     private Uri imageUri;
     @Nullable
-    private DateTime creationDate;
+    private CreationSource creationSource;
 
     @ParcelConstructor
     public AddIngredientModel(@NonNull String name,
                               @NonNull AmountUnitType amountType,
                               @NonNull String energyValue,
                               @NonNull Uri imageUri,
-                              @Nullable DateTime creationDate,
+                              @Nullable CreationSource creationSource,
                               @Nullable Long id) {
         this.amountType = amountType;
         this.name = name;
         this.energyValue = energyValue;
         this.imageUri = imageUri;
-        this.creationDate = creationDate;
+        this.creationSource = creationSource;
         this.id = id;
     }
 
@@ -108,8 +108,8 @@ public class AddIngredientModel implements PictureModel {
     }
 
     @Nullable
-    public DateTime getCreationDate() {
-        return creationDate;
+    public CreationSource getCreationSource() {
+        return creationSource;
     }
 
     @Nullable

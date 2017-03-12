@@ -1,13 +1,19 @@
 package com.github.st1hy.countthemcalories.database;
 
+import android.support.annotation.NonNull;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
+import org.parceler.Parcel;
+
+import java.util.Locale;
 
 @Entity(nameInDb = "i18n")
+@Parcel(Parcel.Serialization.BEAN)
 public class I18n {
 
     @Id
@@ -35,14 +41,6 @@ public class I18n {
     public I18n() {
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getEnglish() {
         return this.english;
     }
@@ -59,7 +57,32 @@ public class I18n {
         this.polish = polish;
     }
 
+    public long getId() {
+        return this.id;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
+
+    public String getCurrent() {
+        String language = Locale.getDefault().getLanguage();
+        switch (language) {
+            case "pl":
+                return polish;
+            default:
+                return english;
+        }
+    }
+
+    public static String selectColumnByLocale(@NonNull Locale locale) {
+        String language = Locale.getDefault().getLanguage();
+        switch (language) {
+            case "pl":
+                return language;
+            default:
+                return "en";
+        }
+    }
+
 }

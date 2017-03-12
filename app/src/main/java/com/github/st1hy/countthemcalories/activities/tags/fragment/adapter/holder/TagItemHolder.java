@@ -16,6 +16,7 @@ import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.injec
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
+import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
@@ -46,7 +47,7 @@ public class TagItemHolder extends TagViewHolder {
 
     private final TagsViewModel viewModel;
     private final OnTagInteraction callback;
-    private final Tag tag = new Tag();
+    private final Tag tag;
     private final ScrollingItemDelegate scrollingItemDelegate;
     private boolean isEnabled;
 
@@ -69,6 +70,8 @@ public class TagItemHolder extends TagViewHolder {
                 .setCenter(content)
                 .setRight(editFrame)
                 .build();
+        tag = new Tag();
+        tag.setTranslations(new I18n());
     }
 
     @OnClick(R.id.tag_item_button)
@@ -94,7 +97,7 @@ public class TagItemHolder extends TagViewHolder {
 
     public void bind(int position, @NonNull Tag tag) {
         this.position.set(position);
-        name.setText(tag.getName());
+        name.setText(tag.getDisplayName());
         counter.setText(viewModel.getCounterFor(tag.getIngredientCount()));
     }
 
