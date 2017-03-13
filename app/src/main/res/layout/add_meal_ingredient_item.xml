@@ -14,24 +14,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="4dp">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="@dimen/list_item_image_half_size"
-        app:cardElevation="0dp">
-
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/add_meal_ingredient_image"
-            android:layout_width="@dimen/list_item_image_size"
-            android:layout_height="@dimen/list_item_image_size"
-            android:contentDescription="@string/add_meal_ingredient_photo_description"
-            android:scaleType="fitCenter"
-            android:transitionName="ingredient-shared-view-image"
-            app:srcCompat="@drawable/ic_fork_and_knife_wide"
-            tools:targetApi="lollipop" />
-    </android.support.v7.widget.CardView>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/add_meal_ingredient_image"
+        android:layout_width="@dimen/list_item_image_size"
+        android:layout_height="@dimen/list_item_image_size"
+        android:contentDescription="@string/add_meal_ingredient_photo_description"
+        android:transitionName="ingredient-shared-view-image"
+        tools:src="@drawable/ic_fork_and_knife_wide"
+        tools:targetApi="lollipop" />
 
     <android.support.v4.widget.Space
         android:layout_width="10dp"

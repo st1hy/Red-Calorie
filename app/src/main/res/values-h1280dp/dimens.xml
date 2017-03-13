@@ -2,5 +2,4 @@
 <resources>
 
     <dimen name="list_item_image_size">80dp</dimen>
-    <dimen name="list_item_image_half_size">40dp</dimen>
 </resources>

@@ -8,7 +8,6 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="list_item_image_size">48dp</dimen>
-    <dimen name="list_item_image_half_size">24dp</dimen>
     <dimen name="ingredient_detail_title_size">18sp</dimen>
     <dimen name="add_ingredient_name_search_width">40dp</dimen>
     <dimen name="list_item_bottom_space">80dip</dimen>
