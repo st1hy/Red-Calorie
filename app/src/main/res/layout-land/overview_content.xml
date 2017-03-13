@@ -27,14 +27,13 @@
             android:layout_weight="0.7">
 
             <include layout="@layout/overview_meals_list" />
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@drawable/shadow_left_to_right"/>
         </FrameLayout>
     </LinearLayout>
 
-    <View
-        android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="@drawable/shadow_left_to_right"
-        app:layout_anchor="@+id/overview_meals_content_container"
-        app:layout_anchorGravity="bottom" />
 </merge>

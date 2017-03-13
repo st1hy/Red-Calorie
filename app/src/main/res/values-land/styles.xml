@@ -7,4 +7,5 @@
     <style name="GraphRecycler.Default">
         <item name="layoutManager">android.support.v7.widget.LinearLayoutManager</item>
     </style>
+    <style name="GraphFragmentRoot" parent="ActivityContent"/>
 </resources>

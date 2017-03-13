@@ -80,4 +80,5 @@
         <item name="layoutManager">com.github.st1hy.countthemcalories.core.adapter.layoutmanager.HorizontalLayoutManager</item>
     </style>
     <style name="GraphRecycler.Default"/>
+    <style name="GraphFragmentRoot"/>
 </resources>

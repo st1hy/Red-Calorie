@@ -17,6 +17,12 @@
             android:layout_weight="0.7">
 
             <include layout="@layout/overview_meals_list" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/shadow_bottom_to_top"/>
         </FrameLayout>
 
         <fragment
@@ -29,11 +35,4 @@
             tools:layout="@layout/overview_graph_fragment" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_gravity="top"
-        android:background="@drawable/shadow_bottom_to_top"
-        app:layout_anchor="@+id/overview_meals_content_container"
-        app:layout_anchorGravity="bottom" />
 </merge>
