@@ -12,12 +12,12 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.p
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailViewImpl;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
-import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 import com.google.common.base.Preconditions;
@@ -41,7 +41,7 @@ public abstract class IngredientsDetailFragmentModule {
 
     @Binds
     public abstract ImageHolderDelegate provideImageHolderDelegate(
-            WithoutPlaceholderImageHolderDelegate holderDelegate);
+            DetailImageHolderDelegate holderDelegate);
 
     @Binds
     public abstract IngredientDetailView provideView(IngredientDetailViewImpl detailView);

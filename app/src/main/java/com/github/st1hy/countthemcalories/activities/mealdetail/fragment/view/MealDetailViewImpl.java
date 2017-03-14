@@ -81,4 +81,5 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
     public void deleteMealWithId(long mealId) {
         screen.deleteMealWithId(mealId);
     }
+
 }

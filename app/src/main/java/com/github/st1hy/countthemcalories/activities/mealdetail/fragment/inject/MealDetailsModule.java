@@ -14,13 +14,13 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.present
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailViewImpl;
+import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.WithoutPlaceholderImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
-import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 
@@ -75,7 +75,7 @@ public abstract class MealDetailsModule {
 
     @Provides
     @PerFragment
-    public static ImageHolderDelegate imageHolderDelegate(WithoutPlaceholderImageHolderDelegate imageHolderDelegate) {
+    public static ImageHolderDelegate imageHolderDelegate(DetailImageHolderDelegate imageHolderDelegate) {
         imageHolderDelegate.setImagePlaceholder(R.drawable.ic_fork_and_knife_positive);
         return imageHolderDelegate;
     }

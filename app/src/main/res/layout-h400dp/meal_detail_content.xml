@@ -14,10 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_detail_large_height"
         android:contentDescription="@string/overview_meal_photo_description"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:transitionName="overview-shared-view-image"
         app:srcCompat="@drawable/ic_fork_and_knife_positive"
-        tools:targetApi="lollipop"/>
+        android:layout_gravity="center"
+        tools:targetApi="lollipop" />
 
     <Space
         android:layout_width="match_parent"
