@@ -78,7 +78,6 @@ public class TagsScreenImpl implements TagsScreen {
         activity.finish();
     }
 
-
     @Override
     public void setConfirmButtonVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
