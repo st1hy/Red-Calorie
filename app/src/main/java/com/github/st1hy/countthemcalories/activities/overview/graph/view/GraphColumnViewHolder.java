@@ -66,6 +66,7 @@ public class GraphColumnViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setWeightVisibility(boolean isVisible) {
+        setFlag(isVisible, GraphColumnModel.FLAG_LINE);
         setFlag(isVisible, GraphColumnModel.FLAG_POINTS);
     }
 

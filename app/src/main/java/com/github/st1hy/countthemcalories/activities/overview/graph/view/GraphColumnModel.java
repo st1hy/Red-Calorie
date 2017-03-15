@@ -119,6 +119,7 @@ public class GraphColumnModel {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(gc_lineWidth);
         linePaint.setColor(gc_lineColor);
+        linePaint.setStrokeCap(Paint.Cap.SQUARE);
         columnLegendLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         columnLegendLinePaint.setStyle(Paint.Style.STROKE);
         columnLegendLinePaint.setStrokeWidth(gc_legend_line_width);
@@ -291,8 +292,8 @@ public class GraphColumnModel {
                 float halfHeight = height / 2;
                 left = curWidth - pointSizeHalf;
                 right = curWidth + pointSizeHalf;
-                top = halfHeight + pointSizeHalf;
-                bottom = halfHeight - pointSizeHalf;
+                top = halfHeight - pointSizeHalf;
+                bottom = halfHeight + pointSizeHalf;
                 break;
             case TOP_TO_BOTTOM:
             case BOTTOM_TO_TOP:
@@ -302,8 +303,8 @@ public class GraphColumnModel {
                 float halfWidth = width / 2;
                 left = halfWidth - pointSizeHalf;
                 right = halfWidth + pointSizeHalf;
-                top = curHeight + pointSizeHalf;
-                bottom = curHeight - pointSizeHalf;
+                top = curHeight - pointSizeHalf;
+                bottom = curHeight + pointSizeHalf;
                 break;
             default:
                 throw new UnsupportedOperationException();
