@@ -241,7 +241,9 @@ public class AddMealActivityTest {
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
-        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+        onView(withHint(R.string.add_meal_ingredient_amount_hint))
+                .perform(closeSoftKeyboard())
+                .check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("42.6"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
@@ -258,6 +260,7 @@ public class AddMealActivityTest {
                 .perform(click());
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(closeSoftKeyboard())
                 .perform(typeTextIntoFocusedView("8"));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
@@ -290,6 +293,8 @@ public class AddMealActivityTest {
 
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
+        onView(withHint(R.string.add_meal_ingredient_amount_hint)).check(matches(isDisplayed()))
+                .perform(closeSoftKeyboard());
         onView(withId(R.id.add_meal_ingredient_remove)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()));
@@ -307,7 +312,9 @@ public class AddMealActivityTest {
                 .check(matches(isDisplayed()));
         onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()))
                 .perform(click());
-        onView(withText(exampleIngredients[0].getName())).check(matches(isDisplayed()));
+        onView(withText(exampleIngredients[0].getName()))
+                .perform(closeSoftKeyboard())
+                .check(matches(isDisplayed()));
         onView(withId(R.id.add_meal_ingredient_accept)).check(matches(isDisplayed()))
                 .perform(click());
         onView(withHint(R.string.add_meal_ingredient_amount_hint))

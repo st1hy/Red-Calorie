@@ -298,6 +298,7 @@ public class OverviewActivityTest {
         onView(withText("OK")).perform(click());
 
         onView(withText("Ingredient 1")).perform(click());
+        closeSoftKeyboard();
         onView(withId(R.id.add_meal_ingredient_remove)).perform(click());
         onView(withText("Ingredient 1")).check(doesNotExist());
 
