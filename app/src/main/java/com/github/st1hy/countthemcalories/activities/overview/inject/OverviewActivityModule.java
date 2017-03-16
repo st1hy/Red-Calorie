@@ -14,12 +14,12 @@ import com.github.st1hy.countthemcalories.activities.overview.mealpager.inject.M
 import com.github.st1hy.countthemcalories.activities.overview.meals.inject.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreenImpl;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
+import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
