@@ -186,7 +186,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         List<Object> arguments = new ArrayList<>(2 + (excludedTags.size() << 1));
         String search = "%" + partOfName + "%";
 
-        StringBuilder sql = new StringBuilder(400);
+        StringBuilder sql = new StringBuilder(600);
         sql.append("SELECT T.*, ( SELECT COUNT(I._id) FROM INGREDIENT_TAG_JOINTS I WHERE T._id = I.tag_id ), N.* FROM TAGS T LEFT JOIN i18n N ON T.NAME = N.en");
 
         sql.append(" WHERE (");

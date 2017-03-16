@@ -217,7 +217,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        StringBuilder sql = new StringBuilder(150);
+        StringBuilder sql = new StringBuilder(300);
         sql.append("SELECT I.*, N.* FROM INGREDIENTS_TEMPLATE I LEFT JOIN i18n N ON I.name = N.en");
         sql.append(" WHERE (");
         sql.append(" I.creation_source = 1 AND I.name LIKE ?");
@@ -225,7 +225,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         sql.append(" I.creation_source = 0 AND N.").append(I18n.selectColumnByLocale(Locale.getDefault())).append(" LIKE ?");
         sql.append(" )");
         sql.append(" ORDER BY I.name ASC;");
-        return CursorQuery.internalCreate(dao(), sql.toString(), new Object[] {"", ""});
+        return CursorQuery.internalCreate(dao(), sql.toString(), new Object[]{"", ""});
     }
 
     @NonNull
@@ -247,35 +247,38 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         String i18nColumn = I18n.selectColumnByLocale(Locale.getDefault());
         boolean hasName = !partOfName.isEmpty();
         boolean hasTags = !tags.isEmpty();
-        List<String> arguments = new ArrayList<>(1 + tags.size());
+        List<String> arguments = new ArrayList<>(2 + tags.size() * 2);
         String search = "%" + partOfName + "%";
 
-        StringBuilder sql = new StringBuilder(300);
-        sql.append("SELECT DISTINCT I.*, N.* FROM INGREDIENTS_TEMPLATE I JOIN INGREDIENT_TAG_JOINTS J ON I._id = J.INGREDIENT_TYPE_ID JOIN TAGS T ON T._id = J.TAG_ID LEFT JOIN i18n N ON I.name = N.en LEFT JOIN i18n M ON T.name = M.en");
-        if (hasName || hasTags) {
+        StringBuilder sql = new StringBuilder(600);
+        sql.append("SELECT DISTINCT I.*, N.* ");
+        sql.append("FROM INGREDIENTS_TEMPLATE I ");
+        sql.append("LEFT JOIN i18n N ON I.name = N.en ");
+        if (hasTags) {
+            sql.append("JOIN INGREDIENT_TAG_JOINTS J ON I._id = J.INGREDIENT_TYPE_ID ");
+            sql.append("JOIN ( SELECT T._id FROM TAGS T LEFT JOIN i18n N ON T.NAME = N.en ");
+            sql.append("WHERE ( T.creation_source = 1 ");
+            sql.append("AND T.NAME IN ( ").append(tagArgs).append(" ) ");
+            arguments.addAll(tags);
+            sql.append(") OR (").append(" T.creation_source = 0 ");
+            sql.append("AND N.").append(i18nColumn).append(" IN ( ").append(tagArgs).append(" ) ");
+            arguments.addAll(tags);
+            sql.append(")) T ON T._id = J.TAG_ID ");
+        }
+        if (hasName) {
             sql.append(" WHERE ( ");
             sql.append(" I.creation_source = 1");
-            if (hasName) {
-                sql.append(" AND I.name LIKE ?");
-                arguments.add(search);
-            }
-            if (hasTags) {
-                sql.append(" AND T.name IN (").append(tagArgs).append(")");
-                arguments.addAll(tags);
-            }
+            sql.append(" AND I.name LIKE ?");
+            arguments.add(search);
             sql.append(") OR (");
             sql.append(" I.creation_source = 0");
-            if (hasName) {
-                sql.append(" AND N.").append(i18nColumn).append(" LIKE ?");
-                arguments.add(search);
-            }
-            if (hasTags) {
-                sql.append(" AND M.").append(i18nColumn).append(" IN (").append(tagArgs).append(")");
-                arguments.addAll(tags);
-            }
+            sql.append(" AND N.").append(i18nColumn).append(" LIKE ?");
+            arguments.add(search);
             sql.append(")");
         }
-        sql.append(" GROUP BY I._id HAVING COUNT(I._id) = ").append(tags.size());
+        if (hasTags) {
+            sql.append(" GROUP BY I._id HAVING COUNT(I._id) = ").append(tags.size());
+        }
         sql.append(" ORDER BY I.name ASC;");
         return CursorQuery.internalCreate(dao(), sql.toString(), arguments.toArray());
     }
@@ -289,8 +292,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     protected void cacheLastQuery(@NonNull final String partOfName,
                                   @NonNull final Collection<String> tags) {
         cacheLastQuery(partOfName);
-        lastTagsFilter = tags.isEmpty() ? Collections.<String>emptyList()
-                : new ArrayList<>(tags);
+        lastTagsFilter = tags.isEmpty() ? Collections.emptyList() : new ArrayList<>(tags);
     }
 
     /**
