@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@color/colorBackground"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center"
         app:pressedTranslationZ="12dp"
         app:elevation="6dp"
         app:srcCompat="@drawable/ic_add_24px" />
