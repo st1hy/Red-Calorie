@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/ActivityContent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.settings.SettingsActivity"
+    tools:showIn="@layout/settings_app_bar">
 
     <LinearLayout
-        style="@style/ActivityContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".activities.settings.SettingsActivity"
-        tools:showIn="@layout/settings_app_bar">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
