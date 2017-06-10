@@ -1,13 +1,15 @@
 package com.github.st1hy.countthemcalories.activities.ingredients;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,7 +22,7 @@ public class IngredientsActivity extends BaseActivity {
     public static final int REQUEST_ADD_INGREDIENT = 0x129;
 
     @Inject
-    IngredientsFragment content;
+    Map<String, Fragment> fragments; //inject fragments
     @Inject
     IngredientsPresenter presenter;
     @Inject

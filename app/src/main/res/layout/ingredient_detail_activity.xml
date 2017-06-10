@@ -15,7 +15,11 @@
         app:cardCornerRadius="4dp"
         app:cardElevation="24dp"
         app:cardUseCompatPadding="true">
-
-        <!--<include layout="@layout/ingredient_detail_content" />-->
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment"
+            tools:layout="@layout/ingredient_detail_content"
+            android:tag="ingredient detail content"/>
     </android.support.v7.widget.CardView>
 </FrameLayout>

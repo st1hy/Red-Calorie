@@ -33,8 +33,14 @@
         style="@style/ActivityContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.github.st1hy.countthemcalories.activities.tags.fragment.TagsFragment"
+            android:tag="tags content"
+            tools:layout="@layout/tags_content"/>
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/tags_fab_add_new"

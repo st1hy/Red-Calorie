@@ -76,7 +76,7 @@ public class I18n {
     }
 
     public static String selectColumnByLocale(@NonNull Locale locale) {
-        String language = Locale.getDefault().getLanguage();
+        String language = locale.getLanguage();
         switch (language) {
             case "pl":
                 return language;

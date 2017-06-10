@@ -30,7 +30,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 @Module(includes = {
-        PermissionModule.class,
         DialogModule.class
 })
 public abstract class IngredientsFragmentModule {

@@ -1,8 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.inject;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
@@ -13,19 +11,27 @@ import com.github.st1hy.countthemcalories.activities.tags.view.TagsScreenImpl;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentTransactionModule;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 
 @Module(includes = {
         DrawerModule.class,
-        UndoModule.class
+        UndoModule.class,
+        FragmentTransactionModule.class,
 })
 public abstract class TagsActivityModule {
+
+    private static final String TAGS_CONTENT_TAG = "tags content";
 
     @Binds
     public abstract TagsScreen tagsScreen(TagsScreenImpl screen);
@@ -34,23 +40,15 @@ public abstract class TagsActivityModule {
     public abstract TagsFragmentComponentFactory tagsFragmentComponentFactory(TagsActivityComponent component);
 
     @Provides
-    public static TagsFragment provideContent(FragmentManager fragmentManager,
-                                              TagsFragmentComponentFactory componentFactory) {
-        final String tag = "tags content";
-
-        TagsFragment fragment = (TagsFragment) fragmentManager.findFragmentByTag(tag);
-        if (fragment == null) {
-            fragment = new TagsFragment();
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.tags_content_frame, fragment, tag)
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commitNow();
-        }
-        fragment.setComponentFactory(componentFactory);
-        return fragment;
+    @IntoMap
+    @StringKey(TAGS_CONTENT_TAG)
+    @Reusable
+    public static FragmentLocation tagsContent(TagsFragmentComponentFactory componentFactory) {
+        return new FragmentLocation.Builder<>(TagsFragment.class, TAGS_CONTENT_TAG)
+                .setViewRootId(R.id.tags_content_frame)
+                .setInjector(fragment -> fragment.setComponentFactory(componentFactory))
+                .build();
     }
-
 
     @Provides
     @PerActivity

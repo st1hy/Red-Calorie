@@ -2,8 +2,6 @@ package com.github.st1hy.countthemcalories.activities.ingredients.inject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
@@ -13,15 +11,17 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject
 import com.github.st1hy.countthemcalories.activities.ingredients.presenter.SearchSuggestionsAdapter;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientsScreenImpl;
+import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.core.tokensearch.RxSearchable;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchTextView;
 import com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
-import com.github.st1hy.countthemcalories.core.activityresult.ActivityLauncherModule;
 import com.google.common.base.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -31,12 +31,16 @@ import javax.inject.Named;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @Module(includes = {
         UndoModule.class,
-        ActivityLauncherModule.class
+        ActivityLauncherModule.class,
+        PermissionModule.class,
 })
 public abstract class IngredientsActivityModule {
 
@@ -68,21 +72,16 @@ public abstract class IngredientsActivityModule {
         return Optional.absent();
     }
 
-    @Provides
-    public static IngredientsFragment provideContent(
-            FragmentManager fragmentManager,
-            IngredientsFragmentComponentFactory componentFactory) {
 
-        IngredientsFragment fragment = (IngredientsFragment) fragmentManager.findFragmentByTag(INGREDIENTS_CONTENT);
-        if (fragment == null) {
-            fragment = new IngredientsFragment();
-            fragmentManager.beginTransaction()
-                    .add(R.id.ingredients_content_frame, fragment, INGREDIENTS_CONTENT)
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commitNow();
-        }
-        fragment.setComponentFactory(componentFactory);
-        return fragment;
+    @Provides
+    @IntoMap
+    @StringKey(INGREDIENTS_CONTENT)
+    @Reusable
+    public static FragmentLocation ingredientsContent(IngredientsFragmentComponentFactory component) {
+        return new FragmentLocation.Builder<>(IngredientsFragment.class, INGREDIENTS_CONTENT)
+                .setViewRootId(R.id.ingredients_content_frame)
+                .setInjector(fragment -> fragment.setComponentFactory(component))
+                .build();
     }
 
     @Provides

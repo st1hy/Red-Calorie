@@ -44,7 +44,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 @Module(includes = {
-        PermissionModule.class,
         DialogModule.class,
         DefaultMealNameModule.class,
         AddMealArgumentsModule.class

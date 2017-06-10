@@ -17,7 +17,6 @@ import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.Me
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
@@ -32,9 +31,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {
-        PermissionModule.class,
-})
+@Module
 public abstract class MealDetailsModule {
 
     @Binds

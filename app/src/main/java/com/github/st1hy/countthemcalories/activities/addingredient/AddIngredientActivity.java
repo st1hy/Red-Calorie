@@ -1,18 +1,20 @@
 package com.github.st1hy.countthemcalories.activities.addingredient;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addingredient.fragment.AddIngredientFragment;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.jakewharton.rxbinding.view.RxMenuItem;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -26,7 +28,7 @@ public class AddIngredientActivity extends BaseActivity {
     public static final String RESULT_INGREDIENT_TEMPLATE = "ingredient result";
 
     @Inject
-    AddIngredientFragment content; //injects fragment
+    Map<String, Fragment> fragments; //injects fragments
     @Inject
     Toolbar toolbar; //setup toolbar
     @Inject

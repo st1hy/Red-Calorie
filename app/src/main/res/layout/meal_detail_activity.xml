@@ -15,7 +15,11 @@
         app:cardElevation="24dp"
         android:layout_gravity="center"
         app:cardUseCompatPadding="true">
-
-        <!--<include android:layout="@layout/meal_detail_content" />-->
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment"
+            android:tag="meal detail content"
+            tools:layout="@layout/meal_detail_content"/>
     </android.support.v7.widget.CardView>
 </FrameLayout>

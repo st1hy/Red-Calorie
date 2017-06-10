@@ -27,7 +27,6 @@ import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -54,7 +53,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 @Module(includes = {
-        PermissionModule.class,
         DialogModule.class,
         AddIngredientArgumentsModule.class
 })

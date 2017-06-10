@@ -66,6 +66,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 
 @RunWith(AndroidJUnit4.class)
 public class AddMealActivityTest {
@@ -336,7 +337,7 @@ public class AddMealActivityTest {
         onView(withId(R.id.add_meal_time_value)).perform(click());
         onView(withClassName(equalTo(TimePicker.class.getName()))).perform(setTime(12, 12));
         onView(withText("OK")).perform(click());
-        onView(allOf(withId(R.id.add_meal_time_value), withText("12:12"))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.add_meal_time_value), withText(startsWith("12:12")))).check(matches(isDisplayed()));
     }
 
 }

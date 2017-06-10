@@ -1,11 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -17,7 +19,7 @@ public class MealDetailActivity extends BaseActivity {
     public static final String EXTRA_RESULT_MEAL_ID_LONG = "extra result meal id";
 
     @Inject
-    MealDetailFragment content; //injects fragment
+    Map<String, Fragment> fragments; //injects fragments
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

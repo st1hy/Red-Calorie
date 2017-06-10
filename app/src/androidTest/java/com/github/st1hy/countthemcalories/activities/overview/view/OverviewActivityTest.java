@@ -77,6 +77,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.startsWith;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -305,7 +306,7 @@ public class OverviewActivityTest {
         onView(withText(R.string.add_meal_save_action)).perform(click());
         onView(mainScreen()).check(matches(isDisplayed()));
         onView(withText("Meal edited")).check(matches(isDisplayed()));
-        onView(withText("20:43")).check(matches(isDisplayed()));
+        onView(withText(startsWith("20:43"))).check(matches(isDisplayed()));
         onView(withText(containsString("Ingredient 1"))).check(doesNotExist());
     }
 

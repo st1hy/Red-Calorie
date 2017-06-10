@@ -1,18 +1,20 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.inject;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.activities.mealdetail.view.MealDetailScreenImpl;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentTransactionModule;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 
-@Module
+@Module(includes = FragmentTransactionModule.class)
 public abstract class MealDetailActivityModel {
 
     private static final String FRAGMENT_TAG = "meal detail content";
@@ -20,20 +22,15 @@ public abstract class MealDetailActivityModel {
     @Binds
     public abstract MealDetailScreen mealDetailScreen(MealDetailScreenImpl screen);
 
+
     @Provides
-    public static MealDetailFragment provideDetailFragment(FragmentManager fragmentManager,
-                                                           MealDetailActivityComponent component) {
-
-        MealDetailFragment fragment = (MealDetailFragment) fragmentManager.findFragmentByTag(FRAGMENT_TAG);
-        if (fragment == null) {
-            fragment = new MealDetailFragment();
-
-            fragmentManager.beginTransaction()
-                    .add(R.id.meal_detail_content_root, fragment, FRAGMENT_TAG)
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_NONE)
-                    .commitNow();
-        }
-        fragment.setComponentFactory(component);
-        return fragment;
+    @Reusable
+    @IntoMap
+    @StringKey(FRAGMENT_TAG)
+    public static FragmentLocation mealDetailFragmentLocation(MealDetailActivityComponent component) {
+        return new FragmentLocation.Builder<>(MealDetailFragment.class, FRAGMENT_TAG)
+                .setViewRootId(R.id.meal_detail_content_root)
+                .setInjector(fragment -> fragment.setComponentFactory(component))
+                .build();
     }
 }

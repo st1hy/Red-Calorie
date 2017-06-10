@@ -1,15 +1,20 @@
 package com.github.st1hy.countthemcalories.core.activityresult;
 
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 
-import com.github.st1hy.countthemcalories.inject.PerActivity;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentTransactionModule;
+
+import java.util.Map;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 
-@Module
+@Module(includes = FragmentTransactionModule.class)
 public abstract class ActivityLauncherModule {
 
     @Binds
@@ -19,18 +24,17 @@ public abstract class ActivityLauncherModule {
     @Binds
     public abstract ActivityLauncherSubject activityLauncherSubject(IntentHandlerFragment fragment);
 
+
     @Provides
-    @PerActivity
-    public static IntentHandlerFragment intentHandlerFragment(FragmentManager fragmentManager) {
-        IntentHandlerFragment fragment = (IntentHandlerFragment) fragmentManager
-                .findFragmentByTag(IntentHandlerFragment.TAG);
-        if (fragment == null) {
-            fragment = new IntentHandlerFragment();
-            fragment.setRetainInstance(true);
-            fragmentManager.beginTransaction()
-                    .add(fragment, IntentHandlerFragment.TAG)
-                    .commit();
-        }
-        return fragment;
+    @IntoMap
+    @StringKey(IntentHandlerFragment.TAG)
+    public static FragmentLocation intentHandlerClass() {
+        return new FragmentLocation.Builder<>(IntentHandlerFragment.class, IntentHandlerFragment.TAG).build();
+    }
+
+    @Provides
+    @Reusable
+    public static IntentHandlerFragment intentHandlerFragment(Map<String, Fragment> fragments) {
+        return (IntentHandlerFragment) fragments.get(IntentHandlerFragment.TAG);
     }
 }

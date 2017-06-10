@@ -1,11 +1,13 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.IngredientDetailFragment;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -16,7 +18,7 @@ public class IngredientDetailActivity extends BaseActivity {
     public static final String EXTRA_INGREDIENT_ID_LONG = "ingredient details extra id long";
 
     @Inject
-    IngredientDetailFragment content; //adds fragment to view hierarchy
+    Map<String, Fragment> fragments; //adds fragments to view hierarchy
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

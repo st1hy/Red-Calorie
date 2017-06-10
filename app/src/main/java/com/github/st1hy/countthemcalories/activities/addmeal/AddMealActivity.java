@@ -1,11 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.addmeal;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.AddMealFragment;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
@@ -13,6 +13,8 @@ import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.view.RxMenuItem;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -29,7 +31,7 @@ public class AddMealActivity extends BaseActivity {
     @Inject
     Toolbar toolbar;
     @Inject
-    AddMealFragment content; //adds fragment to stack
+    Map<String, Fragment> fragments; //adds fragments to stack
     @Inject
     PublishSubject<AddMealMenuAction> menuActionPublishSubject;
 

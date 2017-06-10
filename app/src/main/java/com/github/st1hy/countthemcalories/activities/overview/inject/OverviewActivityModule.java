@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.activities.overview.inject;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
@@ -19,22 +19,32 @@ import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoModule;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
+import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
+import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
 
+import java.util.Map;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 
 @Module(includes = {
         DrawerModule.class,
         UndoModule.class,
         ActivityLauncherModule.class,
-        MealsPagerModule.class
+        MealsPagerModule.class,
+        PermissionModule.class,
 })
 public abstract class OverviewActivityModule {
+
+    private static final String GRAPH_CONTENT_TAG = "overview_graph_fragment";
 
     @Binds
     public abstract OverviewScreen overviewScreen(OverviewScreenImpl screen);
@@ -46,13 +56,19 @@ public abstract class OverviewActivityModule {
     public abstract GraphComponentFactory graphComponentFactory(OverviewActivityComponent component);
 
     @Provides
-    public static GraphFragment provideGraphFragment(FragmentManager fragmentManager,
-                                                     GraphComponentFactory componentFactory) {
+    @IntoMap
+    @StringKey(GRAPH_CONTENT_TAG)
+    @Reusable
+    public static FragmentLocation graphFragment(GraphComponentFactory componentFactory) {
+        return new FragmentLocation.Builder<>(GraphFragment.class, GRAPH_CONTENT_TAG)
+                .setViewRootId(R.id.overview_content_root)
+                .setInjector(fragment -> fragment.setComponentFactory(componentFactory))
+                .build();
+    }
 
-        GraphFragment fragment = (GraphFragment) fragmentManager
-                .findFragmentById(R.id.overview_graph_fragment);
-        fragment.setComponentFactory(componentFactory);
-        return fragment;
+    @Provides
+    public static GraphFragment provideGraphFragment(Map<String, Fragment> fragments) {
+        return (GraphFragment) fragments.get(GRAPH_CONTENT_TAG);
     }
 
     @Provides

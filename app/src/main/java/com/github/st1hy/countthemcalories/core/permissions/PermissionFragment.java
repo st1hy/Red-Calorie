@@ -17,7 +17,7 @@ import java.util.Map;
 import rx.Observable;
 
 public class PermissionFragment extends Fragment implements PermissionSubject {
-    public static final String TAG = PermissionFragment.class.getName();
+    public static final String TAG = "PermissionFragment";
 
     final Map<Integer, PermissionActor> pendingRequests = Maps.newHashMap();
     final HashBiMap<List<String>, PermissionActor> actors = HashBiMap.create();

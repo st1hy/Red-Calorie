@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
@@ -13,9 +14,15 @@ import com.github.st1hy.countthemcalories.core.rx.QueueSubject;
 import rx.Observable;
 
 public class IntentHandlerFragment extends BaseFragment implements ActivityLauncherSubject {
-    public static final String TAG = IntentHandlerFragment.class.getSimpleName();
+    public static final String TAG = "IntentHandlerFragment";
 
     private final SparseArray<QueueSubject<ActivityResult>> results = new SparseArray<>();
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

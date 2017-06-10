@@ -36,7 +36,12 @@
         style="@style/ActivityContent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<include layout="@layout/ingredients_content"/>-->
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.github.st1hy.countthemcalories.activities.ingredients.fragment.IngredientsFragment"
+            android:tag="ingredients content"
+            tools:layout="@layout/ingredients_content"/>
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton

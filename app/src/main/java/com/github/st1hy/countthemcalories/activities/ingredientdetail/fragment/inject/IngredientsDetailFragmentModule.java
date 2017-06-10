@@ -13,7 +13,6 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.v
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
@@ -27,9 +26,7 @@ import dagger.Provides;
 
 import static com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel.SAVED_INGREDIENT_MODEL;
 
-@Module(includes = {
-        PermissionModule.class
-})
+@Module
 public abstract class IngredientsDetailFragmentModule {
 
     @Binds
