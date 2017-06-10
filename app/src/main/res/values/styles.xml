@@ -7,6 +7,8 @@
         <item name="android:colorForeground">@color/colorPrimaryDark</item>
         <item name="android:colorBackground">@color/colorAppBackground</item>
         <item name="colorControlNormal">?android:textColorPrimary</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

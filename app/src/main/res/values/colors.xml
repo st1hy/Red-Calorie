@@ -30,4 +30,6 @@
     <color name="meal_icon_fill">#1b0d0e</color>
     <color name="meal_icon_fill_positive">#1b0d0e</color>
 
+    <color name="textColorPrimary">#181818</color>
+    <color name="textColorSecondary">#303030</color>
 </resources>
