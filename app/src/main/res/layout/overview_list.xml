@@ -17,10 +17,11 @@
         android:visibility="gone">
 
         <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/overview_empty_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_empty_background"
+            tools:src="@drawable/ic_empty_right"
             tools:ignore="ContentDescription" />
 
         <TextView

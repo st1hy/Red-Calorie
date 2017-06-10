@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
+import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.AddMealController;
 import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction;
 import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealsAdapter;
@@ -71,6 +72,9 @@ public class MealsPresenterImp implements MealsPresenter {
 
     @Override
     public void onStart() {
+        view.setEmptyBackground(currentDayModel.getCurrentPosition() % 2 == 0 ?
+                R.drawable.ic_empty_left :
+                R.drawable.ic_empty_right);
         onStartAdapter();
         subscriptions.add(
                 currentDayModel.getCurrentDay()

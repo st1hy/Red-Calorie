@@ -1,9 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.overview.meals.view;
 
 import android.support.annotation.CheckResult;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
@@ -29,6 +31,8 @@ public class OverviewViewImpl implements OverviewView {
 
     @BindView(R.id.overview_empty)
     View emptyView;
+    @BindView(R.id.overview_empty_background)
+    ImageView emptyBackground;
 
     @Inject
     public OverviewViewImpl(@NonNull OverviewScreen screen,
@@ -41,6 +45,11 @@ public class OverviewViewImpl implements OverviewView {
     public void setEmptyListVisibility(@NonNull Visibility visibility) {
         //noinspection WrongConstant
         emptyView.setVisibility(visibility.getVisibility());
+    }
+
+    @Override
+    public void setEmptyBackground(@DrawableRes int drawableResId) {
+        emptyBackground.setImageResource(drawableResId);
     }
 
     @Override

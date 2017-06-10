@@ -31,4 +31,8 @@ public class CurrentDayModel {
     public Observable<DateTime> getCurrentDay() {
         return model.dateAtPosition(currentPosition);
     }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.meals.view;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
@@ -9,4 +10,5 @@ public interface OverviewView extends OverviewScreen {
 
     void setEmptyListVisibility(@NonNull Visibility visibility);
 
+    void setEmptyBackground(@DrawableRes int drawableResId);
 }
