@@ -110,6 +110,7 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.rom4ek:arcnavigationview:1.0.3'
 
     devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
