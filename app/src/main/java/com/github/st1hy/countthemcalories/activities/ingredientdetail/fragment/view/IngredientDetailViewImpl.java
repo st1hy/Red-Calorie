@@ -3,7 +3,9 @@ package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.view.IngredientDetailScreenDelegate;
+import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
 import com.jakewharton.rxbinding.view.RxView;
@@ -109,7 +112,13 @@ public class IngredientDetailViewImpl extends IngredientDetailScreenDelegate imp
     @NonNull
     @Override
     public Observable<Void> getAcceptObservable() {
-        return RxView.clicks(accept);
+        return RxTextView.editorActionEvents(editAmount)
+                .filter(event -> {
+                    KeyEvent keyEvent = event.keyEvent();
+                    return event.actionId() == EditorInfo.IME_ACTION_DONE ||
+                            (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER);
+                }).map(Functions.INTO_VOID)
+                .mergeWith(RxView.clicks(accept));
     }
 
     @NonNull
