@@ -34,4 +34,5 @@
     <color name="textColorSecondary">#303030</color>
     <color name="search_token_background">#76000b</color>
     <color name="search_token_delete">#3563b7</color>
+    <color name="graph_ripple_color">#20FFFFFF</color>
 </resources>

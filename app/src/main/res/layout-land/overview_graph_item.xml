@@ -7,7 +7,6 @@
     android:minHeight="50dp"
     android:orientation="horizontal"
     android:clickable="true"
-    style="@style/Widget.AppCompat.Button.Borderless"
     android:padding="0dp">
     <android.support.v4.widget.Space
         android:layout_width="8dp"
@@ -31,5 +30,6 @@
     <com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumn
         android:id="@+id/graph_item_column"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:foreground="@drawable/graph_item_ripple" />
 </LinearLayout>
