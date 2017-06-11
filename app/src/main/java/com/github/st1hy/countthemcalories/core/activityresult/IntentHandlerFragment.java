@@ -33,9 +33,7 @@ public class IntentHandlerFragment extends BaseFragment implements ActivityLaunc
     @Override
     @CheckResult
     public Observable<? extends ActivityResult> attachToExistingRequest(int requestCode) {
-        Observable<ActivityResult> resultSubject = results.get(requestCode);
-        if (resultSubject == null) resultSubject = Observable.empty();
-        return resultSubject;
+        return getSubject(requestCode);
     }
 
     @Override
