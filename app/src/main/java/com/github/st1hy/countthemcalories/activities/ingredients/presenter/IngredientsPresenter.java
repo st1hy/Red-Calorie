@@ -75,6 +75,9 @@ public class IngredientsPresenter implements BasicLifecycle {
                         .filter(event -> event.getAction() == MotionEvent.ACTION_UP)
                         .subscribe(ignore -> view.dismissDropDown())
         );
+    }
+
+    public void onResume() {
         if (filter.isPresent()) {
             view.setQuery("", Collections.singletonList(filter.get()));
             view.expand(false);
@@ -82,11 +85,9 @@ public class IngredientsPresenter implements BasicLifecycle {
         }
     }
 
-
     @Override
     public void onStop() {
         subscriptions.clear();
         drawerPresenter.onStop();
     }
-
 }

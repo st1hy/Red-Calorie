@@ -44,6 +44,12 @@ public class IngredientsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         presenter.onStop();
