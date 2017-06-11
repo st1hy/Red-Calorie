@@ -26,7 +26,7 @@ public abstract class GraphModule {
     @PerFragment
     public static RecyclerView recyclerView(@FragmentRootView View view,
                                             GraphDataAdapter adapter) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.graph_recycler);
+        RecyclerView recyclerView = view.findViewById(R.id.graph_recycler);
         recyclerView.setAdapter(adapter);
         return recyclerView;
     }

@@ -369,9 +369,7 @@ public class GraphColumnModel {
     private void setColumnLegendBounds(float width, float height) {
         if (!columnLegendDirty) return;
         float min = legendLineWidthHalf;
-        float minWidth = min;
         float maxWidth = width - min;
-        float minHeight = min;
         float maxHeight = height - min;
         switch (orientation) {
             case RIGHT_TO_LEFT:
@@ -382,32 +380,32 @@ public class GraphColumnModel {
                 legendVector[3] = height;
                 //separator
                 legendVector[4] = width - legendSeparatorSize;
-                legendVector[5] = minHeight;
+                legendVector[5] = min;
                 legendVector[6] = width;
-                legendVector[7] = minHeight;
+                legendVector[7] = min;
                 break;
             case LEFT_TO_RIGHT:
                 //underline
-                legendVector[0] = minWidth;
+                legendVector[0] = min;
                 legendVector[1] = 0f;
-                legendVector[2] = minWidth;
+                legendVector[2] = min;
                 legendVector[3] = height;
                 //separator
                 legendVector[4] = 0;
-                legendVector[5] = minHeight;
+                legendVector[5] = min;
                 legendVector[6] = legendSeparatorSize;
-                legendVector[7] = minHeight;
+                legendVector[7] = min;
                 break;
             case TOP_TO_BOTTOM:
                 //underline
                 legendVector[0] = 0f;
-                legendVector[1] = minHeight;
+                legendVector[1] = min;
                 legendVector[2] = width;
-                legendVector[3] = minHeight;
+                legendVector[3] = min;
                 //separator
-                legendVector[4] = minWidth;
+                legendVector[4] = min;
                 legendVector[5] = 0;
-                legendVector[6] = minWidth;
+                legendVector[6] = min;
                 legendVector[7] = legendSeparatorSize;
                 break;
             case BOTTOM_TO_TOP:
@@ -417,9 +415,9 @@ public class GraphColumnModel {
                 legendVector[2] = width;
                 legendVector[3] = maxHeight;
                 //separator
-                legendVector[4] = minWidth;
+                legendVector[4] = min;
                 legendVector[5] = height - legendSeparatorSize;
-                legendVector[6] = minWidth;
+                legendVector[6] = min;
                 legendVector[7] = height;
                 break;
         }

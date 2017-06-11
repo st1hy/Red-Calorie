@@ -55,7 +55,7 @@ public class AddWeightView {
                 .positiveButton(android.R.string.ok)
                 .negativeButton(android.R.string.cancel)
                 .show();
-        TextView unitView = (TextView) checkNotNull(rxAlertDialog.getCustomView())
+        TextView unitView = checkNotNull(rxAlertDialog.getCustomView())
                 .findViewById(R.id.add_weight_unit);
         unitView.setText(context.getString(settingsModel.getBodyMassUnit().getNameRes()));
         return editTextValueOnOk(rxAlertDialog, initialValue, R.id.add_weight_value)

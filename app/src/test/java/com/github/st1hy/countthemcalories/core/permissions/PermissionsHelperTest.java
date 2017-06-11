@@ -67,6 +67,7 @@ public class PermissionsHelperTest {
         verify(subject).shouldShowRequestPermissionRationale(testPermission);
         verify(requestRationale).showRationale();
         verify(subject).requestPermission(any(String[].class));
+        //noinspection ResultOfMethodCallIgnored
         verify(cache).put(testPermission, Permission.GRANTED);
         verifyNoMoreInteractions(subject, requestRationale, cache);
     }
@@ -88,6 +89,7 @@ public class PermissionsHelperTest {
 
         verify(subject).checkSelfPermission(testPermission);
         verify(subject).requestPermission(any(String[].class));
+        //noinspection ResultOfMethodCallIgnored
         verify(cache).put(testPermission, Permission.DENIED);
         verifyNoMoreInteractions(subject, requestRationale, cache);
     }

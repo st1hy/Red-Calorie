@@ -17,7 +17,6 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
 public class RxAlertDialog {
@@ -86,21 +85,18 @@ public class RxAlertDialog {
     @NonNull
     @CheckResult
     public Observable<Integer> observeItemClick() {
-        return Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(final Subscriber<? super Integer> subscriber) {
-                itemClickedDelegate = (dialog1, which) -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(which);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        itemClickedDelegate = null;
-                        dialog.dismiss();
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            itemClickedDelegate = (dialog1, which) -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(which);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    itemClickedDelegate = null;
+                    dialog.dismiss();
+                }
+            });
         });
     }
 
@@ -108,63 +104,54 @@ public class RxAlertDialog {
     @NonNull
     @CheckResult
     public Observable<Void> observeNegativeClick() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                negativeClickedDelegate = (dialog1, which) -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(null);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        negativeClickedDelegate = null;
-                        dialog.dismiss();
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            negativeClickedDelegate = (dialog1, which) -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(null);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    negativeClickedDelegate = null;
+                    dialog.dismiss();
+                }
+            });
         });
     }
 
     @NonNull
     @CheckResult
     public Observable<Void> observePositiveClick() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                positiveClickedDelegate = (dialog1, which) -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(null);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        positiveClickedDelegate = null;
-                        dialog.dismiss();
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            positiveClickedDelegate = (dialog1, which) -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(null);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    positiveClickedDelegate = null;
+                    dialog.dismiss();
+                }
+            });
         });
     }
 
     @NonNull
     @CheckResult
     public Observable<Void> observeNeutralClick() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                neutralClickedDelegate = (dialog1, which) -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(null);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        neutralClickedDelegate = null;
-                        dialog.dismiss();
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            neutralClickedDelegate = (dialog1, which) -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(null);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    neutralClickedDelegate = null;
+                    dialog.dismiss();
+                }
+            });
         });
     }
 
@@ -172,20 +159,17 @@ public class RxAlertDialog {
     @NonNull
     @CheckResult
     public Observable<Void> observeCanceled() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                onCancelDelegate = dialog1 -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(null);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        onCancelDelegate = null;
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            onCancelDelegate = dialog1 -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(null);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    onCancelDelegate = null;
+                }
+            });
         });
     }
 
@@ -193,20 +177,17 @@ public class RxAlertDialog {
     @NonNull
     @CheckResult
     public Observable<Void> observeDismiss() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                onDismissListenerDelegate = dialog -> {
-                    if (!subscriber.isUnsubscribed())
-                        subscriber.onNext(null);
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        onDismissListenerDelegate = null;
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            onDismissListenerDelegate = dialog1 -> {
+                if (!subscriber.isUnsubscribed())
+                    subscriber.onNext(null);
+            };
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    onDismissListenerDelegate = null;
+                }
+            });
         });
     }
 

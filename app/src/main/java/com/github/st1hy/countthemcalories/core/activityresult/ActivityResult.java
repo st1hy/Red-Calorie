@@ -8,6 +8,7 @@ import rx.functions.Func1;
 /**
  * This class holds the data received by {@link Activity#onActivityResult(int, int, Intent)}.
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ActivityResult {
 
     public static final Func1<ActivityResult, Boolean> IS_OK = ActivityResult::isOk;

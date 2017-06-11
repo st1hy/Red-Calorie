@@ -2,9 +2,9 @@ package com.github.st1hy.countthemcalories.activities.settings.fragment.inject;
 
 
 import com.github.st1hy.countthemcalories.activities.settings.fragment.SettingsFragment;
+import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
-import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 
 import dagger.Subcomponent;
 

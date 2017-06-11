@@ -58,7 +58,7 @@ public abstract class TagsFragmentModule {
     public static RecyclerView recyclerView(@FragmentRootView View rootView,
                                             @ActivityContext Context context,
                                             TagsDaoAdapter adapter) {
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tags_recycler);
+        RecyclerView recyclerView = rootView.findViewById(R.id.tags_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
         return recyclerView;

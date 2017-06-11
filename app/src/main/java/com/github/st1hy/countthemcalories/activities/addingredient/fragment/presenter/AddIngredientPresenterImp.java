@@ -108,7 +108,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                 view.getSelectTypeObservable()
                         .flatMap(aVoid -> {
                             final List<Pair<AmountUnit, CharSequence>> optionsList = modelHelper.getSelectTypeDialogOptions();
-                            CharSequence[] options = Collections2.transform(optionsList, input -> input.second)
+                            CharSequence[] options = Collections2.transform(optionsList, input -> input != null ? input.second : "")
                                     .toArray(new CharSequence[optionsList.size()]);
                             return dialogView.showAlertDialog(model.getSelectTypeDialogTitle(), options)
                                     .map(position -> optionsList.get(position).first);
@@ -176,7 +176,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
     @NonNull
     private static Optional<Integer> searchListFor(@NonNull List<IngredientTypeCreateError> errors,
                                                    @NonNull IngredientTypeCreateError error) {
-        return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.<Integer>absent();
+        return errors.contains(error) ? Optional.of(error.getErrorResId()) : Optional.absent();
     }
 
     private void subscribe(@NonNull Subscription subscription) {

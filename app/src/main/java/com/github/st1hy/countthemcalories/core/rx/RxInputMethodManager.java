@@ -19,7 +19,7 @@ public class RxInputMethodManager {
     @CheckResult
     @NonNull
     public static Observable<Integer> showSoftInput(InputMethodManager manager, View view, int flags) {
-        return Observable.create(subscriber -> {
+        return Observable.unsafeCreate(subscriber -> {
             AtomicReference<Action1<Integer>> ref = new AtomicReference<>((t) -> {
                 subscriber.onNext(t);
                 subscriber.onCompleted();

@@ -16,7 +16,7 @@ public final class RxTokenSearchTextView {
     @NonNull
     @CheckResult
     public static Observable<Boolean> dropDownDialogChange(@NonNull TokenSearchTextView tokenSearchTextView) {
-        return Observable.create(subscriber -> {
+        return Observable.unsafeCreate(subscriber -> {
             tokenSearchTextView.setOnDropDownDialogChangeListener(new DropDownDialogChangeListener() {
                 @Override
                 public void onDialogShown() {

@@ -37,10 +37,8 @@ public class PermissionActorTest {
         PermissionActor permissionActor = new PermissionActor(permissions);
         permissionActor.asObservable()
                 .observeOn(Schedulers.immediate())
-                .subscribe(permissions1 -> {
-                    assertThat(permissions1, arrayContaining(Permission.REQUEST_CANCELED,
-                            Permission.REQUEST_CANCELED));
-                });
+                .subscribe(permissions1 -> assertThat(permissions1, arrayContaining(Permission.REQUEST_CANCELED,
+                        Permission.REQUEST_CANCELED)));
 
         permissionActor.onRequestPermissionsResult(new String[] {},
                 new int[] {});

@@ -8,12 +8,12 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoader.ImageLoadingEvent;
 import com.github.st1hy.countthemcalories.core.rx.SimpleSubscriber;
-import com.github.st1hy.countthemcalories.core.headerpicture.inject.HeaderImageView;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
 import javax.inject.Inject;

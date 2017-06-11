@@ -103,6 +103,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:textSize="18sp"
+                    android:textIsSelectable="false"
                     tools:text="g" />
             </LinearLayout>
 

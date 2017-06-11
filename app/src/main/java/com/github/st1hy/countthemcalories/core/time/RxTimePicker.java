@@ -12,7 +12,6 @@ import org.joda.time.MutableDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 import rx.functions.Func1;
 
@@ -37,23 +36,20 @@ public class RxTimePicker {
                 },
                 hour, minute, is24h);
         timePickerDialog.show();
-        return Observable.create(new Observable.OnSubscribe<DateTime>() {
-            @Override
-            public void call(Subscriber<? super DateTime> subscriber) {
-                output.set(dateTime -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(dateTime);
-                        subscriber.onCompleted();
-                    }
-                    return null;
-                });
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        timePickerDialog.cancel();
-                    }
-                });
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            output.set(dateTime -> {
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onNext(dateTime);
+                    subscriber.onCompleted();
+                }
+                return null;
+            });
+            subscriber.add(new MainThreadSubscription() {
+                @Override
+                protected void onUnsubscribe() {
+                    timePickerDialog.cancel();
+                }
+            });
         });
     }
 }

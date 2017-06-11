@@ -31,7 +31,7 @@ public abstract class AbstractCommandResponse<Response, UndoResponse> implements
     @Override
     public Observable<Boolean> undoAvailability() {
         if (undoAvailabilityObserver == null) {
-            undoAvailabilityObserver = Observable.create(undoAvailability).replay().autoConnect();
+            undoAvailabilityObserver = Observable.unsafeCreate(undoAvailability).replay().autoConnect();
         }
         return undoAvailabilityObserver;
     }

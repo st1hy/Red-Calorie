@@ -25,7 +25,7 @@ public class RxSnackbar {
     public Observable<Void> action(@StringRes int actionResId) {
         ClickListenerEmitter onClickListener = new ClickListenerEmitter();
         snackbar.setAction(actionResId, onClickListener);
-        return Observable.create(onClickListener);
+        return Observable.unsafeCreate(onClickListener);
     }
 
     @NonNull

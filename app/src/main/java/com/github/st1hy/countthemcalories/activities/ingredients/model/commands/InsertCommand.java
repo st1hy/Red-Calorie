@@ -27,8 +27,8 @@ class InsertCommand implements Command<InsertResult, Cursor> {
     private final RemovalEffect whatsRemoved;
 
     InsertCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
-                         @NonNull IngredientsDatabaseCommands commands,
-                         @NonNull RemovalEffect whatsRemoved) {
+                  @NonNull IngredientsDatabaseCommands commands,
+                  @NonNull RemovalEffect whatsRemoved) {
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.whatsRemoved = whatsRemoved;

@@ -32,7 +32,7 @@ public abstract class MealsPagerModule {
 
     @Provides
     public static ViewPager viewPager(Activity activity, PagerAdapter adapter) {
-        ViewPager viewPager = (ViewPager) activity.findViewById(R.id.overview_view_pager);
+        ViewPager viewPager = activity.findViewById(R.id.overview_view_pager);
         viewPager.setAdapter(adapter);
         return viewPager;
     }

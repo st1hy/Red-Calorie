@@ -48,6 +48,6 @@ public class ViewTreeScrollChangedListener implements Observable.OnSubscribe<Vie
 
     @NonNull
     public static Observable<ViewScrollChangeEvent> create(@NonNull View view) {
-        return Observable.create(new ViewTreeScrollChangedListener(view));
+        return Observable.unsafeCreate(new ViewTreeScrollChangedListener(view));
     }
 }

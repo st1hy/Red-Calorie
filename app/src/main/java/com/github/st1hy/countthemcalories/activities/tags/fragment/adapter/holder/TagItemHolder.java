@@ -11,8 +11,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagRootView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;

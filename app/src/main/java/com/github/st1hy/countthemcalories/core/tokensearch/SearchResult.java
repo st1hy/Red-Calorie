@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SearchResult {
-    public static final SearchResult EMPTY = new SearchResult("", Collections.<String>emptyList());
+    public static final SearchResult EMPTY = new SearchResult("", Collections.emptyList());
     private final String query;
     private final List<String> tokens;
 

@@ -12,7 +12,7 @@ import rx.Observable;
 public abstract class AbstractRxDatabaseModel {
     private final Lazy<DaoSession> session;
 
-    public AbstractRxDatabaseModel(@NonNull Lazy<DaoSession> session) {
+    protected AbstractRxDatabaseModel(@NonNull Lazy<DaoSession> session) {
         this.session = session;
     }
 

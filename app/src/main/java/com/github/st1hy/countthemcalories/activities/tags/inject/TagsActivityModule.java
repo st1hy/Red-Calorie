@@ -65,7 +65,7 @@ public abstract class TagsActivityModule {
     @Provides
     @PerActivity
     public static TokenSearchView settingsView(Activity activity) {
-        TokenSearchView searchView = (TokenSearchView) activity.findViewById(R.id.tags_search_view);
+        TokenSearchView searchView = activity.findViewById(R.id.tags_search_view);
         searchView.getSearchTextView().setSplitChar(new char[]{0xAD});
         return searchView;
     }

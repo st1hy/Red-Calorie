@@ -10,7 +10,7 @@ import javax.inject.Inject;
 public class TagSpaceHolder extends TagViewHolder {
 
     @Inject
-    public TagSpaceHolder(@NonNull @TagRootView  View itemView) {
+    public TagSpaceHolder(@NonNull @TagRootView View itemView) {
         super(itemView);
     }
 

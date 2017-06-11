@@ -52,5 +52,5 @@ dependencies {
 
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
-    provided 'javax.annotation:javax.annotation-api:1.2'
+    provided 'javax.annotation:javax.annotation-api:1.3'
 }

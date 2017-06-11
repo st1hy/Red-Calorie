@@ -21,7 +21,6 @@ import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
-import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
 import com.google.common.collect.Lists;
@@ -75,6 +74,7 @@ public class AddIngredientActivityTest {
 
     private final ApplicationComponentRule componentRule = new ApplicationComponentRule(
             getTargetContext());
+    @SuppressWarnings("WeakerAccess")
     public final IntentsTestRule<AddIngredientActivity> main = new IntentsTestRule<>(
             AddIngredientActivity.class, true, false);
 
@@ -141,7 +141,7 @@ public class AddIngredientActivityTest {
         onView(withText(R.string.add_ingredient_image_remove)).perform(click());
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
-                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));;
+                .check(matches(withDrawable(not(any(BitmapDrawable.class)))));
     }
 
     @Test

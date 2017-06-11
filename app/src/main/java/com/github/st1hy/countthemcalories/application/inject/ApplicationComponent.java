@@ -6,10 +6,10 @@ import com.github.st1hy.countthemcalories.activities.ingredientdetail.inject.Ing
 import com.github.st1hy.countthemcalories.activities.ingredients.inject.IngredientsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.activities.mealdetail.inject.MealDetailActivityComponentFactory;
 import com.github.st1hy.countthemcalories.activities.overview.inject.OverviewActivityComponentFactory;
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
 import com.github.st1hy.countthemcalories.activities.settings.inject.SettingsActivityComponentFactory;
 import com.github.st1hy.countthemcalories.activities.tags.inject.TagsActivityComponentFactory;
+import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.database.inject.DatabaseModule;
 
 import javax.inject.Singleton;
 

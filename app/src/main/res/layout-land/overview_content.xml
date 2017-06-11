@@ -5,6 +5,7 @@
     tools:showIn="@layout/overview_app_bar">
 
     <LinearLayout
+        android:id="@+id/overview_content_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="false"

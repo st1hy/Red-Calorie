@@ -104,7 +104,8 @@ dependencies {
     compile "com.splitwise:tokenautocomplete:$tokenAutoCompleteVersion"
     compile "org.parceler:parceler-api:$parcelerVersion"
     annotationProcessor "org.parceler:parceler:$parcelerVersion"
-    provided "com.google.code.findbugs:jsr305:3.0.0"
+    provided "com.google.code.findbugs:jsr305:3.0.2"
+    provided "com.google.errorprone:error_prone_annotations:2.0.19"
 
     compile 'com.l4digital.fastscroll:fastscroll:1.0.1'
     compile 'com.getbase:floatingactionbutton:1.10.1'

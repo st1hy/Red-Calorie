@@ -30,7 +30,7 @@ public abstract class SettingsChangedEvent {
     @NonNull
     public static Observable<SettingsChangedEvent> create(@NonNull final SettingsModel model) {
 
-        return Observable.create(subscriber -> {
+        return Observable.unsafeCreate(subscriber -> {
             final OnSharedPreferenceChangeListener preferenceChangeListener =
                     (sharedPreferences, key) -> {
                         if (!subscriber.isUnsubscribed()) {

@@ -20,8 +20,8 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
     private final IngredientTemplate ingredient;
 
     DeleteCommand(@NonNull RxIngredientsDatabaseModel databaseModel,
-                         @NonNull IngredientsDatabaseCommands commands,
-                         @NonNull IngredientTemplate ingredient) {
+                  @NonNull IngredientsDatabaseCommands commands,
+                  @NonNull IngredientTemplate ingredient) {
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.ingredient = ingredient;

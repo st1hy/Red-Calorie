@@ -5,7 +5,7 @@ import android.view.View;
 
 public abstract class AbstractMealItemHolder extends RecyclerView.ViewHolder {
 
-    public AbstractMealItemHolder(View itemView) {
+    AbstractMealItemHolder(View itemView) {
         super(itemView);
     }
 }

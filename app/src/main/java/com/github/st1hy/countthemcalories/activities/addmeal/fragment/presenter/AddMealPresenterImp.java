@@ -75,9 +75,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
         subscribe(
                 view.getNameObservable()
                         .skip(1)
-                        .subscribe(charSequence -> {
-                            meal.setName(charSequence.toString());
-                        })
+                        .subscribe(charSequence -> meal.setName(charSequence.toString()))
         );
         subscribe(
                 menuActionObservable.filter(Filters.equalTo(AddMealMenuAction.SAVE))

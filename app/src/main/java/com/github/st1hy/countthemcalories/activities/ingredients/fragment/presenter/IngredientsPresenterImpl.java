@@ -38,7 +38,7 @@ import timber.log.Timber;
 import static com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientOptions.from;
 
 @PerFragment
-public class IngredientsPresenterImpl implements IngredientsPresenter, IngredientViewHolder.Callback{
+public class IngredientsPresenterImpl implements IngredientsPresenter, IngredientViewHolder.Callback {
 
     @Inject
     LastSearchResult recentSearchResult;
@@ -210,9 +210,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
         //Ingredient template here is not attached to database and is missing tags
         databaseModel.getByIdRecursive(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ingredientTemplate1 -> {
-                    view.editIngredientTemplate(positionInAdapter, ingredientTemplate1);
-                });
+                .subscribe(ingredientTemplate1 -> view.editIngredientTemplate(positionInAdapter, ingredientTemplate1));
     }
 
 }

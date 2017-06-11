@@ -13,4 +13,5 @@
     app:arc_width="96dp"
     android:background="@android:color/white"
     app:itemBackground="@android:color/white"
-    tools:showIn="@layout/tags_activity" />
+    tools:showIn="@layout/tags_activity"
+    tools:ignore="Overdraw" />

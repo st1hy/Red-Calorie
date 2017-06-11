@@ -133,6 +133,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         });
         anim.start();
     }
+
     private enum RevealIntent {
         NORMAL, REVERSE
     }

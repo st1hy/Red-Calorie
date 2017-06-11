@@ -5,8 +5,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath "me.tatarka:gradle-retrolambda:3.6.0"
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
+        classpath "me.tatarka:gradle-retrolambda:3.6.1"
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
     }
 }
 
@@ -20,7 +20,7 @@ ext {
     supportLibraryVersion = '25.4.0'
 
     daggerVersion = '2.11'
-    butterknifeVersion = '8.5.1'
+    butterknifeVersion = '8.6.0'
 
     rxJavaVersion = '1.2.7'
     rxAndroidVersion = '1.2.1'
@@ -43,7 +43,7 @@ ext {
 
     //Database
     greenDaoVersion = '3.2.0'
-    jodaTimeVersion = '2.9.7'
+    jodaTimeVersion = '2.9.9'
 }
 
 allprojects {

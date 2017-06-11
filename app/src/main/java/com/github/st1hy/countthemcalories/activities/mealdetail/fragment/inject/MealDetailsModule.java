@@ -64,7 +64,7 @@ public abstract class MealDetailsModule {
                                             @FragmentRootView View rootView,
                                             MealIngredientsAdapter adapter) {
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.meal_detail_recycler);
+        RecyclerView recyclerView = rootView.findViewById(R.id.meal_detail_recycler);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;

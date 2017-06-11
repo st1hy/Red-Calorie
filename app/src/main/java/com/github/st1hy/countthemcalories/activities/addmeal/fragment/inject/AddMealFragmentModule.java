@@ -19,15 +19,14 @@ import com.github.st1hy.countthemcalories.activities.addmeal.fragment.presenter.
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenterImp;
+import com.github.st1hy.countthemcalories.core.inject.DefaultMealNameModule;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.github.st1hy.countthemcalories.core.inject.DefaultMealNameModule;
-import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
@@ -106,7 +105,7 @@ public abstract class AddMealFragmentModule {
                                             RecyclerView.Adapter adapter,
                                             @ActivityContext Context context) {
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(
+        RecyclerView recyclerView = rootView.findViewById(
                 R.id.add_meal_ingredients_list);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

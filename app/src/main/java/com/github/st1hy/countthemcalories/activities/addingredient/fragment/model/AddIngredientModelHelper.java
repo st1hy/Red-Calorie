@@ -40,10 +40,10 @@ public class AddIngredientModelHelper {
 
     @Inject
     AddIngredientModelHelper(@NonNull SettingsModel settingsModel,
-                                    @NonNull IngredientTagsModel tagsModel,
-                                    @NonNull RxIngredientsDatabaseModel databaseModel,
-                                    @NonNull Resources resources,
-                                    @NonNull AddIngredientModel model) {
+                             @NonNull IngredientTagsModel tagsModel,
+                             @NonNull RxIngredientsDatabaseModel databaseModel,
+                             @NonNull Resources resources,
+                             @NonNull AddIngredientModel model) {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;
         this.databaseModel = databaseModel;

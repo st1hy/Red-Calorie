@@ -16,7 +16,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.github.st1hy.countthemcalories.R;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 import rx.functions.Action1;
 
@@ -68,28 +67,25 @@ public class RxImageLoader {
     @NonNull
     public Observable<ImageLoadingEvent> asObservable() {
         if (observable == null) {
-            observable = Observable.create(new Observable.OnSubscribe<ImageLoadingEvent>() {
-                @Override
-                public void call(final Subscriber<? super ImageLoadingEvent> subscriber) {
+            observable = Observable.unsafeCreate((Observable.OnSubscribe<ImageLoadingEvent>) subscriber -> {
 
-                    delegate = event -> {
-                        if (!subscriber.isUnsubscribed()) {
-                            subscriber.onNext(event);
-                            subscriber.onCompleted();
-                        }
-                    };
-                    subscriber.add(new MainThreadSubscription() {
-                        @Override
-                        protected void onUnsubscribe() {
-                            delegate = null;
-                            if (!hasFinished() && isLoadingMyUri()) {
-                                cancelRequest();
-                            }
-                        }
-                    });
-                    if (lastEvent != null) {
-                        delegate.call(lastEvent);
+                delegate = event -> {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(event);
+                        subscriber.onCompleted();
                     }
+                };
+                subscriber.add(new MainThreadSubscription() {
+                    @Override
+                    protected void onUnsubscribe() {
+                        delegate = null;
+                        if (!hasFinished() && isLoadingMyUri()) {
+                            cancelRequest();
+                        }
+                    }
+                });
+                if (lastEvent != null) {
+                    delegate.call(lastEvent);
                 }
             }).share();
         }

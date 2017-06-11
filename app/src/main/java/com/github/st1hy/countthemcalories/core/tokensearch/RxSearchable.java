@@ -41,7 +41,7 @@ public class RxSearchable implements Observable.OnSubscribe<SearchResult> {
 
     @NonNull
     public static Observable<SearchResult> create(@NonNull final Searchable searchView) {
-        return Observable.create(new RxSearchable(searchView));
+        return Observable.unsafeCreate(new RxSearchable(searchView));
     }
 
 }

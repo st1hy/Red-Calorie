@@ -2,8 +2,6 @@ package com.github.st1hy.countthemcalories.core.headerpicture;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.R;
-
 import rx.functions.Func1;
 
 public enum ImageSource {
@@ -12,7 +10,7 @@ public enum ImageSource {
     private static final Func1<Integer, ImageSource> INTO_IMAGE_SOURCE = ImageSource::fromItemPos;
 
     /**
-     * @param arrayItemPosition position of item in {@link R.array.add_meal_image_select_options}
+     * @param arrayItemPosition position of item in R.array.add_meal_image_select_options
      * @return ImageSource enum from that position
      * @throws IllegalArgumentException if item does not belont in the array
      */

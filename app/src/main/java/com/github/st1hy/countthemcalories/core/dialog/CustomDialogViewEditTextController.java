@@ -31,7 +31,7 @@ public final class CustomDialogViewEditTextController {
     public static Observable<String> editTextValueOnOk(@NonNull RxAlertDialog rxAlertDialog,
                                                        @NonNull String initialText,
                                                        @IdRes int customEditTextViewId) {
-        final EditText text = (EditText) checkNotNull(rxAlertDialog.getCustomView())
+        final EditText text = checkNotNull(rxAlertDialog.getCustomView())
                 .findViewById(customEditTextViewId);
         text.setText(initialText);
         text.setOnKeyListener((v, keyCode, event) -> {

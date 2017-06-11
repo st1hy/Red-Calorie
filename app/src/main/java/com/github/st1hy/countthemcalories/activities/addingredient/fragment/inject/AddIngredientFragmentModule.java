@@ -141,7 +141,7 @@ public abstract class AddIngredientFragmentModule {
             @Named("horizontalDivider") RecyclerView.ItemDecoration horizontalDivider,
             @Named("verticalDivider") RecyclerView.ItemDecoration verticalDivider) {
 
-        RecyclerView tagsRecycler = (RecyclerView) rootView.findViewById(
+        RecyclerView tagsRecycler = rootView.findViewById(
                 R.id.add_ingredient_categories_recycler);
         tagsRecycler.setNestedScrollingEnabled(true);
         tagsRecycler.setAdapter(adapter);

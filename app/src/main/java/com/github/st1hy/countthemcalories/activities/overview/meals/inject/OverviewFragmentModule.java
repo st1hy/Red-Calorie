@@ -31,10 +31,13 @@ public abstract class OverviewFragmentModule {
 
     @Binds
     public abstract OverviewView provideView(OverviewViewImpl view);
+
     @Binds
     public abstract MealsPresenter provideDrawerPresenter(MealsPresenterImp presenter);
+
     @Binds
     public abstract RecyclerView.Adapter adapter(MealsAdapter presenter);
+
     @Binds
     public abstract MealRowComponentFactory mealRowComponentFactory(OverviewFragmentComponent component);
 
@@ -42,7 +45,7 @@ public abstract class OverviewFragmentModule {
     public static RecyclerView recyclerView(@FragmentRootView View view,
                                             RecyclerView.Adapter adapter,
                                             @ActivityContext Context context) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.overview_recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.overview_recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;

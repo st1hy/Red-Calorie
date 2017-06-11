@@ -10,7 +10,6 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientListComponentFactory;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.adapter.inject.IngredientListModule;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.MealIngredientsListModel;
-import com.github.st1hy.countthemcalories.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -29,8 +28,6 @@ import dagger.internal.Preconditions;
 public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemViewHolder> {
 
     @NonNull
-    private final AddMealView view;
-    @NonNull
     private final MealIngredientsListModel model;
     @NonNull
     private final PhysicalQuantitiesModel quantityModel;
@@ -39,11 +36,9 @@ public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemV
 
 
     @Inject
-    public IngredientsListAdapter(@NonNull AddMealView view,
-                                  @NonNull MealIngredientsListModel model,
+    public IngredientsListAdapter(@NonNull MealIngredientsListModel model,
                                   @NonNull PhysicalQuantitiesModel quantityModel,
                                   @NonNull IngredientListComponentFactory factory) {
-        this.view = view;
         this.model = model;
         this.quantityModel = quantityModel;
         this.factory = factory;

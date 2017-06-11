@@ -18,7 +18,7 @@ public abstract class FragmentTransactionModule {
     @Provides
     @PerActivity
     public static Map<String, Fragment> loadFragments(FragmentManager fragmentManager,
-                                               Map<String, FragmentLocation> providedFragments) {
+                                                      Map<String, FragmentLocation> providedFragments) {
         Map<String, Fragment> fragments = new HashMap<>(providedFragments.size());
         FragmentTransaction fragmentTransaction = null;
         for (FragmentLocation fragmentLocation : providedFragments.values()) {

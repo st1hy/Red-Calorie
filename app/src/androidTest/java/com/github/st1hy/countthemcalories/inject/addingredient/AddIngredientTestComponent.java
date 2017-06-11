@@ -5,7 +5,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.inject.AddIng
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.common.ActivityModule;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
-import com.github.st1hy.countthemcalories.inject.core.TestPictureModule;
 
 import dagger.Subcomponent;
 

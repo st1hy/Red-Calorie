@@ -16,7 +16,6 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.I
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsViewController;
 import com.github.st1hy.countthemcalories.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
-import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.inject.quantifier.view.FragmentRootView;
@@ -47,7 +46,7 @@ public abstract class IngredientsFragmentModule {
     public static RecyclerView ingredientsRecyclerView(@FragmentRootView View root,
                                                        @ActivityContext Context context,
                                                        IngredientsDaoAdapter adapter) {
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.ingredients_content);
+        RecyclerView recyclerView = root.findViewById(R.id.ingredients_content);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
         return recyclerView;
