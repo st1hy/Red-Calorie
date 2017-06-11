@@ -126,7 +126,7 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         ViewGroup parent = (ViewGroup) TokenSearchTextView.this.getParent();
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.token_chip, parent, false);
-        TextView name = (TextView) view.findViewById(R.id.chip_name);
+        TextView name = view.findViewById(R.id.chip_name);
         name.setText(query);
         return view;
     }

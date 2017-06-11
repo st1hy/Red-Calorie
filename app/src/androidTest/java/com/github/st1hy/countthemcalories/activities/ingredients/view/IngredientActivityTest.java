@@ -57,6 +57,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
 import static com.github.st1hy.countthemcalories.activities.addingredient.AddIngredientActivity.ARG_EDIT_INGREDIENT_PARCEL;
 import static com.github.st1hy.countthemcalories.activities.tags.view.TagsActivityTest.exampleTags;
+import static com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchViewActions.clickExpand;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getOrZero;
 import static com.github.st1hy.countthemcalories.matchers.EditTextMatchers.hasNoError;
 import static org.hamcrest.Matchers.allOf;
@@ -132,7 +133,7 @@ public class IngredientActivityTest {
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withId(R.id.ingredients_search_view))
                 .check(matches(isDisplayed()))
-                .perform(click());
+                .perform(clickExpand());
         onView(withId(R.id.token_search_text_view))
                 .check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("Ingredient 2"))
@@ -150,7 +151,7 @@ public class IngredientActivityTest {
         onView(withText(exampleIngredients[1].getName())).check(matches(isDisplayed()));
         onView(withId(R.id.ingredients_search_view))
                 .check(matches(isDisplayed()))
-                .perform(click());
+                .perform(clickExpand());
         onView(withId(R.id.token_search_text_view))
                 .check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView("Tag"))
@@ -323,7 +324,7 @@ public class IngredientActivityTest {
         onView(withId(R.id.token_search_text_view)).perform(loopMainThreadForAtLeast(200));
         onView(withId(R.id.ingredients_search_view))
                 .check(matches(isDisplayed()))
-                .perform(click());
+                .perform(clickExpand());
         onView(withId(R.id.token_search_text_view))
                 .check(matches(isDisplayed()))
                 .perform(typeTextIntoFocusedView(extraName))

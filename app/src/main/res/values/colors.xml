@@ -32,4 +32,6 @@
 
     <color name="textColorPrimary">#181818</color>
     <color name="textColorSecondary">#303030</color>
+    <color name="search_token_background">#76000b</color>
+    <color name="search_token_delete">#3563b7</color>
 </resources>

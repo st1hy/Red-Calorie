@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.core.tokensearch;
 
+import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Parcel;
@@ -7,15 +8,16 @@ import android.os.Parcelable;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.core.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     TokenSearchTextView searchView;
     View expand;
     View collapse;
+    private final Utils utils = new Utils();
 
     boolean isExpanded = false;
 
@@ -56,7 +59,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         addView(inflateView(LayoutInflater.from(getContext())));
         expand = findViewById(R.id.token_search_expand);
         collapse = findViewById(R.id.token_search_collapse);
-        searchView = (TokenSearchTextView) findViewById(R.id.token_search_text_view);
+        searchView = findViewById(R.id.token_search_text_view);
         expand.setOnClickListener(view -> onExpandClicked());
         collapse.setOnClickListener(view -> onCollapseClicked());
         setupState();
@@ -68,10 +71,13 @@ public class TokenSearchView extends FrameLayout implements Searchable {
 
     public void expand(boolean requestFocus) {
         isExpanded = true;
-        expand.setVisibility(View.GONE);
-        collapse.setVisibility(View.VISIBLE);
+        expand.setVisibility(View.INVISIBLE);
         searchView.setVisibility(View.VISIBLE);
-        setupWidth();
+        if (ViewCompat.isAttachedToWindow(searchView) && utils.hasLollipop()) {
+            animateReveal(RevealIntent.NORMAL);
+        } else {
+            collapse.setVisibility(View.VISIBLE);
+        }
         if (requestFocus) searchView.requestFocus();
         InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(searchView, 0);
@@ -80,11 +86,55 @@ public class TokenSearchView extends FrameLayout implements Searchable {
     public void collapse() {
         isExpanded = false;
         expand.setVisibility(View.VISIBLE);
-        collapse.setVisibility(View.GONE);
-        searchView.setVisibility(View.GONE);
-        setupWidth();
+        collapse.setVisibility(View.INVISIBLE);
+        if (ViewCompat.isAttachedToWindow(searchView) && utils.hasLollipop()) {
+            animateReveal(RevealIntent.REVERSE);
+        } else {
+            searchView.setVisibility(INVISIBLE);
+        }
         InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+    }
+
+    @TargetApi(21)
+    private void animateReveal(RevealIntent intent) {
+        int cx = searchView.getWidth() - expand.getWidth() / 2;
+        int cy = searchView.getHeight() / 2;
+        int startRadius = 0;
+        int finalRadius = Math.max(searchView.getWidth(), searchView.getHeight());
+        if (intent == RevealIntent.REVERSE) {
+            int temp = startRadius;
+            startRadius = finalRadius;
+            finalRadius = temp;
+        }
+        Animator anim = ViewAnimationUtils.createCircularReveal(searchView, cx, cy, startRadius, finalRadius);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (intent == RevealIntent.NORMAL) {
+                    collapse.setVisibility(View.VISIBLE);
+                } else {
+                    searchView.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        anim.start();
+    }
+    private enum RevealIntent {
+        NORMAL, REVERSE
     }
 
     public void onFilterComplete(int count) {
@@ -137,24 +187,6 @@ public class TokenSearchView extends FrameLayout implements Searchable {
 
     public void dismissDropDown() {
         searchView.dismissDropDown();
-    }
-
-    private void setupWidth() {
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        if (layoutParams == null) {
-            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    getViewTreeObserver().removeOnPreDrawListener(this);
-                    setupWidth();
-                    return true;
-                }
-            });
-        } else {
-            layoutParams.width = isExpanded ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT;
-            setLayoutParams(layoutParams);
-            invalidate();
-        }
     }
 
     public boolean hasText() {

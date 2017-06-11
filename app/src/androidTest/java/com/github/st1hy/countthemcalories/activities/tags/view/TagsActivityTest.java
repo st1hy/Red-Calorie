@@ -55,6 +55,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.github.st1hy.countthemcalories.actions.CTCViewActions.loopMainThreadForAtLeast;
+import static com.github.st1hy.countthemcalories.core.tokensearch.TokenSearchViewActions.clickExpand;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.junit.Assert.assertEquals;
 
@@ -127,7 +128,7 @@ public class TagsActivityTest {
         onView(withText(exampleTags[0].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[1].getName())).check(matches(isDisplayed()));
         onView(withText(exampleTags[2].getName())).check(matches(isDisplayed()));
-        onView(withId(R.id.tags_search_view)).perform(click());
+        onView(withId(R.id.tags_search_view)).perform(clickExpand());
         onView(withHint(R.string.search_hint))
                 .check(matches(isDisplayed()))
                 .perform(click())
@@ -195,7 +196,7 @@ public class TagsActivityTest {
     public void testNewTagNameMatchesSearchQuery() {
         main.launchActivity(null);
         final String newTag = "Special tag";
-        onView(withId(R.id.tags_search_view)).perform(click());
+        onView(withId(R.id.tags_search_view)).perform(clickExpand());
         onView(withHint(R.string.search_hint))
                 .check(matches(isDisplayed()))
                 .perform(click())
