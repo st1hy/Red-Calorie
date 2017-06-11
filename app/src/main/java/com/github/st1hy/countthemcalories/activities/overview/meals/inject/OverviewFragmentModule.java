@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
 import com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction;
@@ -47,6 +48,8 @@ public abstract class OverviewFragmentModule {
                                             @ActivityContext Context context) {
         RecyclerView recyclerView = view.findViewById(R.id.overview_recycler_view);
         recyclerView.setAdapter(adapter);
+        int spacing = context.getResources().getDimensionPixelSize(R.dimen.overview_item_spacing);
+        recyclerView.addItemDecoration(new SpacingItemDecoration(0, spacing));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         return recyclerView;
     }

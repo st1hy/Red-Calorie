@@ -29,7 +29,7 @@ public class OverviewViewImpl implements OverviewView {
     @NonNull
     private final OverviewScreen screen;
 
-    @BindView(R.id.overview_empty)
+    @BindView(R.id.overview_empty_text)
     View emptyView;
     @BindView(R.id.overview_empty_background)
     ImageView emptyBackground;

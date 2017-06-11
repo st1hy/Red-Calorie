@@ -16,4 +16,5 @@
     <dimen name="fastscroll_bubble_size">72dp</dimen>
     <dimen name="fastscroll_bubble_textsize">40sp</dimen>
     <dimen name="image_detail_large_height">120dp</dimen>
+    <dimen name="overview_item_spacing" >4dp</dimen>
 </resources>

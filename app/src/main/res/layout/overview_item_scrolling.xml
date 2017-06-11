@@ -11,46 +11,54 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <FrameLayout
-            android:id="@+id/overview_item_delete_frame"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:background="#F8FFFFFF"
+            android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/overview_item_delete"
-                style="@style/Widget.AppCompat.Button.Borderless"
+            <FrameLayout
+                android:id="@+id/overview_item_delete_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/overview_meal_remove_description"
-                android:minWidth="80dp"
-                app:srcCompat="@drawable/ic_delete_24px"
-                android:tint="@color/colorBackground" />
-        </FrameLayout>
+                android:background="@color/colorPrimary">
 
-        <include
-            layout="@layout/overview_item"
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/overview_item_delete"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/overview_meal_remove_description"
+                    android:minWidth="80dp"
+                    app:srcCompat="@drawable/ic_delete_24px"
+                    android:tint="@color/colorBackground" />
+            </FrameLayout>
+
+            <include
+                layout="@layout/overview_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:id="@+id/overview_item_edit_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/overview_item_edit"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/overview_meal_edit_description"
+                    android:minWidth="80dp"
+                    app:srcCompat="@drawable/ic_edit_24px"
+                    android:tint="@color/colorBackground" />
+            </FrameLayout>
+        </LinearLayout>
+        <View android:layout_height="4dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/overview_item_edit_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent">
-
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/overview_item_edit"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/overview_meal_edit_description"
-                android:minWidth="80dp"
-                app:srcCompat="@drawable/ic_edit_24px"
-                android:tint="@color/colorBackground" />
-        </FrameLayout>
+            android:background="@drawable/shadow_top_to_bottom"/>
     </LinearLayout>
-
 </HorizontalScrollView>
