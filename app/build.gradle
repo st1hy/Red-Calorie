@@ -28,7 +28,7 @@ android {
     }
 
     productFlavors {
-        //Enable runtime development utilities such as stetho, leakcanary or tinydancer
+        //Enable runtime development utilities such as leakcanary or tinydancer
         devtools {
             multiDexEnabled true
         }
@@ -113,7 +113,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.rom4ek:arcnavigationview:1.0.3'
 
-    devtoolsDebugCompile "com.facebook.stetho:stetho:$stethoVersion"
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     devtoolsCompile 'com.android.support:multidex:1.0.1'
 

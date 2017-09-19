@@ -210,7 +210,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
         //Ingredient template here is not attached to database and is missing tags
         databaseModel.getByIdRecursive(id)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(ingredientTemplate1 -> view.editIngredientTemplate(positionInAdapter, ingredientTemplate1));
+                .subscribe(ingredientTemplate1 -> view.editIngredientTemplate(positionInAdapter, ingredientTemplate1), Timber::e);
     }
 
 }
