@@ -39,6 +39,13 @@ public class DetailImageHolderDelegate extends WithoutPlaceholderImageHolderDele
         return super.loadImage(uri);
     }
 
+    @Override
+    protected void onLoadingError() {
+        super.onLoadingError();
+        // Correct the size of image view so placeholder is not cropped
+        setImageViewSquare(true);
+    }
+
     private void setImageViewSquare(boolean isSquare) {
         ImageView imageView = imageViewProvider.get();
         if (!(imageView instanceof CircleImageView)) {

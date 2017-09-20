@@ -42,6 +42,7 @@ public class AddMealModel implements PictureModel {
     DateTime mealDateDay;
 
     private final Meal meal;
+    private boolean isImageAvailableOverride;
 
     @Inject
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
@@ -78,7 +79,16 @@ public class AddMealModel implements PictureModel {
 
     @Override
     public boolean hasImage() {
-        return !Uri.EMPTY.equals(meal.getImageUri());
+        return isImageAvailableOverride() && !Uri.EMPTY.equals(meal.getImageUri());
+    }
+
+    @Override
+    public void setImageAvailableOverride(boolean isAvailable) {
+        isImageAvailableOverride = isAvailable;
+    }
+
+    public boolean isImageAvailableOverride() {
+        return isImageAvailableOverride;
     }
 
     @NonNull

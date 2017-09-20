@@ -24,14 +24,6 @@ public class PictureViewImpl implements PictureView {
         ButterKnife.bind(this, activity);
     }
 
-    @Override
-    public void showImageOverlay() {
-    }
-
-    @Override
-    public void hideImageOverlay() {
-    }
-
     @NonNull
     @Override
     public ImageView getImageView() {

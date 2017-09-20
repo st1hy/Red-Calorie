@@ -46,9 +46,8 @@ public class ImageHolderDelegate {
     Provider<ImageView> imageViewProvider;
 
     private final Subject<Uri, Uri> imageUriSubject = BehaviorSubject.create();
-    private final Subject<LoadedSource, LoadedSource> loadedSourceSubject = PublishSubject.create();
-    private final Observable<LoadedSource> loadedSourceObservable = loadedSourceSubject.asObservable();
     private final CompositeSubscription subscriptions = new CompositeSubscription();
+    private final Subject<LoadingStatus, LoadingStatus> loadingStatusSubject = PublishSubject.create();
 
     @DrawableRes
     private int placeholderResId = R.drawable.ic_fork_and_knife_wide;
@@ -97,24 +96,26 @@ public class ImageHolderDelegate {
                 .switchMap(checkPermission())
                 .switchMap(uri -> {
                     if (isEmpty(uri)) {
-                        return Observable.just(ImageLoadingEvent.ERROR);
+                        return Observable.just(LoadingStatus.PLACEHOLDER);
                     } else {
-                        return loadImage(uri);
+                        return loadImage(uri).map(LoadingStatus::convert);
                     }
                 })
-                .doOnNext((imageLoadingEvent) -> {
-                    switch (imageLoadingEvent) {
-                        case SUCCESS:
-                            loadedSourceSubject.onNext(LoadedSource.LOADED_SOURCE);
-                            break;
-                        case ERROR:
-                        default:
+                .doOnNext(loadingStatusSubject::onNext)
+                .doOnNext((loadingStatus) -> {
+                    switch (loadingStatus) {
+                        case URI_FAILED:
+                            onLoadingError();
+                            // Fallthrough
+                        case PLACEHOLDER:
                             imageViewProvider.get().setImageResource(placeholderResId);
-                            loadedSourceSubject.onNext(LoadedSource.PLACEHOLDER);
                             break;
                     }
                 })
                 .map(Functions.INTO_VOID);
+    }
+
+    protected void onLoadingError() {
     }
 
     @NonNull
@@ -146,12 +147,13 @@ public class ImageHolderDelegate {
     }
 
     @NonNull
-    public Observable<LoadedSource> getLoadingObservable() {
-        return loadedSourceObservable;
+    public Observable<LoadingStatus> getLoadingObservable() {
+        return loadingStatusSubject;
     }
 
     private static boolean isEmpty(@NonNull Uri uri) {
         return Uri.EMPTY.equals(uri);
     }
+
 
 }

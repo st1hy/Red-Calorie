@@ -31,6 +31,8 @@ public class AddIngredientModel implements PictureModel {
     @Nullable
     private CreationSource creationSource;
 
+    boolean isImageAvailableOverride;
+
     @ParcelConstructor
     public AddIngredientModel(@NonNull String name,
                               @NonNull AmountUnitType amountType,
@@ -63,7 +65,16 @@ public class AddIngredientModel implements PictureModel {
 
     @Override
     public boolean hasImage() {
-        return !Uri.EMPTY.equals(imageUri);
+        return isImageAvailableOverride() && !Uri.EMPTY.equals(imageUri);
+    }
+
+    @Override
+    public void setImageAvailableOverride(boolean isAvailable) {
+        isImageAvailableOverride = isAvailable;
+    }
+
+    public boolean isImageAvailableOverride() {
+        return isImageAvailableOverride;
     }
 
     public void setName(@NonNull String name) {

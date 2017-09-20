@@ -18,5 +18,7 @@ public interface PictureModel {
 
     boolean hasImage();
 
+    void setImageAvailableOverride(boolean isAvailable);
+
     void setImageUri(@NonNull Uri uri);
 }

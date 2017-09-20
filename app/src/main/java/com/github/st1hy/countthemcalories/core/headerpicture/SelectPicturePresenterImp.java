@@ -68,13 +68,13 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
         );
         subscriptions.add(
                 imageHolderDelegate.getLoadingObservable()
-                        .subscribe((loadedSource) -> {
-                            switch (loadedSource) {
-                                case LOADED_SOURCE:
-                                    view.showImageOverlay();
+                        .subscribe(status -> {
+                            switch (status) {
+                                case URI_SUCCESS:
+                                    model.setImageAvailableOverride(true);
                                     break;
-                                case PLACEHOLDER:
-                                    view.hideImageOverlay();
+                                case URI_FAILED:
+                                    model.setImageAvailableOverride(false);
                                     break;
                             }
                         })

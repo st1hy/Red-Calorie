@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
+import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -38,6 +40,10 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     @Inject
     @ActivityContext
     Context context;
+    @Inject
+    Activity activity;
+    @Inject
+    Utils utils;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -59,6 +65,11 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
+        if (utils.hasLollipop()) {
+            activity.postponeEnterTransition();
+            subscribe(imageHolderDelegate.getLoadingObservable()
+                    .subscribe(any -> activity.startPostponedEnterTransition()));
+        }
         IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
         view.setName(ingredientTemplate.getDisplayName());
         final EnergyDensity energyDensity = getEnergyDensity();

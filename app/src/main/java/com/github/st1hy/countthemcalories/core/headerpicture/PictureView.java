@@ -12,10 +12,6 @@ public interface PictureView {
     @CheckResult
     Observable<Void> getSelectPictureObservable();
 
-    void showImageOverlay();
-
-    void hideImageOverlay();
-
     @NonNull
     ImageView getImageView();
 }

@@ -8,4 +8,5 @@ import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 public interface SelectPicturePresenter extends BasicLifecycle {
 
     void loadImageUri(@NonNull Uri uri);
+
 }
