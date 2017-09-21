@@ -1,12 +1,11 @@
 package com.github.st1hy.countthemcalories.activities.mealdetail.fragment.presenter;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.mealdetail.fragment.view.MealDetailView;
-import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
+import com.github.st1hy.countthemcalories.core.viewcontrol.PostponeTransitions;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
@@ -27,9 +26,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    Activity activity;
-    @Inject
-    Utils utils;
+    PostponeTransitions postponeTransitions;
 
     @Inject
     public MealDetailPresenterImpl(@NonNull MealDetailView view,
@@ -45,11 +42,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
     @Override
     public void onStart() {
         imageHolderDelegate.onAttached();
-        if (utils.hasLollipop()) {
-            activity.postponeEnterTransition();
-            subscriptions.add(imageHolderDelegate.getLoadingObservable()
-                    .subscribe(any -> activity.startPostponedEnterTransition()));
-        }
+        subscriptions.add(postponeTransitions.postponeTransitions(imageHolderDelegate.getLoadingObservable()));
         setupView(meal);
         subscriptions.add(view.getEditObservable()
                 .subscribe(aVoid -> view.editMealWithId(meal.getId()))
