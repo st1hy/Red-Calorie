@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity.EXTRA_RESULT_MEAL_ID_LONG;
+import static com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity.RESULT_COPY;
 import static com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity.RESULT_DELETE;
 import static com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity.RESULT_EDIT;
 
@@ -37,6 +38,11 @@ public class MealDetailScreenImpl implements MealDetailScreen {
     @Override
     public void deleteMealWithId(long mealId) {
         setResultAndFinish(RESULT_DELETE, mealId);
+    }
+
+    @Override
+    public void copyMealWithId(long mealId) {
+        setResultAndFinish(RESULT_COPY, mealId);
     }
 
     private void setResultAndFinish(int resultCode, long mealId) {

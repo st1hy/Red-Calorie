@@ -23,4 +23,7 @@ public interface MealDetailView extends MealDetailScreen {
     @CheckResult
     Observable<Void> getDeleteObservable();
 
+    @NonNull
+    @CheckResult
+    Observable<Void> getCopyObservable();
 }

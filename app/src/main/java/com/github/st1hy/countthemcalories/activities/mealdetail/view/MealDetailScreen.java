@@ -5,4 +5,6 @@ public interface MealDetailScreen {
     void editMealWithId(long mealId);
 
     void deleteMealWithId(long mealId);
+
+    void copyMealWithId(long mealId);
 }

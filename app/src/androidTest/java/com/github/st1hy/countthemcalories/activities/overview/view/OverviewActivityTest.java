@@ -15,6 +15,7 @@ import android.widget.TimePicker;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.CopyMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
@@ -308,6 +309,36 @@ public class OverviewActivityTest {
         onView(withText("Meal edited")).check(matches(isDisplayed()));
         onView(withText(startsWith("20:43"))).check(matches(isDisplayed()));
         onView(withText(containsString("Ingredient 1"))).check(doesNotExist());
+    }
+
+    @Test
+    public void testCopyMeal() throws Exception {
+        onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()))
+                .perform(click());
+        intended(hasComponent(new ComponentName(getTargetContext(), MealDetailActivity.class)));
+        onView(withText(exampleMeals[0].getName())).check(matches(isDisplayed()));
+        onView(withId(R.id.meal_detail_copy)).perform(click());
+
+        intended(hasComponent(new ComponentName(getTargetContext(), CopyMealActivity.class)));
+
+        onView(withId(R.id.add_meal_name))
+                .check(matches(withText("")))
+                .perform(typeTextIntoFocusedView("Meal copy"));
+        onView(withId(R.id.add_meal_time_value)).perform(click());
+        onView(withClassName(equalTo(TimePicker.class.getName()))).perform(setTime(20,43));
+        onView(withText("OK")).perform(click());
+
+        onView(withText("Ingredient 1")).perform(click());
+        closeSoftKeyboard();
+        onView(withId(R.id.add_meal_ingredient_remove)).perform(click());
+        onView(withText("Ingredient 1")).check(doesNotExist());
+
+        onView(withText(R.string.add_meal_save_action)).perform(click());
+        onView(mainScreen()).check(matches(isDisplayed()));
+        onView(withText(startsWith("Today"))).check(matches(isDisplayed()));
+        onView(withText("Meal copy")).check(matches(isDisplayed()));
+        onView(withText(startsWith("20:43"))).check(matches(isDisplayed()));
+        onView(withText(containsString("Meal 1"))).check(matches(isDisplayed()));
     }
 
     @Test

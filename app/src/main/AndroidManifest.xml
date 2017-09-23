@@ -41,6 +41,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateUnchanged"
             />
+        <activity android:name=".activities.addmeal.CopyMealActivity"
+            android:label="@string/copy_meal_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged"
+            />
         <activity
             android:name=".activities.addingredient.AddIngredientActivity"
             android:label="@string/add_ingredient_title"

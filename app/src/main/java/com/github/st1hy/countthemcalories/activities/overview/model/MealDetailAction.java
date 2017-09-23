@@ -29,6 +29,6 @@ public class MealDetailAction {
     }
 
     public enum Type {
-        DELETE, EDIT, CANCELED
+        DELETE, EDIT, COPY, CANCELED
     }
 }

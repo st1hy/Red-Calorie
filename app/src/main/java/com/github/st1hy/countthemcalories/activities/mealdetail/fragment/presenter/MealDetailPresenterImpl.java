@@ -50,6 +50,9 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         subscriptions.add(view.getDeleteObservable()
                 .subscribe(aVoid -> view.deleteMealWithId(meal.getId()))
         );
+        subscriptions.add(view.getCopyObservable()
+                .subscribe(any -> view.copyMealWithId(meal.getId()))
+        );
     }
 
     @Override

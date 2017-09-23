@@ -79,4 +79,9 @@ public class OverviewViewImpl implements OverviewView {
     public boolean isFabMenuOpen() {
         return screen.isFabMenuOpen();
     }
+
+    @Override
+    public void copyMeal(@NonNull Meal meal) {
+        screen.copyMeal(meal);
+    }
 }

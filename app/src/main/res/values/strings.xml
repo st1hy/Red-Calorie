@@ -11,6 +11,7 @@
     <string name="overview_toolbar_title_today">Today:</string>
     <string name="overview_empty_meals">You haven\'t eaten anything today yet.</string>
     <string name="overview_meal_remove_description">Remove this meal</string>
+    <string name="overview_meal_copy_description">Add copy to today</string>
     <string name="overview_meal_edit_description">Edit meal</string>
     <string name="overview_meal_photo_description">Photography of a meal</string>
     <string name="overview_meal_removed_undo_message">Meal removed</string>

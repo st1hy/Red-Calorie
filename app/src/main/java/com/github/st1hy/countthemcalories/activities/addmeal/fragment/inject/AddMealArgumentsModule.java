@@ -1,12 +1,15 @@
 package com.github.st1hy.countthemcalories.activities.addmeal.fragment.inject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.CopyMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.AddMealModel;
+import com.github.st1hy.countthemcalories.activities.addmeal.fragment.model.EditMealMode;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Meal;
@@ -29,12 +32,15 @@ public abstract class AddMealArgumentsModule {
     @Provides
     @PerFragment
     public static Meal provideMeal(@Nullable @FragmentSavedState Bundle savedState,
-                                   Intent intent) {
+                                   Intent intent, EditMealMode editMealMode) {
         if (savedState != null) {
             return unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {
             Meal editedMeal = unwrap(intent.getParcelableExtra(AddMealActivity.EXTRA_MEAL_PARCEL));
             if (editedMeal != null) {
+                if (editMealMode == EditMealMode.COPY_TO_TODAY) {
+                    editedMeal = Meal.copyAsNew(editedMeal);
+                }
                 return editedMeal;
             } else {
                 editedMeal = new Meal();
@@ -42,6 +48,15 @@ public abstract class AddMealArgumentsModule {
                 editedMeal.setImageUri(Uri.EMPTY);
                 return editedMeal;
             }
+        }
+    }
+
+    @Provides
+    public static EditMealMode editMealMode(Activity activity) {
+        if (activity instanceof CopyMealActivity) {
+            return EditMealMode.COPY_TO_TODAY;
+        } else {
+            return EditMealMode.EDIT;
         }
     }
 

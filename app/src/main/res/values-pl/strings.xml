@@ -45,6 +45,7 @@
     <string name="overview_meal_edit_description">Edytuj posiłek</string>
     <string name="overview_meal_photo_description">Zdjęcie posiłku</string>
     <string name="overview_meal_remove_description">Usuń ten posiłek</string>
+    <string name="overview_meal_copy_description">Dodaj kopię do dzisiaj</string>
     <string name="overview_meal_removed_undo_message">Posiłek został usunięty</string>
     <string name="overview_toolbar_title_today">Dzisiaj:</string>
     <string name="search_hint">Szukaj</string>

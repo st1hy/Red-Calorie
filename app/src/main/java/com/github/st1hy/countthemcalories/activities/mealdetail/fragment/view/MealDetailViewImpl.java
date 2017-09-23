@@ -35,6 +35,8 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
     View editButton;
     @BindView(R.id.meal_detail_remove)
     View removeButton;
+    @BindView(R.id.meal_detail_copy)
+    View copyButton;
 
     @Inject
     public MealDetailViewImpl(@NonNull @FragmentRootView View rootView,
@@ -72,6 +74,12 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
         return RxView.clicks(removeButton);
     }
 
+    @NonNull
+    @Override
+    public Observable<Void> getCopyObservable() {
+        return RxView.clicks(copyButton);
+    }
+
     @Override
     public void editMealWithId(long mealId) {
         screen.editMealWithId(mealId);
@@ -82,4 +90,8 @@ public class MealDetailViewImpl implements MealDetailView, MealDetailScreen {
         screen.deleteMealWithId(mealId);
     }
 
+    @Override
+    public void copyMealWithId(long mealId) {
+        screen.copyMealWithId(mealId);
+    }
 }

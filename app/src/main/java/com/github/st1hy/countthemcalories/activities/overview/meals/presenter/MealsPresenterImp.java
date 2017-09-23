@@ -107,6 +107,9 @@ public class MealsPresenterImp implements MealsPresenter {
                                 case EDIT:
                                     editMealWithId(mealId);
                                     break;
+                                case COPY:
+                                    copyMealWithId(mealId);
+                                    break;
                                 case CANCELED:
                                     break;
                             }
@@ -153,6 +156,16 @@ public class MealsPresenterImp implements MealsPresenter {
         }
     }
 
+    private void copyMealWithId(long mealId) {
+        Pair<Integer, Meal> mealPair = adapter.getMealPositionWithId(mealId);
+        if (mealPair != null) {
+            copyMeal(mealPair.second);
+        } else {
+            Timber.w("Meal with id: %s no longer exist", mealId);
+        }
+
+    }
+
     private void loadMeals() {
         subscriptions.add(
                 currentDayModel.getCurrentDay()
@@ -173,7 +186,6 @@ public class MealsPresenterImp implements MealsPresenter {
     private void openEditScreen(@NonNull Meal meal) {
         view.editMeal(meal);
     }
-
 
     private void deleteMeal(@NonNull Meal meal, int positionOnList) {
         subscriptions.add(commands.delete(meal)
@@ -202,6 +214,11 @@ public class MealsPresenterImp implements MealsPresenter {
                     setEmptyListVisibility();
                     timePeriodModel.refresh();
                 }));
+    }
+
+
+    private void copyMeal(Meal meal) {
+        view.copyMeal(meal);
     }
 
 

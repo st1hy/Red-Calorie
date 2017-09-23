@@ -26,4 +26,6 @@ public interface OverviewScreen {
     void closeFloatingMenu();
 
     boolean isFabMenuOpen();
+
+    void copyMeal(@NonNull Meal meal);
 }

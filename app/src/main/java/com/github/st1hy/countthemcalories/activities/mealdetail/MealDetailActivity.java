@@ -16,6 +16,7 @@ public class MealDetailActivity extends BaseActivity {
     public static final String EXTRA_MEAL_PARCEL = "meal detail parcel";
     public static final int RESULT_EDIT = 0x51;
     public static final int RESULT_DELETE = 0x52;
+    public static final int RESULT_COPY = 0x53;
     public static final String EXTRA_RESULT_MEAL_ID_LONG = "extra result meal id";
 
     @Inject

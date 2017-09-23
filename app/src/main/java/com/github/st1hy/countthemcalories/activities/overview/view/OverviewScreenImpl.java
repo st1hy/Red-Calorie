@@ -11,6 +11,7 @@ import android.view.View;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
+import com.github.st1hy.countthemcalories.activities.addmeal.CopyMealActivity;
 import com.github.st1hy.countthemcalories.activities.addmeal.EditMealActivity;
 import com.github.st1hy.countthemcalories.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.activities.overview.model.MealDetailAction;
@@ -96,6 +97,13 @@ public class OverviewScreenImpl implements OverviewScreen {
         return fabMenu.isExpanded();
     }
 
+    @Override
+    public void copyMeal(@NonNull Meal meal) {
+        Intent intent = new Intent(activity, CopyMealActivity.class);
+        intent.putExtra(AddMealActivity.EXTRA_MEAL_PARCEL, Parcels.wrap(meal));
+        activity.startActivity(intent);
+    }
+
     @NonNull
     private MealDetailAction getMealDetailResult(ActivityResult activityResult) {
         final Intent data = activityResult.getData();
@@ -109,6 +117,9 @@ public class OverviewScreenImpl implements OverviewScreen {
                 break;
             case MealDetailActivity.RESULT_DELETE:
                 action = MealDetailAction.create(MealDetailAction.Type.DELETE, mealId);
+                break;
+            case MealDetailActivity.RESULT_COPY:
+                action = MealDetailAction.create(MealDetailAction.Type.COPY, mealId);
                 break;
             default:
                 return MealDetailAction.CANCELED;

@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.database;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.database.property.JodaTimePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.UriPropertyConverter;
@@ -17,7 +18,10 @@ import org.greenrobot.greendao.annotation.ToMany;
 import org.joda.time.DateTime;
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import dagger.internal.Preconditions;
 
 @Entity(active = true, nameInDb = "MEALS")
 @Parcel
@@ -168,11 +172,25 @@ public class Meal {
         myDao.update(this);
     }
 
+    @NonNull
+    public static Meal copyAsNew(@NonNull Meal meal) {
+        Meal newMeal = new Meal();
+        newMeal.name = "";
+        newMeal.imageUri = meal.imageUri;
+        List<Ingredient> ingredients = meal.getIngredients();
+        List<Ingredient> newIngredients = new ArrayList<>(ingredients.size());
+        for (Ingredient old : ingredients) {
+            IngredientTemplate template = Preconditions.checkNotNull(old.getIngredientTypeOrNull());
+            newIngredients.add(new Ingredient(template, old.getAmount()));
+        }
+        newMeal.ingredients = newIngredients;
+        return newMeal;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 644317336)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMealDao() : null;
     }
-
 }
