@@ -18,3 +18,15 @@ Changelog available [here](https://github.com/st1hy/Count-Them-Calories/releases
 * dagger2 + rxJava + custom MVP + Glide + GreenDao + lots other libraries
 
 All critique is welcomed and appreciated.
+
+## Build flavors
+* devtools - manual testing flavor, contains LeakCanary and other debug settings
+* production - clean flavor for publishing, automatic testing etc.
+
+## Testing
+Mayor functionality is tested with android tests.
+* Runs on Android 26 Virtual Device.
+* For all tests to pass: Window animation scale, Transition animation scale and Animator duration scale must be turn off in developer options.
+* Permissions are automatically accepted using UI Automator
+
+
