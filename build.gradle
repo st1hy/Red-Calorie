@@ -42,7 +42,7 @@ ext {
     uiAutomatorVersion = '2.1.2'
 
     //Database
-    greenDaoVersion = '3.2.0'
+    greenDaoVersion = '3.2.2'
     jodaTimeVersion = '2.9.9'
 }
 

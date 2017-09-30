@@ -60,6 +60,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
 
     @NonNull
     public Meal performInsertOrUpdate(@NonNull Meal meal, @NonNull Collection<Ingredient> newIngredients) {
+        session().clear();
         Meal result = performInsert(meal);
         IngredientDao ingredientDao = session().getIngredientDao();
         List<Ingredient> oldIngredients = meal.getIngredients();
