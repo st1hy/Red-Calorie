@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -14,6 +13,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        archivesBaseName = "Red Calorie ${versionName} (${versionCode})"
     }
 
     buildTypes {
@@ -27,12 +27,16 @@ android {
         }
     }
 
+    flavorDimensions "mode"
     productFlavors {
         //Enable runtime development utilities such as leakcanary or tinydancer
         devtools {
+            dimension "mode"
             multiDexEnabled true
         }
-        production {}
+        production {
+            dimension "mode"
+        }
     }
 
     packagingOptions {
@@ -41,17 +45,6 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
-    }
-
-    applicationVariants.all { variant ->
-        variant.outputs.each {
-            output ->
-                def String newApkName = "Red Calorie " +
-                        "${variant.versionName} (${variant.versionCode}).apk"
-
-                def String dir = output.outputFile.parent;
-                output.outputFile = new File(dir, newApkName)
-        }
     }
 
     dexOptions {
@@ -114,7 +107,7 @@ dependencies {
     compile 'com.rom4ek:arcnavigationview:1.0.3'
 
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    devtoolsCompile 'com.android.support:multidex:1.0.1'
+    devtoolsCompile 'com.android.support:multidex:1.0.2'
 
     testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 

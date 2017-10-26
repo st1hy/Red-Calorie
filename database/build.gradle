@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.greenrobot.greendao'
-apply plugin: 'me.tatarka.retrolambda'
 apply from: "generate-database/build.gradle"
 
 android {
