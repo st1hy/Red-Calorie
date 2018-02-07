@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.database.Weight;
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
-import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.google.common.collect.ImmutableList;
@@ -15,7 +14,6 @@ import org.joda.time.Days;
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -251,17 +249,13 @@ public class TimePeriod {
             }
         }
 
-        private float getAmount() {
-            BigDecimal energyDensityValue = BigDecimalPropertyConverter.INSTANCE
-                    .convertToEntityProperty(cursor.getString(POSITION_ENERGY_DENSITY));
+        private double getAmount() {
+            double energyDensityValue = cursor.getDouble(POSITION_ENERGY_DENSITY);
             AmountUnitType amountUnitType = AmountUnitTypePropertyConverter.INSTANCE
                     .convertToEntityProperty(cursor.getInt(POSITION_AMOUNT_TYPE));
-            if (energyDensityValue == null) energyDensityValue = BigDecimal.ZERO;
             EnergyDensity databaseEnergyDensity = EnergyDensity.fromDatabaseValue(amountUnitType, energyDensityValue);
-            BigDecimal currentAmount = BigDecimalPropertyConverter.INSTANCE
-                    .convertToEntityProperty(cursor.getString(POSITION_AMOUNT));
-            if (currentAmount == null) currentAmount = BigDecimal.ZERO;
-            return databaseEnergyDensity.getValue().floatValue() * currentAmount.floatValue();
+            double currentAmount = cursor.getDouble(POSITION_AMOUNT);
+            return databaseEnergyDensity.getValue() * currentAmount;
         }
     }
 

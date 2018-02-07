@@ -43,15 +43,19 @@ public class Meal {
     DateTime creationDate;
 
     @ToMany(joinProperties = {
-        @JoinProperty(name = "id", referencedName = "partOfMealId")
+            @JoinProperty(name = "id", referencedName = "partOfMealId")
     })
     List<Ingredient> ingredients;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1947976862)
     private transient MealDao myDao;
 
@@ -130,7 +134,9 @@ public class Meal {
         return ingredients;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 183837919)
     public synchronized void resetIngredients() {
         ingredients = null;

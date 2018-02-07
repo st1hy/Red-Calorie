@@ -7,10 +7,13 @@ import android.preference.PreferenceManager;
 
 import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 
+import java.text.DecimalFormat;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public abstract class SettingsModule {
@@ -25,5 +28,12 @@ public abstract class SettingsModule {
     @Singleton
     public static Resources provideResources(@AppContext Context context) {
         return context.getResources();
+    }
+
+    @Provides
+    @Reusable
+    @TwoPlaces
+    static DecimalFormat default2DecimalPlacesFormat() {
+        return new DecimalFormat("0.##");
     }
 }

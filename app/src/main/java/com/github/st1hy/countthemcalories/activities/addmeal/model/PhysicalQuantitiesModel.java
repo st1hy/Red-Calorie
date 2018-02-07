@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
 import com.github.st1hy.countthemcalories.core.Utils;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -22,6 +23,7 @@ import com.github.st1hy.countthemcalories.inject.quantifier.context.AppContext;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -34,11 +36,14 @@ public class PhysicalQuantitiesModel {
     private final SettingsModel settingsModel;
     private final Resources resources;
     private final Context context;
-    private Func1<Ingredient, BigDecimal> ingredientToEnergy;
-    private Func1<BigDecimal, String> energyAsString;
+    private Func1<Ingredient, Double> ingredientToEnergy;
+    private Func1<Double, String> energyAsString;
 
     @Inject
     Utils utils;
+    @Inject
+    @TwoPlaces
+    DecimalFormat decimalFormat;
 
     @Inject
     public PhysicalQuantitiesModel(@NonNull final SettingsModel settingsModel,
@@ -71,10 +76,7 @@ public class PhysicalQuantitiesModel {
      */
     @NonNull
     public String formatValue(@NonNull EnergyDensity energyDensity) {
-        return energyDensity.getValue()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString();
+        return decimalFormat.format(energyDensity.getValue());
     }
 
     @NonNull
@@ -88,8 +90,8 @@ public class PhysicalQuantitiesModel {
      * Formats amount as "{amount} {unit_name}"
      */
     @NonNull
-    public String format(@NonNull BigDecimal amount, @NonNull Unit unit) {
-        return formatValueUnit(amount.toPlainString(), getUnitName(unit));
+    public String format(double amount, @NonNull Unit unit) {
+        return formatValueUnit(decimalFormat.format(amount), getUnitName(unit));
     }
 
     @NonNull
@@ -116,15 +118,9 @@ public class PhysicalQuantitiesModel {
      * @param energyDensity what is its energy density
      * @return amount of energy in unit of {@link EnergyDensity#getEnergyUnit()}
      */
-    @NonNull
-    public BigDecimal getEnergyAmountFrom(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
-                                          @NonNull EnergyDensity energyDensity) {
-        return energyDensity.getValue()
-                .multiply(amount)
-                .multiply(amountUnit.getBase())
-                .divide(energyDensity.getAmountUnit().getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros();
+    public double getEnergyAmountFrom(double amount, @NonNull AmountUnit amountUnit,
+                                      @NonNull EnergyDensity energyDensity) {
+        return energyDensity.getValue() * amount * amountUnit.getBase() / energyDensity.getAmountUnit().getBase();
     }
 
     /**
@@ -136,66 +132,60 @@ public class PhysicalQuantitiesModel {
      * @return formatted value of energy
      */
     @NonNull
-    public String formatEnergyCount(@NonNull BigDecimal amount, @NonNull AmountUnit amountUnit,
+    public String formatEnergyCount(double amount, @NonNull AmountUnit amountUnit,
                                     @NonNull EnergyDensity energyDensity) {
-        BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
-        return energyAmount.toPlainString();
+        double energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
+        return decimalFormat.format(energyAmount);
     }
 
 
     @NonNull
-    public String formatEnergyCountAndUnit(BigDecimal amount, AmountUnit amountUnit, EnergyDensity energyDensity) {
-        BigDecimal energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
+    public String formatEnergyCountAndUnit(double amount, AmountUnit amountUnit, EnergyDensity energyDensity) {
+        double energyAmount = getEnergyAmountFrom(amount, amountUnit, energyDensity);
         return format(energyAmount, energyDensity.getEnergyUnit());
     }
 
     @NonNull
     public String formatAsEnergy(float value) {
         EnergyUnit energyUnit = settingsModel.getEnergyUnit();
-        value /= energyUnit.getBase().floatValue();
-        String valueString = String.format(Locale.getDefault(), "%.00f", value);
-        return formatValueUnit(valueString, getUnitName(energyUnit));
+        value /= energyUnit.getBase();
+        return formatValueUnit(decimalFormat.format(value), getUnitName(energyUnit));
     }
 
     /**
-     * Convenience method for calling {@link #convertAmount(BigDecimal, AmountUnit, AmountUnit)}
+     * Convenience method for calling {@link #convertAmount(double, AmountUnit, AmountUnit)}
      * with "from" argument that's default database unit for current type.
      * <p/>
      * Internally it uses {@link EnergyDensityUtils#getDefaultAmountUnit(AmountUnitType)} for resolving
      * current unit of provided value
      */
-    @NonNull
-    public BigDecimal convertAmountFromDatabase(@NonNull BigDecimal databaseAmount,
-                                                @NonNull AmountUnit targetUnit) {
+    public double convertAmountFromDatabase(double databaseAmount,
+                                            @NonNull AmountUnit targetUnit) {
         AmountUnit databaseUnit = EnergyDensityUtils.getDefaultAmountUnit(targetUnit.getType());
         return convertAmount(databaseAmount, databaseUnit, targetUnit);
     }
 
     /**
-     * Convenience method for calling {@link #convertAmount(BigDecimal, AmountUnit, AmountUnit)}
+     * Convenience method for calling {@link #convertAmount(double, AmountUnit, AmountUnit)}
      * with "to" argument that's default database unit for current type.
      * <p/>
      * Internally it uses {@link EnergyDensityUtils#getDefaultAmountUnit(AmountUnitType)} for resolving
      * target unit of provided value
      */
-    @NonNull
-    public BigDecimal convertAmountToDatabase(@NonNull BigDecimal sourceAmount,
+    public double convertAmountToDatabase(double sourceAmount,
                                               @NonNull AmountUnit sourceUnit) {
         AmountUnit databaseUnit = EnergyDensityUtils.getDefaultAmountUnit(sourceUnit.getType());
         return convertAmount(sourceAmount, sourceUnit, databaseUnit);
     }
 
-    @NonNull
-    public BigDecimal convertAmount(@NonNull BigDecimal amount,
-                                    @NonNull AmountUnit from,
-                                    @NonNull AmountUnit to) {
-        return amount.multiply(from.getBase())
-                .divide(to.getBase(), EnergyDensityUtils.DEFAULT_PRECISION)
-                .stripTrailingZeros();
+    public double convertAmount(double amount,
+                                @NonNull AmountUnit from,
+                                @NonNull AmountUnit to) {
+        return amount * from.getBase() / to.getBase();
     }
 
     @NonNull
-    public Func1<Ingredient, BigDecimal> mapToEnergy() {
+    public Func1<Ingredient, Double> mapToEnergy() {
         if (ingredientToEnergy == null) {
             ingredientToEnergy = ingredient -> {
                 IngredientTemplate ingredientTemplate = ingredient.getIngredientTypeOrNull();
@@ -209,7 +199,7 @@ public class PhysicalQuantitiesModel {
     }
 
     @NonNull
-    public Func1<BigDecimal, String> energyAsString() {
+    public Func1<Double, String> energyAsString() {
         if (energyAsString == null) {
             energyAsString = decimal -> format(decimal, settingsModel.getEnergyUnit());
         }
@@ -220,13 +210,13 @@ public class PhysicalQuantitiesModel {
      * @return function that creates moving sum on each element
      */
     @NonNull
-    public Func1<BigDecimal, BigDecimal> sumAll() {
-        return new Func1<BigDecimal, BigDecimal>() {
-            BigDecimal sum = BigDecimal.ZERO;
+    public Func1<Double, Double> sumAll() {
+        return new Func1<Double, Double>() {
+            double sum = 0.0;
 
             @Override
-            public BigDecimal call(BigDecimal decimal) {
-                sum = sum.add(decimal);
+            public Double call(Double decimal) {
+                if (decimal != null) sum = sum + decimal;
                 return sum;
             }
         };

@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
-import java.math.BigDecimal;
-
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultAmountUnit;
 import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultEnergyUnit;
 
@@ -15,9 +13,11 @@ import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtil
 public class EnergyDensity {
     private final EnergyUnit energyUnit;
     private final AmountUnit unit;
-    private final BigDecimal value;
+    private final double value;
 
-    public EnergyDensity(@NonNull EnergyUnit energyUnit, @NonNull AmountUnit unit, @NonNull BigDecimal value) {
+    public EnergyDensity(@NonNull EnergyUnit energyUnit,
+                         @NonNull AmountUnit unit,
+                         double value) {
         this.energyUnit = energyUnit;
         this.unit = unit;
         this.value = value;
@@ -39,8 +39,7 @@ public class EnergyDensity {
         return unit;
     }
 
-    @NonNull
-    public BigDecimal getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -51,7 +50,7 @@ public class EnergyDensity {
 
     @Override
     public String toString() {
-        return value.toPlainString() + " " + energyUnit + " / " + unit;
+        return Double.toString(value) + " " + energyUnit + " / " + unit;
     }
 
     @Override
@@ -61,15 +60,18 @@ public class EnergyDensity {
 
         EnergyDensity that = (EnergyDensity) o;
 
-        return energyUnit == that.energyUnit && unit.equals(that.unit) && value.equals(that.value);
-
+        return Double.compare(that.value, value) == 0 && energyUnit == that.energyUnit
+                && unit.equals(that.unit);
     }
 
     @Override
     public int hashCode() {
-        int result = energyUnit.hashCode();
+        int result;
+        long temp;
+        result = energyUnit.hashCode();
         result = 31 * result + unit.hashCode();
-        result = 31 * result + value.hashCode();
+        temp = Double.doubleToLongBits(value);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
@@ -78,15 +80,13 @@ public class EnergyDensity {
         if (unit.getType() != getAmountUnitType())
             throw new IllegalArgumentException("Cannot convert energy density using this method; different amount unit type");
 
-        final BigDecimal sourceEnergyBase = getEnergyUnit().getBase();
-        final BigDecimal sourceAmountBase = getAmountUnit().getBase();
-        final BigDecimal targetEnergyBase = energyUnit.getBase();
-        final BigDecimal targetAmountBase = unit.getBase();
+        final double sourceEnergyBase = getEnergyUnit().getBase();
+        final double sourceAmountBase = getAmountUnit().getBase();
+        final double targetEnergyBase = energyUnit.getBase();
+        final double targetAmountBase = unit.getBase();
 
-        BigDecimal convertedValue = value.multiply(sourceEnergyBase)
-                .multiply(targetAmountBase)
-                .divide(targetEnergyBase.multiply(sourceAmountBase), EnergyDensityUtils.DEFAULT_PRECISION)
-                .stripTrailingZeros();
+        double convertedValue = value * sourceEnergyBase * targetAmountBase
+                / (targetEnergyBase * sourceAmountBase);
         return new EnergyDensity(energyUnit, unit, convertedValue);
     }
 
@@ -96,7 +96,8 @@ public class EnergyDensity {
     }
 
     @NonNull
-    public static EnergyDensity fromDatabaseValue(@NonNull AmountUnitType amountType, @NonNull BigDecimal amount) {
+    public static EnergyDensity fromDatabaseValue(@NonNull AmountUnitType amountType,
+                                                  double amount) {
         return new EnergyDensity(getDefaultEnergyUnit(), getDefaultAmountUnit(amountType), amount);
     }
 

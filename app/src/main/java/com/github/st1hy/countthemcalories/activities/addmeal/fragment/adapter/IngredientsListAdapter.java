@@ -18,8 +18,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 import dagger.internal.Preconditions;
@@ -33,7 +31,6 @@ public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemV
     private final PhysicalQuantitiesModel quantityModel;
     @NonNull
     private final IngredientListComponentFactory factory;
-
 
     @Inject
     public IngredientsListAdapter(@NonNull MealIngredientsListModel model,
@@ -70,9 +67,8 @@ public class IngredientsListAdapter extends RecyclerView.Adapter<IngredientItemV
         final EnergyDensity energyDensity = quantityModel.convertToPreferred(EnergyDensity.from(type));
         holder.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        final BigDecimal amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
-        BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-        holder.setAmount(quantityModel.format(displayedAmount, amountUnit));
+        double amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        holder.setAmount(quantityModel.format(amount, amountUnit));
         holder.setCalorieCount(quantityModel.formatEnergyCount(amount, amountUnit, energyDensity));
         holder.setCalorieUnit(quantityModel.getUnitName(energyDensity.getEnergyUnit()));
         holder.setImagePlaceholder(type.getAmountType() == AmountUnitType.VOLUME ?

@@ -8,13 +8,14 @@ import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.database.Weight;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,8 @@ public class AddWeightPresenter implements BasicLifecycle {
     PagerModel pagerModel;
     @Inject
     TimePeriodModel timePeriodModel;
+    @Inject @TwoPlaces
+    DecimalFormat decimalFormat;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -61,11 +64,8 @@ public class AddWeightPresenter implements BasicLifecycle {
     @NonNull
     private String convertToCurrentUnit(@Nullable Weight weight) {
         if (weight != null) {
-            BigDecimal base = settingsModel.getBodyMassUnit().getBase();
-            return BigDecimal.valueOf(weight.getWeight())
-                    .divide(base, 2, BigDecimal.ROUND_HALF_UP)
-                    .stripTrailingZeros()
-                    .toPlainString();
+            double base = settingsModel.getBodyMassUnit().getBase();
+            return decimalFormat.format(weight.getWeight() / base);
         } else {
             return "";
         }
@@ -78,7 +78,7 @@ public class AddWeightPresenter implements BasicLifecycle {
 
     @NonNull
     private Weight intoWeight(float weightValue) {
-        float value = settingsModel.getBodyMassUnit().getBase().floatValue() * weightValue;
+        float value = (float) (settingsModel.getBodyMassUnit().getBase() * weightValue);
         DateTime time = currentDate();
         Weight weight = new Weight();
         weight.setMeasurementDate(time);

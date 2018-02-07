@@ -2,10 +2,7 @@ package com.github.st1hy.countthemcalories.database;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
-
 import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -14,19 +11,15 @@ import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.parceler.Parcel;
 
-import java.math.BigDecimal;
-
 @Entity(active = true, nameInDb = "INGREDIENTS")
 @Parcel
 public class Ingredient {
 
     @Id(autoincrement = true)
-    @Index(unique =  true)
+    @Index(unique = true)
     Long id;
 
-    @Convert(converter = BigDecimalPropertyConverter.class, columnType = String.class)
-    @NotNull
-    BigDecimal amount;
+    double amount;
     long partOfMealId;
     long ingredientTypeId;
 
@@ -36,11 +29,15 @@ public class Ingredient {
     @ToOne(joinProperty = "ingredientTypeId")
     IngredientTemplate ingredientType;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 942581853)
     private transient IngredientDao myDao;
 
@@ -54,22 +51,21 @@ public class Ingredient {
         this.id = id;
     }
 
-    @Generated(hash = 318402527)
-    public Ingredient(Long id, @NotNull BigDecimal amount, long partOfMealId,
-            long ingredientTypeId) {
-        this.id = id;
-        this.amount = amount;
-        this.partOfMealId = partOfMealId;
-        this.ingredientTypeId = ingredientTypeId;
-    }
-
     @Generated(hash = 1584798654)
     public Ingredient() {
     }
 
-    public Ingredient(@NonNull IngredientTemplate ingredientTemplate, @NonNull BigDecimal amount) {
+    public Ingredient(@NonNull IngredientTemplate ingredientTemplate, double amount) {
         setIngredientType(ingredientTemplate);
         setAmount(amount);
+    }
+
+    @Generated(hash = 2104693188)
+    public Ingredient(Long id, double amount, long partOfMealId, long ingredientTypeId) {
+        this.id = id;
+        this.amount = amount;
+        this.partOfMealId = partOfMealId;
+        this.ingredientTypeId = ingredientTypeId;
     }
 
     public Long getId() {
@@ -80,12 +76,11 @@ public class Ingredient {
         this.id = id;
     }
 
-    @NotNull
-    public BigDecimal getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(@NotNull BigDecimal amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -105,7 +100,9 @@ public class Ingredient {
         this.ingredientTypeId = ingredientTypeId;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1124613321)
     public Meal getPartOfMeal() {
         long __key = this.partOfMealId;
@@ -124,7 +121,9 @@ public class Ingredient {
         return partOfMeal;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 405677469)
     public void setPartOfMeal(@NotNull Meal partOfMeal) {
         if (partOfMeal == null) {
@@ -138,7 +137,9 @@ public class Ingredient {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 739336867)
     public IngredientTemplate getIngredientType() {
         long __key = this.ingredientTypeId;
@@ -158,12 +159,16 @@ public class Ingredient {
         return ingredientType;
     }
 
-    /** Not-resolved on access. */
+    /**
+     * Not-resolved on access.
+     */
     public IngredientTemplate getIngredientTypeOrNull() {
         return ingredientType;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 654512060)
     public void setIngredientType(@NotNull IngredientTemplate ingredientType) {
         if (ingredientType == null) {

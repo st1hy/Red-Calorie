@@ -42,7 +42,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -91,19 +90,18 @@ public class OverviewActivityTest {
     public static final Ingredient[] exampleIngredients = new Ingredient[]{
             new Ingredient(
                     1L,
-                    new BigDecimal("30"),
+                    30.0,
                     exampleMeals[0].getId(),
                     IngredientActivityTest.exampleIngredients[0].getId()
             ),
             new Ingredient(
                     2L,
-                    new BigDecimal("20"),
+                    20.0,
                     exampleMeals[0].getId(),
                     IngredientActivityTest.exampleIngredients[1].getId()
             ),
             new Ingredient(
-                    3L,
-                    new BigDecimal("70"),
+                    3L,70.0,
                     exampleMeals[1].getId(),
                     IngredientActivityTest.exampleIngredients[1].getId()
             ),

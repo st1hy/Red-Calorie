@@ -8,8 +8,6 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Optional;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 @PerFragment
@@ -38,7 +36,7 @@ public class IngredientDetailModel {
         if (ingredientAmount.trim().isEmpty()) {
             return Optional.of(IngredientDetailError.NO_VALUE);
         } else {
-            if (EnergyDensityUtils.getOrZero(ingredientAmount).compareTo(BigDecimal.ZERO) <= 0) {
+            if (EnergyDensityUtils.getOrZero(ingredientAmount) <= 0) {
                 return Optional.of(IngredientDetailError.ZERO_VALUE);
             }
         }

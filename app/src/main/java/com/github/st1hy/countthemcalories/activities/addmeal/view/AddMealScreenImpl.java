@@ -31,7 +31,6 @@ import com.jakewharton.rxbinding.view.RxView;
 
 import org.parceler.Parcels;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -104,7 +103,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                         return Parcels.unwrap(data.getParcelableExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL));
                     }
                 }).filter(Functions.NOT_NULL)
-                .map(ingredientTemplate -> new Ingredient(ingredientTemplate, BigDecimal.ZERO));
+                .map(ingredientTemplate -> new Ingredient(ingredientTemplate, 0.0));
     }
 
 

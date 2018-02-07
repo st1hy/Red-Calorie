@@ -19,8 +19,6 @@ import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -74,7 +72,7 @@ public abstract class AddMealArgumentsModule {
     @Nullable
     public static Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
         if (extraTemplate != null) {
-            return new Ingredient(extraTemplate, BigDecimal.ZERO);
+            return new Ingredient(extraTemplate, 0.0);
         } else {
             return null;
         }

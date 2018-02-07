@@ -5,8 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.math.BigDecimal;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -16,9 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class EnergyDensityTest {
+    static final double DELTA = 0.0001;
     final EnergyUnit energyUnit = EnergyUnit.KCAL;
     final AmountUnit unit = MassUnit.G100;
-    final BigDecimal value = BigDecimal.valueOf(300, 0);
+    final double value = 300.0;
     final EnergyDensity energyDensity = new EnergyDensity(energyUnit, unit, value);
 
     @Test
@@ -31,7 +30,7 @@ public class EnergyDensityTest {
     @SuppressWarnings("EqualsWithItself")
     @Test
     public void testEquals() throws Exception {
-        final BigDecimal value2 = BigDecimal.valueOf(301, 0);
+        final double value2 = 301.0;
         final EnergyDensity energyDensity2 = new EnergyDensity(energyUnit, unit, value2);
         assertTrue(energyDensity.equals(energyDensity));
         assertTrue(energyDensity.equals(new EnergyDensity(energyDensity)));
@@ -40,7 +39,7 @@ public class EnergyDensityTest {
 
     @Test
     public void testHashCode() throws Exception {
-        final BigDecimal value2 = BigDecimal.valueOf(301, 0);
+        final double value2 = 301.0;
         final EnergyDensity energyDensity2 = new EnergyDensity(energyUnit, unit, value2);
         assertEquals(energyDensity.hashCode(), energyDensity.hashCode());
         assertEquals(energyDensity.hashCode(), new EnergyDensity(energyDensity).hashCode());
@@ -49,12 +48,12 @@ public class EnergyDensityTest {
 
     @Test
     public void testConversion() throws Exception {
-        BigDecimal value = energyDensity.convertTo(EnergyUnit.KJ, MassUnit.G).getValue();
-        assertEquals("12.552", value.toPlainString());
+        double value = energyDensity.convertTo(EnergyUnit.KJ, MassUnit.G).getValue();
+        assertEquals(12.552, value, DELTA);
         value = energyDensity.convertTo(EnergyUnit.KJ, MassUnit.G100).getValue();
-        assertEquals("1255.2", value.toPlainString());
+        assertEquals(1255.2, value, DELTA);
         value = energyDensity.convertTo(EnergyUnit.KCAL, MassUnit.G).getValue();
-        assertEquals("3", value.toPlainString());
+        assertEquals(3, value, DELTA);
     }
 
     @Test(expected = IllegalArgumentException.class)

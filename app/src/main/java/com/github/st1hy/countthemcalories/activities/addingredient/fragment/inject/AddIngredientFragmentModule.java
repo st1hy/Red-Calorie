@@ -23,6 +23,7 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.pres
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
 import com.github.st1hy.countthemcalories.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.core.headerpicture.SelectPicturePresenter;
@@ -41,7 +42,7 @@ import com.google.common.collect.Lists;
 
 import org.parceler.Parcels;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.inject.Named;
@@ -76,8 +77,8 @@ public abstract class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public static IngredientTagsModel provideIngredientTagModel(@Nullable @FragmentSavedState Bundle savedState,
-                                                                @Nullable IngredientTemplate template) {
+    static IngredientTagsModel provideIngredientTagModel(@Nullable @FragmentSavedState Bundle savedState,
+                                                         @Nullable IngredientTemplate template) {
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(IngredientTagsModel.SAVED_TAGS_MODEL);
             return Parcels.unwrap(parcelable);
@@ -95,12 +96,13 @@ public abstract class AddIngredientFragmentModule {
 
     @Provides
     @PerFragment
-    public static AddIngredientModel provideIngredientModel(
+    static AddIngredientModel provideIngredientModel(
             @Nullable @FragmentSavedState Bundle savedState,
             @Nullable IngredientTemplate templateSource,
             @NonNull @Named("initialName") String name,
             @NonNull AmountUnitType amountUnitType,
-            @NonNull EnergyConverter energyConverter) {
+            @NonNull EnergyConverter energyConverter,
+            @TwoPlaces @NonNull DecimalFormat decimalFormat) {
 
         if (savedState != null) {
             Parcelable parcelable = savedState.getParcelable(
@@ -115,10 +117,9 @@ public abstract class AddIngredientFragmentModule {
                 id = templateSource.getId();
                 name = templateSource.getDisplayName();
                 amountUnitType = templateSource.getAmountType();
-                final BigDecimal energyDensityAmount = templateSource.getEnergyDensityAmount();
-                energyValue = energyConverter.fromDatabaseToCurrent(amountUnitType,
-                        energyDensityAmount)
-                        .toPlainString();
+                double energyDensityAmount = templateSource.getEnergyDensityAmount();
+                energyDensityAmount = energyConverter.fromDatabaseToCurrent(amountUnitType, energyDensityAmount);
+                energyValue = decimalFormat.format(energyDensityAmount);
                 imageUri = templateSource.getImageUri();
                 creationSource = templateSource.getCreationSource();
             } else {

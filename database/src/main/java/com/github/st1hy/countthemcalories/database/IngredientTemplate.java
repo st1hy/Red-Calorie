@@ -3,7 +3,6 @@ package com.github.st1hy.countthemcalories.database;
 import android.net.Uri;
 
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
-import com.github.st1hy.countthemcalories.database.property.BigDecimalPropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.property.CreationSourcePropertyConverter;
 import com.github.st1hy.countthemcalories.database.property.UriPropertyConverter;
@@ -21,7 +20,6 @@ import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 import org.parceler.Parcel;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity(active = true, nameInDb = "INGREDIENTS_TEMPLATE")
@@ -48,28 +46,31 @@ public class IngredientTemplate {
     @NotNull
     AmountUnitType amountType;
 
-    @Convert(converter = BigDecimalPropertyConverter.class, columnType = String.class)
     @NotNull
-    BigDecimal energyDensityAmount;
+    double energyDensityAmount;
 
     @ToMany(joinProperties = {
-        @JoinProperty(name = "id", referencedName = "ingredientTypeId")
+            @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
     List<Ingredient> childIngredients;
 
     @ToMany(joinProperties = {
-        @JoinProperty(name = "id", referencedName = "ingredientTypeId")
+            @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
     List<JointIngredientTag> tags;
 
     @Transient
     I18n translations;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1676194412)
     private transient IngredientTemplateDao myDao;
 
@@ -82,10 +83,11 @@ public class IngredientTemplate {
     public IngredientTemplate() {
     }
 
-    @Generated(hash = 1292344727)
+
+    @Generated(hash = 1354806104)
     public IngredientTemplate(Long id, @NotNull String name, Uri imageUri,
-            @NotNull CreationSource creationSource, @NotNull AmountUnitType amountType,
-            @NotNull BigDecimal energyDensityAmount) {
+                              @NotNull CreationSource creationSource, @NotNull AmountUnitType amountType,
+                              double energyDensityAmount) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
@@ -126,14 +128,6 @@ public class IngredientTemplate {
         this.imageUri = imageUri;
     }
 
-    public boolean hasReadTags() {
-        return tags != null;
-    }
-
-    public boolean isAttachedToSession() {
-        return daoSession != null;
-    }
-
     @NotNull
     public AmountUnitType getAmountType() {
         return amountType;
@@ -143,12 +137,11 @@ public class IngredientTemplate {
         this.amountType = amountType;
     }
 
-    @NotNull
-    public BigDecimal getEnergyDensityAmount() {
+    public double getEnergyDensityAmount() {
         return energyDensityAmount;
     }
 
-    public void setEnergyDensityAmount(@NotNull BigDecimal energyDensityAmount) {
+    public void setEnergyDensityAmount(@NotNull double energyDensityAmount) {
         this.energyDensityAmount = energyDensityAmount;
     }
 
@@ -175,7 +168,9 @@ public class IngredientTemplate {
         return childIngredients;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1103824659)
     public synchronized void resetChildIngredients() {
         childIngredients = null;
@@ -203,7 +198,9 @@ public class IngredientTemplate {
         return tags;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 404234)
     public synchronized void resetTags() {
         tags = null;

@@ -1,22 +1,19 @@
 package com.github.st1hy.countthemcalories.database.unit;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.database.R;
 
-import java.math.BigDecimal;
-
 public enum EnergyUnit implements Unit {
-    KJ(1, BigDecimal.ONE, R.string.unit_kj),
-    KCAL(2, BigDecimal.valueOf(4184, 3), R.string.unit_kcal);
+    KJ(1, 1.0, R.string.unit_kj),
+    KCAL(2, 4.184, R.string.unit_kcal);
 
     private final int id;
-    private final BigDecimal inKJ;
+    private final double inKJ;
     private final int nameRes;
 
-    EnergyUnit(int id, @NonNull BigDecimal inKJ, int nameRes) {
+    EnergyUnit(int id, double inKJ, int nameRes) {
         this.id = id;
         this.inKJ = inKJ;
         this.nameRes = nameRes;
@@ -25,8 +22,7 @@ public enum EnergyUnit implements Unit {
     /**
      * @return base value of one converted into kJ
      */
-    @NonNull
-    public BigDecimal getBase() {
+    public double getBase() {
         return inKJ;
     }
 

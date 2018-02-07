@@ -2,9 +2,8 @@ package com.github.st1hy.countthemcalories.database.property;
 
 import android.support.annotation.Nullable;
 
-import org.joda.time.DateTime;
-
 import org.greenrobot.greendao.converter.PropertyConverter;
+import org.joda.time.DateTime;
 
 public class JodaTimePropertyConverter implements PropertyConverter<DateTime, Long> {
 

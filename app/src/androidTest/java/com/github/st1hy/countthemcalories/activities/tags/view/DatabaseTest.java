@@ -24,7 +24,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -77,7 +76,7 @@ public class DatabaseTest {
         ArrayList<IngredientTemplate> ingredients = new ArrayList<>(SIZE);
         for (int i = 0; i < SIZE; i++) {
             AmountUnitType type = i % 2 == 0 ? AmountUnitType.MASS : AmountUnitType.VOLUME;
-            BigDecimal amount = new BigDecimal("" + i % 71 + "." + i % 97);
+            double amount =i % 71 +  (i % 97 / 100.0);
             ingredients.add(new IngredientTemplate((long)i, "Ingredient "+ i, Uri.EMPTY, CreationSource.USER, type, amount));
         }
         return ingredients;

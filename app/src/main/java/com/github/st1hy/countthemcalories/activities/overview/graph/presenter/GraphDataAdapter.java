@@ -123,11 +123,11 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
     }
 
     private float convertEnergy(float energy) {
-        return energy / settingsModel.getEnergyUnit().getBase().floatValue();
+        return (float) (energy / settingsModel.getEnergyUnit().getBase());
     }
 
     private float convertMass(float mass) {
-        return mass / settingsModel.getBodyMassUnit().getBase().floatValue();
+        return (float) (mass / settingsModel.getBodyMassUnit().getBase());
     }
 
     private void setLine(GraphColumnViewHolder holder, int position) {

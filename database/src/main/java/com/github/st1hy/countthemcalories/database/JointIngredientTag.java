@@ -29,11 +29,15 @@ public class JointIngredientTag {
     @ToOne(joinProperty = "ingredientTypeId")
     IngredientTemplate ingredientType;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1685847810)
     private transient JointIngredientTagDao myDao;
 
@@ -82,7 +86,9 @@ public class JointIngredientTag {
         this.ingredientTypeId = ingredientTypeId;
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 1607739560)
     public Tag getTag() {
         long __key = this.tagId;
@@ -105,7 +111,9 @@ public class JointIngredientTag {
         return tag;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1728988431)
     public void setTag(@NotNull Tag tag) {
         if (tag == null) {
@@ -119,7 +127,9 @@ public class JointIngredientTag {
         }
     }
 
-    /** To-one relationship, resolved on first access. */
+    /**
+     * To-one relationship, resolved on first access.
+     */
     @Generated(hash = 739336867)
     public IngredientTemplate getIngredientType() {
         long __key = this.ingredientTypeId;
@@ -139,7 +149,9 @@ public class JointIngredientTag {
         return ingredientType;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 654512060)
     public void setIngredientType(@NotNull IngredientTemplate ingredientType) {
         if (ingredientType == null) {

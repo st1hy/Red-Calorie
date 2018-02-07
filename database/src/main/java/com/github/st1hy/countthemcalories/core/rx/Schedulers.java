@@ -29,7 +29,9 @@ public class Schedulers {
 
     public interface Hook {
         Scheduler io();
+
         Scheduler computation();
+
         Scheduler immediate();
     }
 

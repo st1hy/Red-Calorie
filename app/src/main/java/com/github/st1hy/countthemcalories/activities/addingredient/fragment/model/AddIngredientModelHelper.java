@@ -20,7 +20,6 @@ import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.collect.Lists;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,7 +146,7 @@ public class AddIngredientModelHelper {
     }
 
     private boolean isValueGreaterThanZero(@NonNull String value) {
-        return getEnergyDensity(value).getValue().compareTo(BigDecimal.ZERO) > 0;
+        return getEnergyDensity(value).getValue() > 0;
     }
 
 

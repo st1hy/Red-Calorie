@@ -9,6 +9,6 @@ public class BodyMassUnitTest {
 
     @Test
     public void testPound() throws Exception {
-        assertThat(BodyMassUnit.POUND.getBase().toPlainString(), equalTo("0.45359237"));
+        assertThat(BodyMassUnit.POUND.getBase(), equalTo(0.45359237));
     }
 }

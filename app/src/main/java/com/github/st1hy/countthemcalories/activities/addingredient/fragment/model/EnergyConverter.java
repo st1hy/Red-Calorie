@@ -9,8 +9,6 @@ import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 @PerFragment
@@ -34,13 +32,10 @@ public class EnergyConverter {
     }
 
 
-    @NonNull
-    public BigDecimal fromDatabaseToCurrent(@NonNull AmountUnitType type,
-                                            @NonNull BigDecimal energyDensityAmount) {
+    public double fromDatabaseToCurrent(@NonNull AmountUnitType type,
+                                        double energyDensityAmount) {
         return EnergyDensity.fromDatabaseValue(type, energyDensityAmount)
                 .convertTo(getDefaultEnergyUnit(), getDefaultAmountUnitOf(type))
-                .getValue()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros();
+                .getValue();
     }
 }

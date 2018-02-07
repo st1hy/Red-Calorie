@@ -17,7 +17,7 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -153,7 +153,7 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
                                    @NonNull Meal meal) {
         List<Ingredient> ingredients = meal.getIngredients();
         Observable<Ingredient> ingredientObservable = Observable.from(ingredients);
-        Observable<BigDecimal> decimalObservable = ingredientObservable
+        Observable<Double> decimalObservable = ingredientObservable
                 .map(quantityModel.mapToEnergy()).cache();
         ingredientObservable.map(ingredient -> ingredient.getIngredientTypeOrNull().getDisplayName())
                 .map(joinStrings())
@@ -161,9 +161,8 @@ public class MealsAdapter extends RecyclerView.Adapter<AbstractMealItemHolder> {
                 .map(stringBuilder -> stringBuilder.toString().trim())
                 .subscribe(holder::setIngredients);
         decimalObservable.map(quantityModel.sumAll())
-                .lastOrDefault(BigDecimal.ZERO)
-                .map(quantityModel.setScale(0))
-                .map(BigDecimal::toPlainString)
+                .lastOrDefault(0.0)
+                .map(value -> DecimalFormat.getIntegerInstance().format(value))
                 .doOnNext(any -> holder.setTotalEnergyUnit(quantityModel.getEnergyUnitName()))
                 .subscribe(holder::setTotalEnergy);
     }

@@ -6,24 +6,22 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.database.R;
 
-import java.math.BigDecimal;
-
 public enum VolumeUnit implements AmountUnit {
-    ML(1, BigDecimal.ONE, R.string.unit_milliliter) {
+    ML(1, 1.0, R.string.unit_milliliter) {
         @NonNull
         @Override
         public AmountUnit getBaseUnit() {
             return this;
         }
     },
-    ML100(2, BigDecimal.valueOf(100, 0), R.string.unit_100_milliliter) {
+    ML100(2, 100.0, R.string.unit_100_milliliter) {
         @NonNull
         @Override
         public AmountUnit getBaseUnit() {
             return ML;
         }
     },
-    FL_OZ(3, BigDecimal.valueOf(295735295625L, 10), R.string.unit_fl_oz) {
+    FL_OZ(3, 29.5735295625, R.string.unit_fl_oz) {
         @NonNull
         @Override
         public AmountUnit getBaseUnit() {
@@ -32,10 +30,10 @@ public enum VolumeUnit implements AmountUnit {
     };
 
     private final int id;
-    private final BigDecimal inML;
+    private final double inML;
     private final int nameRes;
 
-    VolumeUnit(int id, @NonNull BigDecimal inML, int nameRes) {
+    VolumeUnit(int id, double inML, int nameRes) {
         this.id = id;
         this.inML = inML;
         this.nameRes = nameRes;
@@ -44,8 +42,7 @@ public enum VolumeUnit implements AmountUnit {
     /**
      * @return base value of one converted into ml
      */
-    @NonNull
-    public BigDecimal getBase() {
+    public double getBase() {
         return inML;
     }
 
@@ -67,9 +64,12 @@ public enum VolumeUnit implements AmountUnit {
     @Nullable
     public static VolumeUnit fromId(int id) {
         switch (id) {
-            case 1: return ML;
-            case 2: return ML100;
-            case 3: return FL_OZ;
+            case 1:
+                return ML;
+            case 2:
+                return ML100;
+            case 3:
+                return FL_OZ;
         }
         return null;
     }

@@ -9,8 +9,6 @@ import com.github.st1hy.countthemcalories.core.viewcontrol.PostponeTransitions;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -68,7 +66,7 @@ public class MealDetailPresenterImpl implements MealDetailPresenter {
         Observable.from(meal.getIngredients())
                 .map(quantitiesModel.mapToEnergy())
                 .map(quantitiesModel.sumAll())
-                .lastOrDefault(BigDecimal.ZERO)
+                .lastOrDefault(0.0)
                 .map(quantitiesModel.energyAsString())
                 .subscribe(view::setEnergy);
     }

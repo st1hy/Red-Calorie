@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -202,7 +201,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
         Observable.from(listModel.getIngredients())
                 .map(quantityModel.mapToEnergy())
                 .map(quantityModel.sumAll())
-                .lastOrDefault(BigDecimal.ZERO)
+                .lastOrDefault(0.0)
                 .map(quantityModel.energyAsString())
                 .subscribe(view::setTotalEnergy);
     }
@@ -226,7 +225,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
     private void onIngredientEdited(long requestId, @NonNull Ingredient ingredient) {
         int position = (int) requestId;
         Ingredient current = listModel.getItemAt(position);
-        if (current.getAmount().compareTo(ingredient.getAmount()) != 0) {
+        if (Math.abs(current.getAmount() - ingredient.getAmount()) > 0.001) {
             listModel.modifyIngredient(position, ingredient);
             notifyChanged(position);
         }
@@ -236,8 +235,7 @@ public class AddMealPresenterImp implements AddMealPresenter {
         Long id = ingredient.getIngredientTypeOrNull().getId();
         Ingredient oldIngredient = listModel.findIngredientByTypeId(id);
         if (oldIngredient != null) {
-            BigDecimal amount = oldIngredient.getAmount()
-                    .add(ingredient.getAmount());
+            double amount = oldIngredient.getAmount() + ingredient.getAmount();
             oldIngredient.setAmount(amount);
             notifyChanged(listModel.indexOf(oldIngredient));
         } else {

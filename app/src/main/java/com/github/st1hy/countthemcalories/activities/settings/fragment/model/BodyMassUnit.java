@@ -8,18 +8,16 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 
-import java.math.BigDecimal;
-
 public enum BodyMassUnit implements AmountUnit {
 
-    KG(1, BigDecimal.ONE, R.string.body_weight_unit_kg) {
+    KG(1, 1.0, R.string.body_weight_unit_kg) {
         @NonNull
         @Override
         public AmountUnit getBaseUnit() {
             return KG;
         }
     },
-    POUND(2, BigDecimal.valueOf(45359237, 8), R.string.body_weight_unit_pound) {
+    POUND(2, 0.45359237, R.string.body_weight_unit_pound) {
         @NonNull
         @Override
         public AmountUnit getBaseUnit() {
@@ -27,19 +25,18 @@ public enum BodyMassUnit implements AmountUnit {
         }
     };
     private final int ordinal;
-    private final BigDecimal base;
+    private final double base;
     @StringRes
     private final int stringResId;
 
-    BodyMassUnit(int ordinal, BigDecimal base, @StringRes int stringResId) {
+    BodyMassUnit(int ordinal, double base, @StringRes int stringResId) {
         this.ordinal = ordinal;
         this.base = base;
         this.stringResId = stringResId;
     }
 
-    @NonNull
     @Override
-    public BigDecimal getBase() {
+    public double getBase() {
         return base;
     }
 

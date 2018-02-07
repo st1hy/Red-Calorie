@@ -8,6 +8,7 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.activities.ingredientdetail.fragment.view.IngredientDetailView;
+import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
 import com.github.st1hy.countthemcalories.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.core.viewcontrol.PostponeTransitions;
 import com.github.st1hy.countthemcalories.database.Ingredient;
@@ -21,7 +22,7 @@ import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityCont
 
 import org.parceler.Parcels;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,8 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
     Context context;
     @Inject
     PostponeTransitions postponeTransitions;
+    @Inject @TwoPlaces
+    DecimalFormat decimalFormat;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -68,10 +71,9 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
         final EnergyDensity energyDensity = getEnergyDensity();
         view.setEnergyDensity(quantityModel.format(energyDensity));
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        final BigDecimal amount = quantityModel.convertAmountFromDatabase(
-                ingredient.getAmount(), amountUnit);
-        if (amount.compareTo(BigDecimal.ZERO) > 0) {
-            view.setAmount(amount.toPlainString());
+        final double amount = quantityModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        if (amount > 0) {
+            view.setAmount(decimalFormat.format(amount));
         }
         setupEnergyCount(amount, energyDensity, amountUnit);
         view.setUnitName(quantityModel.getUnitName(amountUnit));
@@ -123,14 +125,14 @@ public class IngredientDetailPresenterImpl implements IngredientDetailPresenter 
 
     private void onAmountChanges(@NonNull String amountString) {
         checkAmountCorrect(amountString);
-        final BigDecimal amount = EnergyDensityUtils.getOrZero(amountString);
+        final double amount = EnergyDensityUtils.getOrZero(amountString);
         final EnergyDensity energyDensity = getEnergyDensity();
         final AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
         ingredient.setAmount(quantityModel.convertAmountToDatabase(amount, amountUnit));
         setupEnergyCount(amount, energyDensity, amountUnit);
     }
 
-    private void setupEnergyCount(BigDecimal amount, EnergyDensity energyDensity, AmountUnit amountUnit) {
+    private void setupEnergyCount(double amount, EnergyDensity energyDensity, AmountUnit amountUnit) {
         view.setCalorieCount(quantityModel.formatEnergyCountAndUnit(amount, amountUnit, energyDensity));
     }
 

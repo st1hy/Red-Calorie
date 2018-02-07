@@ -2,22 +2,22 @@ package com.github.st1hy.countthemcalories.database;
 
 import com.github.st1hy.countthemcalories.database.property.JodaTimePropertyConverter;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.joda.time.DateTime;
 import org.parceler.Parcel;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "WEIGTH")
 @Parcel
 public class Weight {
 
     @Id(autoincrement = true)
-    @Index(unique =  true)
+    @Index(unique = true)
     Long id;
 
     @Convert(converter = JodaTimePropertyConverter.class, columnType = long.class)
@@ -27,25 +27,27 @@ public class Weight {
 
     float weight;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1611231079)
     private transient WeightDao myDao;
 
-
+    @Generated(hash = 1956860650)
+    public Weight() {
+    }
 
     @Generated(hash = 1782361459)
     public Weight(Long id, @NotNull DateTime measurementDate, float weight) {
         this.id = id;
         this.measurementDate = measurementDate;
         this.weight = weight;
-    }
-
-    @Generated(hash = 1956860650)
-    public Weight() {
     }
 
     public Long getId() {

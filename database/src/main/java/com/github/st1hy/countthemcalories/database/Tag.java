@@ -35,18 +35,22 @@ public class Tag {
     CreationSource creationSource;
 
     @ToMany(joinProperties = {
-        @JoinProperty(name = "id", referencedName = "tagId")
+            @JoinProperty(name = "id", referencedName = "tagId")
     })
     List<JointIngredientTag> ingredientTypes;
 
     @Transient
     I18n translations;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 2076396065)
     private transient TagDao myDao;
 
@@ -173,7 +177,9 @@ public class Tag {
         return ingredientTypes;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 2143269227)
     public synchronized void resetIngredientTypes() {
         ingredientTypes = null;

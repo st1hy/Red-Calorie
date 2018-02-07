@@ -14,7 +14,6 @@ import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,11 +49,9 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<IngredientViewH
         EnergyDensity databaseEnergyDensity = EnergyDensity.from(ingredientType);
         EnergyDensity energyDensity = quantitiesModel.convertToPreferred(databaseEnergyDensity);
         AmountUnit amountUnit = energyDensity.getAmountUnit().getBaseUnit();
-        BigDecimal amount = quantitiesModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
+        double amount = quantitiesModel.convertAmountFromDatabase(ingredient.getAmount(), amountUnit);
         holder.setEnergy(quantitiesModel.formatEnergyCountAndUnit(amount, amountUnit, energyDensity));
-
-        BigDecimal displayedAmount = amount.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
-        holder.setAmount(quantitiesModel.format(displayedAmount, amountUnit));
+        holder.setAmount(quantitiesModel.format(amount, amountUnit));
     }
 
     @Override

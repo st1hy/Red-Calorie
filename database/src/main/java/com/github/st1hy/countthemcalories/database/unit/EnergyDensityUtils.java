@@ -2,7 +2,6 @@ package com.github.st1hy.countthemcalories.database.unit;
 
 import android.support.annotation.NonNull;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 
 import timber.log.Timber;
@@ -23,12 +22,12 @@ public class EnergyDensityUtils {
     /**
      * @return returns big decimal value of string or 0 if string is not in correct format
      */
-    public static BigDecimal getOrZero(@NonNull String value) {
+    public static double getOrZero(@NonNull String value) {
         try {
-            return new BigDecimal(value);
+            return Double.valueOf(value);
         } catch (NumberFormatException e) {
             Timber.w("Value: '%s' is not valid BigInteger", value);
-            return BigDecimal.ZERO;
+            return 0.0;
         }
     }
 
