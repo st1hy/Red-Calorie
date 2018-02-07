@@ -18,7 +18,6 @@ import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.headerpicture.TestPicturePicker;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.DaoSession;
@@ -122,7 +121,6 @@ public class AddMealActivityTest {
         RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()));
         onView(withText(R.string.add_meal_image_select_title))
@@ -142,7 +140,6 @@ public class AddMealActivityTest {
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_gallery))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -155,7 +152,6 @@ public class AddMealActivityTest {
         testSelectImageFromGallery();
 
         onView(withId(R.id.image_header_image_view)).perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_remove)).perform(click());
         onView(withId(R.id.image_header_image_view))
                 .check(matches(isDisplayed()))
@@ -175,7 +171,6 @@ public class AddMealActivityTest {
         RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -193,7 +188,6 @@ public class AddMealActivityTest {
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_meal_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());

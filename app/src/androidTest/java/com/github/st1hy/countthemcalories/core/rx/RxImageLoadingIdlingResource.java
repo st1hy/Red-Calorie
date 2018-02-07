@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.core.rx;
 
 import android.support.annotation.NonNull;
-import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
 public class RxImageLoadingIdlingResource {
@@ -24,12 +24,12 @@ public class RxImageLoadingIdlingResource {
     @NonNull
     public static RxImageLoadingIdlingResource registerAndGet() {
         RxImageLoadingIdlingResource rxImageLoadingIdlingResource = new RxImageLoadingIdlingResource();
-        Espresso.registerIdlingResources(rxImageLoadingIdlingResource.idlingResource);
+        IdlingRegistry.getInstance().register(rxImageLoadingIdlingResource.idlingResource);
         return rxImageLoadingIdlingResource;
     }
 
     public void unregister() {
         RxImageLoader.Hook.setHook(null);
-        Espresso.unregisterIdlingResources(idlingResource);
+        IdlingRegistry.getInstance().unregister(idlingResource);
     }
 }

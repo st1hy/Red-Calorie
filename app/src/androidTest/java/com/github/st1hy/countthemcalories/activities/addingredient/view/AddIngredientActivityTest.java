@@ -17,7 +17,6 @@ import com.github.st1hy.countthemcalories.activities.addingredient.fragment.mode
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.core.PermissionHelper;
 import com.github.st1hy.countthemcalories.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
@@ -85,6 +84,7 @@ public class AddIngredientActivityTest {
     public void onSetUp() {
         CaloriesCounterApplication applicationContext = (CaloriesCounterApplication) getTargetContext()
                 .getApplicationContext();
+        ;
         ApplicationTestComponent component = (ApplicationTestComponent) applicationContext.getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
@@ -118,7 +118,6 @@ public class AddIngredientActivityTest {
         RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()));
         onView(withText(R.string.add_ingredient_image_select_title))
@@ -149,7 +148,6 @@ public class AddIngredientActivityTest {
         intending(galleryIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_gallery))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -170,7 +168,6 @@ public class AddIngredientActivityTest {
         RxImageLoadingIdlingResource rxImageLoadingIdlingResource = RxImageLoadingIdlingResource.registerAndGet();
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());
@@ -187,7 +184,6 @@ public class AddIngredientActivityTest {
         intending(cameraIntentMatcher).respondWith(new ActivityResult(Activity.RESULT_CANCELED, null));
         onView(withId(R.id.image_header_image_view)).check(matches(isDisplayed()))
                 .perform(click());
-        PermissionHelper.allowPermissionsIfNeeded();
         onView(withText(R.string.add_ingredient_image_select_from_camera))
                 .check(matches(isDisplayed()))
                 .perform(click());

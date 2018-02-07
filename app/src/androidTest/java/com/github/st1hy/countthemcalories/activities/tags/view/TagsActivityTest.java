@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.core.deps.guava.collect.Lists;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.filters.LargeTest;
@@ -23,6 +22,7 @@ import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.rules.ApplicationComponentRule;
+import com.google.common.collect.Lists;
 
 import org.hamcrest.Matcher;
 import org.junit.Before;

@@ -1,13 +1,15 @@
 package com.github.st1hy.countthemcalories.rules;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.test.runner.permission.PermissionRequester;
 
 import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 import com.github.st1hy.countthemcalories.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.inject.DaggerApplicationTestComponent;
-import com.github.st1hy.countthemcalories.application.inject.ApplicationModule;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -43,5 +45,9 @@ public class ApplicationComponentRule implements TestRule {
                 .build();
 
         application.setComponent(build);
+
+        PermissionRequester permissionRequester = new PermissionRequester();
+        permissionRequester.addPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissionRequester.requestPermissions();
     }
 }

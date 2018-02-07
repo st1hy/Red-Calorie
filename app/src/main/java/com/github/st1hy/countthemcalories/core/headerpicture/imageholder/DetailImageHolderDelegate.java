@@ -8,12 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.core.rx.RxImageLoader;
 
 import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import rx.Observable;
 
 /**
  * Workaround for activity transition view issues: cropping and size of transitioning image.
@@ -31,12 +29,6 @@ public class DetailImageHolderDelegate extends WithoutPlaceholderImageHolderDele
     public void displayImage(@NonNull Uri uri) {
         setImageViewSquare(Uri.EMPTY.equals(uri));
         super.displayImage(uri);
-    }
-
-    @NonNull
-    @Override
-    protected Observable<RxImageLoader.ImageLoadingEvent> loadImage(@NonNull Uri uri) {
-        return super.loadImage(uri);
     }
 
     @Override

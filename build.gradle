@@ -5,7 +5,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
     }
 }
@@ -17,29 +17,27 @@ ext {
     compileSdkVersion = 26
     buildToolsVersion = '26.0.2'
 
-    supportLibraryVersion = '27.0.0'
+    supportLibraryVersion = '27.0.2'
 
-    daggerVersion = '2.11'
-    butterknifeVersion = '8.6.0'
+    daggerVersion = '2.14.1'
+    butterknifeVersion = '8.8.1'
 
-    rxJavaVersion = '1.2.7'
+    rxJavaVersion = '1.3.5'
     rxAndroidVersion = '1.2.1'
-    timberVersion = '4.5.1'
+    timberVersion = '4.6.0'
 
     jUnitVersion = '4.12'
     mockitoVersion = '2.7.13'
     parcelerVersion = '1.1.6'
 
     //App
-    guavaVersion = '20.0'
+    guavaVersion = '24.0-android'
     rxBindingsVersion = '1.0.1'
-    supportTestRunnerVersion = '0.5'
-    espressoVersion = '2.2.2'
-    glideVersion = '3.7.0'
-    leakCanaryVersion = '1.5'
+    supportTestRunnerVersion = '1.0.1'
+    espressoVersion = '3.0.1'
+    glideVersion = '4.6.1'
+    leakCanaryVersion = '1.5.4'
     tokenAutoCompleteVersion = '2.0.8@aar'
-    stethoVersion = '1.4.2'
-    uiAutomatorVersion = '2.1.2'
 
     //Database
     greenDaoVersion = '3.2.2'
