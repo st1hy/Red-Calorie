@@ -57,10 +57,10 @@ public class DayData {
 
         DayData dayData = (DayData) o;
 
-        if (Float.compare(dayData.value, value) != 0) return false;
-        if (Float.compare(dayData.weight, weight) != 0) return false;
-        if (hasAnyData != dayData.hasAnyData) return false;
-        return dateTime.equals(dayData.dateTime);
+        return Float.compare(dayData.value, value) == 0
+                && Float.compare(dayData.weight, weight) == 0
+                && hasAnyData == dayData.hasAnyData
+                && dateTime.equals(dayData.dateTime);
     }
 
     @Override

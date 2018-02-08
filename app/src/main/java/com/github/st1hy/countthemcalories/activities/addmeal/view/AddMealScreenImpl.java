@@ -95,13 +95,10 @@ public class AddMealScreenImpl implements AddMealScreen {
                 })
                 .compose(activityLauncher.startActivityForResult(REQUEST_PICK_INGREDIENT))
                 .filter(ActivityResult.IS_OK)
-                .map(new Func1<ActivityResult, IngredientTemplate>() {
-                    @Override
-                    public IngredientTemplate call(ActivityResult activityResult) {
-                        Intent data = activityResult.getData();
-                        if (data == null) return null;
-                        return Parcels.unwrap(data.getParcelableExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL));
-                    }
+                .map((Func1<ActivityResult, IngredientTemplate>) activityResult -> {
+                    Intent data = activityResult.getData();
+                    if (data == null) return null;
+                    return Parcels.unwrap(data.getParcelableExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL));
                 }).filter(Functions.NOT_NULL)
                 .map(ingredientTemplate -> new Ingredient(ingredientTemplate, 0.0));
     }

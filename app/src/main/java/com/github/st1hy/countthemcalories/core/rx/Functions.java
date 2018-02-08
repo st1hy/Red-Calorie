@@ -7,6 +7,7 @@ import rx.functions.Func1;
 public class Functions {
 
     public static final Func1<Object, Void> INTO_VOID = o -> null;
+    @SuppressWarnings("Convert2MethodRef") //min sdk 24
     public static final Func1<Object, Boolean> NOT_NULL = o -> o != null;
 
     public static <T> Func1<Object, T> into(final T t) {

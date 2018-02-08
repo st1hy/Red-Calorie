@@ -29,23 +29,24 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
     private OnSearchChanged onSearchChanged = null;
     private TokenCompleteTextView.TokenListener<String> childListener;
     private DropDownDialogChangeListener dropDownDialogChangeListener;
+    private LayoutInflater inflater;
 
     public TokenSearchTextView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public TokenSearchTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public TokenSearchTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         allowCollapse(true);
         performBestGuess(false);
         setTokenClickStyle(TokenClickStyle.Delete);
@@ -66,6 +67,7 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
             }
 
         });
+        inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -123,7 +125,6 @@ public class TokenSearchTextView extends TokenCompleteTextView<String> implement
 
     @Override
     protected View getViewForObject(String query) {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         ViewGroup parent = (ViewGroup) TokenSearchTextView.this.getParent();
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.token_chip, parent, false);
         TextView name = view.findViewById(R.id.chip_name);

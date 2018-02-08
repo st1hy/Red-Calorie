@@ -57,6 +57,6 @@ public class IngredientsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!drawerPresenter.onBackPressed()) super.onBackPressed();
+        if (drawerPresenter.onBackPressed()) super.onBackPressed();
     }
 }

@@ -41,7 +41,6 @@ public class DatabaseTest {
 
     private static final int SIZE = 100_000;
 
-
     @Before
     public void setUp() throws Exception {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();

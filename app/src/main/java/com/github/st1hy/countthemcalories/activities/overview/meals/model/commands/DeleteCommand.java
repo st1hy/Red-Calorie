@@ -14,6 +14,8 @@ import java.util.List;
 
 import rx.Observable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class DeleteCommand implements Command<Void, Meal> {
 
     @NonNull
@@ -39,7 +41,7 @@ public class DeleteCommand implements Command<Void, Meal> {
     @Override
     public CommandResponse<Void, Meal> call() throws Exception {
         Pair<Meal, List<Ingredient>> whatsRemoved = databaseModel.performRemoveRaw(meal);
-        return new DeleteResponse(whatsRemoved.first, whatsRemoved.second);
+        return new DeleteResponse(checkNotNull(whatsRemoved.first), checkNotNull(whatsRemoved.second));
     }
 
     private class DeleteResponse extends AbstractCommandResponse<Void, Meal> {

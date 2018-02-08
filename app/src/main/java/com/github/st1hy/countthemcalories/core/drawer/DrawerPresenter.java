@@ -31,14 +31,14 @@ public final class DrawerPresenter implements BasicLifecycle, NavigationView.OnN
     }
 
     /**
-     * @return true if back event was handled
+     * @return true if back event was not handled
      */
     public boolean onBackPressed() {
         if (view.isDrawerOpen()) {
             view.closeDrawer();
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override

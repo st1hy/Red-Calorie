@@ -96,7 +96,6 @@ public class IngredientActivityTest {
         ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         session = component.getDaoSession();
         addExampleIngredientsTagsAndJoin(session);
-        session.getIngredientTemplateDao();
     }
 
     public static void addExampleIngredientsTagsAndJoin(DaoSession session) {

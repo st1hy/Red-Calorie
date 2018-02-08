@@ -118,14 +118,13 @@ public class TimePeriod {
 
         TimePeriod that = (TimePeriod) o;
 
-        if (Float.compare(that.min, min) != 0) return false;
-        if (Float.compare(that.max, max) != 0) return false;
-        if (Float.compare(that.average, average) != 0) return false;
-        if (Float.compare(that.median, median) != 0) return false;
-        if (Float.compare(that.minWeight, minWeight) != 0) return false;
-        if (Float.compare(that.maxWeight, maxWeight) != 0) return false;
-        return data != null ? data.equals(that.data) : that.data == null;
-
+        return Float.compare(that.min, min) == 0
+                && Float.compare(that.max, max) == 0
+                && Float.compare(that.average, average) == 0
+                && Float.compare(that.median, median) == 0
+                && Float.compare(that.minWeight, minWeight) == 0
+                && Float.compare(that.maxWeight, maxWeight) == 0
+                && (data != null ? data.equals(that.data) : that.data == null);
     }
 
     @Override

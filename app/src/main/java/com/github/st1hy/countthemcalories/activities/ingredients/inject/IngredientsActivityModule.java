@@ -42,6 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
         ActivityLauncherModule.class,
         PermissionModule.class,
 })
+@SuppressWarnings("Guava")
 public abstract class IngredientsActivityModule {
 
     private final static int DEBOUNCE_TIME_MS = 250;

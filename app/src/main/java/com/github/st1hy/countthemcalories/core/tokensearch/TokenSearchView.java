@@ -80,7 +80,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
         }
         if (requestFocus) searchView.requestFocus();
         InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(searchView, 0);
+        if (imm != null) imm.showSoftInput(searchView, 0);
     }
 
     public void collapse() {
@@ -93,7 +93,7 @@ public class TokenSearchView extends FrameLayout implements Searchable {
             searchView.setVisibility(INVISIBLE);
         }
         InputMethodManager imm = (InputMethodManager) searchView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
 
     @TargetApi(21)

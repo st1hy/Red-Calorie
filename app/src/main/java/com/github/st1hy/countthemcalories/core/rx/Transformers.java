@@ -29,6 +29,7 @@ public final class Transformers {
             this.target = target;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public Observable<T> call(Observable<T> source) {
             return source.doOnEach(notification -> {

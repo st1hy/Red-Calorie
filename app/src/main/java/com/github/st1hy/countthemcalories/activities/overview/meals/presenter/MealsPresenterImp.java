@@ -36,6 +36,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.github.st1hy.countthemcalories.activities.overview.meals.adapter.MealInteraction.ofType;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @PerFragment
 public class MealsPresenterImp implements MealsPresenter {
@@ -141,7 +142,7 @@ public class MealsPresenterImp implements MealsPresenter {
     private void editMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = adapter.getMealPositionWithId(mealId);
         if (mealPair != null) {
-            openEditScreen(mealPair.second);
+            openEditScreen(checkNotNull(mealPair.second));
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }
@@ -150,7 +151,7 @@ public class MealsPresenterImp implements MealsPresenter {
     private void deleteMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = adapter.getMealPositionWithId(mealId);
         if (mealPair != null) {
-            deleteMeal(mealPair.second, mealPair.first);
+            deleteMeal(checkNotNull(mealPair.second), checkNotNull(mealPair.first));
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }

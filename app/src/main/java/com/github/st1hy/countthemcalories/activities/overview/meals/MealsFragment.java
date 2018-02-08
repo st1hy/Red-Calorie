@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.meals;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
 
 import javax.inject.Inject;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class MealsFragment extends BaseFragment {
 
     public static final String ARG_CURRENT_PAGE = "current page";
@@ -26,7 +29,7 @@ public class MealsFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.overview_list, container, false);
     }
@@ -36,7 +39,7 @@ public class MealsFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         OverviewActivity activity = (OverviewActivity) getActivity();
-        activity.getMealsFragmentComponentFactory()
+        checkNotNull(activity).getMealsFragmentComponentFactory()
                 .newOverviewFragmentComponent(new FragmentModule(this, savedInstanceState))
                 .inject(this);
     }

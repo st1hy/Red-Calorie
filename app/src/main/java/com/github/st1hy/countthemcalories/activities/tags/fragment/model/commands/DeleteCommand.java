@@ -16,6 +16,8 @@ import java.util.List;
 
 import rx.Observable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 class DeleteCommand implements Command<Cursor, InsertResult> {
     @NonNull
     private final RxTagsDatabaseModel databaseModel;
@@ -41,7 +43,7 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
     public CommandResponse<Cursor, InsertResult> call() throws Exception {
         Pair<Tag, List<JointIngredientTag>> tagListPair = databaseModel.rawRemove(tag);
         Cursor cursor = databaseModel.refresh().call();
-        return new DeleteResponse(cursor, tagListPair.first, tagListPair.second);
+        return new DeleteResponse(cursor, checkNotNull(tagListPair.first), checkNotNull(tagListPair.second));
     }
 
     private class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {

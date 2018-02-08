@@ -22,6 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 @PerActivity
+@SuppressWarnings("Guava")
 public class IngredientsPresenter implements BasicLifecycle {
 
     @Inject
@@ -78,10 +79,11 @@ public class IngredientsPresenter implements BasicLifecycle {
     }
 
     public void onResume() {
+        Optional<String> filter = this.filter;
         if (filter.isPresent()) {
             view.setQuery("", Collections.singletonList(filter.get()));
             view.expand(false);
-            filter = Optional.absent();
+            this.filter = Optional.absent();
         }
     }
 

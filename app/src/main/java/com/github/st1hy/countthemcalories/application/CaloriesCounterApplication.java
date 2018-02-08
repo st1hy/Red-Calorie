@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.application;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.github.st1hy.countthemcalories.database.application.DatabaseApplicati
 import rx.plugins.RxJavaErrorHandler;
 import rx.plugins.RxJavaPlugins;
 
+@SuppressLint("Registered") // It is registered, but lint looks elsewhere
 public class CaloriesCounterApplication extends DatabaseApplication {
     private ApplicationComponent component;
 
@@ -33,10 +35,12 @@ public class CaloriesCounterApplication extends DatabaseApplication {
     }
 
     @Override
+    @SuppressWarnings("LogNotTimber")
     public void onCreate() {
         super.onCreate();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //noinspection deprecation
             RxJavaPlugins.getInstance().registerErrorHandler(new RxJavaErrorHandler() {
                 @Override
                 public void handleError(Throwable e) {

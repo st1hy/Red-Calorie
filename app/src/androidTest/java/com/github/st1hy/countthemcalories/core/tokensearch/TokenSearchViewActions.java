@@ -20,7 +20,7 @@ public class TokenSearchViewActions {
 
     private static class ExpandClickAction implements ViewAction {
 
-        private final ViewAction click = new GeneralClickAction(Tap.SINGLE, GeneralLocation.VISIBLE_CENTER, Press.FINGER);
+        private final ViewAction click = new GeneralClickAction(Tap.SINGLE, GeneralLocation.VISIBLE_CENTER, Press.FINGER, 0, 0);
 
         @Override
         public Matcher<View> getConstraints() {

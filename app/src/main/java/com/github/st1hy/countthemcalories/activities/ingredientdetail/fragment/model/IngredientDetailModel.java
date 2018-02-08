@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import javax.inject.Inject;
 
 @PerFragment
+@SuppressWarnings("Guava")
 public class IngredientDetailModel {
 
     public static final String SAVED_INGREDIENT_MODEL = "saved ingredient model";

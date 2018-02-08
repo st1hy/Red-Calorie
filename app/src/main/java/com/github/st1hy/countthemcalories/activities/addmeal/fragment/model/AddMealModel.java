@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 @PerFragment
+@SuppressWarnings("Guava")
 public class AddMealModel implements PictureModel {
     public static final String SAVED_MEAL_STATE = "add meal model";
 

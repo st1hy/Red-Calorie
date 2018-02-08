@@ -27,6 +27,7 @@ public class GraphPresenter implements BasicLifecycle {
     }
 
     public void onStart() {
+        //noinspection Convert2MethodRef min api 24
         subscriptions.add(
                 Observable.just(model.getTimePeriod())
                         .filter(model -> model != null)

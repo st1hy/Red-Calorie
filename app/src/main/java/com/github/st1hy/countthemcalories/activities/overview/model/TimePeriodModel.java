@@ -32,23 +32,22 @@ import rx.subjects.PublishSubject;
 public class TimePeriodModel extends AbstractRxDatabaseModel {
 
     private final Provider<CursorQuery> queryProvider = SingleCheck.provider(() -> {
-        StringBuilder sql = new StringBuilder(512);
-        sql.append("SELECT ");
-        sql.append("M.").append(MealDao.Properties.CreationDate.columnName).append(", ");
-        sql.append("I.").append(IngredientDao.Properties.Amount.columnName).append(", ");
-        sql.append("IT.").append(IngredientTemplateDao.Properties.EnergyDensityAmount.columnName).append(", ");
-        sql.append("IT.").append(IngredientTemplateDao.Properties.AmountType.columnName).append(" ");
-        sql.append("from ").append(MealDao.TABLENAME).append(" M ");
-        sql.append("join ").append(IngredientDao.TABLENAME).append(" I ");
-        sql.append("on I.").append(IngredientDao.Properties.PartOfMealId.columnName)
-                .append(" = M.").append(MealDao.Properties.Id.columnName).append(" ");
-        sql.append("join ").append(IngredientTemplateDao.TABLENAME).append(" IT ");
-        sql.append("on I.").append(IngredientDao.Properties.IngredientTypeId.columnName)
-                .append(" = IT.").append(IngredientTemplateDao.Properties.Id.columnName).append(" ");
-        sql.append("where M.").append(MealDao.Properties.CreationDate.columnName).append(" ");
-        sql.append("between ").append("(?) and (?) ");
-        sql.append("order by M.").append(MealDao.Properties.CreationDate.columnName).append(" asc;");
-        return CursorQuery.internalCreate(dao(), sql.toString(), new Object[2]);
+        String sql = "SELECT " +
+                "M." + MealDao.Properties.CreationDate.columnName + ", " +
+                "I." + IngredientDao.Properties.Amount.columnName + ", " +
+                "IT." + IngredientTemplateDao.Properties.EnergyDensityAmount.columnName + ", " +
+                "IT." + IngredientTemplateDao.Properties.AmountType.columnName + " " +
+                "from " + MealDao.TABLENAME + " M " +
+                "join " + IngredientDao.TABLENAME + " I " +
+                "on I." + IngredientDao.Properties.PartOfMealId.columnName +
+                " = M." + MealDao.Properties.Id.columnName + " " +
+                "join " + IngredientTemplateDao.TABLENAME + " IT " +
+                "on I." + IngredientDao.Properties.IngredientTypeId.columnName +
+                " = IT." + IngredientTemplateDao.Properties.Id.columnName + " " +
+                "where M." + MealDao.Properties.CreationDate.columnName + " " +
+                "between " + "(?) and (?) " +
+                "order by M." + MealDao.Properties.CreationDate.columnName + " asc;";
+        return CursorQuery.internalCreate(dao(), sql, new Object[2]);
     });
 
     private final Provider<Query<Weight>> weightQueryProvider = SingleCheck.provider(() -> session()

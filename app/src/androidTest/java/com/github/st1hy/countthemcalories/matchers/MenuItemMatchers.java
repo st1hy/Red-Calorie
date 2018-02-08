@@ -104,6 +104,7 @@ public class MenuItemMatchers {
         }
 
         @Override
+        @NonNull
         public Iterator<MenuItem> iterator() {
             return new Iterator<MenuItem>() {
                 int i = 0;

@@ -33,6 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func2;
 import rx.subscriptions.CompositeSubscription;
 
+@SuppressWarnings("Guava")
 @PerFragment
 public class AddIngredientPresenterImp implements AddIngredientPresenter {
 
@@ -108,7 +109,7 @@ public class AddIngredientPresenterImp implements AddIngredientPresenter {
                 view.getSelectTypeObservable()
                         .flatMap(aVoid -> {
                             final List<Pair<AmountUnit, CharSequence>> optionsList = modelHelper.getSelectTypeDialogOptions();
-                            CharSequence[] options = Collections2.transform(optionsList, input -> input != null ? input.second : "")
+                            CharSequence[] options = Collections2.transform(optionsList, input -> input.second)
                                     .toArray(new CharSequence[optionsList.size()]);
                             return dialogView.showAlertDialog(model.getSelectTypeDialogTitle(), options)
                                     .map(position -> optionsList.get(position).first);

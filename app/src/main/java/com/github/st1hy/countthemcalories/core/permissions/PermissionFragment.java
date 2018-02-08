@@ -1,5 +1,6 @@
 package com.github.st1hy.countthemcalories.core.permissions;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 
@@ -30,7 +32,8 @@ public class PermissionFragment extends Fragment implements PermissionSubject {
 
     @Override
     public int checkSelfPermission(@NonNull String permission) {
-        return ActivityCompat.checkSelfPermission(getContext(), permission);
+        Context context = Preconditions.checkNotNull(getContext());
+        return ActivityCompat.checkSelfPermission(context, permission);
     }
 
     @CheckResult

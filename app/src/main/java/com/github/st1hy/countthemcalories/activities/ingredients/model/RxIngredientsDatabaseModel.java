@@ -217,15 +217,14 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     @NonNull
     @Override
     protected CursorQuery filteredSortedByNameQuery() {
-        StringBuilder sql = new StringBuilder(300);
-        sql.append("SELECT I.*, N.* FROM INGREDIENTS_TEMPLATE I LEFT JOIN i18n N ON I.name = N.en");
-        sql.append(" WHERE (");
-        sql.append(" I.creation_source = 1 AND I.name LIKE ?");
-        sql.append(") OR (");
-        sql.append(" I.creation_source = 0 AND N.").append(I18n.selectColumnByLocale(Locale.getDefault())).append(" LIKE ?");
-        sql.append(" )");
-        sql.append(" ORDER BY I.name ASC;");
-        return CursorQuery.internalCreate(dao(), sql.toString(), new Object[]{"", ""});
+        String sql = "SELECT I.*, N.* FROM INGREDIENTS_TEMPLATE I LEFT JOIN i18n N ON I.name = N.en" +
+                " WHERE (" +
+                " I.creation_source = 1 AND I.name LIKE ?" +
+                ") OR (" +
+                " I.creation_source = 0 AND N." + I18n.selectColumnByLocale(Locale.getDefault()) + " LIKE ?" +
+                " )" +
+                " ORDER BY I.name ASC;";
+        return CursorQuery.internalCreate(dao(), sql, new Object[]{"", ""});
     }
 
     @NonNull

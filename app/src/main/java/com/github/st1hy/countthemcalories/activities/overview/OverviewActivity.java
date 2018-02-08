@@ -72,6 +72,6 @@ public class OverviewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!drawerPresenter.onBackPressed()) super.onBackPressed();
+        if (drawerPresenter.onBackPressed()) super.onBackPressed();
     }
 }

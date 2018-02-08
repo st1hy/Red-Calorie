@@ -38,6 +38,7 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 @PerFragment
+@SuppressWarnings("Guava")
 public class AddMealPresenterImp implements AddMealPresenter {
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();

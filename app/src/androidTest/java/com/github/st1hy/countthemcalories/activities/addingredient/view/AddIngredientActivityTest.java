@@ -84,7 +84,6 @@ public class AddIngredientActivityTest {
     public void onSetUp() {
         CaloriesCounterApplication applicationContext = (CaloriesCounterApplication) getTargetContext()
                 .getApplicationContext();
-        ;
         ApplicationTestComponent component = (ApplicationTestComponent) applicationContext.getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();

@@ -28,7 +28,7 @@ public abstract class FragmentTransactionModule {
                 fragment = fragmentLocation.newFragment();
                 if (fragmentTransaction == null) {
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.setAllowOptimization(true);
+                    fragmentTransaction.setReorderingAllowed(true);
                 }
                 int rootViewId = fragmentLocation.getRootViewId();
                 if (rootViewId != FragmentLocation.NO_ID) {
