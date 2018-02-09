@@ -36,18 +36,16 @@
             android:textSize="15sp" />
     </FrameLayout>
 
-
-    <com.l4digital.fastscroll.FastScrollRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/tags_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarFadeDuration="1000"
-        app:bubbleColor="@color/colorPrimaryDark"
-        app:bubbleTextColor="#ffffff"
-        app:handleColor="@color/colorPrimaryDark"
-        app:trackColor="@color/colorPrimaryDark"
-        app:hideScrollbar="true"
-        app:showTrack="false"
-        tools:listitem="@layout/tags_item_inner" />
+        tools:listitem="@layout/tags_item_inner"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
+        app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"/>
 
 </FrameLayout>

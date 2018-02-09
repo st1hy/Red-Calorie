@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.tags.fragment.adapter;
 
 import android.database.Cursor;
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 import com.google.common.base.Strings;
-import com.l4digital.fastscroll.FastScroller;
 
 import javax.inject.Inject;
 
@@ -50,8 +48,8 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 @PerFragment
-public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction,
-        FastScroller.SectionIndexer {
+public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements OnTagInteraction
+         {
 
     private static final int item_layout = R.layout.tags_item_scrolling;
     private static final int space_bottom = R.layout.list_item_bottom;
@@ -82,12 +80,12 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public TagsDaoAdapter(@NonNull TagsView view,
-                          @NonNull RxTagsDatabaseModel databaseModel,
-                          @NonNull TagsFragmentModel fragmentModel,
-                          @NonNull TagsViewModel viewModel,
-                          @NonNull TagsDatabaseCommands commands,
-                          @NonNull UndoView undoView) {
+    TagsDaoAdapter(@NonNull TagsView view,
+                   @NonNull RxTagsDatabaseModel databaseModel,
+                   @NonNull TagsFragmentModel fragmentModel,
+                   @NonNull TagsViewModel viewModel,
+                   @NonNull TagsDatabaseCommands commands,
+                   @NonNull UndoView undoView) {
         super(databaseModel);
         this.view = view;
         this.databaseModel = databaseModel;
@@ -122,8 +120,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         closeCursor(true);
     }
 
-    @CallSuper
-    protected void addSubscription(@NonNull Subscription subscription) {
+    private void addSubscription(@NonNull Subscription subscription) {
         subscriptions.add(subscription);
     }
 
@@ -198,6 +195,12 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         } else {
             view.openIngredientsFilteredBy(tag.getDisplayName());
         }
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(TagViewHolder holder) {
+        Timber.w("Failed to recycle ");
+        return true;//super.onFailedToRecycleView(holder);
     }
 
     @Override
@@ -369,8 +372,7 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
         };
     }
 
-    @Override
-    public String getSectionText(int position) {
+    public String getSectionTitle(int position) {
         Cursor cursor = getCursor();
         if (cursor != null) {
             position = positionInCursor(position);
@@ -380,7 +382,8 @@ public class TagsDaoAdapter extends RxDaoSearchAdapter<TagViewHolder> implements
                 position = 0;
             }
             cursor.moveToPosition(position);
-            String string = cursor.getString(cursor.getColumnIndexOrThrow(TagDao.Properties.Name.columnName));
+            String string = cursor.getString(cursor.getColumnIndexOrThrow(
+                    TagDao.Properties.Name.columnName));
             return string.substring(0, 1);
         } else {
             return "";

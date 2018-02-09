@@ -83,4 +83,8 @@
     </style>
     <style name="GraphRecycler.Default"/>
     <style name="GraphFragmentRoot"/>
+
+    <style name="StyledScrollerTextAppearance">
+        <item name="android:textColor">@color/colorBackground</item>
+    </style>
 </resources>

@@ -100,7 +100,6 @@ dependencies {
     provided "com.google.code.findbugs:jsr305:3.0.2"
     provided "com.google.errorprone:error_prone_annotations:2.2.0"
 
-    compile 'com.l4digital.fastscroll:fastscroll:1.0.4'
     compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
     compile 'de.hdodenhof:circleimageview:2.2.0'

@@ -57,9 +57,9 @@ public class TagItemHolder extends TagViewHolder {
     PositionDelegate position;
 
     @Inject
-    public TagItemHolder(@NonNull @TagRootView View itemView,
-                         @NonNull TagsViewModel viewModel,
-                         @NonNull OnTagInteraction callback) {
+    TagItemHolder(@NonNull @TagRootView View itemView,
+                  @NonNull TagsViewModel viewModel,
+                  @NonNull OnTagInteraction callback) {
         super(itemView);
         this.viewModel = viewModel;
         this.callback = callback;

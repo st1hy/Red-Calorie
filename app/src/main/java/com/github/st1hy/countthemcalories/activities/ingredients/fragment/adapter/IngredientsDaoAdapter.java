@@ -23,15 +23,13 @@ import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
-import com.l4digital.fastscroll.FastScroller;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 @PerFragment
-public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIngredientsViewHolder>
-        implements FastScroller.SectionIndexer {
+public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIngredientsViewHolder> {
 
     @LayoutRes
     private static final int ingredient_item_layout = R.layout.ingredients_item_scrolling;
@@ -162,7 +160,6 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         }
     }
 
-    @Override
     public String getSectionText(int position) {
         position = positionInCursor(position);
         if (position >= getDaoItemCount()) {

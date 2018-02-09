@@ -36,16 +36,11 @@
     </FrameLayout>
 
 
-    <com.l4digital.fastscroll.FastScrollRecyclerView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/ingredients_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/ingredients_item"
-        app:bubbleColor="@color/colorPrimaryDark"
-        app:bubbleTextColor="#ffffff"
-        app:handleColor="@color/colorPrimaryDark"
-        app:trackColor="@color/colorPrimaryDark"
-        app:hideScrollbar="true"
-        app:showTrack="false"/>
+        />
 
 </FrameLayout>
