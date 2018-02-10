@@ -17,6 +17,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         archivesBaseName = "Red Calorie ${versionName} (${versionCode})"
+
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -35,7 +37,6 @@ android {
         //Enable runtime development utilities such as leakcanary or tinydancer
         devtools {
             dimension "mode"
-            multiDexEnabled true
         }
         production {
             dimension "mode"
@@ -68,7 +69,7 @@ android {
 }
 
 configurations {
-    devtoolsDebugImplementation
+    devtoolsDebugCompile
 }
 
 repositories {
@@ -78,6 +79,9 @@ repositories {
 
 dependencies {
     implementation project(':database')
+    implementation project(':core')
+    implementation project(':ui')
+
     implementation "com.android.support:support-annotations:$support_library_version"
     implementation "com.android.support:recyclerview-v7:$support_library_version"
     implementation "com.android.support:appcompat-v7:$support_library_version"
@@ -109,8 +113,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.rom4ek:arcnavigationview:1.0.3'
 
-    devtoolsDebugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
-    devtoolsImplementation 'com.android.support:multidex:1.0.2'
+    devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
+    implementation 'com.android.support:multidex:1.0.2'
 
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary_version"
 
