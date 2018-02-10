@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.core.rx;
 
-import com.github.st1hy.countthemcalories.core.command.CommandResponse;
+import com.github.st1hy.countthemcalories.database.commands.CommandResponse;
 
 import rx.functions.Func1;
 

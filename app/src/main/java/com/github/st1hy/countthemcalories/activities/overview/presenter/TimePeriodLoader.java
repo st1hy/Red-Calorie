@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.activities.overview.presenter;
 
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
@@ -23,7 +23,7 @@ public class TimePeriodLoader implements BasicLifecycle {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Inject
-    public TimePeriodLoader() {
+    TimePeriodLoader() {
     }
 
     @Override

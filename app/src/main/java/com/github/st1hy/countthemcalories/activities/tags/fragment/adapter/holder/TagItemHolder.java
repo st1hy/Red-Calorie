@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagRootView;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.ClickEvent;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsViewModel;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Type;
 import com.github.st1hy.countthemcalories.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.core.viewcontrol.ScrollingItemDelegate;
@@ -46,7 +48,6 @@ public class TagItemHolder extends TagViewHolder {
     View content;
 
     private final TagsViewModel viewModel;
-    private final OnTagInteraction callback;
     private final Tag tag;
     private final ScrollingItemDelegate scrollingItemDelegate;
     private boolean isEnabled;
@@ -54,15 +55,15 @@ public class TagItemHolder extends TagViewHolder {
     @Inject
     PublishSubject<TagViewHolder> stateChanges;
     @Inject
+    PublishSubject<ClickEvent> clickEvents;
+    @Inject
     PositionDelegate position;
 
     @Inject
-    public TagItemHolder(@NonNull @TagRootView View itemView,
-                         @NonNull TagsViewModel viewModel,
-                         @NonNull OnTagInteraction callback) {
+    TagItemHolder(@NonNull @TagRootView View itemView,
+                         @NonNull TagsViewModel viewModel) {
         super(itemView);
         this.viewModel = viewModel;
-        this.callback = callback;
         ButterKnife.bind(this, itemView);
         scrollingItemDelegate = ScrollingItemDelegate.Builder.create()
                 .setScrollView(scrollView)
@@ -75,19 +76,22 @@ public class TagItemHolder extends TagViewHolder {
     }
 
     @OnClick(R.id.tag_item_button)
-    public void onClick() {
-        if (isEnabled) callback.onTagClicked(position.get(), this);
+    void onClick() {
+        onEvent(Type.OPEN);
     }
 
-
     @OnClick(R.id.tags_item_delete)
-    public void onDeleteClicked() {
-        if (isEnabled) callback.onDeleteClicked(position.get(), this);
+    void onDeleteClicked() {
+        onEvent(Type.REMOVE);
     }
 
     @OnClick(R.id.tags_item_edit)
-    public void onEditClicked() {
-        if (isEnabled) callback.onEditClicked(position.get(), this);
+    void onEditClicked() {
+        onEvent(Type.EDIT);
+    }
+
+    private void onEvent(Type type) {
+        if (isEnabled) clickEvents.onNext(new ClickEvent(type, position.get(), this));
     }
 
     @NonNull

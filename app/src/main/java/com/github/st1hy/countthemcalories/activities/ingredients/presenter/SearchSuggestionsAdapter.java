@@ -8,7 +8,7 @@ import android.widget.Filter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.inject.PerActivity;

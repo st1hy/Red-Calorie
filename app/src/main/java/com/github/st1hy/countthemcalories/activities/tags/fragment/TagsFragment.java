@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.inject.TagsFragmentComponentFactory;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsPresenter;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsStateSaver;
 import com.github.st1hy.countthemcalories.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.inject.common.FragmentModule;
@@ -25,7 +25,7 @@ public class TagsFragment extends BaseFragment {
     private TagsFragmentComponentFactory componentFactory;
 
     @Inject
-    TagsDaoAdapter adapter;
+    TagsPresenter presenter;
     @Inject
     TagsStateSaver saver;
     @Inject
@@ -53,13 +53,13 @@ public class TagsFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.onStart();
+        presenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.onStop();
+        presenter.onStop();
     }
 
     @Override

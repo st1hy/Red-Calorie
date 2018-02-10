@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.activities.overview.graph.model;
 
 import org.junit.Test;
 
-import static com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod.median;
+import static com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod.median;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 

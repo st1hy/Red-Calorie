@@ -15,9 +15,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.adapte
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.adapter.CursorRecyclerViewAdapter;
-import com.github.st1hy.countthemcalories.core.command.InsertResult;
+import com.github.st1hy.countthemcalories.database.commands.InsertResult;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;

@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;

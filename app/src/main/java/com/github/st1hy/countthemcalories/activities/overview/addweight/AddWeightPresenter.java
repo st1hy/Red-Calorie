@@ -4,8 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.PagerModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
+import com.github.st1hy.countthemcalories.database.rx.RxDbWeightModel;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;

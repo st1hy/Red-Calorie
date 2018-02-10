@@ -17,7 +17,7 @@ public class ColorGenerator {
     private final Random random;
 
     @Inject
-    public ColorGenerator() {
+    ColorGenerator() {
         random = new Random(seed);
     }
 

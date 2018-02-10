@@ -40,7 +40,9 @@ repositories {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.android.support:support-annotations:$support_library_version"
+    implementation "com.android.support:support-compat:$support_library_version"
     implementation "io.reactivex:rxandroid:$rx_android_version"
     implementation "io.reactivex:rxjava:$rx_java_version"
     api "org.greenrobot:greendao:$green_dao_version"
@@ -55,4 +57,5 @@ dependencies {
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
     provided 'javax.annotation:javax.annotation-api:1.3'
+    implementation "com.google.guava:guava:$guava_version"
 }

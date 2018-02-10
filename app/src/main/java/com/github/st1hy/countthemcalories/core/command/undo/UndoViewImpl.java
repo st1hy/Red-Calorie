@@ -10,6 +10,8 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.core.rx.Functions;
 import com.github.st1hy.countthemcalories.core.rx.RxSnackbar;
+import com.github.st1hy.countthemcalories.database.commands.UndoAction;
+import com.github.st1hy.countthemcalories.database.commands.UndoView;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import javax.inject.Inject;

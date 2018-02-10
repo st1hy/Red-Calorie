@@ -21,6 +21,8 @@ import com.github.st1hy.countthemcalories.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerModule;
 import com.github.st1hy.countthemcalories.core.fragments.FragmentLocation;
 import com.github.st1hy.countthemcalories.core.permissions.PermissionModule;
+import com.github.st1hy.countthemcalories.database.DaoSession;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.quantifier.datetime.NewMealDate;
 
@@ -29,6 +31,7 @@ import org.joda.time.DateTime;
 import java.util.Map;
 
 import dagger.Binds;
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -91,6 +94,12 @@ public abstract class OverviewActivityModule {
         DateTime date = (DateTime) intent.getSerializableExtra(OverviewActivity.EXTRA_JUMP_TO_DATE);
         intent.removeExtra(OverviewActivity.EXTRA_JUMP_TO_DATE);
         return date;
+    }
+
+    @Provides
+    @PerActivity
+    static TimePeriodModel timePeriodModel(Lazy<DaoSession> sessionLazy) {
+        return new TimePeriodModel(sessionLazy);
     }
 
 }

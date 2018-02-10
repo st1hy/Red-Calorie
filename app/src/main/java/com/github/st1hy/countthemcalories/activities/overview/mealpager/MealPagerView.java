@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.github.st1hy.countthemcalories.inject.quantifier.context.ActivityContext;
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager;

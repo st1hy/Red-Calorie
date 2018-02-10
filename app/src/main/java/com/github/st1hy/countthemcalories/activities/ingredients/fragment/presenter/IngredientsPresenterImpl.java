@@ -11,9 +11,9 @@ import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.activities.ingredients.model.AddIngredientParams;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.activities.ingredients.model.commands.IngredientsDatabaseCommands;
-import com.github.st1hy.countthemcalories.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.commands.ingredients.IngredientsDatabaseCommands;
+import com.github.st1hy.countthemcalories.database.commands.UndoTransformer;
 import com.github.st1hy.countthemcalories.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.core.rx.Functions;

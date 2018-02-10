@@ -6,13 +6,12 @@ import android.view.View;
 
 public abstract class TagViewHolder extends RecyclerView.ViewHolder {
 
-
     TagViewHolder(@NonNull View itemView) {
         super(itemView);
     }
 
-
     public abstract void onAttached();
 
     public abstract void onDetached();
+
 }

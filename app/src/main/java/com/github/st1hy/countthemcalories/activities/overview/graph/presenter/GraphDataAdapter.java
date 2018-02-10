@@ -13,8 +13,8 @@ import com.github.st1hy.countthemcalories.activities.overview.graph.inject.colum
 import com.github.st1hy.countthemcalories.activities.overview.graph.inject.column.GraphColumnModule;
 import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnModel;
 import com.github.st1hy.countthemcalories.activities.overview.graph.view.GraphColumnViewHolder;
-import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
 import com.github.st1hy.countthemcalories.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.inject.PerFragment;
 

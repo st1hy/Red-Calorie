@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.activities.ingredients.presenter;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.activities.tags.fragment.model.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.core.tokensearch.SearchResult;

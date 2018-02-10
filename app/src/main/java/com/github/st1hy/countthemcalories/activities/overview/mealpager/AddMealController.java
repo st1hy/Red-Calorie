@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.addmeal.AddMealActivity;
-import com.github.st1hy.countthemcalories.activities.overview.model.DayData;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
 import com.github.st1hy.countthemcalories.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;

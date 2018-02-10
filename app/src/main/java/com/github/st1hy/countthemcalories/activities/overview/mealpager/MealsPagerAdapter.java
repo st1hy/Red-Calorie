@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.github.st1hy.countthemcalories.activities.overview.mealpager.inject.MealsPagerComponent;
 import com.github.st1hy.countthemcalories.activities.overview.meals.MealsFragment;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
 
 import javax.inject.Inject;

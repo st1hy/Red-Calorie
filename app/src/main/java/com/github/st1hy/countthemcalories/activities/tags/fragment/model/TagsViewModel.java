@@ -15,7 +15,7 @@ public class TagsViewModel {
     private final Resources resources;
 
     @Inject
-    public TagsViewModel(@NonNull Resources resources) {
+    TagsViewModel(@NonNull Resources resources) {
         this.resources = resources;
     }
 

@@ -11,9 +11,9 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.activities.tags.TagsActivity;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.TagsDaoAdapter;
-import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.OnTagInteraction;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.holder.TagViewHolder;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.adapter.inject.TagComponentFactory;
+import com.github.st1hy.countthemcalories.activities.tags.fragment.model.ClickEvent;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.Tags;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.model.TagsFragmentModel;
 import com.github.st1hy.countthemcalories.activities.tags.fragment.presenter.TagsStateSaver;
@@ -50,9 +50,6 @@ public abstract class TagsFragmentModule {
     @Binds
     public abstract TagComponentFactory tagComponent(TagsFragmentComponent component);
 
-    @Binds
-    public abstract OnTagInteraction onTagInteraction(TagsDaoAdapter adapter);
-
     @Provides
     @PerFragment
     public static RecyclerView recyclerView(@FragmentRootView View rootView,
@@ -79,6 +76,12 @@ public abstract class TagsFragmentModule {
     @Provides
     @PerFragment
     public static PublishSubject<TagViewHolder> stateChanges() {
+        return PublishSubject.create();
+    }
+
+    @Provides
+    @PerFragment
+    public static PublishSubject<ClickEvent> clickEvents() {
         return PublishSubject.create();
     }
 

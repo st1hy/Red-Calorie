@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.activities.overview.mealpager;
 
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriod;
-import com.github.st1hy.countthemcalories.activities.overview.model.TimePeriodModel;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.activities.overview.presenter.TimePeriodLoader;
 import com.github.st1hy.countthemcalories.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.inject.PerActivity;
