@@ -19,7 +19,7 @@ public interface CommandResponse<Response, UndoResponse> {
 
     /**
      * Provides live updates when undo action availability changes from true to false.
-     * It will replay last state once subscribed, may eventually call onNext(false) and than onCompleted()
+     * It will replay last state once subscribed, may eventually call onNext(false) and then onCompleted()
      */
     @NonNull
     Observable<Boolean> undoAvailability();

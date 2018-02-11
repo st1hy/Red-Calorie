@@ -17,6 +17,8 @@ import org.parceler.Parcel;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @Entity(active = true, nameInDb = "TAGS")
 @Parcel
 public class Tag {
@@ -37,7 +39,7 @@ public class Tag {
     @ToMany(joinProperties = {
             @JoinProperty(name = "id", referencedName = "tagId")
     })
-    List<JointIngredientTag> ingredientTypes;
+    List<IngredientTagJoint> ingredientTypes;
 
     @Transient
     I18n translations;
@@ -76,7 +78,7 @@ public class Tag {
         this.creationSource = tag.creationSource;
     }
 
-    public Tag(Long id, @NotNull String name) {
+    public Tag(@Nullable Long id, @NotNull String name) {
         this(id, name, CreationSource.USER);
     }
 
@@ -159,14 +161,14 @@ public class Tag {
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
     @Generated(hash = 1577862494)
-    public List<JointIngredientTag> getIngredientTypes() {
+    public List<IngredientTagJoint> getIngredientTypes() {
         if (ingredientTypes == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             JointIngredientTagDao targetDao = daoSession.getJointIngredientTagDao();
-            List<JointIngredientTag> ingredientTypesNew = targetDao
+            List<IngredientTagJoint> ingredientTypesNew = targetDao
                     ._queryTag_IngredientTypes(id);
             synchronized (this) {
                 if (ingredientTypes == null) {

@@ -3,81 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.github.st1hy.countthemcalories">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <application
         tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
         android:fullBackupContent="true"
-        android:theme="@style/AppTheme"
-        android:name=".application.CaloriesCounterApplication">
-        <activity
-            android:name=".activities.overview.OverviewActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.ingredients.IngredientsActivity"
-            android:label="@string/ingredients_title"
-            android:theme="@style/AppTheme.NoActionBar.Ingredients"
-            />
-        <activity
-            android:name=".activities.addmeal.AddMealActivity"
-            android:label="@string/add_meal_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            />
-        <activity android:name=".activities.addmeal.EditMealActivity"
-            android:label="@string/edit_meal_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            />
-        <activity android:name=".activities.addmeal.CopyMealActivity"
-            android:label="@string/copy_meal_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            />
-        <activity
-            android:name=".activities.addingredient.AddIngredientActivity"
-            android:label="@string/add_ingredient_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            />
-        <activity
-            android:name=".activities.addingredient.EditIngredientActivity"
-            android:label="@string/edit_ingredient_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            />
-        <activity
-            android:name=".activities.settings.SettingsActivity"
-            android:label="@string/settings_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
-        <activity
-            android:name=".activities.tags.TagsActivity"
-            android:label="@string/tags_title"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
-        <activity
-            android:name=".activities.ingredientdetail.IngredientDetailActivity"
-            android:label="@string/add_meal_title"
-            android:windowSoftInputMode="stateVisible|adjustResize"
-            android:theme="@style/AppTheme.Semitransparent"
-            />
-        <activity android:name=".activities.mealdetail.MealDetailActivity"
-            android:label="@string/meal_details_title"
-            android:theme="@style/AppTheme.Semitransparent"
-            />
+        android:name=".App">
     </application>
 
 </manifest>

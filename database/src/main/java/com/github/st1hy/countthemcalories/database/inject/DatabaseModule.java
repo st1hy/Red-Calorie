@@ -21,13 +21,13 @@ public abstract class DatabaseModule {
 
     @Provides
     @Singleton
-    public static DaoMaster providesDaoMaster(@NonNull SQLiteOpenHelper openHelper) {
+    static DaoMaster providesDaoMaster(@NonNull SQLiteOpenHelper openHelper) {
         return new DaoMaster(openHelper.getWritableDatabase());
     }
 
     @Provides
     @Singleton
-    public static DaoSession provideDaoSession(@NonNull DaoMaster daoMaster) {
+    static DaoSession provideDaoSession(@NonNull DaoMaster daoMaster) {
         return daoMaster.newSession();
     }
 }

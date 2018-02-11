@@ -57,7 +57,7 @@ public class IngredientTemplate {
     @ToMany(joinProperties = {
             @JoinProperty(name = "id", referencedName = "ingredientTypeId")
     })
-    List<JointIngredientTag> tags;
+    List<IngredientTagJoint> tags;
 
     @Transient
     I18n translations;
@@ -181,14 +181,14 @@ public class IngredientTemplate {
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
     @Generated(hash = 97163663)
-    public List<JointIngredientTag> getTags() {
+    public List<IngredientTagJoint> getTags() {
         if (tags == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             JointIngredientTagDao targetDao = daoSession.getJointIngredientTagDao();
-            List<JointIngredientTag> tagsNew = targetDao._queryIngredientTemplate_Tags(id);
+            List<IngredientTagJoint> tagsNew = targetDao._queryIngredientTemplate_Tags(id);
             synchronized (this) {
                 if (tags == null) {
                     tags = tagsNew;

@@ -3,8 +3,8 @@ package com.github.st1hy.countthemcalories.database.rx;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Meal;
 
 import java.util.List;
@@ -18,13 +18,13 @@ public class IngredientRemovalEffect {
     @NonNull
     private final List<Ingredient> childIngredients;
     @NonNull
-    private final List<JointIngredientTag> joins;
+    private final List<IngredientTagJoint> joins;
     @NonNull
     private final List<Meal> meals;
 
     public IngredientRemovalEffect(@NonNull IngredientTemplate template,
                                    @NonNull List<Ingredient> childIngredients,
-                                   @NonNull List<JointIngredientTag> joins,
+                                   @NonNull List<IngredientTagJoint> joins,
                                    @NonNull List<Meal> meals) {
         this.template = template;
         this.childIngredients = childIngredients;
@@ -43,7 +43,7 @@ public class IngredientRemovalEffect {
     }
 
     @NonNull
-    public List<JointIngredientTag> getJointedTags() {
+    public List<IngredientTagJoint> getJointedTags() {
         return joins;
     }
 

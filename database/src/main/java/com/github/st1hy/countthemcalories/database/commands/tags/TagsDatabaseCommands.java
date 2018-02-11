@@ -3,11 +3,11 @@ package com.github.st1hy.countthemcalories.database.commands.tags;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.commands.CommandResponse;
 import com.github.st1hy.countthemcalories.database.commands.InsertResult;
 import com.github.st1hy.countthemcalories.database.commands.UndoInvalidator;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class TagsDatabaseCommands {
 
     @NonNull
     Observable<CommandResponse<InsertResult, Cursor>> insert(@NonNull final Tag tag,
-                                                             @NonNull final List<JointIngredientTag> jTags) {
+                                                             @NonNull final List<IngredientTagJoint> jTags) {
         return new InsertCommand(databaseModel, this, tag, jTags)
                 .executeInTx()
                 .compose(insertInvalidator);

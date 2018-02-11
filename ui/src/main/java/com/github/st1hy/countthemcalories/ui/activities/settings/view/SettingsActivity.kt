@@ -1,0 +1,37 @@
+package com.github.st1hy.countthemcalories.ui.activities.settings.view
+
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import com.github.st1hy.countthemcalories.R
+import com.github.st1hy.countthemcalories.ui.core.baseview.BaseActivity
+import com.github.st1hy.countthemcalories.ui.core.baseview.getAppComponent
+import com.github.st1hy.countthemcalories.ui.core.drawer.DrawerPresenter
+import com.github.st1hy.countthemcalories.ui.inject.core.ActivityModule
+import javax.inject.Inject
+
+class SettingsActivity : BaseActivity() {
+
+    @Inject var drawerPresenter: DrawerPresenter? = null
+    @Inject var fragments: Map<String, Fragment>? = null //injects component
+
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.settings_activity)
+        getAppComponent().newSettingsActivityComponent(ActivityModule(this))
+                .inject(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        drawerPresenter!!.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        drawerPresenter!!.onStop()
+    }
+
+    override fun onBackPressed() {
+        if (drawerPresenter!!.onBackPressed()) super.onBackPressed()
+    }
+}

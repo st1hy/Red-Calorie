@@ -4,13 +4,13 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
+import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.commands.AbstractCommandResponse;
 import com.github.st1hy.countthemcalories.database.commands.Command;
 import com.github.st1hy.countthemcalories.database.commands.CommandResponse;
 import com.github.st1hy.countthemcalories.database.commands.InsertResult;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
-import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
 
 import java.util.List;
 
@@ -27,8 +27,8 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
     private final Tag tag;
 
     DeleteCommand(@NonNull RxTagsDatabaseModel databaseModel,
-                         @NonNull TagsDatabaseCommands commands,
-                         @NonNull Tag tag) {
+                  @NonNull TagsDatabaseCommands commands,
+                  @NonNull Tag tag) {
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.tag = tag;
@@ -41,18 +41,18 @@ class DeleteCommand implements Command<Cursor, InsertResult> {
 
     @Override
     public CommandResponse<Cursor, InsertResult> call() throws Exception {
-        Pair<Tag, List<JointIngredientTag>> tagListPair = databaseModel.rawRemove(tag);
+        Pair<Tag, List<IngredientTagJoint>> tagListPair = databaseModel.rawRemove(tag);
         Cursor cursor = databaseModel.refresh().call();
         return new DeleteResponse(cursor, checkNotNull(tagListPair.first), checkNotNull(tagListPair.second));
     }
 
     private class DeleteResponse extends AbstractCommandResponse<Cursor, InsertResult> {
         final Tag removedTag;
-        final List<JointIngredientTag> removedJTags;
+        final List<IngredientTagJoint> removedJTags;
 
         DeleteResponse(@NonNull Cursor cursor,
                        @NonNull Tag removedTag,
-                       @NonNull List<JointIngredientTag> removedJTags) {
+                       @NonNull List<IngredientTagJoint> removedJTags) {
             super(cursor, true);
             this.removedTag = removedTag;
             this.removedJTags = removedJTags;

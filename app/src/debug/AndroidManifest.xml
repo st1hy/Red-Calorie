@@ -6,7 +6,7 @@
     <application
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:name"
-        android:name=".application.DebugApplication"
+        android:name=".DebugApp"
         android:fullBackupContent="true">
     </application>
 

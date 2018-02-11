@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:minWidth="60dp"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumn
+        android:id="@+id/graph_item_column"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:foreground="@drawable/graph_item_ripple"
+        android:layout_weight="1" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="4dp" />
+
+    <TextView
+        android:id="@+id/graph_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_weight="0"
+        android:textColor="@color/colorAppBackground"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        tools:text="02.12" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="8dp" />
+</LinearLayout>

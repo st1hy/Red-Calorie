@@ -48,7 +48,7 @@ class DeleteCommand implements Command<Void, Meal> {
         final Meal removedMeal;
         final List<Ingredient> removedIngredients;
 
-        public DeleteResponse(@NonNull Meal removedMeal,
+        DeleteResponse(@NonNull Meal removedMeal,
                               @NonNull List<Ingredient> removedIngredients) {
             super(null, true);
             this.removedMeal = removedMeal;

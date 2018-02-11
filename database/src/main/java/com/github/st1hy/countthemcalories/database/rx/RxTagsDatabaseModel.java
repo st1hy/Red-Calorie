@@ -6,8 +6,8 @@ import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.I18n;
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;
@@ -41,7 +41,7 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     I18nModel i18nModel;
 
     @Inject
-    public RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
+    RxTagsDatabaseModel(@NonNull Lazy<DaoSession> lazySession) {
         super(lazySession);
         this.dao = DoubleCheck.lazy(() -> session().getTagDao());
     }
@@ -61,6 +61,11 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
         int counter = cursor.getInt(COLUMN_COUNT_NUMBER);
         output.setIngredientCount(counter);
         session().getI18nDao().readEntity(cursor, output.getTranslations(), I18N_OFFSET);
+    }
+
+    @NonNull
+    public String readName(@NonNull Cursor cursor) {
+        return cursor.getString(cursor.getColumnIndexOrThrow(TagDao.Properties.Name.columnName));
     }
 
     @NonNull
@@ -92,10 +97,10 @@ public class RxTagsDatabaseModel extends RxDatabaseModel<Tag> {
     }
 
     @NonNull
-    public Pair<Tag, List<JointIngredientTag>> rawRemove(@NonNull Tag tag) {
-        List<JointIngredientTag> joinTagIngredients = tag.getIngredientTypes();
+    public Pair<Tag, List<IngredientTagJoint>> rawRemove(@NonNull Tag tag) {
+        List<IngredientTagJoint> joinTagIngredients = tag.getIngredientTypes();
         tag.delete();
-        for (JointIngredientTag join : joinTagIngredients) {
+        for (IngredientTagJoint join : joinTagIngredients) {
             IngredientTemplate ingredient = join.getIngredientType();
             join.delete();
             ingredient.getTags().remove(join);

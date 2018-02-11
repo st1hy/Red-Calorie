@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.database.commands.tags;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.commands.AbstractCommandResponse;
 import com.github.st1hy.countthemcalories.database.commands.Command;
@@ -10,7 +11,6 @@ import com.github.st1hy.countthemcalories.database.commands.CommandResponse;
 import com.github.st1hy.countthemcalories.database.commands.InsertResult;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Tag;
 
 import java.util.List;
@@ -25,12 +25,12 @@ class InsertCommand implements Command<InsertResult, Cursor> {
     @NonNull
     private final Tag tag;
     @NonNull
-    private final List<JointIngredientTag> jTags;
+    private final List<IngredientTagJoint> jTags;
 
     InsertCommand(@NonNull RxTagsDatabaseModel databaseModel,
                          @NonNull TagsDatabaseCommands commands,
                          @NonNull Tag tag,
-                         @NonNull List<JointIngredientTag> jTags) {
+                         @NonNull List<IngredientTagJoint> jTags) {
         this.databaseModel = databaseModel;
         this.commands = commands;
         this.tag = tag;
@@ -56,7 +56,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
     }
 
     private void resetIngredients() {
-        for (JointIngredientTag jTag : jTags) {
+        for (IngredientTagJoint jTag : jTags) {
             IngredientTemplate ingredientType = jTag.getIngredientType();
             ingredientType.resetTags();
             ingredientType.getTags();

@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.database.commands.ingredients;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.rx.IngredientRemovalEffect;
 import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.database.commands.AbstractCommandResponse;
@@ -13,7 +14,6 @@ import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.Meal;
 
 import rx.Observable;
@@ -50,7 +50,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
         template.getTags();
         session.getMealDao().insertOrReplaceInTx(whatsRemoved.getMeals());
         session.getIngredientDao().insertOrReplaceInTx(whatsRemoved.getChildIngredients());
-        for (JointIngredientTag jTag : whatsRemoved.getJointedTags()) {
+        for (IngredientTagJoint jTag : whatsRemoved.getJointedTags()) {
             jTag.refresh();
         }
         for (Ingredient ingredient : whatsRemoved.getChildIngredients()) {

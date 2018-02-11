@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao.Properties;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
@@ -122,13 +122,13 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         return () -> {
             dao().insertOrReplace(ingredientTemplate);
             ingredientTemplate.resetTags();
-            List<JointIngredientTag> jTags = ingredientTemplate.getTags();
-            for (JointIngredientTag jTag : jTags) {
+            List<IngredientTagJoint> jTags = ingredientTemplate.getTags();
+            for (IngredientTagJoint jTag : jTags) {
                 if (!tagIds.contains(jTag.getTagId())) {
                     jTag.delete();
                 }
             }
-            Collection<Long> currentTagIds = Collections2.transform(jTags, JointIngredientTag::getTagId);
+            Collection<Long> currentTagIds = Collections2.transform(jTags, IngredientTagJoint::getTagId);
             for (Long tagId : tagIds) {
                 if (!currentTagIds.contains(tagId)) {
                     addJointTagWithIngredientTemplate(ingredientTemplate, tagId);
@@ -147,7 +147,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
         JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
         TagDao tagDao = session().getTagDao();
         Tag tag = tagDao.load(tagId);
-        JointIngredientTag join = new JointIngredientTag(null);
+        IngredientTagJoint join = new IngredientTagJoint(null);
         join.setTag(tag);
         join.setIngredientType(template);
         jointDao.insert(join);
@@ -164,7 +164,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     public IngredientRemovalEffect performRemoveRaw(@NonNull IngredientTemplate data) {
         List<Ingredient> childIngredients = data.getChildIngredients();
         List<Meal> removedMeals = new LinkedList<>();
-        List<JointIngredientTag> tags = data.getTags();
+        List<IngredientTagJoint> tags = data.getTags();
         data.delete();
         for (Ingredient ingredient : childIngredients) {
             Meal meal = ingredient.getPartOfMeal();
@@ -177,7 +177,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
                 removedMeals.add(meal);
             }
         }
-        for (JointIngredientTag join : tags) {
+        for (IngredientTagJoint join : tags) {
             join.delete();
         }
         session().clear();
@@ -298,8 +298,8 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     public Observable<IngredientTemplate> getByIdRecursive(final long id) {
         return fromDatabaseTask(() -> {
             IngredientTemplate ingredientTemplate = performGetById(id);
-            for (JointIngredientTag jointIngredientTag : ingredientTemplate.getTags()) {
-                Tag tag = jointIngredientTag.getTag();
+            for (IngredientTagJoint ingredientTagJoint : ingredientTemplate.getTags()) {
+                Tag tag = ingredientTagJoint.getTag();
                 loadTranslation(tag);
             }
             return ingredientTemplate;
