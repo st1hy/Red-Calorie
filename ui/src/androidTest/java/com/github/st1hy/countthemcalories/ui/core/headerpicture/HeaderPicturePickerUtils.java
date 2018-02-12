@@ -5,9 +5,8 @@ import android.net.Uri;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.ui.contract.AppComponentProvider;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseActivity;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -26,13 +25,11 @@ public class HeaderPicturePickerUtils {
     public HeaderPicturePickerUtils() {
     }
 
-    //Singleton with temporary reference to picker in fragment scope may leak memory thus its a weak reference.
     private WeakReference<TestPicturePicker> injectedPicker = new WeakReference<>(null);
 
     public static void setTempUri(BaseActivity activity, Uri uri) {
-        CaloriesCounterApplication application = (CaloriesCounterApplication) activity
-                .getApplication();
-        ApplicationTestComponent component = (ApplicationTestComponent) application.getComponent();
+        AppComponentProvider componentProvider = (AppComponentProvider) activity.getApplication();
+        AppTestComponent component = (AppTestComponent) componentProvider.getComponent();
         HeaderPicturePickerUtils utils = component.testHeaderPicturePickerUtils();
         TestPicturePicker testPicturePicker = utils.injectedPicker.get();
         if (testPicturePicker != null) testPicturePicker.setTempImageUri(uri);

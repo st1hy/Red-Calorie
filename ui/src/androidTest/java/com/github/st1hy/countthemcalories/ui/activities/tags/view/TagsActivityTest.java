@@ -9,18 +9,18 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
+import com.github.st1hy.countthemcalories.database.DaoSession;
+import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.database.TagDao;
 import com.github.st1hy.countthemcalories.ui.actions.CTCViewActions;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.view.IngredientActivityTest;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewActivityTest;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Tags;
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
-import com.github.st1hy.countthemcalories.database.DaoSession;
-import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.database.TagDao;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
-import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.ui.core.tokensearch.TokenSearchViewActions;
+import com.github.st1hy.countthemcalories.ui.inject.AppTestComponent;
+import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.google.common.collect.Lists;
 
 import org.hamcrest.Matcher;
@@ -54,7 +54,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -73,7 +72,7 @@ public class TagsActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        AppTestComponent component = (AppTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         OverviewActivityTest.addExampleMealsIngredientsTags(component.getDaoSession());
     }
 

@@ -16,7 +16,7 @@ public class ProductionOpenHelper extends SQLiteAssetHelper {
     private static final int DATABASE_VERSION = DaoMaster.SCHEMA_VERSION;
 
     @Inject
-    public ProductionOpenHelper(@Named("appContext") Context context) {
+    ProductionOpenHelper(@Named("appContext") Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 }

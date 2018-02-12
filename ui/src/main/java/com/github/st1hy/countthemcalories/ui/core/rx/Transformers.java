@@ -34,13 +34,13 @@ public final class Transformers {
         public Observable<T> call(Observable<T> source) {
             return source.doOnEach(notification -> {
                 switch (notification.getKind()) {
-                    case Kind.OnNext:
+                    case OnNext:
                         target.onNext((T) notification.getValue());
                         break;
-                    case Kind.OnError:
+                    case OnError:
                         target.onError(notification.getThrowable());
                         break;
-                    case Kind.OnCompleted:
+                    case OnCompleted:
                         target.onCompleted();
                         break;
                 }

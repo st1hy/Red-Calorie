@@ -3,7 +3,10 @@ package com.github.st1hy.countthemcalories.utils
 import android.database.Cursor
 import com.github.st1hy.countthemcalories.database.commands.tags.TagsDatabaseCommands
 import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel
-import com.github.st1hy.countthemcalories.ui.contract.*
+import com.github.st1hy.countthemcalories.ui.contract.CommandResponse
+import com.github.st1hy.countthemcalories.ui.contract.InsertResult
+import com.github.st1hy.countthemcalories.ui.contract.Tag
+import com.github.st1hy.countthemcalories.ui.contract.TagsRepo
 import dagger.Reusable
 import rx.Observable
 import javax.inject.Inject
@@ -19,18 +22,17 @@ class TagsRepoAdapter @Inject constructor() : TagsRepo {
     override fun query(id: Long): Observable<Tag> = model.getById(id)
             .map { tag -> TagAdapter(tag) }
 
-    override fun insert(tag: Tag,
-                        jTags: List<TaggedIngredient>)
-            : Observable<CommandResponse<InsertResult, Cursor>> = commands.insert(inner(tag))
-            .map { response ->
-                CommandResponseAdapter(response, dbInsertResultToUi, ::oneToOne)
-            }
+    override fun insert(tag: Tag): Observable<CommandResponse<InsertResult, Cursor>> =
+            commands.insert(inner(tag))
+                    .map { response ->
+                        CommandResponseAdapter(response, dbInsertResultToUi, ::oneToOne)
+                    }
 
-    override fun delete(tag: Tag)
-            : Observable<CommandResponse<Cursor, InsertResult>> = commands.delete(inner(tag))
-            .map { response ->
-                CommandResponseAdapter(response, ::oneToOne, dbInsertResultToUi)
-            }
+    override fun delete(tag: Tag): Observable<CommandResponse<Cursor, InsertResult>> =
+            commands.delete(inner(tag))
+                    .map { response ->
+                        CommandResponseAdapter(response, ::oneToOne, dbInsertResultToUi)
+                    }
 
     override fun update(tag: Tag): Observable<Cursor> = model.updateRefresh(inner(tag))
 

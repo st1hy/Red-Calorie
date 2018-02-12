@@ -3,14 +3,13 @@ package com.github.st1hy.countthemcalories.database.rx;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.I18n;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientTagJoint;
+import com.github.st1hy.countthemcalories.database.IngredientTagJointDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao.Properties;
-import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
@@ -46,8 +45,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
     I18nModel i18nModel;
 
     @Inject
-    public RxIngredientsDatabaseModel(@NonNull Lazy<DaoSession> session) {
-        super(session);
+    public RxIngredientsDatabaseModel() {
         this.dao = DoubleCheck.lazy(() -> session().getIngredientTemplateDao());
     }
 
@@ -144,7 +142,7 @@ public class RxIngredientsDatabaseModel extends RxDatabaseModel<IngredientTempla
 
     private void addJointTagWithIngredientTemplate(@NonNull IngredientTemplate template,
                                                    @NonNull Long tagId) {
-        JointIngredientTagDao jointDao = session().getJointIngredientTagDao();
+        IngredientTagJointDao jointDao = session().getIngredientTagJointDao();
         TagDao tagDao = session().getTagDao();
         Tag tag = tagDao.load(tagId);
         IngredientTagJoint join = new IngredientTagJoint(null);

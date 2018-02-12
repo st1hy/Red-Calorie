@@ -1,8 +1,5 @@
 package com.github.st1hy.countthemcalories.ui.core.permissions;
 
-import com.github.st1hy.countthemcalories.ui.core.permissions.Permission;
-import com.github.st1hy.countthemcalories.ui.core.permissions.PermissionActor;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -27,7 +24,7 @@ public class PermissionActorTest {
 
         PermissionActor permissionActor = new PermissionActor(permissions);
         permissionActor.onRequestPermissionsResult(permissions,
-                new int[] {PERMISSION_GRANTED, PERMISSION_GRANTED});
+                new int[]{PERMISSION_GRANTED, PERMISSION_GRANTED});
         Permission[] outputPermissions = permissionActor.asObservable().toBlocking().first();
         assertThat(outputPermissions, arrayContaining(Permission.GRANTED, Permission.GRANTED));
 
@@ -43,8 +40,8 @@ public class PermissionActorTest {
                 .subscribe(permissions1 -> assertThat(permissions1, arrayContaining(Permission.REQUEST_CANCELED,
                         Permission.REQUEST_CANCELED)));
 
-        permissionActor.onRequestPermissionsResult(new String[] {},
-                new int[] {});
+        permissionActor.onRequestPermissionsResult(new String[]{},
+                new int[]{});
 
     }
 
@@ -54,8 +51,8 @@ public class PermissionActorTest {
         final String[] permissions = {"firstPermission", "secondPermission"};
 
         PermissionActor permissionActor = new PermissionActor(permissions);
-        permissionActor.onRequestPermissionsResult(new String[] {"second", "secondPermission"},
-                new int[] {});
+        permissionActor.onRequestPermissionsResult(new String[]{"second", "secondPermission"},
+                new int[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,7 +61,7 @@ public class PermissionActorTest {
         final String[] permissions = {"firstPermission", "secondPermission"};
 
         PermissionActor permissionActor = new PermissionActor(permissions);
-        permissionActor.onRequestPermissionsResult(new String[] {"second"},
-                new int[] {});
+        permissionActor.onRequestPermissionsResult(new String[]{"second"},
+                new int[]{});
     }
 }

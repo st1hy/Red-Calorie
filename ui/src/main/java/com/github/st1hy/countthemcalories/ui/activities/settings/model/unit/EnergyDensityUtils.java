@@ -1,13 +1,10 @@
-package com.github.st1hy.countthemcalories.database.unit;
+package com.github.st1hy.countthemcalories.ui.activities.settings.model.unit;
 
 import android.support.annotation.NonNull;
-
-import java.math.MathContext;
 
 import timber.log.Timber;
 
 public class EnergyDensityUtils {
-    public static final MathContext DEFAULT_PRECISION = MathContext.DECIMAL64;
 
     /**
      * @return returns Energy density of provided unit and string representation of big decimal value
@@ -49,7 +46,6 @@ public class EnergyDensityUtils {
                 return VolumeUnit.ML;
             case MASS:
                 return MassUnit.G;
-            case UNKNOWN:
             default:
                 throw new UnsupportedOperationException();
         }

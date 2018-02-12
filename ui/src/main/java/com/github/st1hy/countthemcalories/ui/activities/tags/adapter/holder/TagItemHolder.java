@@ -11,7 +11,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.ui.inject.tags.TagRootView;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.ClickEvent;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Type;
@@ -20,6 +19,7 @@ import com.github.st1hy.countthemcalories.ui.contract.TagFactory;
 import com.github.st1hy.countthemcalories.ui.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.ui.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.ScrollingItemDelegate;
+import com.github.st1hy.countthemcalories.ui.inject.tags.TagRootView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
 import javax.inject.Inject;
@@ -64,7 +64,7 @@ public class TagItemHolder extends TagViewHolder {
 
     @Inject
     TagItemHolder(@NonNull @TagRootView View itemView,
-                         @NonNull TagsViewModel viewModel) {
+                  @NonNull TagsViewModel viewModel) {
         super(itemView);
         this.viewModel = viewModel;
         ButterKnife.bind(this, itemView);
@@ -75,7 +75,6 @@ public class TagItemHolder extends TagViewHolder {
                 .setRight(editFrame)
                 .build();
         tag = tagFactory.newTag();
-        tag.setTranslations(new I18n());
     }
 
     @OnClick(R.id.tag_item_button)

@@ -3,7 +3,8 @@ package com.github.st1hy.countthemcalories.ui.activities.overview.model;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
+
 
 public class MealDetailParams {
 

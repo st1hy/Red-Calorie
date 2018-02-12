@@ -6,13 +6,13 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication;
 import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
+import com.github.st1hy.countthemcalories.ui.contract.AppComponentProvider;
+import com.github.st1hy.countthemcalories.ui.inject.AppTestComponent;
 import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class DatabaseTest {
 
     @Before
     public void setUp() throws Exception {
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        AppTestComponent component = getTestComponent();
         DaoSession session = component.getDaoSession();
         session.getTagDao().deleteAll();
         session.getTagDao().insertOrReplaceInTx(getEntries());

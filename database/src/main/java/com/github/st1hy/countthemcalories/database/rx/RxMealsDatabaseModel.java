@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplate;
@@ -37,8 +36,7 @@ public class RxMealsDatabaseModel extends RxDatabaseModel<Meal> {
     I18nModel i18nModel;
 
     @Inject
-    public RxMealsDatabaseModel(@NonNull Lazy<DaoSession> session) {
-        super(session);
+    public RxMealsDatabaseModel() {
         mealDaoLazy = DoubleCheck.lazy(() -> session().getMealDao());
     }
 

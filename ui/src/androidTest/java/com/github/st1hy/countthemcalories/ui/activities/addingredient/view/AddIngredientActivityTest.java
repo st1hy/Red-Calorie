@@ -20,7 +20,6 @@ import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication
 import com.github.st1hy.countthemcalories.ui.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.Tag;
 import com.github.st1hy.countthemcalories.database.TagDao;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.ui.matchers.CTCMatchers;
 import com.google.common.collect.Lists;
@@ -84,7 +83,7 @@ public class AddIngredientActivityTest {
     public void onSetUp() {
         CaloriesCounterApplication applicationContext = (CaloriesCounterApplication) getTargetContext()
                 .getApplicationContext();
-        ApplicationTestComponent component = (ApplicationTestComponent) applicationContext.getComponent();
+        AppTestComponent component = (AppTestComponent) applicationContext.getComponent();
         TagDao tagDao = component.getDaoSession().getTagDao();
         tagDao.deleteAll();
         tagDao.insertInTx(exampleTags);

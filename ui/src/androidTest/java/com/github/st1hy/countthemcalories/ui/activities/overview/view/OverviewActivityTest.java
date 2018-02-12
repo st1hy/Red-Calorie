@@ -30,7 +30,6 @@ import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.database.MealDao;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.ui.matchers.MenuItemMatchers;
 
@@ -115,7 +114,7 @@ public class OverviewActivityTest {
     public void setUp() throws Exception {
         CaloriesCounterApplication application = (CaloriesCounterApplication) getTargetContext()
                 .getApplicationContext();
-        ApplicationTestComponent component = (ApplicationTestComponent) (application).getComponent();
+        AppTestComponent component = (AppTestComponent) (application).getComponent();
         DaoSession session = component.getDaoSession();
         addExampleMealsIngredientsTags(session);
         main.launchActivity(null);

@@ -1,6 +1,7 @@
 package com.github.st1hy.countthemcalories.utils
 
 import android.database.Cursor
+import com.github.st1hy.countthemcalories.database.I18n
 import com.github.st1hy.countthemcalories.database.IngredientTagJoint
 import com.github.st1hy.countthemcalories.ui.contract.*
 import dagger.Reusable
@@ -8,9 +9,13 @@ import rx.Observable
 import javax.inject.Inject
 
 @Reusable
-class TagFactoryAdapter @Inject constructor() : TagFactory {
+class TagFactoryAdapter @Inject constructor() : DaoFactories {
 
-    override fun newTag(): Tag = TagAdapter()
+    override fun newTag(): Tag {
+        val tag = TagAdapter()
+        tag.tag.translations = I18n()
+        return tag
+    }
 
     override fun newTag(name: String): Tag = TagAdapter(name)
 }
@@ -44,8 +49,11 @@ class TagAdapter(val tag: DbTag) : Tag {
         }
 
     override val ingredientTypes: List<TaggedIngredient> by lazy {
-        tag.ingredientTypes.map { ingredient -> IngredientTypeAdapter(ingredient) }
+        tag.ingredientTypes.map { ingredient -> TaggedIngredientAdapter(ingredient) }
     }
+
+    override val ingredientCount: Int
+        get() = tag.ingredientCount
 }
 
 typealias DbCreationSource = com.github.st1hy.countthemcalories.database.property.CreationSource
@@ -60,7 +68,7 @@ fun DbCreationSource.toUi(): CreationSource = when (this) {
     DbCreationSource.GENERATED -> CreationSource.GENERATED
 }
 
-class IngredientTypeAdapter(var value: IngredientTagJoint) : TaggedIngredient
+class TaggedIngredientAdapter(var parent: IngredientTagJoint) : TaggedIngredient
 
 typealias DbCommandResponse<Re, Un> =
         com.github.st1hy.countthemcalories.database.commands.CommandResponse<Re, Un>

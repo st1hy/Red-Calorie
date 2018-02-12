@@ -1,5 +1,8 @@
-package com.github.st1hy.countthemcalories.database.unit;
+package com.github.st1hy.countthemcalories.database;
 
+import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -18,7 +21,7 @@ public class AmountUnitTypeTest {
     public void testMatchingUnitsWithIds() {
         for (AmountUnitType type : AmountUnitType.values()) {
             int id = type.getId();
-            assertThat(AmountUnitType.fromId(id), equalTo(type));
+            MatcherAssert.assertThat(AmountUnitType.fromId(id), equalTo(type));
         }
     }
 
@@ -36,7 +39,7 @@ public class AmountUnitTypeTest {
 
     @Test
     public void testFromUnknownId() throws Exception {
-        assertThat(AmountUnitType.fromId(-1323), equalTo(AmountUnitType.UNKNOWN));
-        assertThat(AmountUnitType.fromId(0x423), equalTo(AmountUnitType.UNKNOWN));
+        MatcherAssert.assertThat(AmountUnitType.fromId(-1323), equalTo(AmountUnitType.UNKNOWN));
+        MatcherAssert.assertThat(AmountUnitType.fromId(0x423), equalTo(AmountUnitType.UNKNOWN));
     }
 }

@@ -75,15 +75,19 @@ dependencies {
     implementation project(':database')
     implementation project(':core')
     implementation project(':ui')
+    implementation project(":contract")
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.android.support:appcompat-v7:$support_library_version"
     implementation "io.reactivex:rxjava:$rx_java_version"
+    implementation "io.reactivex:rxandroid:$rx_android_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     devtoolsDebugCompile "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
     implementation 'com.android.support:multidex:1.0.2'
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary_version"
+
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
 }

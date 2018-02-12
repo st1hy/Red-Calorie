@@ -26,12 +26,10 @@ public class AddIngredientArgumentsModuleTest {
         assertThat(provideUnitType(intent), equalTo(AmountUnitType.MASS));
     }
 
-
     @Test
     public void testMealUnitType() throws Exception {
         when(intent.getAction()).thenReturn(AddIngredientType.MEAL.getAction());
         assertThat(provideUnitType(intent), equalTo(AmountUnitType.MASS));
-
     }
 
     @Test

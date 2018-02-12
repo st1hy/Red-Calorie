@@ -1,8 +1,8 @@
 package com.github.st1hy.countthemcalories.ui.contract
 
 import android.database.Cursor
+import org.joda.time.DateTime
 import rx.Observable
-import java.util.*
 
 interface TagsRepo {
 
@@ -10,8 +10,7 @@ interface TagsRepo {
 
     fun query(id: Long) : Observable<Tag>
 
-    fun insert(tag: Tag, jTags: List<TaggedIngredient> = Collections.emptyList())
-            : Observable<CommandResponse<InsertResult, Cursor>>
+    fun insert(tag: Tag) : Observable<CommandResponse<InsertResult, Cursor>>
 
     fun delete(tag: Tag): Observable<CommandResponse<Cursor, InsertResult>>
 
@@ -22,6 +21,11 @@ interface TagsRepo {
     fun readEntry(cursor: Cursor, tag: Tag)
 
     fun readName(cursor: Cursor): String
+}
+
+interface TimePeriodModel {
+    fun refresh()
+    fun refresh(start: DateTime, end: DateTime)
 }
 
 interface CommandResponse<Response, UndoResponse> {

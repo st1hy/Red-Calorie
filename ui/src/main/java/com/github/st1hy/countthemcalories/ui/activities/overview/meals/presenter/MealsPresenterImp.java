@@ -5,23 +5,23 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.database.commands.meals.MealsDatabaseCommands;
+import com.github.st1hy.countthemcalories.database.rx.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.AddMealController;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealInteraction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealsAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.holder.MealItemHolder;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.model.CurrentDayModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.model.MealsViewModel;
-import com.github.st1hy.countthemcalories.database.rx.RxMealsDatabaseModel;
-import com.github.st1hy.countthemcalories.database.commands.meals.MealsDatabaseCommands;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.view.OverviewView;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
-import com.github.st1hy.countthemcalories.database.commands.UndoTransformer;
-import com.github.st1hy.countthemcalories.database.commands.UndoView;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.TimePeriodModel;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoTransformer;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import org.joda.time.DateTime;
@@ -141,7 +141,7 @@ public class MealsPresenterImp implements MealsPresenter {
     private void editMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = adapter.getMealPositionWithId(mealId);
         if (mealPair != null) {
-            openEditScreen(Preconditions.checkNotNull(mealPair.second));
+            openEditScreen(checkNotNull(mealPair.second));
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }
@@ -150,7 +150,7 @@ public class MealsPresenterImp implements MealsPresenter {
     private void deleteMealWithId(long mealId) {
         Pair<Integer, Meal> mealPair = adapter.getMealPositionWithId(mealId);
         if (mealPair != null) {
-            deleteMeal(Preconditions.checkNotNull(mealPair.second), Preconditions.checkNotNull(mealPair.first));
+            deleteMeal(checkNotNull(mealPair.second), checkNotNull(mealPair.first));
         } else {
             Timber.w("Meal with id: %s no longer exist", mealId);
         }

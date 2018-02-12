@@ -45,7 +45,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
         IngredientTemplateDao ingredientTemplateDao = session.getIngredientTemplateDao();
         IngredientTemplate template = whatsRemoved.getTemplate();
         ingredientTemplateDao.insertOrReplace(template);
-        session.getJointIngredientTagDao().insertOrReplaceInTx(whatsRemoved.getJointedTags());
+        session.getIngredientTagJointDao().insertOrReplaceInTx(whatsRemoved.getJointedTags());
         template.resetTags();
         template.getTags();
         session.getMealDao().insertOrReplaceInTx(whatsRemoved.getMeals());

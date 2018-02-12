@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.activities.overview.presenter;
 
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
+import com.github.st1hy.countthemcalories.ui.contract.TimePeriodModel;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 

@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.os.StrictMode
+import android.support.test.InstrumentationRegistry
 import android.support.test.runner.permission.PermissionRequester
 import com.github.st1hy.countthemcalories.ui.contract.AppComponentProvider
+import com.github.st1hy.countthemcalories.ui.inject.AppTestComponent
 import com.github.st1hy.countthemcalories.ui.inject.app.ApplicationModule
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -39,4 +41,9 @@ class ApplicationComponentRule(context: Context) : TestRule {
         permissionRequester.addPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         permissionRequester.requestPermissions()
     }
+}
+
+fun getTestComponent() {
+    val provider = InstrumentationRegistry.getTargetContext().applicationContext as AppComponentProvider
+    val component = provider.component as AppTestComponent
 }

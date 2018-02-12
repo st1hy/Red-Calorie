@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.core.meals;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.ui.core.meals.DefaultNamePl;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -12,7 +11,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class DefaultNamePlTest {
-
 
     DefaultNamePl defaultNameEn;
 

@@ -16,10 +16,10 @@ import com.github.st1hy.countthemcalories.ui.activities.addmeal.EditMealActivity
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.MealDetailActivity;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.StartParams;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;
 

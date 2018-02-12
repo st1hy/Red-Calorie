@@ -1,13 +1,13 @@
 package com.github.st1hy.countthemcalories.database;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
-import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToOne;
 import org.parceler.Parcel;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.NotNull;
 
 @Entity(active = true, nameInDb = "INGREDIENT_TAG_JOINTS")
 @Parcel
@@ -29,17 +29,13 @@ public class IngredientTagJoint {
     @ToOne(joinProperty = "ingredientTypeId")
     IngredientTemplate ingredientType;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1685847810)
-    private transient JointIngredientTagDao myDao;
+    /** Used for active entity operations. */
+    @Generated(hash = 1196841147)
+    private transient IngredientTagJointDao myDao;
 
     @Generated(hash = 1006483784)
     private transient Long tag__resolvedKey;
@@ -51,14 +47,14 @@ public class IngredientTagJoint {
         this.id = id;
     }
 
-    @Generated(hash = 408327599)
+    @Generated(hash = 1782074244)
     public IngredientTagJoint(Long id, long tagId, long ingredientTypeId) {
         this.id = id;
         this.tagId = tagId;
         this.ingredientTypeId = ingredientTypeId;
     }
 
-    @Generated(hash = 373535361)
+    @Generated(hash = 214058043)
     public IngredientTagJoint() {
     }
 
@@ -86,9 +82,11 @@ public class IngredientTagJoint {
         this.ingredientTypeId = ingredientTypeId;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    public Tag getTagOrNull() {
+        return tag;
+    }
+
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 1607739560)
     public Tag getTag() {
         long __key = this.tagId;
@@ -107,13 +105,7 @@ public class IngredientTagJoint {
         return tag;
     }
 
-    public Tag getTagOrNull() {
-        return tag;
-    }
-
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1728988431)
     public void setTag(@NotNull Tag tag) {
         if (tag == null) {
@@ -127,9 +119,7 @@ public class IngredientTagJoint {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     @Generated(hash = 739336867)
     public IngredientTemplate getIngredientType() {
         long __key = this.ingredientTypeId;
@@ -149,9 +139,7 @@ public class IngredientTagJoint {
         return ingredientType;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 654512060)
     public void setIngredientType(@NotNull IngredientTemplate ingredientType) {
         if (ingredientType == null) {
@@ -202,10 +190,10 @@ public class IngredientTagJoint {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 371558487)
+    @Generated(hash = 708592990)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getJointIngredientTagDao() : null;
+        myDao = daoSession != null ? daoSession.getIngredientTagJointDao() : null;
     }
 
 }

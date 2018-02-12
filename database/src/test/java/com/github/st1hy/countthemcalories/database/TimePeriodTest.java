@@ -1,8 +1,9 @@
-package com.github.st1hy.countthemcalories.ui.activities.overview.graph.model;
+package com.github.st1hy.countthemcalories.database;
+
+import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
 
 import org.junit.Test;
 
-import static com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod.median;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -19,7 +20,6 @@ public class TimePeriodTest {
     @Test
     public void testMedian2() throws Exception {
         assertThat(TimePeriod.median(arr(), 0, 0), equalTo(0f));
-        assertThat(TimePeriod.median(arr(2.552f), 0, 1), equalTo(2.552f));
         assertThat(TimePeriod.median(arr(2.552f), 1, 1), equalTo(0f));
         assertThat(TimePeriod.median(arr(3f, 4.f), 1, 2), equalTo(4f));
         assertThat(TimePeriod.median(arr(3f, 4.f), 2, 2), equalTo(0f));

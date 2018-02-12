@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.DaoSession;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.MealDao;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import javax.inject.Provider;
 
-import dagger.Lazy;
 import dagger.internal.SingleCheck;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,8 +26,7 @@ import rx.subjects.PublishSubject;
 
 public class TimePeriodModel extends AbstractRxDatabaseModel {
 
-    public TimePeriodModel(@NonNull Lazy<DaoSession> session) {
-        super(session);
+    public TimePeriodModel() {
     }
 
     private final Provider<CursorQuery> queryProvider = SingleCheck.provider(() -> {

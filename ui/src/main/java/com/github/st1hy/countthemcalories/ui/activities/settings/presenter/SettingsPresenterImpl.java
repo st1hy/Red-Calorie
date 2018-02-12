@@ -2,13 +2,13 @@ package com.github.st1hy.countthemcalories.ui.activities.settings.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.ui.activities.settings.view.SelectUnitViewHolder;
-import com.github.st1hy.countthemcalories.ui.activities.settings.view.SettingsView;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingUnit;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.UnitChangedEvent;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.NamedUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.view.SelectUnitViewHolder;
+import com.github.st1hy.countthemcalories.ui.activities.settings.view.SettingsView;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogView;
-import com.github.st1hy.countthemcalories.database.unit.Unit;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import javax.inject.Inject;
@@ -73,7 +73,7 @@ public class SettingsPresenterImpl implements SettingsPresenter {
 
     @NonNull
     private String[] getUnitDialogOptions(@NonNull SettingUnit setting) {
-        Unit[] units = setting.options();
+        NamedUnit[] units = setting.options();
         String[] values = new String[units.length];
         for (int i = 0; i < units.length; i++) {
             values[i] = model.getUnitName(units[i]);

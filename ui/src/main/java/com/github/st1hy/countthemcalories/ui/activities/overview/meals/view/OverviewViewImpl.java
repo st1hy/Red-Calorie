@@ -11,8 +11,8 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;
 

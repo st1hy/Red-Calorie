@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
-import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 
 import rx.Observable;
 import rx.functions.Func1;

@@ -176,27 +176,6 @@ public class IngredientTemplate {
         childIngredients = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 97163663)
-    public List<IngredientTagJoint> getTags() {
-        if (tags == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            JointIngredientTagDao targetDao = daoSession.getJointIngredientTagDao();
-            List<IngredientTagJoint> tagsNew = targetDao._queryIngredientTemplate_Tags(id);
-            synchronized (this) {
-                if (tags == null) {
-                    tags = tagsNew;
-                }
-            }
-        }
-        return tags;
-    }
 
     /**
      * Resets a to-many relationship, making the next get call to query for a fresh result.
@@ -258,6 +237,29 @@ public class IngredientTemplate {
     public void setTranslations(I18n translations) {
         this.translations = translations;
     }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1564424042)
+    public List<IngredientTagJoint> getTags() {
+        if (tags == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            IngredientTagJointDao targetDao = daoSession.getIngredientTagJointDao();
+            List<IngredientTagJoint> tagsNew = targetDao._queryIngredientTemplate_Tags(id);
+            synchronized (this) {
+                if (tags == null) {
+                    tags = tagsNew;
+                }
+            }
+        }
+        return tags;
+    }
+
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 403714479)

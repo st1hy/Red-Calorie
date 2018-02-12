@@ -23,7 +23,6 @@ import com.github.st1hy.countthemcalories.database.JointIngredientTag;
 import com.github.st1hy.countthemcalories.database.JointIngredientTagDao;
 import com.github.st1hy.countthemcalories.database.property.CreationSource;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.ui.core.tokensearch.TokenSearchViewActions;
 
@@ -92,7 +91,7 @@ public class IngredientActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        AppTestComponent component = (AppTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         session = component.getDaoSession();
         addExampleIngredientsTagsAndJoin(session);
     }

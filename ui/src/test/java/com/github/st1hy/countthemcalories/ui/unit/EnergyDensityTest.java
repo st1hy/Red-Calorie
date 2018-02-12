@@ -1,4 +1,10 @@
-package com.github.st1hy.countthemcalories.database.unit;
+package com.github.st1hy.countthemcalories.ui.unit;
+
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -6,10 +12,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -63,7 +69,7 @@ public class EnergyDensityTest {
 
     @Test
     public void testToString() throws Exception {
-        Assert.assertThat(energyDensity.toString().isEmpty(), equalTo(false));
+        assertThat(energyDensity.toString().isEmpty(), equalTo(false));
 
     }
 }

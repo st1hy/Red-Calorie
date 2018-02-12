@@ -157,29 +157,6 @@ public class Tag {
     }
 
     /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1577862494)
-    public List<IngredientTagJoint> getIngredientTypes() {
-        if (ingredientTypes == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            JointIngredientTagDao targetDao = daoSession.getJointIngredientTagDao();
-            List<IngredientTagJoint> ingredientTypesNew = targetDao
-                    ._queryTag_IngredientTypes(id);
-            synchronized (this) {
-                if (ingredientTypes == null) {
-                    ingredientTypes = ingredientTypesNew;
-                }
-            }
-        }
-        return ingredientTypes;
-    }
-
-    /**
      * Resets a to-many relationship, making the next get call to query for a fresh result.
      */
     @Generated(hash = 2143269227)
@@ -229,6 +206,29 @@ public class Tag {
 
     public void setCreationSource(CreationSource creationSource) {
         this.creationSource = creationSource;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1839928301)
+    public List<IngredientTagJoint> getIngredientTypes() {
+        if (ingredientTypes == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            IngredientTagJointDao targetDao = daoSession.getIngredientTagJointDao();
+            List<IngredientTagJoint> ingredientTypesNew = targetDao
+                    ._queryTag_IngredientTypes(id);
+            synchronized (this) {
+                if (ingredientTypes == null) {
+                    ingredientTypes = ingredientTypesNew;
+                }
+            }
+        }
+        return ingredientTypes;
     }
 
     /** called by internal mechanisms, do not call yourself. */

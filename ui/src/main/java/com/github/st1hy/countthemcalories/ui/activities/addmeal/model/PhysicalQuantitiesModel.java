@@ -8,16 +8,16 @@ import android.text.format.DateFormat;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.NamedUnit;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.core.Utils;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
-import com.github.st1hy.countthemcalories.database.unit.Unit;
+import com.github.st1hy.countthemcalories.ui.inject.app.TwoPlaces;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.AppContext;
 
 import org.joda.time.DateTime;
@@ -90,7 +90,7 @@ public class PhysicalQuantitiesModel {
      * Formats amount as "{amount} {unit_name}"
      */
     @NonNull
-    public String format(double amount, @NonNull Unit unit) {
+    public String format(double amount, @NonNull NamedUnit unit) {
         return formatValueUnit(decimalFormat.format(amount), getUnitName(unit));
     }
 
@@ -100,7 +100,7 @@ public class PhysicalQuantitiesModel {
     }
 
     @NonNull
-    public String getUnitName(@NonNull Unit unit) {
+    public String getUnitName(@NonNull NamedUnit unit) {
         return settingsModel.getUnitName(unit);
     }
 

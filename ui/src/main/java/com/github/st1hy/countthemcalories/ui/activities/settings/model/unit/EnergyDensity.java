@@ -1,11 +1,8 @@
-package com.github.st1hy.countthemcalories.database.unit;
+package com.github.st1hy.countthemcalories.ui.activities.settings.model.unit;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultAmountUnit;
-import static com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils.getDefaultEnergyUnit;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 
 /**
  * Immutable energy density
@@ -98,12 +95,12 @@ public class EnergyDensity {
     @NonNull
     public static EnergyDensity fromDatabaseValue(@NonNull AmountUnitType amountType,
                                                   double amount) {
-        return new EnergyDensity(getDefaultEnergyUnit(), getDefaultAmountUnit(amountType), amount);
+        return new EnergyDensity(EnergyDensityUtils.getDefaultEnergyUnit(), EnergyDensityUtils.getDefaultAmountUnit(amountType), amount);
     }
 
     @NonNull
     public EnergyDensity convertToDatabaseFormat() {
-        return convertTo(getDefaultEnergyUnit(), getDefaultAmountUnit(getAmountUnitType()));
+        return convertTo(EnergyDensityUtils.getDefaultEnergyUnit(), EnergyDensityUtils.getDefaultAmountUnit(getAmountUnitType()));
     }
 
 }

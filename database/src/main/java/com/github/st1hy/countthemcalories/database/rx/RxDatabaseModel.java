@@ -3,14 +3,11 @@ package com.github.st1hy.countthemcalories.database.rx;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.DaoSession;
-
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.query.CursorQuery;
 
 import java.util.concurrent.Callable;
 
-import dagger.Lazy;
 import rx.Observable;
 
 public abstract class RxDatabaseModel<T> extends AbstractRxDatabaseModel {
@@ -18,8 +15,7 @@ public abstract class RxDatabaseModel<T> extends AbstractRxDatabaseModel {
     private CursorQuery filteredSortedByNameQuery;
     protected String lastFilter = "";
 
-    public RxDatabaseModel(@NonNull Lazy<DaoSession> session) {
-        super(session);
+    public RxDatabaseModel() {
     }
 
     /**

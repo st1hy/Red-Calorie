@@ -1,4 +1,7 @@
-package com.github.st1hy.countthemcalories.database.unit;
+package com.github.st1hy.countthemcalories.ui.unit;
+
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -9,7 +9,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(
         ApplicationModule::class,
-        DatabaseRepoModule::class
+        DatabaseRepoModule::class,
+        SchedulersModule::class
 ))
 interface AppComponent : AppComponent {
 

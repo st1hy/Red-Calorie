@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
-import com.github.st1hy.countthemcalories.database.unit.MassUnit;
-import com.github.st1hy.countthemcalories.database.unit.Unit;
-import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.NamedUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
 
 public enum SettingUnit {
     ENERGY(R.string.settings_unit_energy_title) {
@@ -81,9 +81,9 @@ public enum SettingUnit {
         this.titleRes = titleRes;
     }
 
-    public abstract Unit[] options();
+    public abstract NamedUnit[] options();
 
-    public abstract Unit getUnitFrom(@NonNull SettingsModel model);
+    public abstract NamedUnit getUnitFrom(@NonNull SettingsModel model);
 
     @StringRes
     public int getTitleRes() {

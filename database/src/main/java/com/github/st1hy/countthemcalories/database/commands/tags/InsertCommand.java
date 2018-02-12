@@ -47,7 +47,7 @@ class InsertCommand implements Command<InsertResult, Cursor> {
         Tag added = databaseModel.performInsert(tag);
         if (!jTags.isEmpty()) {
             DaoSession session = databaseModel.session();
-            session.getJointIngredientTagDao().insertInTx(jTags);
+            session.getIngredientTagJointDao().insertInTx(jTags);
             resetIngredients();
         }
         Cursor cursor = databaseModel.refresh().call();

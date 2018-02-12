@@ -13,8 +13,8 @@ import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.h
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.MealRowComponent;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.MealRowComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.MealRowModule;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import java.text.DecimalFormat;

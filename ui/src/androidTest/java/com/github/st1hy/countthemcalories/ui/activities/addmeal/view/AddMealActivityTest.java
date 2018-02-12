@@ -20,7 +20,6 @@ import com.github.st1hy.countthemcalories.application.CaloriesCounterApplication
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.TestPicturePicker;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxImageLoadingIdlingResource;
 import com.github.st1hy.countthemcalories.database.DaoSession;
-import com.github.st1hy.countthemcalories.ui.inject.ApplicationTestComponent;
 import com.github.st1hy.countthemcalories.ui.rules.ApplicationComponentRule;
 import com.github.st1hy.countthemcalories.ui.matchers.CTCMatchers;
 
@@ -81,7 +80,7 @@ public class AddMealActivityTest {
         // every test run. In this case all external Intents will be blocked.
         intending(not(isInternal())).respondWith(new ActivityResult(Activity.RESULT_OK, null));
 
-        ApplicationTestComponent component = (ApplicationTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
+        AppTestComponent component = (AppTestComponent) ((CaloriesCounterApplication) getTargetContext().getApplicationContext()).getComponent();
         DaoSession session = component.getDaoSession();
         IngredientActivityTest.addExampleIngredientsTagsAndJoin(session);
     }

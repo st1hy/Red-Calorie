@@ -12,11 +12,11 @@ import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealInteraction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.MealItemRootView;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.PerMealRow;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 import com.github.st1hy.countthemcalories.ui.core.rx.Transformers;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.ScrollingItemDelegate;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;

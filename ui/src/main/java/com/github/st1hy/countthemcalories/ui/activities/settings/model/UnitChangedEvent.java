@@ -2,15 +2,15 @@ package com.github.st1hy.countthemcalories.ui.activities.settings.model;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
-import com.github.st1hy.countthemcalories.database.unit.MassUnit;
-import com.github.st1hy.countthemcalories.database.unit.Unit;
-import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.NamedUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
 
 public abstract class UnitChangedEvent extends SettingsChangedEvent {
 
     @NonNull
-    public abstract Unit getUnit();
+    public abstract NamedUnit getUnit();
 
     @NonNull
     public abstract SettingUnit getSetting();

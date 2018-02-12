@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
 
 public enum BodyMassUnit implements AmountUnit {
 

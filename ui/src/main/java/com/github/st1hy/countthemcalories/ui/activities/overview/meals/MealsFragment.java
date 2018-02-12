@@ -13,10 +13,9 @@ import com.github.st1hy.countthemcalories.ui.activities.overview.OverviewActivit
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.presenter.MealsPresenter;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseFragment;
 import com.github.st1hy.countthemcalories.ui.inject.core.FragmentModule;
+import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MealsFragment extends BaseFragment {
 

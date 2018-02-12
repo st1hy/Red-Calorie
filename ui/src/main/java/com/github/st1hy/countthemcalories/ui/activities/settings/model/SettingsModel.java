@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
-import com.github.st1hy.countthemcalories.database.unit.MassUnit;
-import com.github.st1hy.countthemcalories.database.unit.Unit;
-import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.NamedUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -98,7 +98,7 @@ public class SettingsModel {
     }
 
     @NonNull
-    public String getUnitName(@NonNull Unit unit) {
+    public String getUnitName(@NonNull NamedUnit unit) {
         return resources.getString(unit.getNameRes());
     }
 
@@ -116,11 +116,10 @@ public class SettingsModel {
     @NonNull
     public AmountUnit getAmountUnitFrom(@NonNull AmountUnitType type) {
         switch (type) {
-            case AmountUnitType.VOLUME:
+            case VOLUME:
                 return getVolumeUnit();
-            case AmountUnitType.MASS:
+            case MASS:
                 return getMassUnit();
-            case AmountUnitType.UNKNOWN:
             default:
                 throw new UnsupportedOperationException();
         }
