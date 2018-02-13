@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.database.IngredientDao;
 import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
 import com.github.st1hy.countthemcalories.database.MealDao;
@@ -21,8 +22,8 @@ import javax.inject.Provider;
 
 import dagger.internal.SingleCheck;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+
 
 public class TimePeriodModel extends AbstractRxDatabaseModel {
 
@@ -56,11 +57,11 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
             .build());
 
     private DateTime start, end;
-    private final PublishSubject<TimePeriod> updates = PublishSubject.create();
+    private final PublishSubject<CalorieStatistics> updates = PublishSubject.create();
 
     @NonNull
     @CheckResult
-    public Observable<TimePeriod> updates() {
+    public Observable<CalorieStatistics> updates() {
         return updates.asObservable();
     }
 
@@ -73,16 +74,14 @@ public class TimePeriodModel extends AbstractRxDatabaseModel {
     public void refresh(@NonNull final DateTime start, @NonNull final DateTime end) {
         this.start = start;
         this.end = end;
-        loadData(start, end)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(updates::onNext);
+        loadData(start, end).subscribe(updates::onNext);
     }
 
     @SuppressWarnings("TryFinallyCanBeTryWithResources") //Min Api 19, current min 16
     @NonNull
     @CheckResult
-    private Observable<TimePeriod> loadData(@NonNull final DateTime start,
-                                            @NonNull final DateTime end) {
+    private Observable<CalorieStatistics> loadData(@NonNull final DateTime start,
+                                                   @NonNull final DateTime end) {
         return fromDatabaseTask(() -> {
             CursorQuery query = queryProvider.get().forCurrentThread();
             query.setParameter(0, start.getMillis());

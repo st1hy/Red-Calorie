@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.commands.meals.MealsDatabaseCommands;
-import com.github.st1hy.countthemcalories.database.rx.RxMealsDatabaseModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.AddMealController;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealInteraction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealsAdapter;
@@ -17,7 +15,8 @@ import com.github.st1hy.countthemcalories.ui.activities.overview.meals.view.Over
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.ui.contract.Meal;
-import com.github.st1hy.countthemcalories.ui.contract.TimePeriodModel;
+import com.github.st1hy.countthemcalories.ui.contract.MealsRepo;
+import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
@@ -47,17 +46,15 @@ public class MealsPresenterImp implements MealsPresenter {
     @Inject
     CurrentDayModel currentDayModel;
     @Inject
-    RxMealsDatabaseModel databaseModel;
+    MealsRepo mealsRepo;
     @Inject
     OverviewView view;
-    @Inject
-    MealsDatabaseCommands commands;
     @Inject
     MealsViewModel viewModel;
     @Inject
     UndoView undoView;
     @Inject
-    TimePeriodModel timePeriodModel;
+    MealStatisticRepo mealStatisticRepo;
     @Inject
     PublishSubject<MealInteraction> interactionSubject;
 
@@ -172,7 +169,7 @@ public class MealsPresenterImp implements MealsPresenter {
                         .switchMap(date -> {
                             DateTime from = date.withTimeAtStartOfDay();
                             DateTime to = date.plusDays(1).withTimeAtStartOfDay();
-                            return databaseModel.getAllFilteredSortedDate(from, to);
+                            return mealsRepo.getAllFilteredSortedDate(from, to);
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(meals -> {
@@ -188,7 +185,7 @@ public class MealsPresenterImp implements MealsPresenter {
     }
 
     private void deleteMeal(@NonNull Meal meal, int positionOnList) {
-        subscriptions.add(commands.delete(meal)
+        subscriptions.add(mealsRepo.delete(meal)
                 .doOnNext(deleteResponse ->
                         subscriptions.add(deleteResponse.undoAvailability()
                                 .compose(new UndoTransformer<>(deleteResponse,
@@ -204,7 +201,7 @@ public class MealsPresenterImp implements MealsPresenter {
                                 .subscribe(meal1 -> {
                                     adapter.addMealAtPosition(meal1, positionOnList);
                                     setEmptyListVisibility();
-                                    timePeriodModel.refresh();
+                                    mealStatisticRepo.refresh();
                                 })
                         ))
                 .map(Functions.intoResponse())
@@ -212,7 +209,7 @@ public class MealsPresenterImp implements MealsPresenter {
                 .subscribe(aVoid -> {
                     adapter.removeMealAtPosition(positionOnList);
                     setEmptyListVisibility();
-                    timePeriodModel.refresh();
+                    mealStatisticRepo.refresh();
                 }));
     }
 

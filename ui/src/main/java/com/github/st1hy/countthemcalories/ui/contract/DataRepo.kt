@@ -1,12 +1,15 @@
 package com.github.st1hy.countthemcalories.ui.contract
 
 import android.database.Cursor
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics
 import org.joda.time.DateTime
 import rx.Observable
 
 interface TagsRepo {
 
     fun query(query: String): Observable<Cursor>
+
+    fun query(query: String, excluded: List<String>): Observable<Cursor>
 
     fun query(id: Long) : Observable<Tag>
 
@@ -23,9 +26,21 @@ interface TagsRepo {
     fun readName(cursor: Cursor): String
 }
 
-interface TimePeriodModel {
+interface MealsRepo {
+    fun getAllFilteredSortedDate(from: DateTime, to: DateTime) : Observable<List<Meal>>
+
+    fun delete(meal: Meal) : Observable<CommandResponse<Void, Meal>>
+}
+
+interface MealStatisticRepo {
     fun refresh()
     fun refresh(start: DateTime, end: DateTime)
+    fun updates(): Observable<CalorieStatistics>
+}
+
+interface WeightRepo {
+    fun findOneByDate(data: DateTime) : Observable<Weight>
+    fun insertOrUpdate(weight: Weight) : Observable<Long>
 }
 
 interface CommandResponse<Response, UndoResponse> {

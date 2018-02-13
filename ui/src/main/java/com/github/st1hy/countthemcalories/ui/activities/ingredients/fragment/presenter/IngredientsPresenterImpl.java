@@ -3,6 +3,8 @@ package com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.pr
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.database.commands.ingredients.IngredientsDatabaseCommands;
+import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.QueryFinished;
@@ -11,17 +13,14 @@ import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.mod
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.model.AddIngredientParams;
-import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
-import com.github.st1hy.countthemcalories.database.commands.ingredients.IngredientsDatabaseCommands;
-import com.github.st1hy.countthemcalories.database.commands.UndoTransformer;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
-import com.github.st1hy.countthemcalories.core.rx.Schedulers;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;
 import com.github.st1hy.countthemcalories.ui.core.tokensearch.LastSearchResult;
 import com.github.st1hy.countthemcalories.ui.core.tokensearch.SearchResult;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import java.util.LinkedList;
@@ -32,6 +31,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 

@@ -3,10 +3,11 @@ package com.github.st1hy.countthemcalories.database.rx.timeperiod;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.database.Weight;
 import com.github.st1hy.countthemcalories.database.property.AmountUnitTypePropertyConverter;
 import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
@@ -19,21 +20,21 @@ import java.util.Iterator;
 import java.util.List;
 
 @Parcel(Parcel.Serialization.BEAN)
-public class TimePeriod {
+public class TimePeriod implements CalorieStatistics {
 
     private static final int POSITION_TIME = 0;
     private static final int POSITION_AMOUNT = 1;
     private static final int POSITION_ENERGY_DENSITY = 2;
     private static final int POSITION_AMOUNT_TYPE = 3;
 
-    private final List<DayData> data;
+    private final List<DayStatistic> data;
     private final float min, max, average, median;
     private final float minWeight, maxWeight;
 
     @ParcelConstructor
-    TimePeriod(List<DayData> data, float min, float max, float average,
+    TimePeriod(List<DayStatistic> data, float min, float max, float average,
                float median, float minWeight, float maxWeight) {
-        this.data = ImmutableList.<DayData>builder().addAll(data).build();
+        this.data = ImmutableList.<DayStatistic>builder().addAll(data).build();
         this.min = min;
         this.max = max;
         this.average = average;
@@ -52,41 +53,49 @@ public class TimePeriod {
         this.maxWeight = builder.maxWeight;
     }
 
+    @Override
     public float getMin() {
         return min;
     }
 
+    @Override
     public float getMax() {
         return max;
     }
 
+    @Override
     public float getAverage() {
         return average;
     }
 
+    @Override
     public float getMedian() {
         return median;
     }
 
+    @Override
     public float getMinWeight() {
         return minWeight;
     }
 
+    @Override
     public float getMaxWeight() {
         return maxWeight;
     }
 
+    @Override
     public int getDaysCount() {
         return data.size();
     }
 
     @NonNull
-    public List<DayData> getData() {
+    public List<DayStatistic> getData() {
         return data;
     }
 
+    @Override
     @NonNull
-    public DayData getDayDataAt(int position) {
+    public DayStatistic getDayDataAt(int position) {
         return data.get(position);
     }
 
@@ -101,9 +110,10 @@ public class TimePeriod {
                 '}';
     }
 
+    @Override
     public int findDayPosition(@NonNull DateTime dateTime) {
         for (int i = data.size() - 1; i >= 0; i--) {
-            DayData dayData = data.get(i);
+            DayStatistic dayData = data.get(i);
             if (dayData.isDay(dateTime)) {
                 return i;
             }
@@ -145,7 +155,7 @@ public class TimePeriod {
         private final int daysCount;
         private final List<Weight> weightList;
 
-        private final ImmutableList.Builder<DayData> data;
+        private final ImmutableList.Builder<DayStatistic> data;
         private boolean loaded = false;
         private float min = Float.MAX_VALUE, max = Float.MIN_VALUE, average = 0f, median = 0f;
         private float minWeight = Float.MAX_VALUE, maxWeight = Float.MIN_VALUE;
@@ -165,7 +175,7 @@ public class TimePeriod {
         }
 
         @NonNull
-        public TimePeriod build() {
+        public CalorieStatistics build() {
             if (!loaded) {
                 loadAll();
                 loaded = true;
@@ -187,7 +197,7 @@ public class TimePeriod {
                 DateTime end = this.start.plusDays(i + 1);
                 float amount = getAmount(end);
                 float weightValue = getWeight(end);
-                DayData dayData = new DayData(start, amount, weightValue, hasAnyData);
+                DayStatistic dayData = new DayData(start, amount, weightValue, hasAnyData);
                 updateStatistics(dayData, weightValue);
                 data.add(dayData);
             }
@@ -225,8 +235,8 @@ public class TimePeriod {
             return weightValue;
         }
 
-        private void updateStatistics(@NonNull DayData data, float weightValue) {
-            float value = data.getValue();
+        private void updateStatistics(@NonNull DayStatistic data, float weightValue) {
+            float value = data.getTotalCalories();
             if (value < min) min = value;
             if (value > max) max = value;
             if (value > 0) {

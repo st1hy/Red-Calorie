@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnModule;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnViewHolder;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
@@ -43,7 +43,7 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
     @Named("graphItemClicked")
     PublishSubject<Integer> positionClicked;
 
-    private TimePeriod timePeriod;
+    private CalorieStatistics statistics;
 
     private final BehaviorSubject<Integer> selectedPosition = BehaviorSubject.create();
 
@@ -67,8 +67,8 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
 
     @Override
     public void onBindViewHolder(GraphColumnViewHolder holder, int position) {
-        if (timePeriod != null) {
-            DayData day = timePeriod.getDayDataAt(position);
+        if (statistics != null) {
+            DayStatistic day = statistics.getDayDataAt(position);
             holder.setName(quantityModel.formatDate(day.getDateTime()));
             setCalories(holder, day);
             setWeight(holder, day);
@@ -79,8 +79,8 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
         }
     }
 
-    void onNewGraphData(@NonNull TimePeriod period) {
-        this.timePeriod = period;
+    void onNewGraphData(@NonNull CalorieStatistics period) {
+        this.statistics = period;
         notifyDataSetChanged();
     }
 
@@ -98,19 +98,19 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
 
     @Override
     public int getItemCount() {
-        return timePeriod != null ? timePeriod.getDaysCount() : 0;
+        return statistics != null ? statistics.getDaysCount() : 0;
     }
 
-    private void setCalories(GraphColumnViewHolder holder, DayData day) {
-        float value = convertEnergy(day.getValue());
-        float max = convertEnergy(2f * timePeriod.getMedian());
+    private void setCalories(GraphColumnViewHolder holder, DayStatistic day) {
+        float value = convertEnergy(day.getTotalCalories());
+        float max = convertEnergy(2f * statistics.getMedian());
         holder.setValue(value, max);
         holder.setValueVisibility(value > 0);
     }
 
-    private void setWeight(GraphColumnViewHolder holder, DayData day) {
-        float min = convertMass(minDisplayWeight(timePeriod.getMinWeight()));
-        float max = convertMass(maxDisplayWeight(timePeriod.getMaxWeight()));
+    private void setWeight(GraphColumnViewHolder holder, DayStatistic day) {
+        float min = convertMass(minDisplayWeight(statistics.getMinWeight()));
+        float max = convertMass(maxDisplayWeight(statistics.getMaxWeight()));
         float weight = convertMass(day.getWeight());
         float weightDistance = max - min;
         if (weightDistance > 0f && weight >= min && weight <= max) {
@@ -131,7 +131,7 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
     }
 
     private void setLine(GraphColumnViewHolder holder, int position) {
-        List<DayData> days = timePeriod.getData();
+        List<DayStatistic> days = statistics.getData();
         float previous = position > 1 ? normalizeWeight(days.get(position - 1)) : -1f;
         float current = normalizeWeight(days.get(position));
         float next = position < days.size() - 1 ? normalizeWeight(days.get(position + 1)) : -1f;
@@ -159,11 +159,11 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
         }
     }
 
-    private float normalizeWeight(DayData day) {
+    private float normalizeWeight(DayStatistic day) {
         float value = day.getWeight();
         if (value > 0) {
-            float min = minDisplayWeight(timePeriod.getMinWeight());
-            float max = maxDisplayWeight(timePeriod.getMaxWeight());
+            float min = minDisplayWeight(statistics.getMinWeight());
+            float max = maxDisplayWeight(statistics.getMaxWeight());
             float range = max - min;
             if (range > 0) return (value - min) / range;
         }

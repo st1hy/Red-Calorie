@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
@@ -57,13 +58,13 @@ public class MealPagerView {
         return RxViewPager.pageSelections(viewPager);
     }
 
-    public void setTitle(@NonNull DayData day) {
+    public void setTitle(@NonNull DayStatistic day) {
         if (day.isToday()) {
             date.setText(context.getString(R.string.overview_toolbar_title_today));
         } else {
             String dateString = DateTimeFormat.shortDate().print(day.getDateTime());
             date.setText(String.format(Locale.getDefault(), "%s:", dateString));
         }
-        totalEnergy.setText(quantitiesModel.formatAsEnergy(day.getValue()));
+        totalEnergy.setText(quantitiesModel.formatAsEnergy(day.getTotalCalories()));
     }
 }

@@ -54,24 +54,24 @@ public class Weight {
         return id;
     }
 
-    public DateTime getMeasurementDate() {
-        return measurementDate;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     public float getWeight() {
         return weight;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public DateTime getMeasurementDate() {
+        return measurementDate;
     }
 
     public void setMeasurementDate(DateTime measurementDate) {
         this.measurementDate = measurementDate;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
     }
 
     @Override

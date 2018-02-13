@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.view.MealDetailView;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.PostponeTransitions;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import javax.inject.Inject;

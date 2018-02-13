@@ -1,8 +1,9 @@
 package com.github.st1hy.countthemcalories.ui.activities.overview.mealpager;
 
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
+import com.github.st1hy.countthemcalories.contract.Schedulers;
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.activities.overview.presenter.TimePeriodLoader;
+import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.datetime.NewMealDate;
@@ -23,11 +24,13 @@ public class MealsPagerPresenter implements BasicLifecycle {
     @Inject
     PagerModel pagerModel;
     @Inject
-    TimePeriodModel periodUpdates;
+    MealStatisticRepo repo;
     @Inject
     MealsPagerAdapter pagerAdapter;
     @Inject
     TimePeriodLoader timePeriodLoader;
+    @Inject
+    Schedulers schedulers;
     @Inject
     @NewMealDate
     transient Provider<DateTime> jumpToDate;
@@ -41,7 +44,7 @@ public class MealsPagerPresenter implements BasicLifecycle {
     @Override
     public void onStart() {
         subscriptions.add(
-                periodUpdates.updates()
+                repo.updates().observeOn(schedulers.ui())
                         .subscribe(pagerModel::updateModel)
         );
         subscriptions.add(
@@ -76,7 +79,7 @@ public class MealsPagerPresenter implements BasicLifecycle {
         timePeriodLoader.onStart();
     }
 
-    private int defaultPage(TimePeriod model) {
+    private int defaultPage(CalorieStatistics model) {
         DateTime dateTime = jumpToDate.get();
         if (dateTime != null) {
             return model.findDayPosition(dateTime);

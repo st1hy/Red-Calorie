@@ -12,11 +12,11 @@ import com.github.st1hy.countthemcalories.ui.activities.addingredient.EditIngred
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.model.AddIngredientParams;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;
 

@@ -4,8 +4,8 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 
 import org.joda.time.DateTime;
@@ -19,24 +19,24 @@ import rx.subjects.PublishSubject;
 public class PagerModel {
 
     @Nullable
-    private DayData selectedDay;
+    private DayStatistic selectedDay;
     @Nullable
-    private TimePeriod timePeriod;
+    private CalorieStatistics timePeriod;
     private int selectedPage = -1;
 
-    private final transient PublishSubject<TimePeriod> timePeriodChangesSubject = PublishSubject.create();
+    private final transient PublishSubject<CalorieStatistics> timePeriodChangesSubject = PublishSubject.create();
     private final transient PublishSubject<SelectionEvent> selectedPageChanges = PublishSubject.create();
 
     @ParcelConstructor
     public PagerModel() {
     }
 
-    public void setLatestDay(@NonNull DayData dayData) {
+    public void setLatestDay(@NonNull DayStatistic dayData) {
         this.selectedDay = dayData;
     }
 
     @Nullable
-    public DayData getSelectedDay() {
+    public DayStatistic getSelectedDay() {
         return selectedDay;
     }
 
@@ -57,15 +57,15 @@ public class PagerModel {
     }
 
     @Nullable
-    public TimePeriod getTimePeriod() {
+    public CalorieStatistics getTimePeriod() {
         return timePeriod;
     }
 
-    public void setTimePeriod(@NonNull TimePeriod timePeriod) {
+    public void setTimePeriod(@NonNull CalorieStatistics timePeriod) {
         this.timePeriod = timePeriod;
     }
 
-    public boolean updateModel(TimePeriod timePeriod) {
+    public boolean updateModel(CalorieStatistics timePeriod) {
         boolean anyChange = !timePeriod.equals(this.timePeriod);
         if (anyChange) {
             setTimePeriod(timePeriod);
@@ -76,13 +76,13 @@ public class PagerModel {
 
     @NonNull
     @CheckResult
-    public Observable<TimePeriod> timePeriodChanges() {
+    public Observable<CalorieStatistics> timePeriodChanges() {
         return timePeriodChangesSubject.asObservable();
     }
 
     @NonNull
     @CheckResult
-    public Observable<TimePeriod> timePeriodMostRecent() {
+    public Observable<CalorieStatistics> timePeriodMostRecent() {
         return Observable.just(timePeriod).filter(Functions.NOT_NULL)
                 .mergeWith(timePeriodChangesSubject);
     }
@@ -103,7 +103,7 @@ public class PagerModel {
     @CheckResult
     public Observable<DateTime> dateAtPosition(int currentPosition) {
         return timePeriodMostRecent().map(timePeriod -> timePeriod.getDayDataAt(currentPosition))
-                .map(DayData::getDateTime)
+                .map(DayStatistic::getDateTime)
                 .distinctUntilChanged();
     }
 

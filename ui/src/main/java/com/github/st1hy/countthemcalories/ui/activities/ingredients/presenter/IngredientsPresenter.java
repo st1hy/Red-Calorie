@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.ingredients.presenter;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
+import com.github.st1hy.countthemcalories.ui.contract.TagsRepo;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.core.drawer.DrawerPresenter;
 import com.github.st1hy.countthemcalories.ui.core.tokensearch.SearchResult;
@@ -40,7 +40,7 @@ public class IngredientsPresenter implements BasicLifecycle {
     @Named("touchOverlay")
     View touchOverlay;
     @Inject
-    RxTagsDatabaseModel databaseModel;
+    TagsRepo repo;
 
     private boolean isDropDownVisible;
 
@@ -57,7 +57,7 @@ public class IngredientsPresenter implements BasicLifecycle {
         subscriptions.add(searchResultObservable
                 .flatMap(searchResult -> {
                     if (searchResult.getQuery().trim().length() > 0)
-                        return databaseModel.getAllFiltered(searchResult.getQuery(), searchResult.getTokens());
+                        return repo.query(searchResult.getQuery(), searchResult.getTokens());
                     else return Observable.just(null);
                 })
                 .observeOn(AndroidSchedulers.mainThread())

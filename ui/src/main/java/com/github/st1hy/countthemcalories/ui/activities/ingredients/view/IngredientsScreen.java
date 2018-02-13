@@ -4,7 +4,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.model.AddIngredientParams;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 
 import rx.Observable;
 

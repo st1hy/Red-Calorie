@@ -11,11 +11,10 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientRootView;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.ScrollingItemDelegate;
-import com.github.st1hy.countthemcalories.database.I18n;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
 
 import javax.inject.Inject;
 

@@ -14,14 +14,14 @@ import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.pres
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.presenter.MealDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.view.MealDetailView;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.view.MealDetailViewImpl;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.HeaderImageView;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;
+import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.HeaderImageView;
 
 import org.parceler.Parcels;
 

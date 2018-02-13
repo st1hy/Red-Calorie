@@ -33,7 +33,7 @@ interface IngredientTemplateFactory {
     fun newIngredientTemplate() : IngredientTemplate
 }
 
-interface DaoFactories : TagFactory, IngredientTemplateFactory
+interface DaoFactories : TagFactory, IngredientTemplateFactory, WeightFactory
 
 interface Meal {
     var id: Long?
@@ -46,4 +46,14 @@ interface Meal {
 interface Ingredient {
     var amount : Double
     fun getIngredientTypeOrNull() : IngredientTemplate?
+}
+
+interface Weight {
+    var weight: Float
+    var measurementDate: DateTime
+}
+
+interface WeightFactory {
+
+    fun newWeight() : Weight
 }

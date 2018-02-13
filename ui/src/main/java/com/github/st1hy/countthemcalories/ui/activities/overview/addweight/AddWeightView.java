@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.ui.core.dialog.CustomDialogViewEditTextController;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
-import com.github.st1hy.countthemcalories.ui.core.dialog.CustomDialogViewEditTextController;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -20,8 +21,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @PerActivity
 public class AddWeightView {

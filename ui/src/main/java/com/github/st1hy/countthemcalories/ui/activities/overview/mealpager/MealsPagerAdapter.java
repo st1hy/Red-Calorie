@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.inject.MealsPagerComponent;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.MealsFragment;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriod;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ public class MealsPagerAdapter extends FragmentStatePagerAdapter {
     @Inject
     MealsPagerComponent pagerComponent;
     @Nullable
-    private TimePeriod model;
+    private CalorieStatistics model;
 
     @Inject
     public MealsPagerAdapter(FragmentManager fm) {
@@ -42,13 +42,13 @@ public class MealsPagerAdapter extends FragmentStatePagerAdapter {
         return model != null ? model.getDaysCount() : 0;
     }
 
-    public void updatePages(TimePeriod model) {
+    public void updatePages(CalorieStatistics model) {
         this.model = model;
         notifyDataSetChanged();
     }
 
     @Nullable
-    public TimePeriod getModel() {
+    public CalorieStatistics getModel() {
         return model;
     }
 }

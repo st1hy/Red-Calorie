@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.activities.overview.presenter;
 
-import com.github.st1hy.countthemcalories.ui.contract.TimePeriodModel;
+import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 
@@ -18,7 +18,7 @@ import rx.subscriptions.CompositeSubscription;
 public class TimePeriodLoader implements BasicLifecycle {
 
     @Inject
-    TimePeriodModel timePeriodModel;
+    MealStatisticRepo mealStatisticRepo;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -35,7 +35,7 @@ public class TimePeriodLoader implements BasicLifecycle {
                         .subscribe(any -> {
                             DateTime end = DateTime.now().plusDays(1);
                             DateTime start = end.minusDays(30).withTimeAtStartOfDay();
-                            timePeriodModel.refresh(start, end);
+                            mealStatisticRepo.refresh(start, end);
                         })
         );
     }

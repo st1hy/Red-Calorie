@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.view.IngredientsScreen;
-import com.github.st1hy.countthemcalories.database.commands.UndoView;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;

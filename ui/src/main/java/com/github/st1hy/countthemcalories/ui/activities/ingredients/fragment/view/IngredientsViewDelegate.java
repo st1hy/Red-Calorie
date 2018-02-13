@@ -6,9 +6,9 @@ import android.support.annotation.StringRes;
 
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.view.IngredientsScreen;
-import com.github.st1hy.countthemcalories.database.commands.UndoAction;
-import com.github.st1hy.countthemcalories.database.commands.UndoView;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoAction;
+import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoView;
 
 import rx.Observable;
 

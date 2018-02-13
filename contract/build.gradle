@@ -12,6 +12,7 @@ compileTestKotlin {
 }
 
 dependencies {
-    implementation "io.reactivex:rxjava:$rx_java_version"
+    compile "io.reactivex:rxjava:$rx_java_version"
+    compile "net.danlew:android.joda:$joda_time_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

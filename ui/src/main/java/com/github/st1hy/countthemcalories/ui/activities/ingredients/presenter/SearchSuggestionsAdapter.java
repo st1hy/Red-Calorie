@@ -8,9 +8,9 @@ import android.widget.Filter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.database.rx.RxTagsDatabaseModel;
-import com.github.st1hy.countthemcalories.database.I18n;
-import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.ui.contract.Tag;
+import com.github.st1hy.countthemcalories.ui.contract.TagFactory;
+import com.github.st1hy.countthemcalories.ui.contract.TagsRepo;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 
@@ -23,7 +23,9 @@ import butterknife.ButterKnife;
 public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
 
     @Inject
-    RxTagsDatabaseModel tagsDatabaseModel;
+    TagsRepo repo;
+    @Inject
+    TagFactory tagFactory;
 
     private Filter filter;
     private final Tag reusableTag;
@@ -31,8 +33,7 @@ public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
     @Inject
     public SearchSuggestionsAdapter(@NonNull @ActivityContext Context context) {
         super(context, android.R.layout.simple_list_item_1, null, false);
-        reusableTag = new Tag();
-        reusableTag.setTranslations(new I18n());
+        reusableTag = tagFactory.newTag();
     }
 
     @Override
@@ -66,7 +67,7 @@ public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
     }
 
     private String readTagNameFromCursor(@NonNull Cursor cursor) {
-        tagsDatabaseModel.performReadEntity(cursor, reusableTag);
+        repo.readEntry(cursor, reusableTag);
         return reusableTag.getDisplayName();
     }
 

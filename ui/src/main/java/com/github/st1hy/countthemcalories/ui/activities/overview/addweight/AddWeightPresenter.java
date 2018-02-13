@@ -3,16 +3,18 @@ package com.github.st1hy.countthemcalories.ui.activities.overview.addweight;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.st1hy.countthemcalories.contract.Schedulers;
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.PagerModel;
-import com.github.st1hy.countthemcalories.database.rx.RxDbWeightModel;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
+import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
+import com.github.st1hy.countthemcalories.ui.contract.Weight;
+import com.github.st1hy.countthemcalories.ui.contract.WeightFactory;
+import com.github.st1hy.countthemcalories.ui.contract.WeightRepo;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
-import com.github.st1hy.countthemcalories.database.Weight;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
+import com.github.st1hy.countthemcalories.ui.inject.app.TwoPlaces;
 
 import org.joda.time.DateTime;
 
@@ -20,7 +22,6 @@ import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 @PerActivity
@@ -31,15 +32,19 @@ public class AddWeightPresenter implements BasicLifecycle {
     @Inject
     OverviewScreen screen;
     @Inject
-    RxDbWeightModel model;
+    WeightRepo weightRepo;
     @Inject
     SettingsModel settingsModel;
     @Inject
     PagerModel pagerModel;
     @Inject
-    TimePeriodModel timePeriodModel;
+    MealStatisticRepo statisticRepo;
     @Inject @TwoPlaces
     DecimalFormat decimalFormat;
+    @Inject
+    Schedulers schedulers;
+    @Inject
+    WeightFactory weightFactory;
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -52,13 +57,13 @@ public class AddWeightPresenter implements BasicLifecycle {
         subscriptions.add(
                 view.addWeightButton()
                         .doOnNext(any -> screen.closeFloatingMenu())
-                        .flatMap(any -> model.findOneByDate(currentDate()))
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(any -> weightRepo.findOneByDate(currentDate()))
+                        .observeOn(schedulers.ui())
                         .map(this::convertToCurrentUnit)
                         .flatMap(weight -> view.openAddWeightDialog(weight))
                         .map(this::intoWeight)
-                        .flatMap(weight -> model.insertOrUpdate(weight))
-                        .subscribe(any -> timePeriodModel.refresh())
+                        .flatMap(weight -> weightRepo.insertOrUpdate(weight))
+                        .subscribe(any -> statisticRepo.refresh())
         );
     }
 
@@ -81,7 +86,7 @@ public class AddWeightPresenter implements BasicLifecycle {
     private Weight intoWeight(float weightValue) {
         float value = (float) (settingsModel.getBodyMassUnit().getBase() * weightValue);
         DateTime time = currentDate();
-        Weight weight = new Weight();
+        Weight weight = weightFactory.newWeight();
         weight.setMeasurementDate(time);
         weight.setWeight(value);
         return weight;
@@ -89,7 +94,7 @@ public class AddWeightPresenter implements BasicLifecycle {
 
     @NonNull
     private DateTime currentDate() {
-        DayData selectedDay = pagerModel.getSelectedDay();
+        DayStatistic selectedDay = pagerModel.getSelectedDay();
         DateTime dateTime = selectedDay != null ? selectedDay.getDateTime() : DateTime.now();
         return dateTime.withTimeAtStartOfDay();
     }
