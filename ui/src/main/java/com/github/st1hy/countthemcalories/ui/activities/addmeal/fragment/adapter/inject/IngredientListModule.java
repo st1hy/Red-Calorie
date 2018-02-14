@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.AppContext;

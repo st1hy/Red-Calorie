@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.settings.view;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;
 

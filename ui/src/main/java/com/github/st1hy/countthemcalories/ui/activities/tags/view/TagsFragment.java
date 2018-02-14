@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.presenter.TagsPresenter;
 import com.github.st1hy.countthemcalories.ui.activities.tags.presenter.TagsStateSaver;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseFragment;

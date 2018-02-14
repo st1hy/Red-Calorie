@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;

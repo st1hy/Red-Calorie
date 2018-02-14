@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.ui.activities.overview.meals.model;
 
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 import javax.inject.Inject;
 

@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.ui.activities.settings.model.unit
 
 import android.support.annotation.StringRes
-import com.github.st1hy.countthemcalories.R
+import com.github.st1hy.countthemcalories.ui.R
 
 enum class AmountUnitType { MASS, VOLUME }
 

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
 
 import java.util.List;
 

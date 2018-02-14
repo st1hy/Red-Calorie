@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.inject.IngredientViewHolderComponent;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.inject.IngredientViewHolderModule;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.viewholder.AbstractIngredientsViewHolder;
@@ -15,13 +15,12 @@ import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.ada
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.inject.IngredientsFragmentComponent;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.model.IngredientsFragmentModel;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.view.IngredientsView;
-import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientsRepo;
+import com.github.st1hy.countthemcalories.ui.contract.InsertResult;
 import com.github.st1hy.countthemcalories.ui.core.adapter.CursorRecyclerViewAdapter;
-import com.github.st1hy.countthemcalories.database.commands.InsertResult;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.IngredientTemplateDao;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.l4digital.fastscroll.FastScroller;
 
@@ -47,7 +46,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
     @Inject
     IngredientsFragmentComponent component;
     @Inject
-    RxIngredientsDatabaseModel databaseModel;
+    IngredientsRepo repo;
     @Inject
     IngredientsView view;
 
@@ -148,7 +147,7 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
             cursor.moveToPosition(positionInCursor(position));
             IngredientTemplate ingredient = holder.getReusableIngredient();
             holder.setEnabled(true);
-            databaseModel.performReadEntity(cursor, ingredient);
+            repo.readEntry(cursor, ingredient);
             holder.setPosition(position);
             holder.setName(ingredient.getDisplayName());
             final EnergyDensity energyDensity = EnergyDensity.from(ingredient);
@@ -173,8 +172,8 @@ public class IngredientsDaoAdapter extends CursorRecyclerViewAdapter<AbstractIng
         Cursor cursor = getCursor();
         if (cursor != null) {
             cursor.moveToPosition(position);
-            int index = cursor.getColumnIndexOrThrow(IngredientTemplateDao.Properties.Name.columnName);
-            return cursor.getString(index).substring(0, 1);
+//            int index = cursor.getColumnIndexOrThrow(IngredientTemplateDao.Properties.Name.columnName);
+            return repo.readName(cursor);
         } else {
             return "";
         }

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.inject.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.presenter.OverviewPresenter;
 import com.github.st1hy.countthemcalories.ui.activities.overview.presenter.OverviewStateSaver;

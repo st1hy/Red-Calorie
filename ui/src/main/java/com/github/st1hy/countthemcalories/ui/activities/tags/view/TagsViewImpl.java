@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Tags;
 import com.github.st1hy.countthemcalories.ui.core.baseview.Click;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogEvent;

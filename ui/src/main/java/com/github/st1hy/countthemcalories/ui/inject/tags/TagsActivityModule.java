@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.inject.tags;
 import android.app.Activity;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsFragment;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsScreen;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsScreenImpl;

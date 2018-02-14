@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientType;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 
 import org.parceler.Parcels;
 

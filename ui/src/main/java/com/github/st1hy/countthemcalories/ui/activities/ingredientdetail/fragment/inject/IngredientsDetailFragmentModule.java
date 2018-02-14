@@ -10,12 +10,12 @@ import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragmen
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenterImpl;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.view.IngredientDetailView;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.view.IngredientDetailViewImpl;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.DetailImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
-import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.HeaderImageView;
-import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.bundle.FragmentSavedState;
+import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.HeaderImageView;
 import com.google.common.base.Preconditions;
 
 import org.parceler.Parcels;

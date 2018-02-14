@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.ui.core.dialog.CustomDialogViewEditTextController;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxAlertDialog;

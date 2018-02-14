@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.IngredientsFragment;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.inject.IngredientsFragmentComponentFactory;

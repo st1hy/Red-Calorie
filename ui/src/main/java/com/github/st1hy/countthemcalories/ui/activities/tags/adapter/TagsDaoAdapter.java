@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.adapter.holder.TagItemHolder;
 import com.github.st1hy.countthemcalories.ui.activities.tags.adapter.holder.TagViewHolder;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.ColorGenerator;

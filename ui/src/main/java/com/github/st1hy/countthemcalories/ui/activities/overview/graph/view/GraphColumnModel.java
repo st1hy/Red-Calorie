@@ -13,7 +13,7 @@ import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

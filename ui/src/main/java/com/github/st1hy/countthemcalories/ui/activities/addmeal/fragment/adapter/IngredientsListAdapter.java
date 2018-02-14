@@ -6,16 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientListComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientListModule;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.MealIngredientsListModel;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import javax.inject.Inject;

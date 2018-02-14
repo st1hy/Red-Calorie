@@ -8,7 +8,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.MealInteraction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.MealItemRootView;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.inject.PerMealRow;

@@ -5,7 +5,7 @@
     style="@style/ActivityContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.settings.SettingsActivity"
+    tools:context=".activities.settings.view.SettingsActivity"
     tools:showIn="@layout/settings_app_bar">
 
     <LinearLayout

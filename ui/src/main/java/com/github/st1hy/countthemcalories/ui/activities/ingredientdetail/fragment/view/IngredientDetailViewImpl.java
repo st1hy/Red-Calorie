@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.view.IngredientDetailScreen;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.view.IngredientDetailScreenDelegate;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;

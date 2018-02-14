@@ -11,13 +11,13 @@ import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.m
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.view.AddIngredientMenuAction;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Tags;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.ui.core.rx.Filters;
 import com.github.st1hy.countthemcalories.ui.core.rx.SimpleSubscriber;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;

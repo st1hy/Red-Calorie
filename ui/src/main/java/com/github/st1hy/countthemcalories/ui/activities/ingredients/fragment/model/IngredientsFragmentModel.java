@@ -4,9 +4,9 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import javax.inject.Inject;

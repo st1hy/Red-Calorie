@@ -3,8 +3,6 @@ package com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.pr
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.commands.ingredients.IngredientsDatabaseCommands;
-import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientType;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.QueryFinished;
@@ -14,6 +12,7 @@ import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.mod
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.view.IngredientsView;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.model.AddIngredientParams;
 import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientsRepo;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoTransformer;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogEvent;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogView;
@@ -45,11 +44,9 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
     @Inject
     Observable<SearchResult> searchResultObservable;
     @Inject
-    RxIngredientsDatabaseModel databaseModel;
-    @Inject
     IngredientsView view;
     @Inject
-    IngredientsDatabaseCommands commands;
+    IngredientsRepo repo;
     @Inject
     DialogView dialogView;
     @Inject
@@ -80,7 +77,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
     private void onAdapterStart() {
         subscribe(searchResultObservable
                 .flatMap(search ->
-                        databaseModel.getAllFilteredBy(search.getQuery(), search.getTokens())
+                        repo.query(search.getQuery(), search.getTags())
                                 .map(cursor -> QueryFinished.of(cursor, search))
                 )
                 .doOnError(e -> Timber.e(e, "Search exploded"))
@@ -113,7 +110,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
         if (newItemId != null) {
             subscribe(
                     Observable.fromCallable(
-                            () -> databaseModel.findInCursor(cursor, newItemId))
+                            () -> repo.findInCursor(cursor, newItemId))
                             .subscribeOn(Schedulers.computation())
                             .filter(IngredientsPresenterImpl::isSuccessful)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +154,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
         viewHolder.setEnabled(false);
         final int positionInAdapter = viewHolder.getPositionInAdapter();
         long id = viewHolder.getReusableIngredient().getId();
-        databaseModel.getById(id)
+        repo.query(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(template -> {
                     if (template.getChildIngredients().isEmpty())
@@ -172,7 +169,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
                                 .filter(event -> event == DialogEvent.POSITIVE)
                                 .map(Functions.into(template));
                 })
-                .flatMap(commands::delete)
+                .flatMap(repo::delete)
                 .doOnNext(deleteResponse -> subscribe(deleteResponse.undoAvailability()
                         .compose(new UndoTransformer<>(deleteResponse,
                                 isAvailable -> {
@@ -196,7 +193,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
 
     private void setNoIngredientVisibility(@NonNull Cursor cursor) {
         SearchResult searchingFor = recentSearchResult.get();
-        boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTokens().isEmpty();
+        boolean isSearchFilterEmpty = searchingFor.getQuery().trim().isEmpty() && searchingFor.getTags().isEmpty();
         view.setNoIngredientsMessage(isSearchFilterEmpty ? model.getNoIngredientsMessage() : model.getSearchEmptyMessage());
         view.setNoIngredientsVisibility(Visibility.of(cursor.getCount() == 0));
     }
@@ -206,7 +203,7 @@ public class IngredientsPresenterImpl implements IngredientsPresenter, Ingredien
         long id = viewHolder.getReusableIngredient().getId();
         int positionInAdapter = viewHolder.getPositionInAdapter();
         //Ingredient template here is not attached to database and is missing tags
-        databaseModel.getByIdRecursive(id)
+        repo.queryRecursive(id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ingredientTemplate1 -> view.editIngredientTemplate(positionInAdapter, ingredientTemplate1), Timber::e);
     }

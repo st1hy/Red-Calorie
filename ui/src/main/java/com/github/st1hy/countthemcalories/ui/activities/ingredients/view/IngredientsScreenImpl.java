@@ -6,7 +6,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.EditIngredientActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientType;

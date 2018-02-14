@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.MealIngredientsListModel;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.WithState;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.PicturePicker;
-import com.github.st1hy.countthemcalories.database.Meal;
 
 import org.parceler.Parcels;
 

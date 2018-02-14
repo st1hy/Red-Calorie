@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.ui.core.meals;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 import org.joda.time.DateTime;
 

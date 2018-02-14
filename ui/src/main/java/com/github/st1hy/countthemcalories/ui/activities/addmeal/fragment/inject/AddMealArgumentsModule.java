@@ -4,20 +4,24 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.CopyMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.AddMealModel;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.EditMealMode;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientFactory;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.MealFactory;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
+import org.parceler.Parcels;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,18 +32,18 @@ public abstract class AddMealArgumentsModule {
     @Provides
     @PerFragment
     public static Meal provideMeal(@Nullable @FragmentSavedState Bundle savedState,
-                                   Intent intent, EditMealMode editMealMode) {
+                                   Intent intent, EditMealMode editMealMode, MealFactory factory) {
         if (savedState != null) {
             return Parcels.unwrap(savedState.getParcelable(AddMealModel.SAVED_MEAL_STATE));
         } else {
             Meal editedMeal = Parcels.unwrap(intent.getParcelableExtra(AddMealActivity.EXTRA_MEAL_PARCEL));
             if (editedMeal != null) {
                 if (editMealMode == EditMealMode.COPY_TO_TODAY) {
-                    editedMeal = Meal.copyAsNew(editedMeal);
+                    editedMeal = factory.newMeal(editedMeal);
                 }
                 return editedMeal;
             } else {
-                editedMeal = new Meal();
+                editedMeal = factory.newMeal();
                 editedMeal.setName("");
                 editedMeal.setImageUri(Uri.EMPTY);
                 return editedMeal;
@@ -68,9 +72,10 @@ public abstract class AddMealArgumentsModule {
 
     @Provides
     @Nullable
-    public static Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate) {
+    public static Ingredient extraIngredient(@Nullable IngredientTemplate extraTemplate,
+                                             @NonNull IngredientFactory factory) {
         if (extraTemplate != null) {
-            return new Ingredient(extraTemplate, 0.0);
+            return factory.newIngredient();
         } else {
             return null;
         }

@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.view.MenuItem;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.github.st1hy.countthemcalories.ui.core.state.Selection;

@@ -5,13 +5,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
-import com.github.st1hy.countthemcalories.database.rx.RxMealsDatabaseModel;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.MealsRepo;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.ui.core.meals.DefaultMealName;
 import com.github.st1hy.countthemcalories.ui.core.time.DateTimeUtils;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.datetime.NewMealDate;
 import com.google.common.base.Optional;
@@ -29,7 +29,6 @@ public class AddMealModel implements PictureModel {
     public static final String SAVED_MEAL_STATE = "add meal model";
 
     private final MealIngredientsListModel ingredientsListModel;
-    private final RxMealsDatabaseModel databaseModel;
     private final Resources resources;
     @NonNull
     private final DefaultMealName defaultMealName;
@@ -41,20 +40,20 @@ public class AddMealModel implements PictureModel {
     @Nullable
     @NewMealDate
     DateTime mealDateDay;
+    @Inject
+    MealsRepo repo;
 
     private final Meal meal;
     private boolean isImageAvailableOverride;
 
     @Inject
     public AddMealModel(@NonNull MealIngredientsListModel ingredientsListModel,
-                        @NonNull RxMealsDatabaseModel databaseModel,
                         @NonNull Resources resources,
                         @NonNull DefaultMealName defaultMealName,
                         @NonNull PhysicalQuantitiesModel quantitiesModel,
                         @NonNull DateTimeUtils dateTimeUtils,
                         @NonNull Meal meal) {
         this.ingredientsListModel = ingredientsListModel;
-        this.databaseModel = databaseModel;
         this.resources = resources;
         this.defaultMealName = defaultMealName;
         this.quantitiesModel = quantitiesModel;
@@ -102,7 +101,7 @@ public class AddMealModel implements PictureModel {
         if (Strings.isNullOrEmpty(meal.getName())) {
             meal.setName(defaultMealName.getBestGuessMealNameAt(meal.getCreationDate()));
         }
-        return databaseModel.insertOrUpdate(meal, ingredientsListModel.getIngredients());
+        return repo.insertOrUpdate(meal, ingredientsListModel.getIngredients());
     }
 
     @NonNull

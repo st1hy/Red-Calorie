@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.view.IngredientsScreen;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.UndoView;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogEvent;

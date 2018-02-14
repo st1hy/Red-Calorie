@@ -6,30 +6,21 @@ import org.joda.time.DateTime
 import rx.Observable
 
 interface TagsRepo {
-
     fun query(query: String): Observable<Cursor>
-
     fun query(query: String, excluded: List<String>): Observable<Cursor>
-
     fun query(id: Long) : Observable<Tag>
-
     fun insert(tag: Tag) : Observable<CommandResponse<InsertResult, Cursor>>
-
     fun delete(tag: Tag): Observable<CommandResponse<Cursor, InsertResult>>
-
     fun update(tag: Tag): Observable<Cursor>
-
     fun findInCursor(cursor: Cursor, tag: Tag) : Int
-
     fun readEntry(cursor: Cursor, tag: Tag)
-
     fun readName(cursor: Cursor): String
 }
 
 interface MealsRepo {
     fun getAllFilteredSortedDate(from: DateTime, to: DateTime) : Observable<List<Meal>>
-
     fun delete(meal: Meal) : Observable<CommandResponse<Void, Meal>>
+    fun insertOrUpdate(meal: Meal, ingredients: List<Ingredient>) : Observable<Meal>
 }
 
 interface MealStatisticRepo {
@@ -41,6 +32,19 @@ interface MealStatisticRepo {
 interface WeightRepo {
     fun findOneByDate(data: DateTime) : Observable<Weight>
     fun insertOrUpdate(weight: Weight) : Observable<Long>
+}
+
+typealias TagId = Long
+
+interface IngredientsRepo {
+    fun query(query : String, tags: List<String>) : Observable<Cursor>
+    fun query(id: Long) : Observable<IngredientTemplate>
+    fun queryRecursive(id: Long) : Observable<IngredientTemplate>
+    fun findInCursor(cursor: Cursor, id: Long): Int
+    fun insertOrUpdate(ingredient: IngredientTemplate, tagIds: Collection<TagId>) : Observable<IngredientTemplate>
+    fun delete(ingredient: IngredientTemplate): Observable<CommandResponse<Cursor, InsertResult>>
+    fun readEntry(cursor: Cursor, tag: IngredientTemplate)
+    fun readName(cursor: Cursor): String
 }
 
 interface CommandResponse<Response, UndoResponse> {

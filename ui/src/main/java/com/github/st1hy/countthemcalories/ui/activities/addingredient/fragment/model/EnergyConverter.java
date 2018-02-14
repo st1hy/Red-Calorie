@@ -3,10 +3,10 @@ package com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import javax.inject.Inject;
@@ -30,7 +30,6 @@ public class EnergyConverter {
     public EnergyUnit getDefaultEnergyUnit() {
         return settingsModel.getEnergyUnit();
     }
-
 
     public double fromDatabaseToCurrent(@NonNull AmountUnitType type,
                                         double energyDensityAmount) {

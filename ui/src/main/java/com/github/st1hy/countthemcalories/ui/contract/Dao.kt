@@ -20,13 +20,20 @@ interface TagFactory {
     fun newTag(name: String) : Tag
 }
 
-interface TaggedIngredient
+interface TaggedIngredient {
+    var tag: Tag
+}
 
 interface IngredientTemplate {
     var id: Long?
-    val amountType: AmountUnitType
-    val energyDensityAmount : Double
+    var amountType: AmountUnitType
+    var energyDensityAmount : Double
     val displayName: String
+    var childIngredients: List<Ingredient>
+    var imageUri: Uri
+    var name: String
+    var creationSource: CreationSource
+    var tags: List<TaggedIngredient>
 }
 
 interface IngredientTemplateFactory {
@@ -38,14 +45,24 @@ interface DaoFactories : TagFactory, IngredientTemplateFactory, WeightFactory
 interface Meal {
     var id: Long?
     var name: String
-    var creationDate: DateTime
+    var creationDate: DateTime?
     var ingredients: List<Ingredient>
     var imageUri: Uri
+    fun hasIngredients() = ingredients.isNotEmpty()
+}
+
+interface MealFactory {
+    fun newMeal() : Meal
+    fun newMeal(meal: Meal): Meal
 }
 
 interface Ingredient {
     var amount : Double
     fun getIngredientTypeOrNull() : IngredientTemplate?
+}
+
+interface IngredientFactory {
+    fun newIngredient() : Ingredient
 }
 
 interface Weight {

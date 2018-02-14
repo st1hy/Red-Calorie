@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 import javax.inject.Inject;
 

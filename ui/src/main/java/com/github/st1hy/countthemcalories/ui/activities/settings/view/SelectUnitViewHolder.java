@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.jakewharton.rxbinding.view.RxView;
 
 import butterknife.BindView;

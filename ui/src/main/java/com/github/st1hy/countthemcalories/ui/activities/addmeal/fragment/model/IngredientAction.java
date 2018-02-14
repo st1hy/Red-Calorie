@@ -3,7 +3,8 @@ package com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+
 
 public class IngredientAction {
     public static final IngredientAction CANCELED = new IngredientAction(Type.CANCELED, -1L, null);

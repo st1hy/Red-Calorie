@@ -13,7 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.adapter.IngredientTagsAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.AddIngredientModel;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.EnergyConverter;
@@ -23,17 +23,17 @@ import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.p
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.view.AddIngredientView;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.view.AddIngredientViewController;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.view.AddIngredientMenuAction;
-import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.contract.CreationSource;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.Tag;
+import com.github.st1hy.countthemcalories.ui.contract.TaggedIngredient;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenterImp;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.JointIngredientTag;
-import com.github.st1hy.countthemcalories.database.Tag;
-import com.github.st1hy.countthemcalories.database.property.CreationSource;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
+import com.github.st1hy.countthemcalories.ui.inject.app.TwoPlaces;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;
@@ -86,7 +86,7 @@ public abstract class AddIngredientFragmentModule {
             ArrayList<Tag> tags;
             if (template != null) {
                 tags = Lists.newArrayList(Collections2.transform(template.getTags(),
-                        JointIngredientTag::getTagOrNull));
+                        TaggedIngredient::getTag));
             } else {
                 tags = new ArrayList<>(5);
             }

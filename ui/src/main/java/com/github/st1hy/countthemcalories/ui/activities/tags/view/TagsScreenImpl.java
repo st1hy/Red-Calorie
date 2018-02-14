@@ -7,7 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Tags;
 import com.github.st1hy.countthemcalories.ui.core.baseview.Click;

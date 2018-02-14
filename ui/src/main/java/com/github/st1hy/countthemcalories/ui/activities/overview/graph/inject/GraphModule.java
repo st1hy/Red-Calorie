@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.presenter.GraphDataAdapter;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;

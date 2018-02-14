@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.activities.mealdetail.inject;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.fragment.MealDetailFragment;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.view.MealDetailScreen;
 import com.github.st1hy.countthemcalories.ui.activities.mealdetail.view.MealDetailScreenImpl;

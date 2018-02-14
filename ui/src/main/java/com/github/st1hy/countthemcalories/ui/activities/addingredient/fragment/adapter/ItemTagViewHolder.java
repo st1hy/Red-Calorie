@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.Tag;
+import com.github.st1hy.countthemcalories.ui.R;
+import com.github.st1hy.countthemcalories.ui.contract.Tag;
 
 import butterknife.BindView;
 import butterknife.OnClick;

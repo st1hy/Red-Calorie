@@ -21,7 +21,7 @@ public class SearchResult {
     }
 
     @NonNull
-    public List<String> getTokens() {
+    public List<String> getTags() {
         return tokens;
     }
 

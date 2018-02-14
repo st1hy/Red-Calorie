@@ -6,7 +6,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.ClickEvent;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.TagsViewModel;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Type;

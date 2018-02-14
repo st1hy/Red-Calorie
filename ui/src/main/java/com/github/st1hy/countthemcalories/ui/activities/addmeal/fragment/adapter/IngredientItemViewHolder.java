@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.PerIngredientRow;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
-import com.github.st1hy.countthemcalories.database.Ingredient;
 import com.github.st1hy.countthemcalories.ui.core.rx.Transformers;
 import com.jakewharton.rxbinding.view.RxView;
 

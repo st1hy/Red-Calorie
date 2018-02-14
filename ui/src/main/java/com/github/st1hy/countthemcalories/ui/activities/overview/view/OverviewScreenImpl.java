@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.CopyMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.EditMealActivity;

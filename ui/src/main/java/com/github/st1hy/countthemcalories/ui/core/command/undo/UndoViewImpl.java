@@ -6,7 +6,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxSnackbar;

@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.mealdetail;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.ui.inject.core.ActivityModule;
 

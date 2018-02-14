@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.database.rx.timeperiod.DayData;

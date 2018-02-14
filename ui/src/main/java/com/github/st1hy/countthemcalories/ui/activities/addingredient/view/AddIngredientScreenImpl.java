@@ -7,12 +7,11 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.AddIngredientActivity;
 import com.github.st1hy.countthemcalories.ui.activities.tags.model.Tags;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsActivity;
-import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsActivityBundle;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.StartParams;

@@ -4,20 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.model.IngredientDetailModel;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.view.IngredientDetailView;
-import com.github.st1hy.countthemcalories.application.inject.TwoPlaces;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.PostponeTransitions;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
+import com.github.st1hy.countthemcalories.ui.inject.app.TwoPlaces;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 
 import org.parceler.Parcels;

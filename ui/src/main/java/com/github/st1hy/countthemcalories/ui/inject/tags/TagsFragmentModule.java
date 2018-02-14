@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.tags.adapter.TagsDaoAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.tags.adapter.holder.TagViewHolder;

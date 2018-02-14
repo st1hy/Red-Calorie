@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.IngredientItemViewHolder;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.IngredientsListAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientListComponentFactory;
@@ -19,14 +19,14 @@ import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.present
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.view.AddMealView;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.view.AddMealViewController;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.dialog.DialogModule;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.PictureModel;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenterImp;
-import com.github.st1hy.countthemcalories.ui.inject.core.DefaultMealNameModule;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
+import com.github.st1hy.countthemcalories.ui.inject.core.DefaultMealNameModule;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.bundle.FragmentSavedState;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.view.AddMealMenuAction;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseActivity;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;

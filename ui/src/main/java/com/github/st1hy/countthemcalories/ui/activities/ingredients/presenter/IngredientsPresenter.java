@@ -57,7 +57,7 @@ public class IngredientsPresenter implements BasicLifecycle {
         subscriptions.add(searchResultObservable
                 .flatMap(searchResult -> {
                     if (searchResult.getQuery().trim().length() > 0)
-                        return repo.query(searchResult.getQuery(), searchResult.getTokens());
+                        return repo.query(searchResult.getQuery(), searchResult.getTags());
                     else return Observable.just(null);
                 })
                 .observeOn(AndroidSchedulers.mainThread())

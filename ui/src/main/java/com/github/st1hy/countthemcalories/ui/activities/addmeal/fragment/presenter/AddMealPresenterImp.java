@@ -13,12 +13,12 @@ import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.view.Ad
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.ShowIngredientsInfo;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.view.AddMealMenuAction;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.SelectPicturePresenter;
 import com.github.st1hy.countthemcalories.ui.core.rx.Filters;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 import com.github.st1hy.countthemcalories.ui.core.state.Visibility;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;

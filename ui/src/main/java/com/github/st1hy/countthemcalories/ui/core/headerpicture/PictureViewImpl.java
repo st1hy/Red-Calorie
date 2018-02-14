@@ -5,7 +5,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.jakewharton.rxbinding.view.RxView;
 
 import javax.inject.Inject;

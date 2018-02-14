@@ -11,7 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.AddMealActivity;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.EditIngredientResult;
@@ -19,13 +19,14 @@ import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.ShowIngred
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.IngredientDetailActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.overview.OverviewActivity;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientFactory;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.StartParams;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.Meal;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -57,6 +58,8 @@ public class AddMealScreenImpl implements AddMealScreen {
     private Snackbar ingredientsError;
     @NonNull
     private final ActivityLauncher activityLauncher;
+    @Inject
+    IngredientFactory factory;
 
     @Inject
     public AddMealScreenImpl(@NonNull Activity activity,
@@ -97,7 +100,7 @@ public class AddMealScreenImpl implements AddMealScreen {
                     if (data == null) return null;
                     return Parcels.unwrap(data.getParcelableExtra(AddMealActivity.EXTRA_INGREDIENT_PARCEL));
                 }).filter(Functions.NOT_NULL)
-                .map(ingredientTemplate -> new Ingredient(ingredientTemplate, 0.0));
+                .map(ingredientTemplate -> factory.newIngredient());
     }
 
 

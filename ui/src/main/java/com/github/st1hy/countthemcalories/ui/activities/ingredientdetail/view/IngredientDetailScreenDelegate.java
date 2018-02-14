@@ -2,7 +2,8 @@ package com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.view;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+
 
 public class IngredientDetailScreenDelegate implements IngredientDetailScreen {
 

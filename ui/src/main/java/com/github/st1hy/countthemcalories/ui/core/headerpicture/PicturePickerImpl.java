@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncher;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityResult;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.StartParams;
@@ -20,7 +20,7 @@ import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 
-import org.greenrobot.greendao.annotation.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;

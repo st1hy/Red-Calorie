@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.inject.AddMealFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.presenter.AddMealLifecycleController;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.presenter.AddMealSaver;

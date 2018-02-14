@@ -6,7 +6,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.holder.AbstractMealItemHolder;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.adapter.holder.MealItemHolder;

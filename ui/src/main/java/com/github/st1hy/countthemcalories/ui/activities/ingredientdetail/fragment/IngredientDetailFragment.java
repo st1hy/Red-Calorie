@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.inject.IngredientDetailFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragment.presenter.IngredientDetailPresenter;
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseFragment;

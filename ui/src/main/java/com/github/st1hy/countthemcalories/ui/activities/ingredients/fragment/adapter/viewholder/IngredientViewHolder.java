@@ -9,9 +9,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.adapter.inject.IngredientRootView;
 import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplateFactory;
 import com.github.st1hy.countthemcalories.ui.core.adapter.PositionDelegate;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.viewcontrol.ScrollingItemDelegate;
@@ -49,6 +50,8 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
     View editFrame;
     @BindView(R.id.ingredients_item_content)
     View content;
+    @Inject
+    IngredientTemplateFactory factory;
 
     private boolean isEnabled = true;
 
@@ -69,8 +72,8 @@ public class IngredientViewHolder extends AbstractIngredientsViewHolder {
                 .setRight(editFrame)
                 .setScrollView(scrollView)
                 .build();
-        reusableIngredient = new IngredientTemplate();
-        reusableIngredient.setTranslations(new I18n());
+        reusableIngredient = factory.newIngredientTemplate();
+//        reusableIngredient.setTranslations(new I18n());
     }
 
     @NonNull

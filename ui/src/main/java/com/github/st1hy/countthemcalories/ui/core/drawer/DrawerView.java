@@ -12,7 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.state.Selection;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.google.common.base.Preconditions;

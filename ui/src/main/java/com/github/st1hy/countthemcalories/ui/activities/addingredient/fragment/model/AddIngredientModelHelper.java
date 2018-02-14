@@ -5,18 +5,19 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.rx.RxIngredientsDatabaseModel;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
-import com.github.st1hy.countthemcalories.database.IngredientTemplate;
-import com.github.st1hy.countthemcalories.database.property.CreationSource;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnit;
-import com.github.st1hy.countthemcalories.database.unit.AmountUnitType;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensity;
-import com.github.st1hy.countthemcalories.database.unit.EnergyDensityUtils;
-import com.github.st1hy.countthemcalories.database.unit.EnergyUnit;
-import com.github.st1hy.countthemcalories.database.unit.MassUnit;
-import com.github.st1hy.countthemcalories.database.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensity;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyDensityUtils;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.EnergyUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.MassUnit;
+import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.VolumeUnit;
+import com.github.st1hy.countthemcalories.ui.contract.CreationSource;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplate;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientTemplateFactory;
+import com.github.st1hy.countthemcalories.ui.contract.IngredientsRepo;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.google.common.collect.Lists;
 
@@ -32,20 +33,21 @@ public class AddIngredientModelHelper {
 
     private final SettingsModel settingsModel;
     private final IngredientTagsModel tagsModel;
-    private final RxIngredientsDatabaseModel databaseModel;
     private final Resources resources;
 
     private final AddIngredientModel model;
+    @Inject
+    IngredientsRepo repo;
+    @Inject
+    IngredientTemplateFactory factory;
 
     @Inject
     AddIngredientModelHelper(@NonNull SettingsModel settingsModel,
                              @NonNull IngredientTagsModel tagsModel,
-                             @NonNull RxIngredientsDatabaseModel databaseModel,
                              @NonNull Resources resources,
                              @NonNull AddIngredientModel model) {
         this.settingsModel = settingsModel;
         this.tagsModel = tagsModel;
-        this.databaseModel = databaseModel;
         this.resources = resources;
         this.model = model;
     }
@@ -99,12 +101,12 @@ public class AddIngredientModelHelper {
 
     @NonNull
     private Observable<IngredientTemplate> insertOrUpdateIntoDatabase() {
-        return databaseModel.insertOrUpdate(intoTemplate(), tagsModel.getTagIds());
+        return repo.insertOrUpdate(intoTemplate(), tagsModel.getTagIds());
     }
 
     @NonNull
     private IngredientTemplate intoTemplate() {
-        IngredientTemplate template = new IngredientTemplate();
+        IngredientTemplate template = factory.newIngredientTemplate();
         template.setId(model.getId());
         template.setName(model.getName());
         template.setImageUri(model.getImageUri());

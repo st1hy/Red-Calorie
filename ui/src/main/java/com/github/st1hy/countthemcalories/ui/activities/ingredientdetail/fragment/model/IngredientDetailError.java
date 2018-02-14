@@ -2,7 +2,7 @@ package com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.fragme
 
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 public enum IngredientDetailError {
     NO_VALUE(R.string.add_meal_amount_error_empty),

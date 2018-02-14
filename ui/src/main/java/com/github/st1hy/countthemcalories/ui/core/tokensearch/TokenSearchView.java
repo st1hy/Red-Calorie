@@ -16,7 +16,7 @@ import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.core.Utils;
 
 import java.util.Collections;

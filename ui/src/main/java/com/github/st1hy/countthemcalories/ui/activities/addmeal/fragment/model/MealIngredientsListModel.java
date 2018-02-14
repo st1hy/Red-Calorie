@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.database.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

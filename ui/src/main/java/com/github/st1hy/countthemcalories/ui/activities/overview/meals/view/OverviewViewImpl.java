@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailAction;
 import com.github.st1hy.countthemcalories.ui.activities.overview.model.MealDetailParams;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;

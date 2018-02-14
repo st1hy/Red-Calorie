@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
-import com.github.st1hy.countthemcalories.R;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredientdetail.IngredientDetailActivity;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 
 import org.parceler.Parcels;
 

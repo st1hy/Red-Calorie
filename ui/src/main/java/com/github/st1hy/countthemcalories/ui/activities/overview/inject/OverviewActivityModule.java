@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.GraphFragment;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.GraphComponentFactory;
@@ -14,16 +14,14 @@ import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.injec
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.inject.OverviewFragmentComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreenImpl;
+import com.github.st1hy.countthemcalories.ui.core.FragmentLocation;
 import com.github.st1hy.countthemcalories.ui.core.activityresult.ActivityLauncherModule;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.inject.UndoModule;
 import com.github.st1hy.countthemcalories.ui.core.command.undo.inject.UndoRootView;
 import com.github.st1hy.countthemcalories.ui.core.drawer.DrawerMenuItem;
-import com.github.st1hy.countthemcalories.ui.inject.core.DrawerModule;
-import com.github.st1hy.countthemcalories.ui.core.FragmentLocation;
-import com.github.st1hy.countthemcalories.ui.inject.core.PermissionModule;
-import com.github.st1hy.countthemcalories.database.DaoSession;
-import com.github.st1hy.countthemcalories.database.rx.timeperiod.TimePeriodModel;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
+import com.github.st1hy.countthemcalories.ui.inject.core.DrawerModule;
+import com.github.st1hy.countthemcalories.ui.inject.core.PermissionModule;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.datetime.NewMealDate;
 
 import org.joda.time.DateTime;
@@ -31,7 +29,6 @@ import org.joda.time.DateTime;
 import java.util.Map;
 
 import dagger.Binds;
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -94,12 +91,6 @@ public abstract class OverviewActivityModule {
         DateTime date = (DateTime) intent.getSerializableExtra(OverviewActivity.EXTRA_JUMP_TO_DATE);
         intent.removeExtra(OverviewActivity.EXTRA_JUMP_TO_DATE);
         return date;
-    }
-
-    @Provides
-    @PerActivity
-    static TimePeriodModel timePeriodModel(Lazy<DaoSession> sessionLazy) {
-        return new TimePeriodModel(sessionLazy);
     }
 
 }

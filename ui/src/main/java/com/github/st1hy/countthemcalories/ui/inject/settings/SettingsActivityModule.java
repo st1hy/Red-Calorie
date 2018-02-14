@@ -1,6 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.inject.settings;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.view.SettingsFragment;
 import com.github.st1hy.countthemcalories.ui.core.drawer.DrawerMenuItem;
 import com.github.st1hy.countthemcalories.ui.core.FragmentLocation;

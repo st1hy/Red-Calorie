@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.fragment.model.IngredientAction;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.ShowIngredientsInfo;
-import com.github.st1hy.countthemcalories.database.Ingredient;
-import com.github.st1hy.countthemcalories.database.Meal;
+import com.github.st1hy.countthemcalories.ui.contract.Ingredient;
+import com.github.st1hy.countthemcalories.ui.contract.Meal;
 
 import rx.Observable;
 

@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnit;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType;

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.model.InputType;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.view.AddIngredientScreen;
 import com.github.st1hy.countthemcalories.ui.activities.addingredient.view.AddIngredientScreenDelegate;

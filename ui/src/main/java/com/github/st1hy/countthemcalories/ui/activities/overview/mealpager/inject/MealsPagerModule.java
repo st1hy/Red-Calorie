@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.inject.OverviewActivityComponent;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.MealsPagerAdapter;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.PagerModel;

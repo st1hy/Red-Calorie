@@ -7,7 +7,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.HeaderImageView;
 import com.github.st1hy.countthemcalories.ui.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;

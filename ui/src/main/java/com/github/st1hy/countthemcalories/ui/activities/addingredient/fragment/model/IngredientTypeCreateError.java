@@ -3,7 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.addingredient.fragment.
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 
 public enum IngredientTypeCreateError {
     NO_NAME(R.string.add_ingredient_name_error_empty, InputType.NAME),

@@ -4,7 +4,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.R;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.overview.OverviewActivity;
 import com.github.st1hy.countthemcalories.ui.activities.settings.view.SettingsActivity;
