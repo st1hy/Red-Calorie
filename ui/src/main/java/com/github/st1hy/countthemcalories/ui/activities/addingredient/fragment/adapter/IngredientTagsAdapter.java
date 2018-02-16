@@ -39,22 +39,21 @@ public class IngredientTagsAdapter extends RecyclerView.Adapter<TagViewHolder> {
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        switch (viewType) {
-            case TAG:
-                return new ItemTagViewHolder(view, onRemoveAction);
-            default:
-                throw new IllegalArgumentException();
+        if (viewType == TAG) {
+            return new ItemTagViewHolder(view, onRemoveAction);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
-        switch (getItemViewType(position)) {
-            case TAG:
-                onBindTag((ItemTagViewHolder) holder, position);
-                break;
-            default:
-                throw new IllegalArgumentException();
+        int viewType = getItemViewType(position);
+        if (viewType == TAG) {
+            onBindTag((ItemTagViewHolder) holder, position);
+
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 

@@ -9,7 +9,7 @@ import android.view.View;
 import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.IngredientsActivity;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.IngredientsDaoAdapter;
-import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.adapter.viewholder.IngredientViewHolder;
+import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.model.IngredientClick;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.presenter.IngredientsPresenter;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.presenter.IngredientsPresenterImpl;
 import com.github.st1hy.countthemcalories.ui.activities.ingredients.fragment.view.IngredientsView;
@@ -39,8 +39,14 @@ public abstract class IngredientsFragmentModule {
     @Binds
     public abstract IngredientsPresenter ingredientsPresenter(IngredientsPresenterImpl presenter);
 
-    @Binds
-    public abstract IngredientViewHolder.Callback viewHolderCallback(IngredientsPresenterImpl presenter);
+    @Provides
+    @PerFragment
+    @IngredientClicks
+    static PublishSubject<IngredientClick> onIngredientClicked() {
+        return PublishSubject.create();
+    }
+    @Binds @IngredientClicks
+    abstract Observable<IngredientClick> ingredientClickObservable(@IngredientClicks PublishSubject<IngredientClick> subject);
 
     @Provides
     public static RecyclerView ingredientsRecyclerView(@FragmentRootView View root,

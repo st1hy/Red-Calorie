@@ -56,17 +56,17 @@ import javax.inject.Inject
                         .compose(searchDatabase())
                         .subscribe(),
                 stateChanges
-                        .filter({ holder -> holder is TagItemHolder })
+                        .filter { holder -> holder is TagItemHolder }
                         .cast(TagItemHolder::class.java)
-                        .subscribe({ onViewHolderStateChanged(it) }),
+                        .subscribe { onViewHolderStateChanged(it) },
                 view.confirmClickedObservable().subscribe { view.onTagsSelected(fragmentModel.tags) },
-                clickEvents.subscribe({ event ->
+                clickEvents.subscribe { event ->
                     when (event.type) {
                         Type.EDIT -> onEditClicked(event.position, event.holder)
                         Type.OPEN -> onTagClicked(event.holder)
                         Type.REMOVE -> onDeleteClicked(event.position, event.holder)
                     }
-                })
+                }
         )
         view.setConfirmButtonVisibility(Visibility.of(fragmentModel.isInSelectMode))
         adapter.onStart()

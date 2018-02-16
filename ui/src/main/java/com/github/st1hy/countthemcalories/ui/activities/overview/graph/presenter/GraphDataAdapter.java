@@ -7,12 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.ui.R;
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
+import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
+import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnComponentFactory;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnModule;
+import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphItem;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnViewHolder;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
@@ -22,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -40,7 +40,7 @@ public class GraphDataAdapter extends RecyclerView.Adapter<GraphColumnViewHolder
     @Inject
     SettingsModel settingsModel;
     @Inject
-    @Named("graphItemClicked")
+    @GraphItem
     PublishSubject<Integer> positionClicked;
 
     private CalorieStatistics statistics;

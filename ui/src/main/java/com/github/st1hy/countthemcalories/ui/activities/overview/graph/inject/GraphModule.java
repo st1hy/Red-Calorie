@@ -5,11 +5,10 @@ import android.view.View;
 
 import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnComponentFactory;
+import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphItem;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.presenter.GraphDataAdapter;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.view.FragmentRootView;
-
-import javax.inject.Named;
 
 import dagger.Binds;
 import dagger.Module;
@@ -33,7 +32,7 @@ public abstract class GraphModule {
 
     @Provides
     @PerFragment
-    @Named("graphItemClicked")
+    @GraphItem
     public static PublishSubject<Integer> graphItemClicked() {
         return PublishSubject.create();
     }

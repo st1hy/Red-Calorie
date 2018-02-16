@@ -10,7 +10,6 @@ import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.Imag
 import com.github.st1hy.countthemcalories.ui.core.permissions.PermissionsHelper;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.AppContext;
 
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import dagger.Module;
@@ -34,16 +33,16 @@ public class IngredientListModule {
 
     @Provides
     @PerIngredientRow
-    @Named("ingredientImage")
+    @IngredientImage
     public static ImageView imageView(@IngredientRootView View rootView) {
         return (ImageView) rootView.findViewById(R.id.add_meal_ingredient_image);
     }
 
     @Provides
-    @Named("ingredientImageHolder")
+    @IngredientImageHolder
     public static ImageHolderDelegate imageHolderDelegate(@AppContext Context context,
                                                           PermissionsHelper permissionsHelper,
-                                                          @Named("ingredientImage") Provider<ImageView> imageView) {
+                                                          @IngredientImage Provider<ImageView> imageView) {
         return new ImageHolderDelegate(context, permissionsHelper, imageView);
     }
 

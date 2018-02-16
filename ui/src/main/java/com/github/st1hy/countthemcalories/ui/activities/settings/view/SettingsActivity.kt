@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.github.st1hy.countthemcalories.ui.R
 import com.github.st1hy.countthemcalories.ui.core.baseview.BaseActivity
-import com.github.st1hy.countthemcalories.ui.core.baseview.getAppComponent
 import com.github.st1hy.countthemcalories.ui.core.drawer.DrawerPresenter
 import com.github.st1hy.countthemcalories.ui.inject.core.ActivityModule
 import javax.inject.Inject
 
-class SettingsActivity : BaseActivity() {
+internal class SettingsActivity : BaseActivity() {
 
-    @Inject var drawerPresenter: DrawerPresenter? = null
-    @Inject var fragments: Map<String, Fragment>? = null //injects component
+    @Inject lateinit var drawerPresenter: DrawerPresenter
+    @Inject lateinit var fragments: Map<String, Fragment> //injects component
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -6,7 +6,7 @@ public enum Selection {
     /**
      * @return true if selected
      */
-    public boolean is() {
+    public boolean isSelected() {
         return this == SELECTED;
     }
 }

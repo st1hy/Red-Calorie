@@ -102,10 +102,10 @@ public class ImageHolderDelegate {
                 .doOnNext(loadingStatusSubject::onNext)
                 .doOnNext((loadingStatus) -> {
                     switch (loadingStatus) {
-                        case LoadingStatus.URI_FAILED:
+                        case URI_FAILED:
                             onLoadingError();
                             // Fallthrough
-                        case LoadingStatus.PLACEHOLDER:
+                        case PLACEHOLDER:
                             imageViewProvider.get().setImageResource(placeholderResId);
                             break;
                     }
