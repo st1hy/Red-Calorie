@@ -16,21 +16,20 @@ internal class SettingsActivity : BaseActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
-        getAppComponent().newSettingsActivityComponent(ActivityModule(this))
-                .inject(this)
+        getAppComponent().newSettingsActivityComponent(ActivityModule(this)).inject(this)
     }
 
     override fun onStart() {
         super.onStart()
-        drawerPresenter!!.onStart()
+        drawerPresenter.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        drawerPresenter!!.onStop()
+        drawerPresenter.onStop()
     }
 
     override fun onBackPressed() {
-        if (drawerPresenter!!.onBackPressed()) super.onBackPressed()
+        if (drawerPresenter.onBackPressed()) super.onBackPressed()
     }
 }

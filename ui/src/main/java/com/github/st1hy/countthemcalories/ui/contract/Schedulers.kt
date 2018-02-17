@@ -1,4 +1,4 @@
-package com.github.st1hy.countthemcalories.contract
+package com.github.st1hy.countthemcalories.ui.contract
 
 import rx.Scheduler
 

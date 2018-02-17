@@ -13,13 +13,12 @@ import android.widget.EditText;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxAlertDialog;
 import com.github.st1hy.countthemcalories.ui.core.rx.RxInputMethodManager;
 import com.github.st1hy.countthemcalories.ui.inject.core.InputMethodManagerModule;
+import com.google.common.base.Preconditions;
 import com.jakewharton.rxbinding.internal.Functions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import rx.Observable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class CustomDialogViewEditTextController {
 
@@ -59,7 +58,7 @@ public final class CustomDialogViewEditTextController {
         return event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_ENTER;
     }
 
-    public static void showSoftInputUntilItsShown(View view) {
+    private static void showSoftInputUntilItsShown(View view) {
         final InputMethodManager inputMethodManager = InputMethodManagerModule.inputMethodManager(view.getContext());
         RxView.preDraws(view, Functions.FUNC0_ALWAYS_TRUE)
                 .flatMap(aVoid -> RxInputMethodManager.showSoftInput(inputMethodManager, view, 0))

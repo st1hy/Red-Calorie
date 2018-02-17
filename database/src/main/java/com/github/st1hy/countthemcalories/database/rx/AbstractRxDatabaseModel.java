@@ -2,8 +2,8 @@ package com.github.st1hy.countthemcalories.database.rx;
 
 import android.support.annotation.NonNull;
 
-import com.github.st1hy.countthemcalories.contract.Schedulers;
 import com.github.st1hy.countthemcalories.database.DaoSession;
+import com.github.st1hy.countthemcalories.database.contract.Schedulers;
 
 import java.util.concurrent.Callable;
 

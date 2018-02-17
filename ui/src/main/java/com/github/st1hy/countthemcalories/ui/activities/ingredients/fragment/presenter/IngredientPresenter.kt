@@ -48,7 +48,7 @@ import javax.inject.Inject
     private val subscriptions = CompositeSubscription()
 
     override fun onStart() {
-        subscriptions.add(view.onAddIngredientClickedObservable
+        subscriptions.add(view.getOnAddIngredientClickedObservable()
                 .map {
                     val extraName = recentSearchResult.get().query
                     AddIngredientParams.of(AddIngredientType.MEAL, extraName)

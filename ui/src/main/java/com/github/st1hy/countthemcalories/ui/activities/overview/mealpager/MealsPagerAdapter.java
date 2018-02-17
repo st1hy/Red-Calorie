@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.inject.MealsPagerComponent;
 import com.github.st1hy.countthemcalories.ui.activities.overview.meals.MealsFragment;
+import com.github.st1hy.countthemcalories.ui.contract.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 
 import javax.inject.Inject;

@@ -46,15 +46,14 @@ dependencies {
     implementation "com.android.support:support-annotations:$support_library_version"
     implementation "com.android.support:support-compat:$support_library_version"
 
-//    implementation "io.reactivex:rxandroid:$rx_android_version"
-//    implementation "io.reactivex:rxjava:$rx_java_version"
     api "org.greenrobot:greendao:$green_dao_version"
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "org.parceler:parceler-api:$parceler_version"
-    kapt "org.parceler:parceler:$parceler_version"
     api 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
-//    implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "io.reactivex:rxjava:$rx_java_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "org.parceler:parceler-api:$parceler_version"
+    implementation "net.danlew:android.joda:$joda_time_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "org.parceler:parceler:$parceler_version"
 
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"

@@ -3,12 +3,12 @@ package com.github.st1hy.countthemcalories.ui.activities.overview.addweight;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.contract.Schedulers;
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.activities.overview.mealpager.PagerModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.view.OverviewScreen;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.ui.contract.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
+import com.github.st1hy.countthemcalories.ui.contract.Schedulers;
 import com.github.st1hy.countthemcalories.ui.contract.Weight;
 import com.github.st1hy.countthemcalories.ui.contract.WeightFactory;
 import com.github.st1hy.countthemcalories.ui.contract.WeightRepo;

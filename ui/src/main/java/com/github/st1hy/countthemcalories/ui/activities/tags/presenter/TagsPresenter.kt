@@ -31,7 +31,7 @@ import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@PerFragment class TagsPresenter @Inject constructor() {
+@PerFragment internal class TagsPresenter @Inject constructor() {
 
     private val debounceTime: Long = 250
 
@@ -52,7 +52,7 @@ import javax.inject.Inject
     fun onStart() {
         onAddTagClicked(view.addTagClickedObservable())
         subscriptions.addAll(
-                view.queryObservable
+                view.getQueryObservable()
                         .compose(searchDatabase())
                         .subscribe(),
                 stateChanges

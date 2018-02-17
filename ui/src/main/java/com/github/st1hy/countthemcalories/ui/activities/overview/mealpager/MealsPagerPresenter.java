@@ -1,9 +1,9 @@
 package com.github.st1hy.countthemcalories.ui.activities.overview.mealpager;
 
-import com.github.st1hy.countthemcalories.contract.Schedulers;
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.activities.overview.presenter.TimePeriodLoader;
+import com.github.st1hy.countthemcalories.ui.contract.CalorieStatistics;
 import com.github.st1hy.countthemcalories.ui.contract.MealStatisticRepo;
+import com.github.st1hy.countthemcalories.ui.contract.Schedulers;
 import com.github.st1hy.countthemcalories.ui.core.BasicLifecycle;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.datetime.NewMealDate;

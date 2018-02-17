@@ -2,6 +2,7 @@ package com.github.st1hy.countthemcalories.ui.core.activityresult;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 import rx.functions.Func1;
 
@@ -31,6 +32,7 @@ public class ActivityResult {
         return requestCode;
     }
 
+    @Nullable
     public Intent getData() {
         return data;
     }

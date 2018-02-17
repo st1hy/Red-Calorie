@@ -1,7 +1,7 @@
 package com.github.st1hy.countthemcalories.inject
 
 import com.github.st1hy.countthemcalories.contract.Schedulers
-import com.github.st1hy.countthemcalories.contract.SchedulersProvider
+import com.github.st1hy.countthemcalories.ui.contract.SchedulersProvider
 import com.github.st1hy.countthemcalories.utils.SchedulersProviderImp
 import dagger.Binds
 import dagger.Module

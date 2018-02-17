@@ -96,7 +96,7 @@ class GraphColumnViewHolder @Inject constructor(
     }
 
     private fun onPositionSelected(selectedPosition: Int) {
-        val isSelected = position == selectedPosition
+        val isSelected = _position == selectedPosition
         model.setSelected(isSelected)
     }
 }

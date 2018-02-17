@@ -1,7 +1,6 @@
 package com.github.st1hy.countthemcalories.ui.contract
 
 import android.database.Cursor
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics
 import org.joda.time.DateTime
 import rx.Observable
 

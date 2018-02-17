@@ -9,7 +9,6 @@ import com.github.st1hy.countthemcalories.ui.core.dialog.DialogView;
 import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.ImageHolderDelegate;
 import com.github.st1hy.countthemcalories.ui.core.permissions.Permission;
 import com.github.st1hy.countthemcalories.ui.core.permissions.PermissionsHelper;
-import com.github.st1hy.countthemcalories.ui.core.headerpicture.imageholder.LoadingStatus;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -69,10 +68,10 @@ public final class SelectPicturePresenterImp implements SelectPicturePresenter {
                 imageHolderDelegate.getLoadingObservable()
                         .subscribe(status -> {
                             switch (status) {
-                                case LoadingStatus.URI_SUCCESS:
+                                case URI_SUCCESS:
                                     model.setImageAvailableOverride(true);
                                     break;
-                                case LoadingStatus.URI_FAILED:
+                                case URI_FAILED:
                                     model.setImageAvailableOverride(false);
                                     break;
                             }

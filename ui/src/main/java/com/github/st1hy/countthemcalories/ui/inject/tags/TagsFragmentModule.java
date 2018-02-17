@@ -19,6 +19,7 @@ import com.github.st1hy.countthemcalories.ui.activities.tags.presenter.TagsState
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsView;
 import com.github.st1hy.countthemcalories.ui.activities.tags.view.TagsViewImpl;
 import com.github.st1hy.countthemcalories.ui.contract.Tag;
+import com.github.st1hy.countthemcalories.ui.contract.TagFactory;
 import com.github.st1hy.countthemcalories.ui.core.adapter.RecyclerEvent;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.bundle.FragmentSavedState;
@@ -64,12 +65,16 @@ public abstract class TagsFragmentModule {
     @PerFragment
     public static TagsFragmentModel fragmentModel(@Nullable @FragmentSavedState Bundle savedState,
                                                   @Named("isInSelectMode") Boolean isInSelectMode,
-                                                  Provider<Set<Tag>> tagsProvider) {
+                                                  Provider<Set<Tag>> tagsProvider,
+                                                  TagFactory factory) {
+        TagsFragmentModel model;
         if (savedState != null) {
-            return Parcels.unwrap(savedState.getParcelable(TagsStateSaver.MODEL));
+            model = Parcels.unwrap(savedState.getParcelable(TagsStateSaver.MODEL));
         } else {
-            return new TagsFragmentModel(isInSelectMode, tagsProvider.get());
+            model = new TagsFragmentModel(isInSelectMode, tagsProvider.get());
         }
+        model.setTagFactory(factory);
+        return model;
     }
 
     @Provides

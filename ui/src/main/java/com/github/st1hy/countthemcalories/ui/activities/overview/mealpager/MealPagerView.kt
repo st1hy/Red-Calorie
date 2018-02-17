@@ -5,9 +5,9 @@ import android.content.Context
 import android.support.annotation.CheckResult
 import android.support.v4.view.ViewPager
 import android.widget.TextView
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic
 import com.github.st1hy.countthemcalories.ui.R
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel
+import com.github.st1hy.countthemcalories.ui.contract.DayStatistic
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext
 import com.jakewharton.rxbinding.support.v4.view.RxViewPager

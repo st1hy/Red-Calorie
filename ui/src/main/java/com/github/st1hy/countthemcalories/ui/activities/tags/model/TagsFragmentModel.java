@@ -3,6 +3,7 @@ package com.github.st1hy.countthemcalories.ui.activities.tags.model;
 import android.support.annotation.NonNull;
 
 import com.github.st1hy.countthemcalories.ui.contract.Tag;
+import com.github.st1hy.countthemcalories.ui.contract.TagFactory;
 import com.google.common.collect.ImmutableList;
 
 import org.parceler.Parcel;
@@ -15,12 +16,17 @@ public class TagsFragmentModel {
 
     final boolean isInSelectMode;
     final Set<Tag> selectedTags;
+    private transient TagFactory tagFactory;
 
     @ParcelConstructor
     public TagsFragmentModel(boolean isInSelectMode,
                              Set<Tag> selectedTags) {
         this.isInSelectMode = isInSelectMode;
         this.selectedTags = selectedTags;
+    }
+
+    public void setTagFactory(TagFactory tagFactory) {
+        this.tagFactory = tagFactory;
     }
 
     public boolean isInSelectMode() {
@@ -39,7 +45,7 @@ public class TagsFragmentModel {
     public void setSelected(@NonNull Tag tag, boolean isSelected) {
         if (isSelected) {
             if (!selectedTags.contains(tag)) {
-                selectedTags.add(new Tag(tag));
+                selectedTags.add(tagFactory.newTag(tag));
             }
         } else {
             selectedTags.remove(tag);

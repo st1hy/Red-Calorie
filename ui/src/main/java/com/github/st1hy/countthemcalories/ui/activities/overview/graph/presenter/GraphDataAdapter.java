@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.R;
 import com.github.st1hy.countthemcalories.ui.activities.addmeal.model.PhysicalQuantitiesModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.column.GraphColumnComponentFactory;
@@ -17,6 +15,8 @@ import com.github.st1hy.countthemcalories.ui.activities.overview.graph.inject.co
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnModel;
 import com.github.st1hy.countthemcalories.ui.activities.overview.graph.view.GraphColumnViewHolder;
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.SettingsModel;
+import com.github.st1hy.countthemcalories.ui.contract.CalorieStatistics;
+import com.github.st1hy.countthemcalories.ui.contract.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.inject.app.PerFragment;
 
 import java.util.Arrays;

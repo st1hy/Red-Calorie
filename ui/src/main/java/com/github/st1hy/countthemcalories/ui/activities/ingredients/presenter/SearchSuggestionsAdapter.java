@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Filter;
 import android.widget.ResourceCursorAdapter;
-import android.widget.TextView;
 
 import com.github.st1hy.countthemcalories.ui.contract.Tag;
 import com.github.st1hy.countthemcalories.ui.contract.TagFactory;
@@ -15,9 +14,6 @@ import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity;
 import com.github.st1hy.countthemcalories.ui.inject.quantifier.context.ActivityContext;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 @PerActivity
 public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
@@ -46,12 +42,12 @@ public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        SuggestionViewHolder viewHolder = (SuggestionViewHolder) view.getTag();
         if (viewHolder == null) {
-            viewHolder = new ViewHolder(view);
+            viewHolder = new SuggestionViewHolder(view);
             view.setTag(viewHolder);
         }
-        viewHolder.name.setText(readTagNameFromCursor(cursor));
+        viewHolder.getName().setText(readTagNameFromCursor(cursor));
     }
 
     /**
@@ -82,12 +78,4 @@ public class SearchSuggestionsAdapter extends ResourceCursorAdapter {
         }
     }
 
-    static class ViewHolder {
-        @BindView(android.R.id.text1)
-        TextView name;
-
-        public ViewHolder(View root) {
-            ButterKnife.bind(this, root);
-        }
-    }
 }

@@ -2,8 +2,6 @@ package com.github.st1hy.countthemcalories.database.rx.timeperiod
 
 import android.database.Cursor
 import android.support.annotation.CheckResult
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic
 import com.github.st1hy.countthemcalories.database.*
 import com.github.st1hy.countthemcalories.database.rx.AbstractRxDatabaseModel
 import com.google.common.collect.ImmutableList
@@ -45,10 +43,10 @@ class TimePeriodModel : AbstractRxDatabaseModel() {
 
     private var start: DateTime? = null
     private var end: DateTime? = null
-    private val updates = PublishSubject.create<CalorieStatistics>()
+    private val updates = PublishSubject.create<TimePeriod>()
 
     @CheckResult
-    fun updates(): Observable<CalorieStatistics> {
+    fun updates(): Observable<TimePeriod> {
         return updates.asObservable()
     }
 
@@ -67,7 +65,7 @@ class TimePeriodModel : AbstractRxDatabaseModel() {
     @CheckResult
     private fun loadData(start: DateTime,
                  end: DateTime
-    ): Observable<CalorieStatistics> {
+    ): Observable<TimePeriod> {
         return fromDatabaseTask {
             val query = queryProvider.forCurrentThread()
             query.setParameter(0, start.millis)
@@ -109,7 +107,7 @@ class TimePeriodModel : AbstractRxDatabaseModel() {
         private var weight: Weight? = null
 
 
-        fun build(): CalorieStatistics {
+        fun build(): TimePeriod {
             if (!loaded) {
                 loadAll()
                 loaded = true
@@ -165,7 +163,7 @@ class TimePeriodModel : AbstractRxDatabaseModel() {
             return weightValue
         }
 
-        private fun updateStatistics(data: DayStatistic, weightValue: Float) {
+        private fun updateStatistics(data: DayData, weightValue: Float) {
             val value = data.totalCalories
             if (value < min) min = value
             if (value > max) max = value

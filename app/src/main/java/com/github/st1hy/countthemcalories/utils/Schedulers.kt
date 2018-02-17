@@ -1,14 +1,15 @@
 package com.github.st1hy.countthemcalories.utils
 
 import com.github.st1hy.countthemcalories.contract.Schedulers
-import com.github.st1hy.countthemcalories.contract.SchedulersProvider
+import com.github.st1hy.countthemcalories.ui.contract.SchedulersProvider
 import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SchedulersProviderImp @Inject constructor() : SchedulersProvider {
+class SchedulersProviderImp @Inject constructor() :
+        SchedulersProvider {
 
     private var hook: Schedulers = DEFAULT
 

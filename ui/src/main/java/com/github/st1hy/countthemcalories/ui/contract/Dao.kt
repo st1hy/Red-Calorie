@@ -1,10 +1,11 @@
 package com.github.st1hy.countthemcalories.ui.contract
 
 import android.net.Uri
+import android.os.Parcelable
 import com.github.st1hy.countthemcalories.ui.activities.settings.model.unit.AmountUnitType
 import org.joda.time.DateTime
 
-interface Tag {
+interface Tag : Parcelable {
     var id: Long?
     val displayName: String
     var name: String
@@ -18,6 +19,7 @@ enum class CreationSource { USER, GENERATED }
 interface TagFactory {
     fun newTag() : Tag
     fun newTag(name: String) : Tag
+    fun newTag(tag: Tag) : Tag
 }
 
 interface TaggedIngredient {
@@ -56,13 +58,14 @@ interface MealFactory {
     fun newMeal(meal: Meal): Meal
 }
 
-interface Ingredient {
+interface Ingredient : Parcelable {
     var amount : Double
     fun getIngredientTypeOrNull() : IngredientTemplate?
 }
 
 interface IngredientFactory {
     fun newIngredient() : Ingredient
+    fun newIngredient(template: IngredientTemplate) : Ingredient
 }
 
 interface Weight {
@@ -71,6 +74,5 @@ interface Weight {
 }
 
 interface WeightFactory {
-
     fun newWeight() : Weight
 }

@@ -4,8 +4,8 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.st1hy.countthemcalories.contract.model.DayStatistic;
-import com.github.st1hy.countthemcalories.contract.model.CalorieStatistics;
+import com.github.st1hy.countthemcalories.ui.contract.CalorieStatistics;
+import com.github.st1hy.countthemcalories.ui.contract.DayStatistic;
 import com.github.st1hy.countthemcalories.ui.core.rx.Functions;
 
 import org.joda.time.DateTime;

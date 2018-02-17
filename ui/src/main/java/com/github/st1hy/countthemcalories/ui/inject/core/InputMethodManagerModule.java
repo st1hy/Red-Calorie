@@ -12,7 +12,7 @@ import dagger.Provides;
 public abstract class InputMethodManagerModule {
 
     @Provides
-    static InputMethodManager inputMethodManager(@ActivityContext Context context) {
+    public static InputMethodManager inputMethodManager(@ActivityContext Context context) {
         return (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

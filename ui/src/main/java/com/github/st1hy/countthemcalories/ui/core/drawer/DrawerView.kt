@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import com.github.st1hy.countthemcalories.ui.core.state.Selection
 import com.github.st1hy.countthemcalories.ui.inject.app.PerActivity
 import kotlinx.android.synthetic.main.app_navigation_view.*
@@ -15,11 +16,14 @@ import javax.inject.Inject
 
 @PerActivity class DrawerView @Inject constructor(private val activity: AppCompatActivity) {
 
-    fun isDrawerOpen(): Boolean = activity.drawer_layout.isDrawerOpen(GravityCompat.START)
+    val toolbar: Toolbar = activity.toolbar
+    val drawer = activity.drawer_layout
 
     init {
-        activity.setSupportActionBar(activity.toolbar)
+        activity.setSupportActionBar(toolbar)
     }
+
+    fun isDrawerOpen(): Boolean = drawer.isDrawerOpen(GravityCompat.START)
 
     fun setNavigationItemSelectedListener(
             listener: NavigationView.OnNavigationItemSelectedListener?) {
@@ -27,21 +31,21 @@ import javax.inject.Inject
     }
 
     fun showNavigationAsUp() {
-        activity.toolbar.setNavigationOnClickListener { activity.onBackPressed() }
+        toolbar.setNavigationOnClickListener { activity.onBackPressed() }
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     fun registerToggle(drawerToggle: ActionBarDrawerToggle) {
-        activity.drawer_layout.addDrawerListener(drawerToggle)
+        drawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
     }
 
     fun unregisterDrawerToggle(drawerToggle: ActionBarDrawerToggle) {
-        activity.drawer_layout.removeDrawerListener(drawerToggle)
+        drawer.removeDrawerListener(drawerToggle)
     }
 
     fun closeDrawer() {
-        activity.drawer_layout.closeDrawer(GravityCompat.START)
+        drawer.closeDrawer(GravityCompat.START)
     }
 
     fun openDrawerActivity(item: DrawerMenuItem) {
